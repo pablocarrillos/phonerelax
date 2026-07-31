@@ -1,0 +1,7 @@
+<h1 style="font-size:20px; margin:0 0 12px;">Tu pedido te está esperando</h1>
+<p>Hola <%= @order.customer_name %>: tienes el pedido <strong><%= @order.number %></strong> preparado pero pendiente de pago. Puedes completarlo cuando quieras:</p>
+<%= render 'order_summary' %>
+<p style="text-align:center; margin:22px 0;">
+  <a href="<%= order_pay_url(@order.number) %>" style="background:#D60BC6; color:#fff; text-decoration:none; padding:12px 26px; border-radius:8px; display:inline-block;">Completar el pago</a>
+</p>
+<p style="color:#8a8fa8; font-size:13px;">Si ya no lo quieres, no tienes que hacer nada.</p>

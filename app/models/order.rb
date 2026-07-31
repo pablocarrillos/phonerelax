@@ -72,6 +72,7 @@ class Order < ApplicationRecord
         line.product.update!(stock: [line.product.stock - line.quantity, 0].max)
       end
     end
+    OrderMailer.paid(self).deliver_later
   end
 
   # Avanza el estado logístico dejando rastro en el histórico.
@@ -82,6 +83,7 @@ class Order < ApplicationRecord
       update!(status: next_status)
       order_events.create!(event: status)
     end
+    OrderMailer.shipped(self).deliver_later if enviado?
   end
 
   private

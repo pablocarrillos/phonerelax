@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     root 'orders#index'
     resources :orders, only: [:index, :show] do
       patch :advance, on: :member # creado → enviado → recibido
+      post :payment_reminder, on: :member
     end
     resources :products, except: :show do
       resources :product_images, only: [:create, :destroy] do

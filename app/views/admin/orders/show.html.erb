@@ -4,6 +4,11 @@
 <p>
   Pago: <span class="badge <%= @order.payment_status %>"><%= @order.payment_status %></span>
   &nbsp; Estado: <span class="badge <%= @order.status %>"><%= @order.status %></span>
+  <% if @order.pago_pendiente? %>
+    &nbsp; <%= button_to 'Enviar recordatorio de pago', payment_reminder_admin_order_path(@order), method: :post,
+                         class: 'btn btn-magenta', style: 'display:inline-block;',
+                         form: { data: { turbo_confirm: "¿Enviar el recordatorio de pago a #{@order.email}?" } } %>
+  <% end %>
   <% if @order.next_status %>
     &nbsp; <%= button_to "Marcar como #{@order.next_status}", advance_admin_order_path(@order), method: :patch,
                          class: 'btn btn-primary', style: 'display:inline-block;',

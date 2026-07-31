@@ -1,0 +1,9 @@
+<h1 style="font-size:20px; margin:0 0 12px;">Tu pedido está en camino 📦</h1>
+<p>Hola <%= @order.customer_name %>: tu pedido <strong><%= @order.number %></strong> ya ha salido hacia:</p>
+<p style="background:#f5f6fb; border-radius:8px; padding:12px 16px;">
+  <%= [@order.address, @order.postal_code, @order.city, @order.province, @order.country].compact_blank.join(', ') %>
+</p>
+<%= render 'order_summary' %>
+<p style="text-align:center; margin:22px 0;">
+  <a href="<%= order_status_url(@order.number) %>" style="background:#0E1B4D; color:#fff; text-decoration:none; padding:12px 26px; border-radius:8px; display:inline-block;">Seguir mi pedido</a>
+</p>

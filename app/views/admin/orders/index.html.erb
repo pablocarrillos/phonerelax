@@ -8,8 +8,13 @@
 </div>
 
 <%= form_with url: admin_orders_path, method: :get, local: true, class: 'orders-search' do %>
-  <%= hidden_field_tag :status, @status if @status %>
   <input type="search" name="q" value="<%= @query %>" placeholder="Buscar por nº de pedido, nombre, email, teléfono, ciudad o país…" class="orders-search-input">
+  <select name="status" class="orders-search-select">
+    <option value="">Estado: todos</option>
+    <% Order.statuses.keys.each do |status| %>
+      <option value="<%= status %>" <%= 'selected' if @status == status %>><%= status.capitalize %></option>
+    <% end %>
+  </select>
   <select name="payment" class="orders-search-select">
     <option value="">Pago: todos</option>
     <% Order.payment_statuses.keys.each do |payment| %>

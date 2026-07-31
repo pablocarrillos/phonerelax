@@ -1,0 +1,18 @@
+<table style="width:100%; border-collapse:collapse; margin:16px 0;">
+  <% @order.order_lines.each do |line| %>
+    <tr>
+      <td style="padding:8px 0; border-bottom:1px solid #e8e9f2;"><%= line.product.name %> × <%= line.quantity %></td>
+      <td style="padding:8px 0; border-bottom:1px solid #e8e9f2; text-align:right;"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
+    </tr>
+  <% end %>
+  <% if @order.shipping_cost.positive? %>
+    <tr>
+      <td style="padding:8px 0; border-bottom:1px solid #e8e9f2;">Transporte</td>
+      <td style="padding:8px 0; border-bottom:1px solid #e8e9f2; text-align:right;"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td style="padding:10px 0; font-weight:bold;">Total (IVA incluido)</td>
+    <td style="padding:10px 0; font-weight:bold; text-align:right;"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td>
+  </tr>
+</table>

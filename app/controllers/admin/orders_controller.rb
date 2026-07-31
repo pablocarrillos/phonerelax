@@ -18,6 +18,17 @@ module Admin
       @order = Order.includes(order_lines: :product).find(params[:id])
     end
 
+    # Reenvía al cliente el aviso de pago pendiente (acción manual del admin).
+    def payment_reminder
+      order = Order.find(params[:id])
+      if order.pago_pendiente?
+        OrderMailer.payment_reminder(order).deliver_later
+        redirect_to admin_order_path(order), notice: "Recordatorio de pago enviado a #{order.email}."
+      else
+        redirect_to admin_order_path(order), alert: 'Este pedido ya está pagado.'
+      end
+    end
+
     # Avanza el estado logístico: creado → enviado → recibido.
     def advance
       order = Order.find(params[:id])
