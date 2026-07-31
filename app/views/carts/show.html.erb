@@ -1,0 +1,39 @@
+<% content_for :title, 'Carrito · PhoneRelax' %>
+<div class="container section">
+  <h1>Tu carrito</h1>
+  <% if @lines.empty? %>
+    <p>El carrito está vacío.</p>
+    <%= link_to 'Ver productos', root_path(anchor: 'productos'), class: 'btn btn-primary' %>
+  <% else %>
+    <table class="table">
+      <thead>
+        <tr><th>Producto</th><th class="num">Precio</th><th>Cantidad</th><th class="num">Subtotal</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @lines.each do |product, quantity| %>
+          <tr>
+            <td><%= link_to product.name, product_page_path(product) %></td>
+            <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
+            <td>
+              <%= form_with url: cart_update_path(product), method: :patch, local: true, style: 'display:flex;gap:8px;align-items:center;' do %>
+                <input type="number" name="quantity" value="<%= quantity %>" min="0" class="qty-input">
+                <button type="submit" class="btn btn-outline" style="padding:7px 12px;">Actualizar</button>
+              <% end %>
+            </td>
+            <td class="num"><%= number_to_currency(product.price * quantity, unit: '€', format: '%n %u') %></td>
+            <td><%= button_to 'Quitar', cart_remove_path(product), method: :delete, class: 'btn-danger-link' %></td>
+          </tr>
+        <% end %>
+        <tr class="total-row">
+          <td colspan="3">Total</td>
+          <td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 22px; text-align: right;">
+      <%= link_to 'Seguir comprando', root_path(anchor: 'productos'), class: 'btn btn-outline' %>
+      <%= link_to 'Tramitar pedido', new_order_path, class: 'btn btn-magenta' %>
+    </div>
+  <% end %>
+</div>

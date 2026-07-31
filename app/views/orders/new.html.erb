@@ -1,0 +1,31 @@
+<% content_for :title, 'Tramitar pedido · PhoneRelax' %>
+<div class="container section" style="max-width: 760px;">
+  <h1>Tramitar pedido</h1>
+
+  <table class="table">
+    <tbody>
+      <% @lines.each do |product, quantity| %>
+        <tr>
+          <td><%= product.name %> × <%= quantity %></td>
+          <td class="num"><%= number_to_currency(product.price * quantity, unit: '€', format: '%n %u') %></td>
+        </tr>
+      <% end %>
+      <tr class="total-row"><td>Total</td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top: 30px;">Tus datos</h2>
+  <%= form_with model: @order, url: orders_path, local: true do |f| %>
+    <% if @order.errors.any? %>
+      <div class="errors"><ul><% @order.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+    <% end %>
+    <div class="form-grid">
+      <div><%= f.label :customer_name, 'Nombre y apellidos' %><%= f.text_field :customer_name %></div>
+      <div><%= f.label :email, 'Email' %><%= f.email_field :email %></div>
+      <div><%= f.label :phone, 'Teléfono' %><%= f.telephone_field :phone %></div>
+      <div class="full"><%= f.label :address, 'Dirección de envío' %><%= f.text_field :address %></div>
+    </div>
+    <p style="color: var(--muted); font-size: 14px; margin-top: 14px;">Al pulsar «Pagar con tarjeta» te llevaremos a la pasarela segura de Stripe.</p>
+    <%= f.submit 'Pagar con tarjeta', class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>
+  <% end %>
+</div>

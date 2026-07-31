@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title><%= content_for(:title) || "PhoneRelax" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Questrial&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag :app %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="/" class="brand"><span>PHONE</span><span>RELAX</span></a>
+      <nav class="site-nav">
+        <%= link_to 'Inicio', root_path %>
+        <%= link_to 'Productos', root_path(anchor: 'productos') %>
+        <%= link_to cart_path, class: 'cart-link' do %>
+          Carrito<% if cart_items_count.positive? %><span class="cart-badge"><%= cart_items_count %></span><% end %>
+        <% end %>
+      </nav>
+    </header>
+
+    <% flash.each do |kind, message| %>
+      <div class="flash <%= kind %>"><%= message %></div>
+    <% end %>
+
+    <%= yield %>
+
+    <footer class="site-footer">
+      <p>PhoneRelax — espacios libres de móviles. <%= link_to 'Panel de gestión', admin_root_path %></p>
+    </footer>
+  </body>
+</html>

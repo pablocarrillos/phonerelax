@@ -1,0 +1,21 @@
+es:
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%d de %B de %Y a las %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Nombre
+        email: Email
+        phone: Teléfono
+        address: Dirección
+      product:
+        name: Nombre
+        price: Precio
+    errors:
+      messages:
+        blank: no puede estar en blanco
+        invalid: no es válido
+  errors:
+    format: "%{attribute} %{message}"

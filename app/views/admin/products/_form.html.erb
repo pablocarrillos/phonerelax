@@ -1,0 +1,14 @@
+<%= form_with model: [:admin, product], local: true do |f| %>
+  <% if product.errors.any? %>
+    <div class="errors"><ul><% product.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+  <div class="form-grid" style="max-width: 720px;">
+    <div class="full"><%= f.label :name, 'Nombre' %><%= f.text_field :name %></div>
+    <div><%= f.label :price, 'Precio (€)' %><%= f.number_field :price, step: 0.01 %></div>
+    <div><%= f.label :position, 'Posición' %><%= f.number_field :position %></div>
+    <div class="full"><%= f.label :image_url, 'URL de la imagen' %><%= f.text_field :image_url %></div>
+    <div class="full"><%= f.label :description, 'Descripción' %><%= f.text_area :description, rows: 5 %></div>
+    <div><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
+  </div>
+  <p><%= f.submit class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %></p>
+<% end %>

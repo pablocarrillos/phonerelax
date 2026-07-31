@@ -1,0 +1,28 @@
+<% content_for :title, "Pedido #{@order.number} · PhoneRelax" %>
+<div class="container section" style="max-width: 760px;">
+  <h1>Pedido <%= @order.number %></h1>
+  <p>
+    Pago: <span class="badge <%= @order.payment_status %>"><%= @order.payment_status %></span>
+    &nbsp; Estado: <span class="badge <%= @order.status %>"><%= @order.status %></span>
+  </p>
+
+  <div class="status-steps">
+    <% Order.statuses.keys.each do |step| %>
+      <div class="status-step <%= 'done' if Order.statuses[@order.status] >= Order.statuses[step] %>"><%= step.capitalize %></div>
+    <% end %>
+  </div>
+
+  <table class="table">
+    <tbody>
+      <% @order.order_lines.each do |line| %>
+        <tr>
+          <td><%= line.product.name %> × <%= line.quantity %></td>
+          <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
+        </tr>
+      <% end %>
+      <tr class="total-row"><td>Total</td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
+    </tbody>
+  </table>
+
+  <p style="color: var(--muted); font-size: 14px;">Guarda esta página para consultar el estado de tu pedido.</p>
+</div>

@@ -1,0 +1,3 @@
+# Copia este fichero a config/local_env.yml y rellena tus claves (NO se sube a git).
+STRIPE_SECRET_KEY: sk_test_xxx
+STRIPE_WEBHOOK_SECRET: whsec_xxx

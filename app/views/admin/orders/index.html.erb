@@ -1,0 +1,35 @@
+<h1>Pedidos</h1>
+
+<div class="filter-tabs">
+  <%= link_to "Todos (#{@counts.values.sum})", admin_orders_path, class: ('active' if @status.nil?) %>
+  <% Order.statuses.keys.each do |status| %>
+    <%= link_to "#{status.capitalize} (#{@counts[status] || 0})", admin_orders_path(status: status), class: ('active' if @status == status) %>
+  <% end %>
+</div>
+
+<% if @orders.empty? %>
+  <p>No hay pedidos<%= " en estado #{@status}" if @status %>.</p>
+<% else %>
+  <table class="table">
+    <thead>
+      <tr><th>Número</th><th>Fecha</th><th>Cliente</th><th class="num">Total</th><th>Pago</th><th>Estado</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% @orders.each do |order| %>
+        <tr>
+          <td><%= link_to order.number, admin_order_path(order) %></td>
+          <td><%= l order.created_at, format: :short %></td>
+          <td><%= order.customer_name %></td>
+          <td class="num"><%= number_to_currency(order.total, unit: '€', format: '%n %u') %></td>
+          <td><span class="badge <%= order.payment_status %>"><%= order.payment_status %></span></td>
+          <td><span class="badge <%= order.status %>"><%= order.status %></span></td>
+          <td>
+            <% if order.next_status %>
+              <%= button_to "Marcar #{order.next_status}", advance_admin_order_path(order), method: :patch, class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

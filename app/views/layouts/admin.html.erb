@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <title>PhoneRelax · Admin</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Questrial&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag :app %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <header class="admin-header">
+      <div>
+        <strong class="brand" style="margin-right: 24px;">PHONERELAX · ADMIN</strong>
+        <%= link_to 'Pedidos', admin_orders_path, class: ('active' if controller_name == 'orders') %>
+        <%= link_to 'Productos', admin_products_path, class: ('active' if controller_name == 'products') %>
+        <%= link_to 'Ver tienda', root_path %>
+      </div>
+      <%= button_to 'Salir', session_path, method: :delete, class: 'btn-danger-link', style: 'color:#ffb4ab;' %>
+    </header>
+
+    <main class="admin-main">
+      <% flash.each do |kind, message| %>
+        <div class="flash <%= kind %>"><%= message %></div>
+      <% end %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

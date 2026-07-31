@@ -1,0 +1,14 @@
+<div class="container section" style="max-width: 420px;">
+  <h1>Panel de gestión</h1>
+  <%= form_with url: session_path do |form| %>
+    <div style="margin-bottom: 14px;">
+      <%= form.label :email_address, 'Email' %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: 'username', value: params[:email_address] %>
+    </div>
+    <div style="margin-bottom: 18px;">
+      <%= form.label :password, 'Contraseña' %>
+      <%= form.password_field :password, required: true, autocomplete: 'current-password', maxlength: 72 %>
+    </div>
+    <%= form.submit 'Entrar', class: 'btn btn-primary btn-block' %>
+  <% end %>
+</div>
