@@ -10,7 +10,10 @@
           <td class="num"><%= number_to_currency(product.price * quantity, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>
-      <tr class="total-row"><td>Total</td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
+      <% vat_total = @lines.sum { |product, quantity| (product.price - product.price / (1 + product.vat_percentage / 100)) * quantity } %>
+      <tr><td>Base imponible</td><td class="num"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <tr><td>IVA</td><td class="num"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <tr class="total-row"><td>Total (IVA incluido)</td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
     </tbody>
   </table>
 
@@ -24,6 +27,10 @@
       <div><%= f.label :email, 'Email' %><%= f.email_field :email %></div>
       <div><%= f.label :phone, 'Teléfono' %><%= f.telephone_field :phone %></div>
       <div class="full"><%= f.label :address, 'Dirección de envío' %><%= f.text_field :address %></div>
+      <div><%= f.label :city, 'Ciudad' %><%= f.text_field :city %></div>
+      <div><%= f.label :postal_code, 'Código postal' %><%= f.text_field :postal_code %></div>
+      <div><%= f.label :province, 'Provincia' %><%= f.text_field :province %></div>
+      <div><%= f.label :country, 'País' %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España' }, { class: 'form-select' } %></div>
     </div>
     <p style="color: var(--muted); font-size: 14px; margin-top: 14px;">Al pulsar «Pagar con tarjeta» te llevaremos a la pasarela segura de Stripe.</p>
     <%= f.submit 'Pagar con tarjeta', class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>

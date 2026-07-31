@@ -1,11 +1,29 @@
 <% content_for :title, "#{@product.name} · PhoneRelax" %>
 <div class="container">
   <div class="product-page">
-    <img src="<%= @product.image_url %>" alt="<%= @product.name %>">
+    <div data-controller="gallery">
+      <img src="<%= @product.gallery_urls.first %>" alt="<%= @product.name %>" data-gallery-target="main">
+      <% if @product.gallery_urls.size > 1 %>
+        <div class="gallery-thumbs">
+          <% @product.gallery_urls.each_with_index do |url, i| %>
+            <button type="button" class="gallery-thumb <%= 'active' if i.zero? %>" data-gallery-target="thumb"
+                    data-action="gallery#show" data-gallery-url-param="<%= url %>" aria-label="Imagen <%= i + 1 %>">
+              <img src="<%= url %>" alt="">
+            </button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
     <div>
       <h1><%= @product.name %></h1>
       <div class="price"><%= number_to_currency(@product.price, unit: '€', format: '%n %u') %></div>
-      <p><%= @product.description %></p>
+      <p class="vat-note">IVA (<%= @product.vat_percentage.to_s.sub(/\.0+\z/, '') %>%) incluido</p>
+      <div class="product-description"><%= sanitize @product.description %></div>
+      <% if @product.out_of_stock? %>
+        <p><span class="btn btn-soldout" style="padding: 11px 34px;">Agotado</span></p>
+        <p style="color: var(--muted);">Este producto no está disponible ahora mismo.</p>
+        <%= link_to 'Volver', root_path, class: 'btn btn-outline' %>
+      <% else %>
       <%= form_with url: cart_add_path(@product), method: :post, local: true do %>
         <label for="quantity">Cantidad</label>
         <input type="number" name="quantity" id="quantity" value="1" min="1" class="qty-input">
@@ -13,6 +31,7 @@
           <button type="submit" class="btn btn-primary">Añadir al carrito</button>
           <%= link_to 'Volver', root_path, class: 'btn btn-outline' %>
         </div>
+      <% end %>
       <% end %>
     </div>
   </div>

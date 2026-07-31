@@ -1,19 +1,13 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  name: MyString
-  description: MyText
-  price: 9.99
-  image_url: MyString
-  shopify_handle: MyString
-  active: false
+funda:
+  name: Funda de prueba
+  price: 9.95
+  stock: 10
+  active: true
   position: 1
 
-two:
-  name: MyString
-  description: MyText
-  price: 9.99
-  image_url: MyString
-  shopify_handle: MyString
-  active: false
-  position: 1
+iman:
+  name: Imán de prueba
+  price: 59.90
+  stock: 0
+  active: true
+  position: 2

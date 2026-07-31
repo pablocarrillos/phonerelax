@@ -1,0 +1,9 @@
+frontal:
+  product: funda
+  url: https://example.com/frontal.jpg
+  position: 1
+
+trasera:
+  product: funda
+  url: https://example.com/trasera.jpg
+  position: 2

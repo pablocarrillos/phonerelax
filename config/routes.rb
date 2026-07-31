@@ -5,6 +5,15 @@ Rails.application.routes.draw do
   root 'shop#home'
   get 'producto/:id', to: 'shop#product', as: :product_page
 
+  get 'como-funciona', to: 'pages#como_funciona', as: :como_funciona
+  get 'quienes-somos', to: 'pages#quienes_somos', as: :quienes_somos
+  get 'politica-privacidad', to: 'pages#privacidad', as: :privacidad
+  get 'contacto', to: 'contacts#new', as: :contacto
+  post 'contacto', to: 'contacts#create', as: :contact_messages
+
+  get 'blog', to: 'blog#index', as: :blog
+  get 'blog/:slug', to: 'blog#show', as: :blog_post
+
   get 'carrito', to: 'carts#show', as: :cart
   post 'carrito/anadir/:product_id', to: 'carts#add', as: :cart_add
   patch 'carrito/cantidad/:product_id', to: 'carts#update_quantity', as: :cart_update
@@ -23,7 +32,11 @@ Rails.application.routes.draw do
     resources :orders, only: [:index, :show] do
       patch :advance, on: :member # creado → enviado → recibido
     end
-    resources :products, except: :show
+    resources :products, except: :show do
+      resources :product_images, only: [:create, :destroy]
+    end
+    resources :posts, except: :show
+    resources :contact_messages, only: [:index, :destroy]
   end
 
   get 'up' => 'rails/health#show', as: :rails_health_check

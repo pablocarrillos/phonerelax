@@ -14,6 +14,13 @@ class OrdersController < ApplicationController
     lines = cart_lines
     return redirect_to(cart_path, alert: 'El carrito está vacío.') if lines.empty?
 
+    # Última comprobación de stock antes de cobrar.
+    without_stock = lines.select { |product, quantity| quantity > product.stock }
+    if without_stock.any?
+      names = without_stock.map { |product, _| product.name }.join(', ')
+      return redirect_to(cart_path, alert: "No hay stock suficiente de: #{names}. Ajusta las cantidades.")
+    end
+
     @order = Order.new(order_params)
     lines.each do |product, quantity|
       @order.order_lines.build(product: product, quantity: quantity, unit_price: product.price)
@@ -57,7 +64,7 @@ class OrdersController < ApplicationController
   private
 
   def order_params
-    params.require(:order).permit(:customer_name, :email, :phone, :address)
+    params.require(:order).permit(:customer_name, :email, :phone, :address, :city, :postal_code, :province, :country)
   end
 
   def cart_lines

@@ -1,23 +1,27 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+uno:
+  number: PR-TEST01
+  customer_name: Cliente Uno
+  email: uno@example.com
+  phone: '600000001'
+  address: Calle Mayor 1
+  city: Madrid
+  postal_code: '28001'
+  province: Madrid
+  country: España
+  status: 0
+  payment_status: 1
+  total: 24.90
 
-one:
-  number: MyString
-  customer_name: MyString
-  email: MyString
-  phone: MyString
-  address: MyString
+dos:
+  number: PR-TEST02
+  customer_name: Cliente Dos
+  email: dos@example.com
+  phone: '600000002'
+  address: Av. del Puerto 2
+  city: Bilbao
+  postal_code: '48001'
+  province: Bizkaia
+  country: España
   status: 1
   payment_status: 1
-  stripe_session_id: MyString
-  total: 9.99
-
-two:
-  number: MyString
-  customer_name: MyString
-  email: MyString
-  phone: MyString
-  address: MyString
-  status: 1
-  payment_status: 1
-  stripe_session_id: MyString
-  total: 9.99
+  total: 9.95

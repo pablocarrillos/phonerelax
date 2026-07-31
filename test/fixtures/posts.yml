@@ -1,0 +1,13 @@
+uno:
+  title: Artículo uno
+  slug: articulo-uno
+  excerpt: Extracto del artículo uno.
+  body: <p>Contenido</p>
+  published_on: 2024-01-05
+
+dos:
+  title: Artículo dos
+  slug: articulo-dos
+  excerpt: Extracto del artículo dos.
+  body: <p>Contenido</p>
+  published_on: 2024-01-06

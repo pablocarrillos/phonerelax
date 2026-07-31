@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_31_105613) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_31_143802) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "contact_messages", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.text "message"
+    t.string "name"
+    t.string "phone"
+    t.datetime "updated_at", null: false
+  end
 
   create_table "order_lines", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -27,17 +36,42 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_105613) do
 
   create_table "orders", force: :cascade do |t|
     t.string "address"
+    t.string "city"
+    t.string "country"
     t.datetime "created_at", null: false
     t.string "customer_name", null: false
     t.string "email", null: false
     t.string "number", null: false
     t.integer "payment_status", default: 0, null: false
     t.string "phone"
+    t.string "postal_code"
+    t.string "province"
     t.integer "status", default: 0, null: false
     t.string "stripe_session_id"
     t.decimal "total", precision: 8, scale: 2
     t.datetime "updated_at", null: false
     t.index ["number"], name: "index_orders_on_number", unique: true
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.text "excerpt"
+    t.string "image_url"
+    t.date "published_on"
+    t.string "slug", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_posts_on_slug", unique: true
+  end
+
+  create_table "product_images", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "position"
+    t.bigint "product_id", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["product_id"], name: "index_product_images_on_product_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -49,7 +83,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_105613) do
     t.integer "position", default: 0, null: false
     t.decimal "price", precision: 8, scale: 2, null: false
     t.string "shopify_handle"
+    t.integer "stock", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.decimal "vat_percentage", precision: 5, scale: 2, default: "21.0", null: false
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -71,5 +107,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_105613) do
 
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"
+  add_foreign_key "product_images", "products"
   add_foreign_key "sessions", "users"
 end

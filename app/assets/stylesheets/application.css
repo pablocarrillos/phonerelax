@@ -25,6 +25,11 @@ a { color: var(--navy); }
 .site-header {
   background: var(--navy);
   color: #fff;
+}
+/* El contenido de la cabecera se alinea con el margen del contenido (mismo ancho que .container) */
+.site-header-inner {
+  max-width: 1120px;
+  margin: 0 auto;
   padding: 0 24px;
   display: flex;
   align-items: center;
@@ -34,7 +39,7 @@ a { color: var(--navy); }
 .brand { text-decoration: none; line-height: 1; }
 .brand span {
   display: block;
-  color: var(--pink);
+  color: #fff;
   font-weight: 800;
   font-size: 26px;
   letter-spacing: 0.06em;
@@ -110,7 +115,7 @@ a { color: var(--navy); }
 .product-page { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 36px; }
 .product-page img { width: 100%; border-radius: var(--radius); background: var(--card-bg); object-fit: contain; max-height: 480px; }
 .product-page .price { font-size: 26px; font-weight: 700; }
-.qty-input { width: 80px; padding: 9px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; }
+input[type=number].qty-input { width: 80px; padding: 9px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; }
 @media (max-width: 760px) { .product-page { grid-template-columns: 1fr; } .hero img { height: 300px; } }
 
 /* Tablas (carrito, pedidos) */
@@ -171,7 +176,15 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
 .site-footer a { color: #fff; }
 
 /* Admin */
-.admin-header { background: var(--navy); color: #fff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+.admin-header { background: var(--navy); color: #fff; }
+.admin-header-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .admin-header a { color: #fff; margin-right: 18px; text-decoration: none; }
 .admin-header .active { text-decoration: underline; text-underline-offset: 6px; }
 .admin-main { max-width: 1120px; margin: 28px auto; padding: 0 24px; }
@@ -184,3 +197,183 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
   font-size: 14px;
 }
 .filter-tabs a.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+/* Carrusel del hero */
+.carousel-slide { display: none; }
+.carousel-slide.active { display: block; }
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.carousel-controls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--navy);
+  font-size: 22px;
+  line-height: 1;
+  padding: 4px 10px;
+}
+.carousel-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid var(--navy) !important;
+  padding: 0 !important;
+  background: transparent;
+}
+.carousel-dot.active { background: var(--navy) !important; }
+
+/* Bloque de vídeo (PhoneRelax para eventos) */
+.video-block {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 16 / 9.8;
+  background: var(--card-bg);
+}
+.video-block img, .video-block iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+  display: block;
+}
+
+/* Imágenes de los pasos de «¿Cómo funciona?» */
+.card img.step-img { height: 300px; object-fit: contain; background: #fff; border-radius: 10px; }
+
+/* Enlace al panel (solo con sesión de admin iniciada) */
+.site-nav .admin-link {
+  border: 1.5px solid var(--pink);
+  border-radius: 999px;
+  padding: 5px 14px;
+  color: var(--pink);
+  font-weight: 700;
+}
+.site-nav .admin-link:hover { background: var(--pink); color: #fff; text-decoration: none; }
+
+/* El carrusel va en el bloque central, con esquinas redondeadas */
+.carousel .hero img { border-radius: var(--radius); }
+.carousel .carousel-controls { border-bottom: 0; }
+
+/* Botón flotante de WhatsApp */
+.whatsapp-float {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1000;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease;
+}
+.whatsapp-float:hover { transform: scale(1.08); }
+
+/* Botón de quitar línea del carrito (papelera) */
+.btn-trash {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid #d8b4b0;
+  background: #fff;
+  color: #b3261e;
+  cursor: pointer;
+}
+.btn-trash:hover { background: #b3261e; border-color: #b3261e; color: #fff; }
+
+/* Producto agotado: visible pero sin poder comprarse */
+.btn-soldout {
+  background: #e6e7ee;
+  color: var(--muted);
+  cursor: not-allowed;
+  font-weight: 700;
+}
+
+/* Tarjetas de producto blancas: el fondo blanco de las fotos se funde y parecen transparentes */
+.card.product-card, .card.step-card { background: #fff; border: 1px solid var(--border); }
+.product-page img { background: #fff; border: 1px solid var(--border); }
+
+/* Botón de play del bloque de vídeo */
+.video-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 0;
+  background: #fff;
+  color: var(--navy);
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(14, 27, 77, 0.3);
+}
+.video-play:hover { transform: translate(-50%, -50%) scale(1.06); }
+
+/* Blog */
+.blog-card img { height: 200px; object-fit: cover; }
+.read-more { color: var(--magenta); font-weight: 700; text-decoration: none; }
+.article { max-width: 760px; }
+.article h1 { font-size: 34px; margin-bottom: 4px; }
+.article-date { color: var(--muted); font-size: 14px; }
+.article-cover { width: 100%; border-radius: var(--radius); margin: 18px 0; }
+.article-body img { max-width: 100%; border-radius: 10px; }
+.article-body h2, .article-body h3 { margin-top: 28px; }
+
+select.form-select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; background: #fff; }
+
+/* Galería de la ficha de producto */
+.gallery-thumbs { display: flex; gap: 10px; margin-top: 12px; }
+.gallery-thumb {
+  width: 84px;
+  height: 84px;
+  padding: 4px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+.gallery-thumb img { width: 100%; height: 100%; object-fit: contain; }
+.gallery-thumb.active { border-color: var(--magenta); }
+.product-description { margin: 10px 0 18px; }
+.product-description img { max-width: 100%; border-radius: 10px; }
+.product-description ul { padding-left: 20px; }
+
+/* Gestión de imágenes de producto en el admin */
+.admin-images { display: flex; gap: 14px; flex-wrap: wrap; margin: 12px 0; }
+.admin-image {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+  background: #fff;
+}
+.admin-image img { width: 130px; height: 130px; object-fit: contain; display: block; margin-bottom: 6px; }
+.add-image-form { display: flex; gap: 10px; max-width: 560px; }
+.add-image-form input { flex: 1; }
+trix-editor.trix-content { background: #fff; border: 1px solid var(--border); border-radius: 8px; min-height: 220px; }
+
+.vat-note { color: var(--muted); font-size: 14px; margin-top: -6px; }
+
+/* Campos con error: borde y etiqueta en rojo (Rails los envuelve en .field_with_errors) */
+.field_with_errors input, .field_with_errors select, .field_with_errors textarea {
+  border-color: #b3261e;
+  background: #fdf3f2;
+}
+.field_with_errors label { color: #b3261e; }
+.field_with_errors { display: contents; }

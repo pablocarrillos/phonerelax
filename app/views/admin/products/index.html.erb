@@ -1,12 +1,13 @@
 <h1>Productos</h1>
 <p><%= link_to 'Nuevo producto', new_admin_product_path, class: 'btn btn-primary' %></p>
 <table class="table">
-  <thead><tr><th>Nombre</th><th class="num">Precio</th><th>Activo</th><th></th></tr></thead>
+  <thead><tr><th>Nombre</th><th class="num">Precio</th><th class="num">Stock</th><th>Activo</th><th></th></tr></thead>
   <tbody>
     <% @products.each do |product| %>
       <tr>
         <td><%= product.name %></td>
         <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
+        <td class="num"><% if product.out_of_stock? %><span class="badge pendiente">0</span><% else %><%= product.stock %><% end %></td>
         <td><%= product.active? ? 'Sí' : 'No' %></td>
         <td>
           <%= link_to 'Editar', edit_admin_product_path(product), class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>

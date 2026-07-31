@@ -1,0 +1,12 @@
+<% content_for :title, "#{@post.title} · PhoneRelax" %>
+<div class="container section article">
+  <p><%= link_to '← Volver al blog', blog_path %></p>
+  <h1><%= @post.title %></h1>
+  <% if @post.published_on %><p class="article-date"><%= l @post.published_on, format: :long %></p><% end %>
+  <% if @post.image_url.present? %>
+    <img class="article-cover" src="<%= @post.image_url %>" alt="<%= @post.title %>">
+  <% end %>
+  <div class="article-body">
+    <%= sanitize @post.body %>
+  </div>
+</div>

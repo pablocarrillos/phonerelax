@@ -1,0 +1,7 @@
+<% content_for :title, 'Blog · PhoneRelax' %>
+<div class="container section">
+  <h1>Blog</h1>
+  <div class="grid">
+    <%= render partial: 'blog/card', collection: @posts, as: :post %>
+  </div>
+</div>

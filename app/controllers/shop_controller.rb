@@ -3,6 +3,7 @@ class ShopController < ApplicationController
 
   def home
     @products = Product.active.ordered
+    @posts = Post.recent_first.limit(3)
   end
 
   def product

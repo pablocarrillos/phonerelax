@@ -2,13 +2,38 @@
   <% if product.errors.any? %>
     <div class="errors"><ul><% product.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>
-  <div class="form-grid" style="max-width: 720px;">
+  <div class="form-grid" style="max-width: 860px;">
     <div class="full"><%= f.label :name, 'Nombre' %><%= f.text_field :name %></div>
     <div><%= f.label :price, 'Precio (€)' %><%= f.number_field :price, step: 0.01 %></div>
     <div><%= f.label :position, 'Posición' %><%= f.number_field :position %></div>
-    <div class="full"><%= f.label :image_url, 'URL de la imagen' %><%= f.text_field :image_url %></div>
-    <div class="full"><%= f.label :description, 'Descripción' %><%= f.text_area :description, rows: 5 %></div>
+    <div><%= f.label :stock, 'Stock (unidades restantes)' %><%= f.number_field :stock, min: 0 %></div>
+    <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
     <div><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
+    <div class="full"><%= f.label :image_url, 'URL de la imagen de portada' %><%= f.text_field :image_url %></div>
+    <div class="full">
+      <%= f.label :description, 'Descripción' %>
+      <%= f.hidden_field :description, id: 'product_description' %>
+      <trix-editor input="product_description" class="trix-content"></trix-editor>
+    </div>
   </div>
-  <p><%= f.submit class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %></p>
+  <p><%= f.submit 'Guardar producto', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %></p>
+<% end %>
+
+<% if product.persisted? %>
+  <h2>Imágenes de la galería</h2>
+  <div class="admin-images">
+    <% product.product_images.each do |image| %>
+      <div class="admin-image">
+        <img src="<%= image.url %>" alt="">
+        <%= button_to 'Quitar', admin_product_product_image_path(product, image), method: :delete,
+                      class: 'btn-danger-link', form: { data: { turbo_confirm: '¿Quitar esta imagen?' } } %>
+      </div>
+    <% end %>
+  </div>
+  <%= form_with url: admin_product_product_images_path(product), method: :post, local: true, class: 'add-image-form' do %>
+    <input type="text" name="url" placeholder="URL de la nueva imagen…" required>
+    <button type="submit" class="btn btn-outline">Añadir imagen</button>
+  <% end %>
+<% else %>
+  <p class="help-block" style="color: var(--muted);">Guarda el producto para poder gestionar su galería de imágenes.</p>
 <% end %>

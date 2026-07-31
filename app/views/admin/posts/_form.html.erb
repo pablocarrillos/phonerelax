@@ -1,0 +1,14 @@
+<%= form_with model: [:admin, post], local: true do |f| %>
+  <% if post.errors.any? %>
+    <div class="errors"><ul><% post.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+  <div class="form-grid" style="max-width: 860px;">
+    <div class="full"><%= f.label :title, 'Título' %><%= f.text_field :title %></div>
+    <div><%= f.label :slug, 'Slug (URL; vacío = automático)' %><%= f.text_field :slug %></div>
+    <div><%= f.label :published_on, 'Fecha de publicación' %><%= f.date_field :published_on %></div>
+    <div class="full"><%= f.label :image_url, 'URL de la imagen de portada' %><%= f.text_field :image_url %></div>
+    <div class="full"><%= f.label :excerpt, 'Extracto (se muestra en las tarjetas)' %><%= f.text_area :excerpt, rows: 3 %></div>
+    <div class="full"><%= f.label :body, 'Contenido (HTML)' %><%= f.text_area :body, rows: 16, style: 'font-family: monospace; font-size: 13px;' %></div>
+  </div>
+  <p><%= f.submit 'Guardar artículo', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_posts_path, class: 'btn btn-outline' %></p>
+<% end %>

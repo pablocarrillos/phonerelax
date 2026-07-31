@@ -13,7 +13,7 @@
 <p>
   <%= @order.customer_name %> · <%= mail_to @order.email %><br>
   <% if @order.phone.present? %>Tel: <%= @order.phone %><br><% end %>
-  <% if @order.address.present? %>Envío: <%= @order.address %><% end %>
+  <% if @order.address.present? %>Envío: <%= [@order.address, @order.postal_code, @order.city, @order.province, @order.country].compact_blank.join(', ') %><% end %>
 </p>
 
 <h2>Líneas</h2>

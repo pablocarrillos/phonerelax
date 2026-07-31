@@ -1,0 +1,23 @@
+<% content_for :title, 'Contacto · PhoneRelax' %>
+<div class="container section" style="max-width: 720px;">
+  <h1>Contacto</h1>
+  <p>
+    Escríbenos y te responderemos lo antes posible:<br>
+    ✉️ <%= mail_to 'phonerelaxstore@gmail.com' %> · 📞 (+34) 965 371 962<br>
+    📍 C/ Carrasqueta 13 · 03610 Petrer (Alicante)
+  </p>
+
+  <h2>Formulario de contacto</h2>
+  <%= form_with model: @contact_message, url: contact_messages_path, local: true do |f| %>
+    <% if @contact_message.errors.any? %>
+      <div class="errors"><ul><% @contact_message.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+    <% end %>
+    <div class="form-grid">
+      <div><%= f.label :name, 'Nombre' %><%= f.text_field :name %></div>
+      <div><%= f.label :email, 'Correo electrónico *' %><%= f.email_field :email %></div>
+      <div class="full"><%= f.label :phone, 'Número de teléfono' %><%= f.telephone_field :phone %></div>
+      <div class="full"><%= f.label :message, 'Comentario' %><%= f.text_area :message, rows: 6 %></div>
+    </div>
+    <p><%= f.submit 'Enviar', class: 'btn btn-primary' %></p>
+  <% end %>
+</div>
