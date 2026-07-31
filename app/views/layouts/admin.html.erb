@@ -23,9 +23,9 @@
           <%= link_to 'Administradores', admin_users_path, class: ('active' if controller_name == 'users') %>
           <%= link_to 'Ver tienda', root_path %>
         </div>
-        <div>
-        <span style="margin-right: 14px; color: #cdd3ea;"><%= Current.user&.name.presence || Current.user&.email_address %></span>
-        <%= button_to 'Salir', session_path, method: :delete, class: 'btn-danger-link', style: 'color:#ffb4ab; display:inline-block;' %>
+        <div class="admin-header-user">
+        <span><%= Current.user&.name.presence || Current.user&.email_address %></span>
+        <%= button_to 'Salir', session_path, method: :delete, class: 'btn btn-exit' %>
       </div>
       </div>
     </header>

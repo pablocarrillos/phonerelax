@@ -432,3 +432,15 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
   margin-left: 6px;
   vertical-align: 2px;
 }
+
+/* Usuario y botón de salir en la barra del admin */
+.admin-header-user { display: flex; align-items: center; gap: 14px; }
+.admin-header-user span { color: #cdd3ea; }
+.btn-exit {
+  background: transparent;
+  color: #ffb4ab;
+  border: 1.5px solid rgba(255, 180, 171, 0.6);
+  padding: 6px 16px;
+  font-size: 14px;
+}
+.btn-exit:hover { background: #e5484d; border-color: #e5484d; color: #fff; }
