@@ -1,5 +1,7 @@
 class OrdersController < ApplicationController
   allow_unauthenticated_access
+  # Protección antibots: honeypot + tiempo mínimo de envío.
+  invisible_captcha only: [:create], on_spam: :spam_detected, on_timestamp_spam: :spam_detected
 
   # Formulario de datos del cliente con el resumen del carrito.
   def new
@@ -9,7 +11,7 @@ class OrdersController < ApplicationController
     @order = Order.new
   end
 
-  # Crea el pedido desde el carrito y envía al cliente al Checkout de Stripe.
+  # Crea el pedido desde el carrito, calcula el transporte y muestra el paso de pago.
   def create
     lines = cart_lines
     return redirect_to(cart_path, alert: 'El carrito está vacío.') if lines.empty?
@@ -33,14 +35,29 @@ class OrdersController < ApplicationController
       return render :new, status: :unprocessable_entity
     end
 
+    @order.update!(shipping_cost: @order.compute_shipping,
+                   total: @order.compute_total + @order.compute_shipping)
+    redirect_to order_pay_path(@order.number)
+  end
+
+  # Paso de pago: pedido con el transporte ya sumado y botón de Stripe.
+  def pay_page
+    @order = Order.includes(order_lines: :product).find_by!(number: params[:number])
+    redirect_to order_status_path(@order.number) if @order.pago_pagado?
+  end
+
+  # Lanza el Checkout de Stripe para el pedido ya calculado.
+  def pay
+    @order = Order.find_by!(number: params[:number])
+    return redirect_to(order_status_path(@order.number)) if @order.pago_pagado?
+
     checkout = StripeCheckout.new(@order, success_url: order_success_url(@order.number),
                                           cancel_url: order_cancel_url(@order.number)).create_session
     @order.update!(stripe_session_id: checkout.id)
     session[:cart] = {}
     redirect_to checkout.url, allow_other_host: true
   rescue Stripe::StripeError => e
-    @order&.destroy if @order&.persisted? && @order.pago_pendiente?
-    redirect_to cart_path, alert: "No se pudo iniciar el pago: #{e.message}"
+    redirect_to order_pay_path(@order.number), alert: "No se pudo iniciar el pago: #{e.message}"
   end
 
   # Vuelta del Checkout: confirmamos contra Stripe (el webhook es la fuente definitiva).
@@ -53,7 +70,7 @@ class OrdersController < ApplicationController
   def cancel
     @order = Order.find_by!(number: params[:number])
     flash[:alert] = 'Pago cancelado. Puedes intentarlo de nuevo cuando quieras.'
-    redirect_to order_status_path(@order.number)
+    redirect_to order_pay_path(@order.number)
   end
 
   # Página de estado del pedido para el cliente (enlace con su número).
@@ -62,6 +79,11 @@ class OrdersController < ApplicationController
   end
 
   private
+
+  # Peticiones que no parecen humanas: de vuelta al carrito sin crear nada.
+  def spam_detected
+    redirect_to cart_path, alert: 'No se pudo verificar el envío. Inténtalo de nuevo.'
+  end
 
   def order_params
     params.require(:order).permit(:customer_name, :email, :phone, :address, :city, :postal_code, :province, :country)

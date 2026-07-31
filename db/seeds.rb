@@ -4,7 +4,7 @@ products = [
     shopify_handle: 'funda-phonerelax-version-sin-cobertura-movil',
     name: 'Funda PhoneRelax SignalBlocking (bloquea cobertura móvil)',
     price: '14.95',
-    image_url: 'https://cdn.shopify.com/s/files/1/0796/9813/3316/files/funda-phonerelax-frontal-sin-cobertura.jpg',
+    image_url: '/images/products/funda-signalblocking-frontal.jpg',
     description: '<p><span>PhoneRelax es una funda magnética para teléfonos móviles pensada para evitar que alumnos o usuarios de la misma se puedan distraer con el teléfono en colegios, institutos, conciertos o eventos privados. Su funcionamiento es muy sencillo, debes introducir el teléfono móvil dentro y cerrar su cerradura para que quede sellado dentro. Para retirar el teléfono de su interior será necesario acercar su cerradura magnética de la funda PhoneRelax a uno de nuestros imanes especiales de apertura  y retirar el teléfono de su interior. </span></p>
 <p><span></span><span><strong>La principal ventaja de esta versión que bloquea la cobertura móvil es que el usuario no se verá distraído con notificaciones, tonos de llamada o vibraciones si se olvidó silenciar o apagar su teléfono antes de introducirlo en la bolsa PhoneRelax por lo que el usuario no tendrá tampoco la ansiedad y distracción que generan las notificaciones constantes de las diferentes aplicaciones.</strong></span></p>
 <div class="fe-block fe-block-yui_3_17_2_1_1693447307014_180849">
@@ -26,23 +26,23 @@ products = [
 </div>
 </div>',
     position: 1,
-    images: ['https://cdn.shopify.com/s/files/1/0796/9813/3316/files/funda-phonerelax-frontal-sin-cobertura.jpg', 'https://cdn.shopify.com/s/files/1/0796/9813/3316/files/funda-phonerelax-trasera-sin-cobertura.jpg']
+    images: ['/images/products/funda-signalblocking-frontal.jpg', '/images/products/funda-signalblocking-trasera.jpg']
   },
   {
     shopify_handle: 'iman-phonerelax',
     name: 'Imán PhoneRelax',
     price: '59.90',
-    image_url: 'https://cdn.shopify.com/s/files/1/0796/9813/3316/files/PhotoRoom-20240105-091157_2.jpg',
+    image_url: '/images/products/iman-1.jpg',
     description: '<p>Permite la apertura de las bolsas PhoneRelax simplemente acercando la parte redondeada de la cerradura de la bolsa al centro del imán.</p>
 <p>El imán dispone de cuatro agujeros pensados para poder fijarlo en cualquier superficie y así evitar que pueda perderse o que se mueva durante el proceso de apertura de las bolsas PhoneRelax.</p>',
     position: 2,
-    images: ['https://cdn.shopify.com/s/files/1/0796/9813/3316/files/PhotoRoom-20240105-091157_2.jpg', 'https://cdn.shopify.com/s/files/1/0796/9813/3316/files/PhotoRoom-20240105-091303_2.jpg']
+    images: ['/images/products/iman-1.jpg', '/images/products/iman-2.jpg']
   },
   {
     shopify_handle: 'funda-phonerelax',
     name: 'Funda PhoneRelax',
     price: '9.95',
-    image_url: 'https://cdn.shopify.com/s/files/1/0796/9813/3316/files/PhotoRoom-20240104-223354_2.jpg',
+    image_url: '/images/products/funda-1.jpg',
     description: '<p><span>PhoneRelax es una funda magnética para teléfonos móviles pensada para evitar que alumnos o usuarios de la misma se puedan distraer con el teléfono en colegios, institutos, conciertos o eventos privados. Su funcionamiento es muy sencillo, debes introducir el teléfono móvil dentro y cerrar su cerradura para que quede sellado dentro. Para retirar el teléfono de su interior será necesario acercar su cerradura magnética de la funda PhoneRelax a uno de nuestros imanes especiales de apertura  y retirar el teléfono de su interior. </span></p>
 <p><strong><span>Especificaciones técnicas:</span></strong></p>
 <div class="fe-block fe-block-5c4872ac66f1a93f8585">
@@ -56,7 +56,7 @@ products = [
 </div>
 </div>',
     position: 3,
-    images: ['https://cdn.shopify.com/s/files/1/0796/9813/3316/files/PhotoRoom-20240104-223354_2.jpg', 'https://cdn.shopify.com/s/files/1/0796/9813/3316/files/PhotoRoom-20240104-223503_2.jpg']
+    images: ['/images/products/funda-1.jpg', '/images/products/funda-2.jpg']
   },
 ]
 
@@ -73,6 +73,7 @@ puts "Productos: #{Product.count} (#{ProductImage.count} imágenes)"
 
 # Usuario del panel de gestión (cámbiale la contraseña en cuanto entres).
 admin = User.find_or_initialize_by(email_address: 'admin@phonerelax.com')
+admin.name ||= 'Admin'
 admin.password = 'phonerelax-admin'
 admin.save!
 puts "Admin: admin@phonerelax.com"
@@ -83,7 +84,7 @@ blog_posts = [
     slug: 'cuales-son-las-principales-ventajas-de-prohibir-el-uso-de-telefonos-moviles-ninos-y-adolescentes-en-las-aulas',
     title: 'Ventajas de controlar el uso de móviles en el aula',
     excerpt: 'Controlar el uso de teléfonos móviles en colegios para niños y adolescentes mediante el uso de bolsas PhoneRelax tiene varias ventajas claras entre las que se encuentran principalmente el fomento del enfoque académico. Sin distracciones de los teléfonos, los estudiantes tienden a prestar más atenció',
-    image_url: 'https://phonerelax.com/cdn/shop/articles/alumnos-con-telefono2.jpg?v=1703108450',
+    image_url: '/images/blog/alumnos-con-telefono.jpg',
     published_on: '2024-01-05',
     body: '<p><span style="font-weight: 400;">Controlar el uso de teléfonos móviles en colegios para niños y adolescentes mediante el uso de bolsas PhoneRelax tiene varias ventajas claras entre las que se encuentran principalmente el <strong>f</strong></span><span style="font-weight: 400;"><strong>omento del enfoque académico</strong>. Sin distracciones de los teléfonos, los estudiantes tienden a prestar más atención en clase, lo que puede mejorar su rendimiento académico. Es una realidad que a menos distracciones hay una mayor concentración y sin la tentación constante de revisar el teléfono, los estudiantes pueden concentrarse más en las tareas y actividades escolares, lo que mejora su capacidad de atención.<br></span></p>
 <p><span style="font-weight: 400;">Otra ventaja es la <strong>m</strong></span><span style="font-weight: 400;"><strong>ejora en la interacción social,</strong> es decir, al limitar el uso de teléfonos, se promueve la interacción cara a cara entre los estudiantes, fortaleciendo sus habilidades sociales y su capacidad para trabajar en equipo.</span></p>
@@ -96,7 +97,7 @@ blog_posts = [
     slug: 'ventajas-de-evitar-el-uso-de-moviles-en-conciertos',
     title: 'Conciertos sin teléfonos o "Phone-Free Events"',
     excerpt: 'El uso de bolsas PhoneRelax para evitar el uso de móviles en conciertos tiene varias ventajas significativas como por ejemplo una experiencia más inmersiva ya que los asistentes al concierto podrán disfrutar plenamente de la música, la atmósfera y la conexión con el artista y otros asistentes. Este ',
-    image_url: 'https://phonerelax.com/cdn/shop/articles/phonerelax-para-eventos.jpg?v=1722512223',
+    image_url: '/images/blog/phonerelax-para-eventos.jpg',
     published_on: '2024-01-05',
     body: '<div class="flex-1 overflow-hidden">
 <div class="react-scroll-to-bottom--css-tzuiv-79elbk h-full">
@@ -121,7 +122,7 @@ blog_posts = [
 <p></p>
 <p>Y por último, pero no menos importante,<strong> generar memorias más auténticas,</strong> pues en lugar de capturar todo el concierto en la pantalla del teléfono móvil, es mejor disfrutar del momento y guardar los recuerdos en tu mente para crear memorias más vívidas y auténticas que perduren a largo plazo.</p>
 <p>Aunque es comprensible querer capturar algunos momentos del concierto, limitar el uso del móvil puede enriquecer significativamente la experiencia tanto para uno mismo como para los demás asistentes.</p>
-<p><img alt="" src="https://cdn.shopify.com/s/files/1/0796/9813/3316/files/phonerelax-para-eventos_480x480.jpg?v=1722512190" style="display: block; margin-left: auto; margin-right: auto;"></p>
+<p><img alt="" src="/images/blog/phonerelax-para-eventos-cuerpo.jpg" style="display: block; margin-left: auto; margin-right: auto;"></p>
 </div>
 </div>
 </div>
@@ -139,7 +140,7 @@ blog_posts = [
     slug: 'y-que-podemos-hacer-para-evitar-que-los-alumnos-usen-los-telefonos-en-las-aulas',
     title: 'Cómo evitar el uso de teléfonos en los institutos',
     excerpt: 'Las bolsas con cierres magnéticos PhoneRelax, diseñadas para que los propios alumnos guarden sus móviles y no tengan acceso a ellos en zonas designadas pueden ser una herramienta eficaz para controlar el uso de dispositivos electrónicos en entornos escolares. Estas bolsas ofrecen ventajas muy claras',
-    image_url: 'https://phonerelax.com/cdn/shop/articles/hiding-mobile-kid4.jpg?v=1704757310',
+    image_url: '/images/blog/hiding-mobile-kid.jpg',
     published_on: '2024-01-05',
     body: '<p><span style="font-weight: 400;">Las bolsas con cierres magnéticos PhoneRelax, diseñadas para que los propios alumnos guarden sus móviles y no tengan acceso a ellos en zonas designadas pueden ser una herramienta eficaz para controlar el uso de dispositivos electrónicos en entornos escolares. Estas bolsas ofrecen ventajas muy claras:</span></p>
 <p><span style="font-weight: 400;"><strong>Seguridad y control:</strong> Al utilizar cierres magnéticos que impiden el acceso al teléfono mientras está guardado, se garantiza un mayor nivel de seguridad y control sobre el dispositivo durante el horario escolar.</span></p>

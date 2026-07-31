@@ -20,6 +20,9 @@
           <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>
+      <% if @order.shipping_cost.positive? %>
+        <tr><td>Transporte</td><td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td></tr>
+      <% end %>
       <tr class="total-row"><td>Total</td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
     </tbody>
   </table>

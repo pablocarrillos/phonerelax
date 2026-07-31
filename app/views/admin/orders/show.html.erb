@@ -5,16 +5,25 @@
   Pago: <span class="badge <%= @order.payment_status %>"><%= @order.payment_status %></span>
   &nbsp; Estado: <span class="badge <%= @order.status %>"><%= @order.status %></span>
   <% if @order.next_status %>
-    &nbsp; <%= button_to "Marcar como #{@order.next_status}", advance_admin_order_path(@order), method: :patch, class: 'btn btn-primary', style: 'display:inline-block;' %>
+    &nbsp; <%= button_to "Marcar como #{@order.next_status}", advance_admin_order_path(@order), method: :patch,
+                         class: 'btn btn-primary', style: 'display:inline-block;',
+                         form: { data: { turbo_confirm: "¿Marcar el pedido #{@order.number} como #{@order.next_status}?" } } %>
   <% end %>
 </p>
 
 <h2>Cliente</h2>
-<p>
-  <%= @order.customer_name %> · <%= mail_to @order.email %><br>
-  <% if @order.phone.present? %>Tel: <%= @order.phone %><br><% end %>
-  <% if @order.address.present? %>Envío: <%= [@order.address, @order.postal_code, @order.city, @order.province, @order.country].compact_blank.join(', ') %><% end %>
-</p>
+<table class="table" style="max-width: 620px;">
+  <tbody>
+    <tr><th>Nombre</th><td><%= @order.customer_name %></td></tr>
+    <tr><th>Email</th><td><%= mail_to @order.email %></td></tr>
+    <tr><th>Teléfono</th><td><%= @order.phone.presence || '—' %></td></tr>
+    <tr><th>Dirección</th><td><%= @order.address.presence || '—' %></td></tr>
+    <tr><th>Código postal</th><td><%= @order.postal_code.presence || '—' %></td></tr>
+    <tr><th>Ciudad</th><td><%= @order.city.presence || '—' %></td></tr>
+    <tr><th>Provincia</th><td><%= @order.province.presence || '—' %></td></tr>
+    <tr><th>País</th><td><%= @order.country.presence || '—' %></td></tr>
+  </tbody>
+</table>
 
 <h2>Líneas</h2>
 <table class="table">
@@ -26,8 +35,23 @@
         <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
       </tr>
     <% end %>
+    <% if @order.shipping_cost.positive? %>
+      <tr><td colspan="2">Transporte</td><td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td></tr>
+    <% end %>
     <tr class="total-row"><td colspan="2">Total</td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
   </tbody>
 </table>
 
-<p style="color: var(--muted); font-size: 13px;">Creado el <%= l @order.created_at, format: :long %> · Stripe: <%= @order.stripe_session_id.presence || '—' %></p>
+<h2>Histórico</h2>
+<table class="table" style="max-width: 480px;">
+  <tbody>
+    <% @order.order_events.chronological.each do |event| %>
+      <tr>
+        <td><span class="badge <%= event.event %>"><%= event.event %></span></td>
+        <td><%= l event.created_at, format: :short %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p style="color: var(--muted); font-size: 13px;">Stripe: <%= @order.stripe_session_id.presence || '—' %></p>

@@ -3,6 +3,7 @@
   <head>
     <title><%= content_for(:title) || "PhoneRelax - Bolsa magnética para guardar móviles en aulas y eventos." %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,6 +47,12 @@
 
     <footer class="site-footer">
       <p>PhoneRelax — espacios libres de móviles.</p>
+      <p class="footer-contact">
+        📍 C/ Carrasqueta 13 · 03610 Petrer (Alicante)<br>
+        📞 <a href="tel:+34965371962">(+34) 965 371 962</a> ·
+        💬 <a href="https://wa.me/34686341700" target="_blank" rel="noopener">WhatsApp (+34) 686 341 700</a> ·
+        ✉️ <%= mail_to 'phonerelaxstore@gmail.com' %>
+      </p>
       <p><%= link_to 'Política de Privacidad', privacidad_path %> · <%= link_to 'Contacto', contacto_path %> · <%= link_to 'Panel de gestión', admin_root_path %></p>
     </footer>
   </body>

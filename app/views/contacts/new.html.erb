@@ -9,6 +9,7 @@
 
   <h2>Formulario de contacto</h2>
   <%= form_with model: @contact_message, url: contact_messages_path, local: true do |f| %>
+    <%= invisible_captcha %>
     <% if @contact_message.errors.any? %>
       <div class="errors"><ul><% @contact_message.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
     <% end %>

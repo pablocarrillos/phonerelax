@@ -58,3 +58,11 @@ group :test do
 end
 
 gem "stripe", "~> 19.4"
+
+gem "invisible_captcha", "~> 2.3"
+
+gem "pagy", "~> 9.4"
+
+gem "phonelib", "~> 0.10.23"
+
+gem "rollbar", "~> 3.8"

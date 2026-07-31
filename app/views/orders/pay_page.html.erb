@@ -1,0 +1,27 @@
+<% content_for :title, "Pago del pedido #{@order.number} · PhoneRelax" %>
+<div class="container section" style="max-width: 760px;">
+  <h1>Revisa y paga tu pedido</h1>
+  <p style="color: var(--muted);">Pedido <strong><%= @order.number %></strong> · envío a <%= [@order.city, @order.country].compact_blank.join(', ') %></p>
+
+  <table class="table">
+    <tbody>
+      <% @order.order_lines.each do |line| %>
+        <tr>
+          <td><%= line.product.name %> × <%= line.quantity %></td>
+          <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>Transporte</td>
+        <td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td>
+      </tr>
+      <tr class="total-row">
+        <td>Total a pagar (IVA incluido)</td>
+        <td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="color: var(--muted); font-size: 14px; margin-top: 14px;">Al pulsar «Pagar» te llevaremos a la pasarela segura de Stripe.</p>
+  <%= button_to 'Pagar', order_payments_path(@order.number), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;', form: { data: { turbo: false } } %>
+</div>

@@ -1,3 +1,5 @@
 # Copia este fichero a config/local_env.yml y rellena tus claves (NO se sube a git).
 STRIPE_SECRET_KEY: sk_test_xxx
 STRIPE_WEBHOOK_SECRET: whsec_xxx
+# Solo para producción (en dokku va como variable de entorno, no en este fichero):
+# ROLLBAR_ACCESS_TOKEN: token_de_rollbar

@@ -1,14 +1,29 @@
 <h1>Pedidos</h1>
 
 <div class="filter-tabs">
-  <%= link_to "Todos (#{@counts.values.sum})", admin_orders_path, class: ('active' if @status.nil?) %>
+  <%= link_to "Todos (#{@counts.values.sum})", admin_orders_path(q: @query, payment: @payment), class: ('active' if @status.nil?) %>
   <% Order.statuses.keys.each do |status| %>
-    <%= link_to "#{status.capitalize} (#{@counts[status] || 0})", admin_orders_path(status: status), class: ('active' if @status == status) %>
+    <%= link_to "#{status.capitalize} (#{@counts[status] || 0})", admin_orders_path(status: status, q: @query, payment: @payment), class: ('active' if @status == status) %>
   <% end %>
 </div>
 
+<%= form_with url: admin_orders_path, method: :get, local: true, class: 'orders-search' do %>
+  <%= hidden_field_tag :status, @status if @status %>
+  <input type="search" name="q" value="<%= @query %>" placeholder="Buscar por nº de pedido, nombre, email, teléfono, ciudad o país…" class="orders-search-input">
+  <select name="payment" class="orders-search-select">
+    <option value="">Pago: todos</option>
+    <% Order.payment_statuses.keys.each do |payment| %>
+      <option value="<%= payment %>" <%= 'selected' if @payment == payment %>><%= payment.capitalize %></option>
+    <% end %>
+  </select>
+  <button type="submit" class="btn btn-primary" style="padding: 8px 18px;">Filtrar</button>
+  <% if @query.present? || @payment %>
+    <%= link_to 'Limpiar', admin_orders_path(status: @status), class: 'btn btn-outline', style: 'padding: 8px 18px;' %>
+  <% end %>
+<% end %>
+
 <% if @orders.empty? %>
-  <p>No hay pedidos<%= " en estado #{@status}" if @status %>.</p>
+  <p>No hay pedidos que coincidan<%= " en estado #{@status}" if @status %>.</p>
 <% else %>
   <table class="table">
     <thead>
@@ -25,11 +40,17 @@
           <td><span class="badge <%= order.status %>"><%= order.status %></span></td>
           <td>
             <% if order.next_status %>
-              <%= button_to "Marcar #{order.next_status}", advance_admin_order_path(order), method: :patch, class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>
+              <%= button_to "Marcar #{order.next_status}", advance_admin_order_path(order), method: :patch,
+                            class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;',
+                            form: { data: { turbo_confirm: "¿Marcar el pedido #{order.number} como #{order.next_status}?" } } %>
             <% end %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
+<% end %>
+
+<% if @pagy.pages > 1 %>
+  <div class="pagy-nav-wrap"><%== pagy_nav(@pagy) %></div>
 <% end %>

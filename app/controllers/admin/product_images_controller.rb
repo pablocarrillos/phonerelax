@@ -12,6 +12,18 @@ module Admin
       end
     end
 
+    # Intercambia la imagen con su vecina (direction: up/down) y renumera posiciones.
+    def move
+      images = @product.product_images.ordered.to_a
+      index = images.index { |image| image.id == params[:id].to_i }
+      target = params[:direction] == 'up' ? index - 1 : index + 1
+      if index && target.between?(0, images.size - 1)
+        images[index], images[target] = images[target], images[index]
+        images.each_with_index { |image, position| image.update_columns(position: position + 1) }
+      end
+      redirect_to edit_admin_product_path(@product)
+    end
+
     def destroy
       @product.product_images.find(params[:id]).destroy
       redirect_to edit_admin_product_path(@product), notice: 'Imagen quitada.'

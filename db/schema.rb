@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_31_143802) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_31_170252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_143802) do
     t.string "name"
     t.string "phone"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "order_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "event", null: false
+    t.bigint "order_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_events_on_order_id"
   end
 
   create_table "order_lines", force: :cascade do |t|
@@ -46,6 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_143802) do
     t.string "phone"
     t.string "postal_code"
     t.string "province"
+    t.decimal "shipping_cost", precision: 8, scale: 2, default: "0.0", null: false
     t.integer "status", default: 0, null: false
     t.string "stripe_session_id"
     t.decimal "total", precision: 8, scale: 2
@@ -100,11 +109,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_143802) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
+    t.string "name"
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "order_events", "orders"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"
   add_foreign_key "product_images", "products"

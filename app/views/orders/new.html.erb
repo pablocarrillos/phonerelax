@@ -16,9 +16,11 @@
       <tr class="total-row"><td>Total (IVA incluido)</td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
     </tbody>
   </table>
+  <p class="shipping-note">El precio del transporte se calculará tras indicar la dirección de destino.</p>
 
   <h2 style="margin-top: 30px;">Tus datos</h2>
   <%= form_with model: @order, url: orders_path, local: true do |f| %>
+    <%= invisible_captcha %>
     <% if @order.errors.any? %>
       <div class="errors"><ul><% @order.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
     <% end %>
@@ -32,7 +34,6 @@
       <div><%= f.label :province, 'Provincia' %><%= f.text_field :province %></div>
       <div><%= f.label :country, 'País' %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España' }, { class: 'form-select' } %></div>
     </div>
-    <p style="color: var(--muted); font-size: 14px; margin-top: 14px;">Al pulsar «Pagar con tarjeta» te llevaremos a la pasarela segura de Stripe.</p>
-    <%= f.submit 'Pagar con tarjeta', class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>
+    <%= f.submit 'Calcular precio del transporte', class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>
   <% end %>
 </div>

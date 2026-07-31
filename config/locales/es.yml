@@ -25,9 +25,15 @@ es:
       product:
         name: Nombre
         price: Precio
+      user:
+        email_address: Email
+        password: Contraseña
+        password_confirmation: Confirmación de contraseña
     errors:
       messages:
         blank: no puede estar en blanco
         invalid: no es válido
   errors:
     format: "%{attribute} %{message}"
+    messages:
+      confirmation: no coincide
