@@ -48,7 +48,7 @@
 </div>
 
 <div class="container section">
-  <h2><%= t('home.schools_title') %></h2>
+  <h2><%= link_to t('home.schools_title'), sector_colegios_path, style: 'color:inherit; text-decoration:none;' %></h2>
   <div class="video-block" data-controller="video" data-video-id-value="V8ubHFG1k20">
     <img src="/images/site/alumnos-en-clase.jpg" alt="<%= t('home.schools_title') %>" width="1600" height="1067" loading="lazy">
     <button type="button" class="video-play" data-action="video#play" aria-label="<%= t('common.play_video') %>">▶</button>
@@ -88,7 +88,7 @@
 </div>
 
 <div class="container section">
-  <h2><%= t('home.events_title') %></h2>
+  <h2><%= link_to t('home.events_title'), sector_eventos_path, style: 'color:inherit; text-decoration:none;' %></h2>
   <div class="video-block" data-controller="video" data-video-id-value="3sTkU9dWKgM">
     <img src="/images/site/disfruta-del-momento.jpg" alt="<%= t('home.events_title') %>" width="1200" height="735" loading="lazy">
     <button type="button" class="video-play" data-action="video#play" aria-label="<%= t('common.play_video') %>">▶</button>

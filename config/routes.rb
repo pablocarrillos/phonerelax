@@ -18,6 +18,12 @@ Rails.application.routes.draw do
     get 'presupuesto', to: 'quotes#new', as: :quote
     post 'presupuesto', to: 'quotes#create', as: :quotes
 
+    # Landings por sector
+    get 'colegios',    to: 'sectors#show', defaults: { sector: 'colegios' },    as: :sector_colegios
+    get 'eventos',     to: 'sectors#show', defaults: { sector: 'eventos' },     as: :sector_eventos
+    get 'empresas',    to: 'sectors#show', defaults: { sector: 'empresas' },    as: :sector_empresas
+    get 'oposiciones', to: 'sectors#show', defaults: { sector: 'oposiciones' }, as: :sector_oposiciones
+
     get 'blog', to: 'blog#index', as: :blog
     get 'blog/:slug', to: 'blog#show', as: :blog_post
 

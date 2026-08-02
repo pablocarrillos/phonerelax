@@ -20,11 +20,11 @@
 
 <div class="container section">
   <h2><%= t('quote.sectors_title') %></h2>
-  <ul style="max-width:760px; line-height:1.9;">
-    <li><%= t('quote.sector_colegio') %></li>
-    <li><%= t('quote.sector_empresa') %></li>
-    <li><%= t('quote.sector_evento') %></li>
-    <li><%= t('quote.sector_academia') %></li>
+  <ul style="max-width:760px; line-height:2;">
+    <li><%= link_to t('quote.sector_colegio'), sector_colegios_path %></li>
+    <li><%= link_to t('quote.sector_evento'), sector_eventos_path %></li>
+    <li><%= link_to t('quote.sector_empresa'), sector_empresas_path %></li>
+    <li><%= link_to t('quote.sector_academia'), sector_oposiciones_path %></li>
   </ul>
 </div>
 

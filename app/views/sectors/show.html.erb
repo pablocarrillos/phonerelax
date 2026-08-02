@@ -1,0 +1,41 @@
+<% s = @sector %>
+<% content_for :title, "#{t("sectors.#{s}.meta_title")} · PhoneRelax" %>
+<% content_for :description, t("sectors.#{s}.meta_description") %>
+<% breadcrumb_items = [[t('nav.home'), root_path], [t("sectors.#{s}.title"), url_for(only_path: true)]] %>
+<% content_for :json_ld do %>
+  <%= json_ld_tag(breadcrumb_schema(breadcrumb_items)) %>
+<% end %>
+
+<div class="container section">
+  <%= render_breadcrumbs(breadcrumb_items) %>
+  <h1><%= t("sectors.#{s}.title") %></h1>
+  <p class="lead" style="max-width:760px;"><%= t("sectors.#{s}.subtitle") %></p>
+  <p style="max-width:760px;"><%= t("sectors.#{s}.intro") %></p>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
+    <%= link_to t('sectors.cta_buy'), root_path(anchor: 'productos'), class: 'btn btn-primary' %>
+    <%= link_to t('sectors.cta_quote'), quote_path, class: 'btn btn-magenta' %>
+  </div>
+</div>
+
+<div class="container section">
+  <div class="grid">
+    <% %w[b1 b2 b3].each do |b| %>
+      <div class="card" style="padding:22px;">
+        <h3 style="margin-top:0;"><%= t("sectors.#{s}.#{b}_title") %></h3>
+        <p class="step"><%= t("sectors.#{s}.#{b}_body") %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%= render 'shared/steps' %>
+
+<div class="container section">
+  <div style="background:linear-gradient(135deg, var(--navy), var(--magenta)); color:#fff; border-radius:var(--radius); padding:28px 32px; display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;">
+    <div>
+      <h2 style="color:#fff; margin:0 0 6px;"><%= t('sectors.cta_title') %></h2>
+      <p style="margin:0; opacity:.92;"><%= t('sectors.cta_body') %></p>
+    </div>
+    <%= link_to t('sectors.cta_quote'), quote_path, class: 'btn', style: 'background:#fff; color:var(--navy); font-weight:700; white-space:nowrap;' %>
+  </div>
+</div>

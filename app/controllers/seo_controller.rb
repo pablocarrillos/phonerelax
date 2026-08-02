@@ -41,7 +41,9 @@ class SeoController < ApplicationController
     entries = []
     entries << sitemap_entry(priority: '1.0', changefreq: 'weekly') { |l| locale_prefix(l).presence || '/' }
 
-    { '/como-funciona' => '0.7', '/presupuesto' => '0.8', '/quienes-somos' => '0.6', '/blog' => '0.7',
+    { '/como-funciona' => '0.7', '/presupuesto' => '0.8',
+      '/colegios' => '0.8', '/eventos' => '0.8', '/empresas' => '0.8', '/oposiciones' => '0.8',
+      '/quienes-somos' => '0.6', '/blog' => '0.7',
       '/contacto' => '0.5', '/politica-privacidad' => '0.3' }.each do |path, pr|
       entries << sitemap_entry(priority: pr, changefreq: 'monthly') { |l| "#{locale_prefix(l)}#{path}" }
     end
