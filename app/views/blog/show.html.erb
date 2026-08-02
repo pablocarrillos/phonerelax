@@ -1,13 +1,13 @@
-<% content_for :title, "#{@post.title} · PhoneRelax" %>
-<% content_for :description, (@post.excerpt.presence || plain_summary(@post.body)) %>
+<% content_for :title, "#{@post.display_title} · PhoneRelax" %>
+<% content_for :description, (@post.display_excerpt.presence || plain_summary(@post.display_body)) %>
 <% content_for :og_image, @post.image_url %>
-<% breadcrumb_items = [[t('nav.home'), root_path], [t('nav.blog'), blog_path], [@post.title, blog_post_path(@post)]] %>
+<% breadcrumb_items = [[t('nav.home'), root_path], [t('nav.blog'), blog_path], [@post.display_title, blog_post_path(@post)]] %>
 <% content_for :json_ld do %>
   <%= json_ld_tag(
         '@context' => 'https://schema.org',
         '@type' => 'BlogPosting',
-        'headline' => @post.title,
-        'description' => (@post.excerpt.presence || plain_summary(@post.body)),
+        'headline' => @post.display_title,
+        'description' => (@post.display_excerpt.presence || plain_summary(@post.display_body)),
         'image' => (@post.image_url.present? ? absolute_url(@post.image_url) : nil),
         'inLanguage' => locale_region,
         'author' => { '@type' => 'Organization', 'name' => 'PhoneRelax' },
@@ -18,11 +18,11 @@
 <% end %>
 <div class="container section article">
   <%= render_breadcrumbs(breadcrumb_items) %>
-  <h1><%= @post.title %></h1>
+  <h1><%= @post.display_title %></h1>
   <% if @post.image_url.present? %>
     <img class="article-cover" src="<%= @post.image_url %>" alt="<%= @post.title %>">
   <% end %>
   <div class="article-body">
-    <%= sanitize @post.body %>
+    <%= sanitize @post.display_body %>
   </div>
 </div>

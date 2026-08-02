@@ -1,4 +1,7 @@
 class Post < ApplicationRecord
+  include Translatable
+  translates :title, :excerpt, :body
+
   validates :title, :slug, :body, presence: true
   validates :slug, uniqueness: true
 

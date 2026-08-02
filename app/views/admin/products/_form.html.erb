@@ -15,6 +15,17 @@
       <%= f.hidden_field :description, id: 'product_description' %>
       <trix-editor input="product_description" class="trix-content"></trix-editor>
     </div>
+
+    <div class="full">
+      <h3 style="margin: 22px 0 4px;">🇵🇹 Portugués (opcional)</h3>
+      <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /pt se mostrará el contenido en español.</p>
+    </div>
+    <div class="full"><%= f.label :name_pt, 'Nombre (PT)' %><%= f.text_field :name_pt %></div>
+    <div class="full">
+      <%= f.label :description_pt, 'Descripción (PT)' %>
+      <%= f.hidden_field :description_pt, id: 'product_description_pt' %>
+      <trix-editor input="product_description_pt" class="trix-content"></trix-editor>
+    </div>
   </div>
   <p><%= f.submit 'Guardar producto', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %></p>
 <% end %>

@@ -157,3 +157,65 @@ blog_posts.each do |attrs|
   post.update!(attrs)
 end
 puts "Artículos: #{Post.count}"
+
+# --- Traducciones al portugués (pt-PT). Idempotente: vacío = se muestra el español. ---
+product_translations = {
+  'funda-phonerelax-version-sin-cobertura-movil' => {
+    name_pt: 'Bolsa PhoneRelax SignalBlocking (bloqueia a rede móvel)',
+    description_pt: '<p>A PhoneRelax é uma bolsa magnética para telemóveis pensada para evitar que alunos ou utilizadores se distraiam com o telemóvel em escolas, concertos ou eventos privados. O seu funcionamento é muito simples: basta introduzir o telemóvel no interior e fechar o fecho para que fique selado lá dentro. Para retirar o telemóvel será necessário aproximar o fecho magnético da bolsa PhoneRelax de um dos nossos ímanes especiais de abertura e retirá-lo.</p>
+<p><strong>A principal vantagem desta versão que bloqueia a rede móvel é que o utilizador não será distraído com notificações, toques de chamada ou vibrações caso se tenha esquecido de silenciar ou desligar o telemóvel antes de o introduzir na bolsa PhoneRelax; assim, também não terá a ansiedade e a distração que geram as notificações constantes das diferentes aplicações.</strong></p>
+<p><strong>Especificações técnicas:</strong></p>
+<p><strong>Dimensões do produto:</strong> 12 cm largura x 26 cm altura x 4,5 cm profundidade<br><strong>Material:</strong> 30% neopreno, 40% poliéster, 20% alumínio e 10% plástico.<br><strong>Telemóveis compatíveis:</strong> qualquer smartphone com ecrã até 6,8 polegadas.<br><strong>Cor:</strong> preto<br><strong>Peso:</strong> 115 g</p>'
+  },
+  'iman-phonerelax' => {
+    name_pt: 'Íman PhoneRelax',
+    description_pt: '<p>Permite a abertura das bolsas PhoneRelax simplesmente aproximando a parte arredondada do fecho da bolsa do centro do íman.</p>
+<p>O íman dispõe de quatro furos pensados para o fixar em qualquer superfície e assim evitar que se possa perder ou mover durante o processo de abertura das bolsas PhoneRelax.</p>'
+  },
+  'funda-phonerelax' => {
+    name_pt: 'Bolsa PhoneRelax',
+    description_pt: '<p>A PhoneRelax é uma bolsa magnética para telemóveis pensada para evitar que alunos ou utilizadores se distraiam com o telemóvel em escolas, concertos ou eventos privados. O seu funcionamento é muito simples: basta introduzir o telemóvel no interior e fechar o fecho para que fique selado lá dentro. Para retirar o telemóvel será necessário aproximar o fecho magnético da bolsa PhoneRelax de um dos nossos ímanes especiais de abertura e retirá-lo.</p>
+<p><strong>Especificações técnicas:</strong></p>
+<p><strong>Dimensões do produto:</strong> 12 cm largura x 24 cm altura x 4,5 cm profundidade<br><strong>Material:</strong> 40% neopreno, 50% poliéster e 10% plástico.<br><strong>Telemóveis compatíveis:</strong> qualquer smartphone com ecrã até 6,8 polegadas.<br><strong>Cor:</strong> preto<br><strong>Peso:</strong> 82 g</p>'
+  }
+}
+product_translations.each { |handle, attrs| Product.find_by(shopify_handle: handle)&.update!(attrs) }
+
+post_translations = {
+  'cuales-son-las-principales-ventajas-de-prohibir-el-uso-de-telefonos-moviles-ninos-y-adolescentes-en-las-aulas' => {
+    title_pt: 'Vantagens de controlar o uso de telemóveis na sala de aula',
+    excerpt_pt: 'Controlar o uso de telemóveis nas escolas para crianças e adolescentes através das bolsas PhoneRelax tem várias vantagens claras, entre as quais se destaca o fomento do foco académico. Sem distrações dos telemóveis, os estudantes tendem a prestar mais atenção',
+    body_pt: '<p>Controlar o uso de telemóveis nas escolas para crianças e adolescentes através das bolsas PhoneRelax tem várias vantagens claras, entre as quais se destaca o <strong>fomento do foco académico</strong>. Sem distrações dos telemóveis, os estudantes tendem a prestar mais atenção nas aulas, o que pode melhorar o seu rendimento académico. É um facto que a menos distrações há uma maior concentração e, sem a tentação constante de verificar o telemóvel, os estudantes conseguem concentrar-se mais nas tarefas e atividades escolares, o que melhora a sua capacidade de atenção.</p>
+<p>Outra vantagem é a <strong>melhoria na interação social</strong>: ao limitar o uso de telemóveis, promove-se a interação cara a cara entre os estudantes, fortalecendo as suas competências sociais e a sua capacidade de trabalhar em equipa.</p>
+<p>Demonstrou-se também que <strong>reduz o cyberbullying</strong>, já que restringir o uso de dispositivos eletrónicos pode diminuir os casos de assédio online e o acesso a conteúdos inapropriados, ajudando a criar um ambiente escolar mais seguro.</p>
+<p>No recreio proporciona um <strong>maior tempo de atividade física</strong>, pois, sem o uso constante de dispositivos, os estudantes podem ter mais tempo para atividades físicas, o que é benéfico para a sua saúde e bem-estar.</p>
+<p>Uma vantagem da limitação do uso dos telemóveis nas escolas é o <strong>desenvolvimento de competências de resolução de problemas</strong>, pois, ao não dependerem tanto da tecnologia, os estudantes podem desenvolver competências para resolver problemas de forma mais criativa e com recursos mais variados.</p>
+<p>Apesar destas vantagens, é também importante considerar como se implementa a proibição dos dispositivos móveis, já que em alguns casos podem ser ferramentas úteis para a aprendizagem que, sob a supervisão dos professores, podem ajudar em determinadas áreas ou tarefas.</p>'
+  },
+  'ventajas-de-evitar-el-uso-de-moviles-en-conciertos' => {
+    title_pt: 'Concertos sem telemóveis ou "Phone-Free Events"',
+    excerpt_pt: 'O uso de bolsas PhoneRelax para evitar o uso de telemóveis em concertos tem várias vantagens significativas, como por exemplo uma experiência mais imersiva, já que os espectadores poderão desfrutar plenamente da música, da atmosfera e da ligação com o artista e os restantes assistentes.',
+    body_pt: '<p>O uso de bolsas PhoneRelax para evitar o uso de telemóveis em concertos tem várias vantagens significativas, como por exemplo uma <strong>experiência mais imersiva</strong>, já que os espectadores poderão desfrutar plenamente da música, da atmosfera e da ligação com o artista e os restantes assistentes.</p>
+<p>Este tipo de eventos já é conhecido como "phone free events" ou "experiências livres de telemóveis".</p>
+<p>Uma das principais vantagens é o <strong>respeito pelo artista</strong>, pois usar o telemóvel pode distrair tanto o público como o artista. Evitar o uso de telemóveis mostra respeito pelo trabalho do músico e permite que todos desfrutem plenamente do espetáculo sem interrupções.</p>
+<p>É conhecido o caso da cantora Adele a pedir a um espectador do seu concerto que parasse de gravar e desfrutasse do espetáculo ao vivo.</p>
+<p>Por outro lado, ao não estarem absortos nos ecrãs, os espectadores <strong>melhoram a ligação interpessoal</strong>: é mais provável que interajam com as pessoas à sua volta, fomentando ligações humanas reais e partilhando momentos significativos com outros fãs.</p>
+<p>Outro ponto fundamental é a <strong>melhoria na qualidade do som e na visão do artista</strong>, já que ao levantar o telemóvel para gravar ou tirar fotografias muitas vezes se bloqueia a vista de outras pessoas e se reduz a qualidade do som, mas sobretudo a visão direta do artista ou do evento.</p>
+<p>E por último, mas não menos importante, <strong>criar memórias mais autênticas</strong>: em vez de captar todo o concerto no ecrã do telemóvel, é melhor desfrutar do momento e guardar as recordações na mente para criar memórias mais vívidas e autênticas que perdurem a longo prazo.</p>
+<p>Embora seja compreensível querer captar alguns momentos do concerto, limitar o uso do telemóvel pode enriquecer significativamente a experiência tanto para si como para os restantes assistentes.</p>
+<p><img alt="" src="/images/blog/phonerelax-para-eventos-cuerpo.jpg" style="display: block; margin-left: auto; margin-right: auto;"></p>'
+  },
+  'y-que-podemos-hacer-para-evitar-que-los-alumnos-usen-los-telefonos-en-las-aulas' => {
+    title_pt: 'Como evitar o uso de telemóveis nas escolas',
+    excerpt_pt: 'As bolsas com fecho magnético PhoneRelax, concebidas para que os próprios alunos guardem os seus telemóveis e não tenham acesso a eles em zonas designadas, podem ser uma ferramenta eficaz para controlar o uso de dispositivos eletrónicos em ambientes escolares. Estas bolsas oferecem vantagens muito claras',
+    body_pt: '<p>As bolsas com fecho magnético PhoneRelax, concebidas para que os próprios alunos guardem os seus telemóveis e não tenham acesso a eles em zonas designadas, podem ser uma ferramenta eficaz para controlar o uso de dispositivos eletrónicos em ambientes escolares. Estas bolsas oferecem vantagens muito claras:</p>
+<p><strong>Segurança e controlo:</strong> ao utilizar fechos magnéticos que impedem o acesso ao telemóvel enquanto está guardado, garante-se um maior nível de segurança e controlo sobre o dispositivo durante o horário escolar.</p>
+<p><strong>Prevenção de distrações:</strong> ao não ser possível aceder facilmente aos telemóveis, minimiza-se a tentação e a possibilidade de distrações na sala de aula, o que pode melhorar o foco dos estudantes na aprendizagem. Dispomos inclusive de uma versão da bolsa PhoneRelax que deixa o telemóvel sem rede, evitando que, mesmo que o aluno se esqueça de silenciar o telemóvel, este receba chamadas ou notificações das aplicações.</p>
+<p><strong>Uniformidade e facilidade de gestão:</strong> se todos os estudantes utilizarem as bolsas PhoneRelax, facilita-se a gestão para os professores e o pessoal escolar, mantendo um sistema uniforme e claro para todos.</p>
+<p><strong>Custódia dos telemóveis pelos próprios alunos nas suas bolsas PhoneRelax:</strong> ao confiar aos estudantes a responsabilidade de guardar os seus próprios telemóveis nas bolsas PhoneRelax, evita-se qualquer problema relacionado com possíveis danos nos dispositivos, libertando dessa responsabilidade os professores e o pessoal escolar.</p>
+<p>No entanto, é importante considerar alguns aspetos:</p>
+<p><strong>Necessidades específicas:</strong> alguns estudantes podem ter necessidades particulares de acesso aos seus telemóveis devido a emergências médicas ou familiares. Deve haver sempre alguma flexibilidade para atender a estas situações.</p>'
+  }
+}
+post_translations.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
+puts "Traducciones PT: #{Product.where.not(name_pt: [nil, '']).count} productos, #{Post.where.not(title_pt: [nil, '']).count} artículos"

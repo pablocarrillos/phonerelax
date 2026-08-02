@@ -1,8 +1,8 @@
 <div class="card blog-card">
   <%= link_to blog_post_path(post) do %>
-    <img src="<%= post.image_url %>" alt="<%= post.title %>">
+    <img src="<%= post.image_url %>" alt="<%= post.display_title %>">
   <% end %>
-  <h3><%= link_to post.title, blog_post_path(post), style: 'text-decoration:none;' %></h3>
-  <p class="step"><%= post.excerpt %></p>
+  <h3><%= link_to post.display_title, blog_post_path(post), style: 'text-decoration:none;' %></h3>
+  <p class="step"><%= post.display_excerpt %></p>
   <div class="actions"><%= link_to t('blog.read_article'), blog_post_path(post), class: 'read-more' %></div>
 </div>

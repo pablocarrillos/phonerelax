@@ -7,7 +7,7 @@
     <tbody>
       <% @lines.each do |product, quantity| %>
         <tr>
-          <td><%= product.name %> × <%= quantity %></td>
+          <td><%= product.display_name %> × <%= quantity %></td>
           <td class="num"><%= number_to_currency(product.price * quantity, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>

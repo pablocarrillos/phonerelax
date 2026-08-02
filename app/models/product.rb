@@ -1,4 +1,7 @@
 class Product < ApplicationRecord
+  include Translatable
+  translates :name, :description
+
   has_many :order_lines, dependent: :restrict_with_error
   has_many :product_images, -> { ordered }, dependent: :destroy, inverse_of: :product
 
