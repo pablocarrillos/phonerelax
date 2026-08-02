@@ -1,5 +1,21 @@
 <h1>Pedidos</h1>
 
+<% card = 'flex:1; min-width:150px; padding:14px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); text-decoration:none; color:inherit;' %>
+<div style="display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 22px;">
+  <%= link_to admin_orders_path(payment: 'pendiente'), style: card do %>
+    <div style="font-size:24px; font-weight:700; color:#c0392b;"><%= @summary[:pending_payment] %></div>
+    <div style="color:var(--muted); font-size:13px;">Pendientes de pago</div>
+  <% end %>
+  <%= link_to admin_orders_path(payment: 'pagado', status: 'creado'), style: card do %>
+    <div style="font-size:24px; font-weight:700; color:var(--magenta);"><%= @summary[:to_ship] %></div>
+    <div style="color:var(--muted); font-size:13px;">Pagados por enviar</div>
+  <% end %>
+  <div style="<%= card %>">
+    <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= number_to_currency(@summary[:revenue], unit: '€', format: '%n %u') %></div>
+    <div style="color:var(--muted); font-size:13px;">Ingresos cobrados</div>
+  </div>
+</div>
+
 <div class="filter-tabs">
   <%= link_to "Todos (#{@counts.values.sum})", admin_orders_path(q: @query, payment: @payment), class: ('active' if @status.nil?) %>
   <% Order.statuses.keys.each do |status| %>

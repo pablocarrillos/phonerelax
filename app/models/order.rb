@@ -60,14 +60,19 @@ class Order < ApplicationRecord
     { 'creado' => 'enviado', 'enviado' => 'recibido' }[status]
   end
 
+  def previous_status
+    { 'enviado' => 'creado', 'recibido' => 'enviado' }[status]
+  end
+
   # Marca el pago y descuenta stock una sola vez (webhook y retorno del Checkout
-  # pueden llegar los dos).
-  def mark_paid!
+  # pueden llegar los dos). `manual: true` para cobros fuera de Stripe (transferencia,
+  # efectivo…) que registra el admin.
+  def mark_paid!(manual: false)
     return if pago_pagado?
 
     transaction do
-      update!(payment_status: :pagado)
-      order_events.create!(event: 'pagado')
+      update!(payment_status: :pagado, paid_manually: manual)
+      order_events.create!(event: manual ? 'pagado (manual)' : 'pagado')
       order_lines.includes(:product).each do |line|
         line.product.update!(stock: [line.product.stock - line.quantity, 0].max)
       end
@@ -75,15 +80,32 @@ class Order < ApplicationRecord
     OrderMailer.paid(self).deliver_later
   end
 
-  # Avanza el estado logístico dejando rastro en el histórico.
-  def advance_status!
+  # Avanza el estado logístico dejando rastro en el histórico. Al pasar a "enviado"
+  # guarda, si se indican, el transportista y el número de seguimiento.
+  def advance_status!(tracking_number: nil, tracking_carrier: nil)
     return unless next_status
 
     transaction do
-      update!(status: next_status)
+      attrs = { status: next_status }
+      if next_status == 'enviado'
+        attrs[:tracking_number]  = tracking_number.presence  if tracking_number
+        attrs[:tracking_carrier] = tracking_carrier.presence if tracking_carrier
+      end
+      update!(attrs)
       order_events.create!(event: status)
     end
     OrderMailer.shipped(self).deliver_later if enviado?
+  end
+
+  # Revierte el estado logístico un paso (para deshacer un avance por error).
+  def revert_status!
+    target = previous_status
+    return unless target
+
+    transaction do
+      update!(status: target)
+      order_events.create!(event: "revertido a #{target}")
+    end
   end
 
   private

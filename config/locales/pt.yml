@@ -194,6 +194,7 @@ pt:
       title: "A sua encomenda está a caminho 📦"
       body_html: "Olá %{name}: a sua encomenda <strong>%{number}</strong> já seguiu para:"
       track: Seguir a minha encomenda
+      tracking_label: Nº de seguimento
     payment_reminder:
       subject: "PhoneRelax · A sua encomenda %{number} está pendente de pagamento"
       title: "A sua encomenda está à sua espera"

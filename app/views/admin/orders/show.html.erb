@@ -4,20 +4,52 @@
 <p>
   Idioma del pedido: <strong><%= { 'es' => '🇪🇸 Español', 'pt' => '🇵🇹 Portugués', 'en' => '🇬🇧 Inglés' }[@order.locale] || @order.locale %></strong>
 </p>
-<p>
-  Pago: <span class="badge <%= @order.payment_status %>"><%= @order.payment_status %></span>
-  &nbsp; Estado: <span class="badge <%= @order.status %>"><%= @order.status %></span>
+<div class="order-actions" style="margin: 14px 0 24px; padding: 16px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);">
+  <p style="margin-top:0;">
+    <strong>Pago:</strong> <span class="badge <%= @order.payment_status %>"><%= @order.payment_status %></span>
+    <% if @order.paid_manually? %><span style="color: var(--muted); font-size: 13px;">(cobro manual)</span><% end %>
+    &nbsp;&nbsp; <strong>Estado:</strong> <span class="badge <%= @order.status %>"><%= @order.status %></span>
+  </p>
+
   <% if @order.pago_pendiente? %>
-    &nbsp; <%= button_to 'Enviar recordatorio de pago', payment_reminder_admin_order_path(@order), method: :post,
-                         class: 'btn btn-magenta', style: 'display:inline-block;',
-                         form: { data: { turbo_confirm: "¿Enviar el recordatorio de pago a #{@order.email}?" } } %>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+      <%= button_to 'Marcar como pagado (cobro manual)', mark_paid_admin_order_path(@order), method: :post,
+                    class: 'btn btn-primary',
+                    form: { data: { turbo_confirm: "¿Marcar el pedido #{@order.number} como pagado? Se descontará stock y se enviará el email de confirmación al cliente." } } %>
+      <%= button_to 'Enviar recordatorio de pago', payment_reminder_admin_order_path(@order), method: :post,
+                    class: 'btn btn-outline',
+                    form: { data: { turbo_confirm: "¿Enviar el recordatorio de pago a #{@order.email}?" } } %>
+    </div>
   <% end %>
-  <% if @order.next_status %>
-    &nbsp; <%= button_to "Marcar como #{@order.next_status}", advance_admin_order_path(@order), method: :patch,
-                         class: 'btn btn-primary', style: 'display:inline-block;',
-                         form: { data: { turbo_confirm: "¿Marcar el pedido #{@order.number} como #{@order.next_status}?" } } %>
+
+  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
+    <% if @order.next_status == 'enviado' %>
+      <%= form_with url: advance_admin_order_path(@order), method: :patch, data: { turbo: false } do %>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
+          <div><label style="font-size:13px; color:var(--muted);">Transportista</label><br>
+            <input type="text" name="tracking_carrier" placeholder="Correos, SEUR…" class="orders-search-input" style="width:150px;"></div>
+          <div><label style="font-size:13px; color:var(--muted);">Nº de seguimiento</label><br>
+            <input type="text" name="tracking_number" placeholder="(opcional)" class="orders-search-input" style="width:170px;"></div>
+          <button type="submit" class="btn btn-primary">Marcar como enviado</button>
+        </div>
+      <% end %>
+    <% elsif @order.next_status %>
+      <%= button_to "Marcar como #{@order.next_status}", advance_admin_order_path(@order), method: :patch,
+                    class: 'btn btn-primary',
+                    form: { data: { turbo_confirm: "¿Marcar el pedido #{@order.number} como #{@order.next_status}?" } } %>
+    <% end %>
+
+    <% if @order.previous_status %>
+      <%= button_to "↩ Deshacer (volver a #{@order.previous_status})", revert_admin_order_path(@order), method: :patch,
+                    class: 'btn btn-outline',
+                    form: { data: { turbo_confirm: "¿Revertir el pedido #{@order.number} a #{@order.previous_status}?" } } %>
+    <% end %>
+  </div>
+
+  <% if @order.tracking_number.present? || @order.tracking_carrier.present? %>
+    <p style="margin:12px 0 0;">📦 <strong>Envío:</strong> <%= [@order.tracking_carrier, @order.tracking_number].compact_blank.join(' · ') %></p>
   <% end %>
-</p>
+</div>
 
 <h2>Cliente</h2>
 <table class="table" style="max-width: 620px;">
@@ -49,6 +81,12 @@
     <tr class="total-row"><td colspan="2">Total</td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
   </tbody>
 </table>
+
+<h2>Notas internas</h2>
+<%= form_with model: @order, url: admin_order_path(@order), method: :patch, local: true, style: 'max-width: 620px;' do |f| %>
+  <%= f.text_area :admin_notes, rows: 4, style: 'width:100%; font-family: inherit;', placeholder: 'Anotaciones visibles solo para el equipo (no se envían al cliente)…' %>
+  <p><%= f.submit 'Guardar notas', class: 'btn btn-outline' %></p>
+<% end %>
 
 <h2>Histórico</h2>
 <table class="table" style="max-width: 480px;">

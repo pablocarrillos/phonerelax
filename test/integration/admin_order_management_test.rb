@@ -1,0 +1,52 @@
+require "test_helper"
+
+class AdminOrderManagementTest < ActionDispatch::IntegrationTest
+  setup { sign_in_as(users(:one)) }
+
+  def pending_order
+    order = Order.create!(customer_name: "Ana", email: "a@x.com", address: "C 1",
+                          city: "Madrid", postal_code: "28001", country: "España", locale: "es")
+    order.order_lines.create!(product: products(:funda), quantity: 1, unit_price: products(:funda).price)
+    order
+  end
+
+  test "el listado se renderiza con la barra de resumen" do
+    get admin_orders_path
+    assert_response :success
+    assert_select "h1", "Pedidos"
+  end
+
+  test "la ficha del pedido se renderiza (acciones y notas)" do
+    get admin_order_path(pending_order)
+    assert_response :success
+    assert_select "h2", text: "Notas internas"
+  end
+
+  test "marcar como pagado (cobro manual)" do
+    order = pending_order
+    post mark_paid_admin_order_path(order)
+    assert_redirected_to admin_order_path(order)
+    assert order.reload.pago_pagado?
+    assert order.paid_manually?
+  end
+
+  test "marcar como enviado con seguimiento" do
+    order = pending_order
+    patch advance_admin_order_path(order), params: { tracking_carrier: "SEUR", tracking_number: "XYZ9" }
+    assert_equal "enviado", order.reload.status
+    assert_equal "XYZ9", order.tracking_number
+  end
+
+  test "deshacer un avance de estado" do
+    order = pending_order
+    order.advance_status!
+    patch revert_admin_order_path(order)
+    assert_equal "creado", order.reload.status
+  end
+
+  test "guardar notas internas" do
+    order = pending_order
+    patch admin_order_path(order), params: { order: { admin_notes: "Llamar antes de enviar" } }
+    assert_equal "Llamar antes de enviar", order.reload.admin_notes
+  end
+end

@@ -194,6 +194,7 @@ en:
       title: "Your order is on its way 📦"
       body_html: "Hi %{name}: your order <strong>%{number}</strong> has shipped to:"
       track: Track my order
+      tracking_label: Tracking number
     payment_reminder:
       subject: "PhoneRelax · Your order %{number} is pending payment"
       title: "Your order is waiting for you"

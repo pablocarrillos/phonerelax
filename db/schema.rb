@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_02_175459) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_02_180443) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_02_175459) do
 
   create_table "orders", force: :cascade do |t|
     t.string "address"
+    t.text "admin_notes"
     t.string "city"
     t.string "country"
     t.datetime "created_at", null: false
@@ -51,6 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_02_175459) do
     t.string "email", null: false
     t.string "locale", default: "es", null: false
     t.string "number", null: false
+    t.boolean "paid_manually", default: false, null: false
     t.integer "payment_status", default: 0, null: false
     t.string "phone"
     t.string "postal_code"
@@ -59,6 +61,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_02_175459) do
     t.integer "status", default: 0, null: false
     t.string "stripe_session_id"
     t.decimal "total", precision: 8, scale: 2
+    t.string "tracking_carrier"
+    t.string "tracking_number"
     t.datetime "updated_at", null: false
     t.index ["number"], name: "index_orders_on_number", unique: true
   end

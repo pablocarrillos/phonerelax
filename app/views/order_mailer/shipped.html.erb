@@ -3,6 +3,9 @@
 <p style="background:#f5f6fb; border-radius:8px; padding:12px 16px;">
   <%= [@order.address, @order.postal_code, @order.city, @order.province, @order.country].compact_blank.join(', ') %>
 </p>
+<% if @order.tracking_number.present? %>
+  <p style="padding:4px 0;"><strong><%= t('order_mailer.shipped.tracking_label') %>:</strong> <%= [@order.tracking_carrier, @order.tracking_number].compact_blank.join(' · ') %></p>
+<% end %>
 <%= render 'order_summary' %>
 <p style="text-align:center; margin:22px 0;">
   <a href="<%= order_status_url(@order.number) %>" style="background:#0E1B4D; color:#fff; text-decoration:none; padding:12px 26px; border-radius:8px; display:inline-block;"><%= t('order_mailer.shipped.track') %></a>

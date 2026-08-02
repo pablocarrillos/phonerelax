@@ -206,6 +206,7 @@ es:
       title: "Tu pedido está en camino 📦"
       body_html: "Hola %{name}: tu pedido <strong>%{number}</strong> ya ha salido hacia:"
       track: Seguir mi pedido
+      tracking_label: Nº de seguimiento
     payment_reminder:
       subject: "PhoneRelax · Tu pedido %{number} está pendiente de pago"
       title: "Tu pedido te está esperando"
