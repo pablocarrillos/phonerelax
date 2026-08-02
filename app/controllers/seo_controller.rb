@@ -22,7 +22,7 @@ class SeoController < ApplicationController
   private
 
   def canonical_base
-    ENV['CANONICAL_HOST'].presence || request.base_url
+    ENV['CANONICAL_HOST'].presence || 'https://phonerelax.com'
   end
   helper_method :canonical_base
 

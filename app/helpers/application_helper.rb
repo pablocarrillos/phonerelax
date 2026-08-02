@@ -22,8 +22,9 @@ module ApplicationHelper
     { es: 'es-ES', pt: 'pt-PT', en: 'en' }[I18n.locale] || 'es-ES'
   end
 
+  # Dominio canónico del sitio (sin www). Se puede sobreescribir con CANONICAL_HOST.
   def canonical_base
-    ENV['CANONICAL_HOST'].presence || request.base_url
+    ENV['CANONICAL_HOST'].presence || 'https://phonerelax.com'
   end
 
   def canonical_url
@@ -34,6 +35,12 @@ module ApplicationHelper
   # de idioma). El idioma por defecto va sin prefijo. Devuelve nil si no se puede
   # regenerar la ruta (p. ej. acciones sin GET).
   def locale_url(locale)
+    # Si la página define rutas equivalentes por idioma (p. ej. un post del blog con
+    # slug propio en cada idioma), se usan esas; si no, se regenera la ruta actual.
+    if @localized_paths && (path = @localized_paths[locale.to_sym])
+      return absolute_url(path)
+    end
+
     loc = (locale.to_sym == I18n.default_locale ? nil : locale)
     absolute_url(url_for(locale: loc, only_path: true))
   rescue StandardError
