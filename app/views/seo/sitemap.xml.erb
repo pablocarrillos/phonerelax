@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<% @entries.each do |entry| %>
+  <% entry[:urls].each do |locale, url| %>
   <url>
-    <loc><%= canonical_base %>/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <% [['/como-funciona', '0.7'], ['/quienes-somos', '0.6'], ['/blog', '0.7'], ['/contacto', '0.5'], ['/politica-privacidad', '0.3']].each do |path, priority| %>
-  <url>
-    <loc><%= canonical_base %><%= path %></loc>
-    <changefreq>monthly</changefreq>
-    <priority><%= priority %></priority>
-  </url>
-  <% end %>
-  <% @products.each do |product| %>
-  <url>
-    <loc><%= canonical_base %><%= product_page_path(product) %></loc>
-    <lastmod><%= product.updated_at.to_date.iso8601 %></lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <loc><%= url %></loc>
+    <% entry[:urls].each do |alt_locale, alt_url| %>
+    <xhtml:link rel="alternate" hreflang="<%= alt_locale %>" href="<%= alt_url %>"/>
+    <% end %>
+    <xhtml:link rel="alternate" hreflang="x-default" href="<%= entry[:urls][I18n.default_locale] %>"/>
+    <% if entry[:lastmod] %><lastmod><%= entry[:lastmod] %></lastmod><% end %>
+    <% if entry[:changefreq] %><changefreq><%= entry[:changefreq] %></changefreq><% end %>
+    <% if entry[:priority] %><priority><%= entry[:priority] %></priority><% end %>
   </url>
   <% end %>
-  <% @posts.each do |post| %>
-  <url>
-    <loc><%= canonical_base %><%= blog_post_path(post) %></loc>
-    <lastmod><%= post.updated_at.to_date.iso8601 %></lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <% end %>
+<% end %>
 </urlset>

@@ -7,10 +7,9 @@ class SeoController < ApplicationController
     render plain: robots_txt, content_type: 'text/plain'
   end
 
-  # /sitemap.xml — home, páginas de contenido, productos activos y artículos.
+  # /sitemap.xml — multilingüe: cada página en es/pt/en con anotaciones hreflang.
   def sitemap
-    @products = Product.where(active: true).order(:position)
-    @posts    = Post.order(created_at: :desc)
+    @entries = sitemap_entries
     render layout: false, content_type: 'application/xml'
   end
 
@@ -25,6 +24,42 @@ class SeoController < ApplicationController
     ENV['CANONICAL_HOST'].presence || 'https://phonerelax.com'
   end
   helper_method :canonical_base
+
+  # Prefijo de idioma en la ruta (el español, por defecto, va sin prefijo).
+  def locale_prefix(locale)
+    locale == I18n.default_locale ? '' : "/#{locale}"
+  end
+
+  # Una entrada del sitemap: URLs absolutas de la página en cada idioma.
+  # `path_for` recibe el locale y devuelve la ruta (sin dominio) en ese idioma.
+  def sitemap_entry(lastmod: nil, priority: nil, changefreq: nil, &path_for)
+    urls = I18n.available_locales.index_with { |loc| "#{canonical_base}#{path_for.call(loc)}" }
+    { urls: urls, lastmod: lastmod, priority: priority, changefreq: changefreq }
+  end
+
+  def sitemap_entries
+    entries = []
+    entries << sitemap_entry(priority: '1.0', changefreq: 'weekly') { |l| locale_prefix(l).presence || '/' }
+
+    { '/como-funciona' => '0.7', '/quienes-somos' => '0.6', '/blog' => '0.7',
+      '/contacto' => '0.5', '/politica-privacidad' => '0.3' }.each do |path, pr|
+      entries << sitemap_entry(priority: pr, changefreq: 'monthly') { |l| "#{locale_prefix(l)}#{path}" }
+    end
+
+    Product.where(active: true).order(:position).each do |product|
+      entries << sitemap_entry(lastmod: product.updated_at.to_date.iso8601, priority: '0.9', changefreq: 'weekly') do |l|
+        "#{locale_prefix(l)}/producto/#{product.to_param}"
+      end
+    end
+
+    Post.order(created_at: :desc).each do |post|
+      entries << sitemap_entry(lastmod: post.updated_at.to_date.iso8601, priority: '0.6', changefreq: 'monthly') do |l|
+        "#{locale_prefix(l)}/blog/#{post.slug_for(l)}"
+      end
+    end
+
+    entries
+  end
 
   def llms_txt
     base = canonical_base
