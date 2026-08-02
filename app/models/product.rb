@@ -9,6 +9,12 @@ class Product < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:position, :name) }
 
+  # URL amigable: usa el handle de Shopify como slug (/producto/funda-...);
+  # si faltara, cae al id para no romper enlaces.
+  def to_param
+    shopify_handle.presence || id.to_s
+  end
+
   # Agotado: se sigue mostrando en la tienda pero no se puede comprar.
   def out_of_stock?
     stock <= 0

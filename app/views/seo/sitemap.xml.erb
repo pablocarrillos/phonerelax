@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc><%= canonical_base %>/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <% [['/como-funciona', '0.7'], ['/quienes-somos', '0.6'], ['/blog', '0.7'], ['/contacto', '0.5'], ['/politica-privacidad', '0.3']].each do |path, priority| %>
+  <url>
+    <loc><%= canonical_base %><%= path %></loc>
+    <changefreq>monthly</changefreq>
+    <priority><%= priority %></priority>
+  </url>
+  <% end %>
+  <% @products.each do |product| %>
+  <url>
+    <loc><%= canonical_base %><%= product_page_path(product) %></loc>
+    <lastmod><%= product.updated_at.to_date.iso8601 %></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <% end %>
+  <% @posts.each do |post| %>
+  <url>
+    <loc><%= canonical_base %><%= blog_post_path(post) %></loc>
+    <lastmod><%= post.updated_at.to_date.iso8601 %></lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <% end %>
+</urlset>
