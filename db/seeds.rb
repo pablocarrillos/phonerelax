@@ -75,6 +75,7 @@ puts "Productos: #{Product.count} (#{ProductImage.count} imágenes)"
 admin = User.find_or_initialize_by(email_address: 'admin@phonerelax.com')
 admin.name ||= 'Admin'
 admin.password = 'phonerelax-admin'
+admin.password_confirmation = 'phonerelax-admin'
 admin.save!
 puts "Admin: admin@phonerelax.com"
 
