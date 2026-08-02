@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       patch :revert, on: :member  # deshace un avance de estado
       post :mark_paid, on: :member # cobro manual (fuera de Stripe)
       post :payment_reminder, on: :member
+      get :packing_slip, on: :member # albarán imprimible
     end
     resources :products, except: :show do
       resources :product_images, only: [:create, :destroy] do

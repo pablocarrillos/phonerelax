@@ -38,4 +38,13 @@ class OrderTest < ActiveSupport::TestCase
     assert_equal "creado", order.status
     assert_includes order.order_events.pluck(:event), "revertido a creado"
   end
+
+  test "tracking_url construye el enlace del transportista reconocido" do
+    order = Order.new(tracking_carrier: "SEUR", tracking_number: "ABC123")
+    assert_includes order.tracking_url, "seur.com"
+    assert_includes order.tracking_url, "ABC123"
+
+    assert_nil Order.new(tracking_carrier: "Transportista X", tracking_number: "1").tracking_url
+    assert_nil Order.new(tracking_carrier: "SEUR", tracking_number: nil).tracking_url
+  end
 end

@@ -1,4 +1,4 @@
-<p><%= link_to '← Volver a pedidos', admin_orders_path %></p>
+<p><%= link_to '← Volver a pedidos', admin_orders_path %> · <%= link_to '🖨 Imprimir albarán', packing_slip_admin_order_path(@order), target: '_blank', rel: 'noopener' %></p>
 <h1>Pedido <%= @order.number %></h1>
 
 <p>
@@ -47,7 +47,9 @@
   </div>
 
   <% if @order.tracking_number.present? || @order.tracking_carrier.present? %>
-    <p style="margin:12px 0 0;">📦 <strong>Envío:</strong> <%= [@order.tracking_carrier, @order.tracking_number].compact_blank.join(' · ') %></p>
+    <p style="margin:12px 0 0;">📦 <strong>Envío:</strong> <%= @order.tracking_carrier.presence %><%
+      if @order.tracking_url %> · <%= link_to @order.tracking_number, @order.tracking_url, target: '_blank', rel: 'noopener' %><%
+      elsif @order.tracking_number.present? %> · <%= @order.tracking_number %><% end %></p>
   <% end %>
 </div>
 

@@ -4,7 +4,9 @@
   <%= [@order.address, @order.postal_code, @order.city, @order.province, @order.country].compact_blank.join(', ') %>
 </p>
 <% if @order.tracking_number.present? %>
-  <p style="padding:4px 0;"><strong><%= t('order_mailer.shipped.tracking_label') %>:</strong> <%= [@order.tracking_carrier, @order.tracking_number].compact_blank.join(' · ') %></p>
+  <p style="padding:4px 0;"><strong><%= t('order_mailer.shipped.tracking_label') %>:</strong>
+    <%= @order.tracking_carrier.presence %>
+    <% if @order.tracking_url %><a href="<%= @order.tracking_url %>"><%= @order.tracking_number %></a><% else %><%= @order.tracking_number %><% end %></p>
 <% end %>
 <%= render 'order_summary' %>
 <p style="text-align:center; margin:22px 0;">

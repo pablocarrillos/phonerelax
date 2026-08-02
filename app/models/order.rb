@@ -17,6 +17,21 @@ class Order < ApplicationRecord
   }.freeze
   EU_COUNTRIES = EU_COUNTRY_CODES.keys.freeze
 
+  # Un pedido pendiente de pago se considera "antiguo" pasados estos días.
+  STALE_UNPAID_DAYS = 3
+
+  # Plantillas de URL de seguimiento por transportista (se detecta por el nombre).
+  CARRIER_TRACKING_URLS = {
+    'correos' => 'https://www.correos.es/es/es/herramientas/localizador/envios/detalle?tracking-number=%s',
+    'seur'    => 'https://www.seur.com/livetracking/?segOnlineIdentificador=%s',
+    'mrw'     => 'https://www.mrw.es/_mrw/seguimiento_envios.asp?enviament=%s',
+    'nacex'   => 'https://www.nacex.es/seguimientoDetalle.do?numero_albaran=%s',
+    'gls'     => 'https://mygls.gls-spain.es/e/%s',
+    'dhl'     => 'https://www.dhl.com/es-es/home/tracking.html?tracking-id=%s',
+    'ups'     => 'https://www.ups.com/track?tracknum=%s',
+    'fedex'   => 'https://www.fedex.com/fedextrack/?trknbr=%s'
+  }.freeze
+
   has_many :order_lines, dependent: :destroy
   has_many :products, through: :order_lines
   has_many :order_events, dependent: :destroy
@@ -35,6 +50,8 @@ class Order < ApplicationRecord
   after_create { order_events.create!(event: 'creado') }
 
   scope :recent_first, -> { order(created_at: :desc) }
+  # Pendientes de pago desde hace más de STALE_UNPAID_DAYS días.
+  scope :stale_unpaid, -> { pago_pendiente.where(created_at: ..STALE_UNPAID_DAYS.days.ago) }
   # Búsqueda del admin por número de pedido o datos del cliente.
   scope :search, lambda { |term|
     next if term.blank?
@@ -58,6 +75,15 @@ class Order < ApplicationRecord
 
   def next_status
     { 'creado' => 'enviado', 'enviado' => 'recibido' }[status]
+  end
+
+  # URL de seguimiento del transportista, si el nº y el transportista se reconocen.
+  def tracking_url
+    return if tracking_number.blank? || tracking_carrier.blank?
+
+    key = tracking_carrier.downcase
+    template = CARRIER_TRACKING_URLS.find { |name, _| key.include?(name) }&.last
+    format(template, CGI.escape(tracking_number)) if template
   end
 
   def previous_status

@@ -4,23 +4,38 @@ module Admin
       @status = params[:status].presence_in(Order.statuses.keys)
       @payment = params[:payment].presence_in(Order.payment_statuses.keys)
       @query = params[:q].to_s.strip
+      @from = parse_date(params[:from])
+      @to = parse_date(params[:to])
+      @stale = params[:stale].present?
 
-      orders = Order.includes(order_lines: :product).recent_first
-      orders = orders.where(status: @status) if @status
-      orders = orders.where(payment_status: @payment) if @payment
-      orders = orders.search(@query) if @query.present?
+      orders = filtered_orders
 
-      @counts = Order.group(:status).count
-      @summary = {
-        pending_payment: Order.pago_pendiente.count,
-        to_ship: Order.pago_pagado.creado.count,
-        revenue: Order.pago_pagado.sum(:total)
-      }
-      @pagy, @orders = pagy(orders)
+      respond_to do |format|
+        format.html do
+          @counts = Order.group(:status).count
+          @summary = {
+            pending_payment: Order.pago_pendiente.count,
+            to_ship: Order.pago_pagado.creado.count,
+            stale_unpaid: Order.stale_unpaid.count,
+            revenue: Order.pago_pagado.sum(:total)
+          }
+          @pagy, @orders = pagy(orders)
+        end
+        format.csv do
+          send_data orders_to_csv(orders), type: 'text/csv; charset=utf-8',
+                                           filename: "pedidos-#{Date.current.iso8601}.csv"
+        end
+      end
     end
 
     def show
       @order = Order.includes(order_lines: :product).find(params[:id])
+    end
+
+    # Albarán imprimible del pedido (página autónoma para imprimir/PDF).
+    def packing_slip
+      @order = Order.includes(order_lines: :product).find(params[:id])
+      render layout: false
     end
 
     # Guarda las notas internas del pedido.
@@ -73,6 +88,39 @@ module Admin
         redirect_back fallback_location: admin_order_path(order), notice: "Pedido #{order.number} marcado como #{order.status}."
       else
         redirect_back fallback_location: admin_order_path(order), alert: 'El pedido ya está recibido.'
+      end
+    end
+
+    private
+
+    def filtered_orders
+      orders = Order.includes(order_lines: :product).recent_first
+      orders = orders.where(status: @status) if @status
+      orders = orders.where(payment_status: @payment) if @payment
+      orders = orders.search(@query) if @query.present?
+      orders = orders.where(created_at: @from.beginning_of_day..) if @from
+      orders = orders.where(created_at: ..@to.end_of_day) if @to
+      orders = orders.stale_unpaid if @stale
+      orders
+    end
+
+    def parse_date(value)
+      Date.iso8601(value.to_s)
+    rescue ArgumentError
+      nil
+    end
+
+    def orders_to_csv(orders)
+      CSV.generate(headers: true) do |csv|
+        csv << ['Número', 'Fecha', 'Cliente', 'Email', 'Teléfono', 'Dirección', 'CP', 'Ciudad',
+                'Provincia', 'País', 'Idioma', 'Pago', 'Cobro manual', 'Estado', 'Transportista',
+                'Nº seguimiento', 'Transporte', 'Total']
+        orders.each do |o|
+          csv << [o.number, o.created_at.strftime('%Y-%m-%d %H:%M'), o.customer_name, o.email, o.phone,
+                  o.address, o.postal_code, o.city, o.province, o.country, o.locale, o.payment_status,
+                  (o.paid_manually? ? 'sí' : ''), o.status, o.tracking_carrier, o.tracking_number,
+                  o.shipping_cost, o.total]
+        end
       end
     end
   end

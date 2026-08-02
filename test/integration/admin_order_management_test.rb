@@ -49,4 +49,27 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     patch admin_order_path(order), params: { order: { admin_notes: "Llamar antes de enviar" } }
     assert_equal "Llamar antes de enviar", order.reload.admin_notes
   end
+
+  test "exportar pedidos a CSV" do
+    order = pending_order
+    get admin_orders_path(format: :csv)
+    assert_response :success
+    assert_equal "text/csv", response.media_type
+    assert_includes response.body, order.number
+  end
+
+  test "albarán imprimible se renderiza" do
+    order = pending_order
+    get packing_slip_admin_order_path(order)
+    assert_response :success
+    assert_includes response.body, "Albarán"
+    assert_includes response.body, order.number
+  end
+
+  test "filtros de pendientes antiguos y de fechas se renderizan" do
+    get admin_orders_path(stale: 1)
+    assert_response :success
+    get admin_orders_path(from: "2020-01-01", to: Date.current.iso8601)
+    assert_response :success
+  end
 end

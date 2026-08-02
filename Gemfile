@@ -66,3 +66,6 @@ gem "pagy", "~> 9.4"
 gem "phonelib", "~> 0.10.23"
 
 gem "rollbar", "~> 3.8"
+
+# CSV deja de ser gem por defecto en Ruby 3.4 (export de pedidos del admin)
+gem "csv"

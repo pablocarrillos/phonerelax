@@ -6,6 +6,10 @@
     <div style="font-size:24px; font-weight:700; color:#c0392b;"><%= @summary[:pending_payment] %></div>
     <div style="color:var(--muted); font-size:13px;">Pendientes de pago</div>
   <% end %>
+  <%= link_to admin_orders_path(stale: 1), style: card do %>
+    <div style="font-size:24px; font-weight:700; color:#e67e22;"><%= @summary[:stale_unpaid] %></div>
+    <div style="color:var(--muted); font-size:13px;">Sin pagar +<%= Order::STALE_UNPAID_DAYS %> días</div>
+  <% end %>
   <%= link_to admin_orders_path(payment: 'pagado', status: 'creado'), style: card do %>
     <div style="font-size:24px; font-weight:700; color:var(--magenta);"><%= @summary[:to_ship] %></div>
     <div style="color:var(--muted); font-size:13px;">Pagados por enviar</div>
@@ -37,8 +41,12 @@
       <option value="<%= payment %>" <%= 'selected' if @payment == payment %>><%= payment.capitalize %></option>
     <% end %>
   </select>
+  <label style="font-size:13px; color:var(--muted);">Desde <input type="date" name="from" value="<%= @from %>" class="orders-search-select"></label>
+  <label style="font-size:13px; color:var(--muted);">Hasta <input type="date" name="to" value="<%= @to %>" class="orders-search-select"></label>
+  <% if @stale %><input type="hidden" name="stale" value="1"><% end %>
   <button type="submit" class="btn btn-primary" style="padding: 8px 18px;">Filtrar</button>
-  <% if @query.present? || @payment %>
+  <%= link_to '⬇ CSV', admin_orders_path(status: @status, payment: @payment, q: @query, from: @from, to: @to, stale: @stale, format: :csv), class: 'btn btn-outline', style: 'padding: 8px 18px;' %>
+  <% if @query.present? || @payment || @from || @to || @stale %>
     <%= link_to 'Limpiar', admin_orders_path(status: @status), class: 'btn btn-outline', style: 'padding: 8px 18px;' %>
   <% end %>
 <% end %>

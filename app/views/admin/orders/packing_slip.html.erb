@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Albarán <%= @order.number %> · PhoneRelax</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: Arial, Helvetica, sans-serif; color: #1a1a1a; margin: 0; padding: 32px; font-size: 14px; }
+    .sheet { max-width: 760px; margin: 0 auto; }
+    .head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0E1B4D; padding-bottom: 16px; }
+    .brand { font-size: 22px; font-weight: 800; color: #0E1B4D; letter-spacing: 1px; }
+    .brand small { display: block; font-size: 11px; font-weight: 400; color: #666; letter-spacing: 0; margin-top: 4px; }
+    .doc { text-align: right; }
+    .doc h1 { font-size: 18px; margin: 0 0 4px; }
+    .doc .num { font-size: 20px; font-weight: 700; color: #0E1B4D; }
+    .cols { display: flex; gap: 40px; margin: 22px 0; }
+    .cols h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin: 0 0 6px; }
+    .cols p { margin: 0; line-height: 1.5; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid #e2e2e2; }
+    th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; }
+    td.num, th.num { text-align: right; }
+    .total td { font-weight: 700; border-top: 2px solid #0E1B4D; border-bottom: none; font-size: 15px; }
+    .track { margin-top: 18px; padding: 10px 14px; background: #f5f6fb; border-radius: 6px; }
+    .foot { margin-top: 28px; font-size: 11px; color: #888; text-align: center; }
+    .actions { text-align: center; margin-bottom: 20px; }
+    .actions button { padding: 10px 22px; font-size: 14px; cursor: pointer; border: 1px solid #0E1B4D; background: #0E1B4D; color: #fff; border-radius: 6px; }
+    @media print { .actions { display: none; } body { padding: 0; } }
+  </style>
+</head>
+<body>
+  <div class="actions"><button onclick="window.print()">🖨 Imprimir</button></div>
+  <div class="sheet">
+    <div class="head">
+      <div class="brand">PHONERELAX<small>Drop Point Systems S.L.U. · B02631976<br>C/ Carrasqueta 13 · 03610 Petrer (Alicante) · España</small></div>
+      <div class="doc">
+        <h1>Albarán</h1>
+        <div class="num"><%= @order.number %></div>
+        <div><%= l @order.created_at.to_date, format: :long %></div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div>
+        <h2>Enviar a</h2>
+        <p>
+          <strong><%= @order.customer_name %></strong><br>
+          <%= @order.address %><br>
+          <%= [@order.postal_code, @order.city].compact_blank.join(' ') %><br>
+          <%= [@order.province, @order.country].compact_blank.join(', ') %>
+        </p>
+      </div>
+      <div>
+        <h2>Contacto</h2>
+        <p>
+          <%= @order.email %><br>
+          <%= @order.phone.presence || '—' %>
+        </p>
+      </div>
+      <div>
+        <h2>Pago</h2>
+        <p><%= @order.payment_status.capitalize %><%= ' (manual)' if @order.paid_manually? %></p>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Producto</th><th class="num">Cant.</th><th class="num">Precio</th><th class="num">Subtotal</th></tr>
+      </thead>
+      <tbody>
+        <% @order.order_lines.each do |line| %>
+          <tr>
+            <td><%= line.product.name %></td>
+            <td class="num"><%= line.quantity %></td>
+            <td class="num"><%= number_to_currency(line.unit_price, unit: '€', format: '%n %u') %></td>
+            <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
+          </tr>
+        <% end %>
+        <% if @order.shipping_cost.positive? %>
+          <tr><td colspan="3">Transporte</td><td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td></tr>
+        <% end %>
+        <tr class="total"><td colspan="3">Total (IVA incluido)</td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
+      </tbody>
+    </table>
+
+    <% if @order.tracking_number.present? || @order.tracking_carrier.present? %>
+      <p class="track">📦 <strong>Envío:</strong> <%= [@order.tracking_carrier, @order.tracking_number].compact_blank.join(' · ') %></p>
+    <% end %>
+
+    <p class="foot">Gracias por confiar en PhoneRelax · phonerelax.com</p>
+  </div>
+</body>
+</html>
