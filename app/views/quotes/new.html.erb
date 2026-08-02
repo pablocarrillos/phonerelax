@@ -1,0 +1,62 @@
+<% content_for :title, "#{t('quote.meta_title')} · PhoneRelax" %>
+<% content_for :description, t('quote.meta_description') %>
+
+<div class="container section">
+  <h1><%= t('quote.title') %></h1>
+  <p class="lead" style="max-width:760px;"><%= t('quote.subtitle') %></p>
+</div>
+
+<div class="container section">
+  <h2><%= t('quote.benefits_title') %></h2>
+  <div class="grid">
+    <% %w[b1 b2 b3 b4].each do |b| %>
+      <div class="card" style="padding:22px;">
+        <h3 style="margin-top:0;"><%= t("quote.#{b}_title") %></h3>
+        <p class="step"><%= t("quote.#{b}_body") %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="container section">
+  <h2><%= t('quote.sectors_title') %></h2>
+  <ul style="max-width:760px; line-height:1.9;">
+    <li><%= t('quote.sector_colegio') %></li>
+    <li><%= t('quote.sector_empresa') %></li>
+    <li><%= t('quote.sector_evento') %></li>
+    <li><%= t('quote.sector_academia') %></li>
+  </ul>
+</div>
+
+<div class="container section">
+  <h2><%= t('quote.customization_title') %></h2>
+  <p style="max-width:760px;"><%= t('quote.customization_body') %></p>
+  <%# Escaparate de ejemplos de personalización (se completará con fotos reales) %>
+  <div class="grid" id="personalizacion-ejemplos"></div>
+</div>
+
+<div class="container section" style="max-width:720px;" id="formulario">
+  <h2><%= t('quote.form_title') %></h2>
+  <p style="color:var(--muted);"><%= t('quote.form_intro') %></p>
+
+  <%= form_with model: @quote_request, url: quotes_path, local: true do |f| %>
+    <%= invisible_captcha %>
+    <% if @quote_request.errors.any? %>
+      <div class="errors"><ul><% @quote_request.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+    <% end %>
+    <div class="form-grid">
+      <div><%= f.label :name, t('quote.f_name') %><%= f.text_field :name %></div>
+      <div><%= f.label :organization, t('quote.f_organization') %><%= f.text_field :organization %></div>
+      <div><%= f.label :email, t('quote.f_email') %><%= f.email_field :email %></div>
+      <div><%= f.label :phone, t('quote.f_phone') %><%= f.telephone_field :phone %></div>
+      <div>
+        <%= f.label :sector, t('quote.f_sector') %>
+        <%= f.select :sector, QuoteRequest::SECTORS.map { |s| [t("quote.sectors.#{s}"), s] },
+                     { include_blank: true }, { class: 'form-select' } %>
+      </div>
+      <div><%= f.label :units, t('quote.f_units') %><%= f.number_field :units, min: 1 %></div>
+      <div class="full"><%= f.label :message, t('quote.f_message') %><%= f.text_area :message, rows: 5 %></div>
+    </div>
+    <p><%= f.submit t('quote.submit'), class: 'btn btn-magenta' %></p>
+  <% end %>
+</div>

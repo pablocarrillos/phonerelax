@@ -14,6 +14,10 @@ Rails.application.routes.draw do
     get 'contacto', to: 'contacts#new', as: :contacto
     post 'contacto', to: 'contacts#create', as: :contact_messages
 
+    # Presupuesto para pedidos grandes (colegios, empresas, eventos)
+    get 'presupuesto', to: 'quotes#new', as: :quote
+    post 'presupuesto', to: 'quotes#create', as: :quotes
+
     get 'blog', to: 'blog#index', as: :blog
     get 'blog/:slug', to: 'blog#show', as: :blog_post
 
@@ -49,6 +53,7 @@ Rails.application.routes.draw do
     end
     resources :posts, except: :show
     resources :contact_messages, only: [:index, :destroy]
+    resources :quote_requests, only: [:index, :destroy]
     resources :users, except: [:show]
   end
 

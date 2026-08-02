@@ -20,6 +20,7 @@
           <%= link_to admin_orders_path, class: ('active' if controller_name == 'orders') do %>Pedidos<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %><% end %>
           <%= link_to 'Productos', admin_products_path, class: ('active' if controller_name == 'products') %>
           <%= link_to 'Mensajes', admin_contact_messages_path, class: ('active' if controller_name == 'contact_messages') %>
+          <%= link_to 'Presupuestos', admin_quote_requests_path, class: ('active' if controller_name == 'quote_requests') %>
           <%= link_to 'Administradores', admin_users_path, class: ('active' if controller_name == 'users') %>
           <%= link_to 'Ver tienda', root_path %>
         </div>

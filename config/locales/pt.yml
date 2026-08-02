@@ -30,6 +30,7 @@ pt:
     home: Início
     how_it_works: Como funciona?
     products: Produtos
+    bulk: Encomendas grandes
     about: Quem somos
     blog: Blog
     contact: Contacto
@@ -83,6 +84,9 @@ pt:
     products_title: Produtos
     events_title: PhoneRelax para eventos
     blog_title: O nosso blog
+    bulk_cta_title: "Uma escola, empresa ou evento?"
+    bulk_cta_body: "Descontos por volume e personalização com o seu logótipo para encomendas grandes."
+    bulk_cta_button: "Pedir orçamento"
     meta_description: "Bolsas e capas magnéticas PhoneRelax para guardar e bloquear o sinal do telemóvel em salas de aula, escolas, eventos e espaços sem distrações. Fáceis de usar e com envio para todo o país."
   steps:
     title: "São apenas três passos:"
@@ -182,6 +186,7 @@ pt:
     payment_cancelled: Pagamento cancelado. Pode tentar novamente quando quiser.
     verify_failed: Não foi possível verificar o envio. Tente novamente.
     message_sent: Mensagem enviada. Responderemos o mais rápido possível.
+    quote_sent: Pedido enviado. Enviaremos o seu orçamento o mais rápido possível.
     payment_start_failed: "Não foi possível iniciar o pagamento: %{error}"
   order_mailer:
     paid:
@@ -204,3 +209,40 @@ pt:
     summary:
       shipping: Transporte
       total: Total (IVA incluído)
+  quote:
+    meta_title: "Orçamento para escolas, empresas e eventos"
+    meta_description: "Encomendas grandes de bolsas PhoneRelax com descontos por volume e personalização com o seu logótipo. Peça orçamento para a sua escola, empresa ou evento."
+    title: "Encomendas grandes para escolas, empresas e eventos"
+    subtitle: "Descontos por volume, personalização com o seu logótipo e fatura. Diga-nos o que precisa e preparamos um orçamento à medida."
+    benefits_title: "Porquê escolher a PhoneRelax"
+    b1_title: "Descontos por volume"
+    b1_body: "Quantas mais bolsas, melhor preço. Ideal para equipar salas inteiras, equipas ou eventos completos."
+    b2_title: "Personalização com o seu logótipo"
+    b2_body: "Personalizamos as bolsas com o logótipo, as cores ou o design da sua escola, empresa ou evento."
+    b3_title: "Compra direta, sem esperas"
+    b3_body: "Para encomendas pequenas compra na hora na loja; para grandes quantidades fazemos orçamento em 24-48 h."
+    b4_title: "Versão que bloqueia o sinal"
+    b4_body: "A versão SignalBlocking deixa o telemóvel sem rede nem wifi: zero chamadas ou notificações incómodas."
+    sectors_title: "Soluções por setor"
+    sector_colegio: "Escolas: salas de aula sem distrações e exames sem fraude."
+    sector_empresa: "Empresas: reuniões, visitas a fábrica e zonas confidenciais."
+    sector_evento: "Eventos e concertos: experiências sem telemóveis e sem spoilers."
+    sector_academia: "Academias e universidades: exames e concursos."
+    customization_title: "Personalização com a sua marca"
+    customization_body: "Adicionamos o seu logótipo e cores às bolsas. Conte-nos o seu projeto no formulário e mostramos exemplos e opções."
+    form_title: "Peça o seu orçamento"
+    form_intro: "Respondemos em 24-48 h úteis."
+    f_name: "Nome completo"
+    f_organization: "Escola / empresa / organização"
+    f_email: "Email"
+    f_phone: "Telefone"
+    f_sector: "Tipo de organização"
+    f_units: "Unidades aproximadas"
+    f_message: "Diga-nos o que precisa"
+    submit: "Pedir orçamento"
+    sectors:
+      colegio: "Escola"
+      empresa: "Empresa"
+      evento: "Evento / concerto"
+      academia: "Academia / universidade"
+      otro: "Outro"

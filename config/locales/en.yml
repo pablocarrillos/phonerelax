@@ -30,6 +30,7 @@ en:
     home: Home
     how_it_works: How does it work?
     products: Products
+    bulk: Bulk orders
     about: About us
     blog: Blog
     contact: Contact
@@ -83,6 +84,9 @@ en:
     products_title: Products
     events_title: PhoneRelax for events
     blog_title: Our blog
+    bulk_cta_title: "A school, company or event?"
+    bulk_cta_body: "Volume discounts and custom branding with your logo for bulk orders."
+    bulk_cta_button: "Request a quote"
     meta_description: "PhoneRelax magnetic pouches and cases to store and block your phone's signal in classrooms, schools, events and distraction-free spaces. Easy to use, shipping across Europe."
   steps:
     title: "Just three steps:"
@@ -182,6 +186,7 @@ en:
     payment_cancelled: Payment cancelled. You can try again whenever you like.
     verify_failed: We couldn't verify the submission. Please try again.
     message_sent: Message sent. We'll get back to you as soon as possible.
+    quote_sent: Request sent. We'll send you your quote as soon as possible.
     payment_start_failed: "Payment could not be started: %{error}"
   order_mailer:
     paid:
@@ -204,3 +209,40 @@ en:
     summary:
       shipping: Shipping
       total: Total (VAT included)
+  quote:
+    meta_title: "Quote for schools, companies and events"
+    meta_description: "Bulk orders of PhoneRelax pouches with volume discounts and custom branding with your logo. Request a quote for your school, company or event."
+    title: "Bulk orders for schools, companies and events"
+    subtitle: "Volume discounts, custom branding with your logo and invoicing. Tell us what you need and we'll prepare a tailored quote."
+    benefits_title: "Why choose PhoneRelax"
+    b1_title: "Volume discounts"
+    b1_body: "The more pouches, the better the price. Ideal for equipping whole classrooms, teams or full events."
+    b2_title: "Custom branding with your logo"
+    b2_body: "We can brand the pouches with the logo, colours or design of your school, company or event."
+    b3_title: "Buy directly, no waiting"
+    b3_body: "For small orders you can buy instantly in the shop; for large quantities we prepare a quote within 24-48 h."
+    b4_title: "Signal-blocking version"
+    b4_body: "Our SignalBlocking version leaves the phone with no reception or wifi: zero disruptive calls or notifications."
+    sectors_title: "Solutions by sector"
+    sector_colegio: "Schools: distraction-free classrooms and exams without cheating."
+    sector_empresa: "Companies: meetings, plant visits and confidential areas."
+    sector_evento: "Events and concerts: phone-free experiences with no spoilers."
+    sector_academia: "Academies and universities: exams and official tests."
+    customization_title: "Custom branding"
+    customization_body: "We add your logo and colours to the pouches. Tell us about your project in the form and we'll show you examples and options."
+    form_title: "Request your quote"
+    form_intro: "We reply within 24-48 working hours."
+    f_name: "Full name"
+    f_organization: "School / company / organisation"
+    f_email: "Email"
+    f_phone: "Phone"
+    f_sector: "Type of organisation"
+    f_units: "Approximate units"
+    f_message: "Tell us what you need"
+    submit: "Request a quote"
+    sectors:
+      colegio: "School"
+      empresa: "Company"
+      evento: "Event / concert"
+      academia: "Academy / university"
+      otro: "Other"

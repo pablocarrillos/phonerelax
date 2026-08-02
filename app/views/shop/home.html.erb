@@ -78,6 +78,16 @@
 </div>
 
 <div class="container section">
+  <div style="background:linear-gradient(135deg, var(--navy), var(--magenta)); color:#fff; border-radius:var(--radius); padding:28px 32px; display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;">
+    <div>
+      <h2 style="color:#fff; margin:0 0 6px;"><%= t('home.bulk_cta_title') %></h2>
+      <p style="margin:0; opacity:.92;"><%= t('home.bulk_cta_body') %></p>
+    </div>
+    <%= link_to t('home.bulk_cta_button'), quote_path, class: 'btn', style: 'background:#fff; color:var(--navy); font-weight:700; white-space:nowrap;' %>
+  </div>
+</div>
+
+<div class="container section">
   <h2><%= t('home.events_title') %></h2>
   <div class="video-block" data-controller="video" data-video-id-value="3sTkU9dWKgM">
     <img src="/images/site/disfruta-del-momento.jpg" alt="<%= t('home.events_title') %>" width="1200" height="735" loading="lazy">
