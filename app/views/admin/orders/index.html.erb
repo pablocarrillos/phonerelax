@@ -40,7 +40,7 @@
           <td><%= link_to order.number, admin_order_path(order) %></td>
           <td><%= l order.created_at, format: :short %></td>
           <td><%= order.customer_name %></td>
-          <td><%= order.locale == 'pt' ? '🇵🇹 PT' : '🇪🇸 ES' %></td>
+          <td><%= { 'es' => '🇪🇸 ES', 'pt' => '🇵🇹 PT', 'en' => '🇬🇧 EN' }[order.locale] || order.locale.to_s.upcase %></td>
           <td class="num"><%= number_to_currency(order.total, unit: '€', format: '%n %u') %></td>
           <td><span class="badge <%= order.payment_status %>"><%= order.payment_status %></span></td>
           <td><span class="badge <%= order.status %>"><%= order.status %></span></td>

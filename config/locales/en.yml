@@ -1,31 +1,204 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%B %-d, %Y"
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%B %-d, %Y at %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Name
+        email: Email
+        phone: Phone
+        address: Address
+        city: City
+        postal_code: Postal code
+        province: Province
+        country: Country
+      product:
+        name: Name
+        price: Price
+
+  nav:
+    home: Home
+    how_it_works: How does it work?
+    products: Products
+    about: About us
+    blog: Blog
+    contact: Contact
+    cart: Cart
+    admin: Admin
+    privacy: Privacy policy
+  footer:
+    tagline: PhoneRelax — phone-free spaces.
+    admin: Management panel
+  common:
+    add_to_cart: Add to cart
+    sold_out: Sold out
+    back: Back
+    our_products: Our products
+    view_products: View products
+    keep_shopping: Keep shopping
+    checkout: Checkout
+    product: Product
+    price: Price
+    quantity: Quantity
+    subtotal: Subtotal
+    total: Total
+    vat_included: "VAT (%{rate}%) included"
+    whatsapp_aria: Message us on WhatsApp
+    update: Update
+    remove: Remove
+    prev: Previous
+    next: Next
+    slide: "Slide %{n}"
+    play_video: Play video
+    image_n: "Image %{n}"
+    main_nav: Main navigation
+    breadcrumb: Breadcrumb
+    language: Language
+    site_title: "PhoneRelax - Magnetic pouch to store phones in classrooms and events."
+    site_description: "PhoneRelax: magnetic pouches and cases to store and block your phone's signal in classrooms, events and distraction-free spaces. Shipping across Europe."
+  home:
+    slide1: Better concentration and interaction in the classroom
+    slide2: Prevent phone use in unsupervised areas
+    slide3: Users keep custody of their own phones
+    slide4: Enjoy the moment
+    how_title: How does it work?
+    step1_title: "1 · Put the phone in the pouch"
+    step1_body: "Put the mobile phone inside the PhoneRelax pouch. From that moment it will keep or lose signal depending on the type of pouch you use."
+    step2_title: "2 · Close the PhoneRelax pouch"
+    step2_body: "Press the lock button and the phone will be sealed inside. The phone's owner keeps it with them at all times."
+    step3_title: "3 · Open the PhoneRelax pouch"
+    step3_body: "To take the phone out, just bring its lock close to one of the special PhoneRelax opening magnets and remove the phone."
+    schools_title: PhoneRelax for schools
+    products_title: Products
+    events_title: PhoneRelax for events
+    blog_title: Our blog
+    meta_description: "PhoneRelax magnetic pouches and cases to store and block your phone's signal in classrooms, schools, events and distraction-free spaces. Easy to use, shipping across Europe."
+  steps:
+    title: "Just three steps:"
+    step1_title: "1 · Put the phone in the pouch"
+    step1_body: "Put the mobile phone inside the PhoneRelax pouch. From that moment it will keep or lose signal depending on the type of PhoneRelax pouch you use."
+    step2_title: "2 · Close the PhoneRelax pouch"
+    step2_body: "Press the lock button of the PhoneRelax pouch and the phone will be sealed inside. The phone's owner keeps it with them at all times."
+    step3_title: "3 · Open the PhoneRelax pouch"
+    step3_body: "To take the phone out of the PhoneRelax pouch, just bring its lock close to one of the special PhoneRelax opening magnets and remove the phone."
+    step1_alt: Put the phone in the pouch
+    step2_alt: Close the PhoneRelax pouch
+    step3_alt: Open the PhoneRelax pouch
+  product:
+    unavailable: This product is not available right now.
+  cart:
+    title: Your cart
+    empty: Your cart is empty.
+  checkout:
+    title: Checkout
+    base: Net amount
+    vat: VAT
+    total_vat: Total (VAT included)
+    shipping_note: Shipping cost will be calculated once you enter the delivery address.
+    your_data: Your details
+    customer_name: Full name
+    email: Email
+    phone: Phone
+    address: Shipping address
+    city: City
+    postal_code: Postal code
+    province: Province
+    country: Country
+    submit: Calculate shipping cost
+  order:
+    title: "Order %{number}"
+    payment: "Payment:"
+    status: "Status:"
+    shipping: Shipping
+    save_note: Save this page to check the status of your order.
+    statuses:
+      creado: Created
+      enviado: Shipped
+      recibido: Received
+    payment_statuses:
+      pendiente: pending
+      pagado: paid
+  pay:
+    title: Review and pay for your order
+    order_shipping: "Order %{number} · shipping to %{destination}"
+    shipping: Shipping
+    total_to_pay: Total to pay (VAT included)
+    stripe_note: "When you click «Pay» we'll take you to Stripe's secure checkout."
+    pay_button: Pay
+  contact:
+    title: Contact
+    intro_html: "Write to us and we'll get back to you as soon as possible:"
+    form_title: Contact form
+    name: Name
+    email: "Email *"
+    phone: Phone number
+    message: Message
+    submit: Send
+    meta_description: "Questions or need a quote for your school or event? Contact PhoneRelax and we'll help you choose the right solution."
+  about:
+    title: About us
+    intro: "PhoneRelax is based in Alicante (Spain) and was created to solve the problems caused by mobile phone use in schools, concerts and private events."
+    contact_data: Contact details
+    map_title: "Map: C/ Carrasqueta 13, Petrer"
+    meta_description: "Meet PhoneRelax: we help schools and event organisers create distraction-free environments with magnetic phone pouches."
+  how_it_works:
+    title: How does it work?
+    p1: "It's very simple: just put the phone in the PhoneRelax pouch and press its lock button so the phone is sealed inside."
+    p2: "The main advantage is that the phone's owner is responsible for keeping their phone inside the PhoneRelax pouch until it's time to use it again."
+    p3: "To release the phone, just bring the PhoneRelax pouch's lock close to our special PhoneRelax magnet to open it and take the phone out."
+    p4: "We offer two different types of PhoneRelax pouches: one version that includes the pouch and the sealing lock, and a SignalBlocking version that can also block the mobile and wifi signal, so the phone has no reception and won't disturb you with incoming calls or notifications."
+    video_alt: PhoneRelax video
+    faq_title: Frequently asked questions
+    meta_description: "How PhoneRelax works: store the phone in the magnetic pouch, close it and get it back when you need it. A simple way to create distraction-free spaces in classrooms and events."
+    faq:
+      q1: "How does the PhoneRelax pouch work?"
+      a1: "You put the phone in the pouch and press its lock button so it's sealed inside. To release it, bring the lock close to the special PhoneRelax magnet and the pouch opens."
+      q2: "Who keeps the phone?"
+      a2: "The phone's owner, who keeps it inside their PhoneRelax pouch until it's time to use it again."
+      q3: "Does PhoneRelax block signal and wifi?"
+      a3: "The SignalBlocking version does: it blocks the mobile and wifi signal, so the phone has no reception and won't disturb you with calls or notifications. The basic version only seals the pouch."
+      q4: "Can the pouch be opened without the magnet?"
+      a4: "No. The PhoneRelax pouch's lock only opens by bringing it close to the special PhoneRelax magnet."
+      q5: "Where is PhoneRelax used?"
+      a5: "In classrooms and schools, as well as at events and spaces where phone use and distractions should be avoided."
+  blog:
+    title: Blog
+    read_article: "Read article →"
+    meta_description: "PhoneRelax blog: tips and ideas on responsible phone use in classrooms, schools and events, and how to reduce distractions."
+  flash:
+    cart_empty: Your cart is empty.
+    out_of_stock: "Not enough stock of: %{names}. Please adjust the quantities."
+    payment_cancelled: Payment cancelled. You can try again whenever you like.
+    verify_failed: We couldn't verify the submission. Please try again.
+    message_sent: Message sent. We'll get back to you as soon as possible.
+    payment_start_failed: "Payment could not be started: %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Payment received for your order %{number}"
+      title: "Thank you for your purchase, %{name}!"
+      body_html: "We've received the payment for your order <strong>%{number}</strong>. We're preparing it and will let you know when it ships to your address."
+      track: Track my order
+    shipped:
+      subject: "PhoneRelax · Your order %{number} is on its way"
+      title: "Your order is on its way 📦"
+      body_html: "Hi %{name}: your order <strong>%{number}</strong> has shipped to:"
+      track: Track my order
+    payment_reminder:
+      subject: "PhoneRelax · Your order %{number} is pending payment"
+      title: "Your order is waiting for you"
+      body_html: "Hi %{name}: your order <strong>%{number}</strong> is ready but pending payment. You can complete it whenever you like:"
+      pay: Complete payment
+      no_action: "If you no longer want it, you don't need to do anything."
+    summary:
+      shipping: Shipping
+      total: Total (VAT included)

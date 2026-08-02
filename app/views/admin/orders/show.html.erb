@@ -2,7 +2,7 @@
 <h1>Pedido <%= @order.number %></h1>
 
 <p>
-  Idioma del pedido: <strong><%= @order.locale == 'pt' ? '🇵🇹 Portugués' : '🇪🇸 Español' %></strong>
+  Idioma del pedido: <strong><%= { 'es' => '🇪🇸 Español', 'pt' => '🇵🇹 Portugués', 'en' => '🇬🇧 Inglés' }[@order.locale] || @order.locale %></strong>
 </p>
 <p>
   Pago: <span class="badge <%= @order.payment_status %>"><%= @order.payment_status %></span>

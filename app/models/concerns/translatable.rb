@@ -1,6 +1,7 @@
-# Campos con traducción al portugués (columna `<campo>_pt`). `display_<campo>`
-# devuelve la versión portuguesa cuando el idioma activo es :pt y hay traducción;
-# en caso contrario, el contenido original (español).
+# Campos con traducción por idioma (columnas `<campo>_<locale>`, p. ej. name_pt,
+# name_en). `display_<campo>` devuelve la traducción del idioma activo cuando
+# existe; si falta (o es el idioma por defecto), devuelve el contenido original
+# en español.
 module Translatable
   extend ActiveSupport::Concern
 
@@ -8,8 +9,12 @@ module Translatable
     def translates(*fields)
       fields.each do |field|
         define_method("display_#{field}") do
-          translation = public_send("#{field}_pt")
-          I18n.locale == :pt && translation.present? ? translation : public_send(field)
+          if I18n.locale != I18n.default_locale
+            column = "#{field}_#{I18n.locale}"
+            translation = respond_to?(column) ? public_send(column) : nil
+            return translation if translation.present?
+          end
+          public_send(field)
         end
       end
     end

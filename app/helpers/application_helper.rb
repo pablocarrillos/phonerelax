@@ -19,7 +19,7 @@ module ApplicationHelper
   # "https://phonerelax.com"); si no, se usa el dominio que sirve la petición.
   # Código idioma-región para hreflang/inLanguage (es-ES, pt-PT).
   def locale_region
-    { es: 'es-ES', pt: 'pt-PT' }[I18n.locale] || 'es-ES'
+    { es: 'es-ES', pt: 'pt-PT', en: 'en' }[I18n.locale] || 'es-ES'
   end
 
   def canonical_base

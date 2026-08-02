@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   # Rutas públicas bilingües: español sin prefijo, portugués bajo /pt
   # (el idioma por defecto no lleva prefijo; ver default_url_options).
-  scope '(:locale)', locale: /pt/ do
+  scope '(:locale)', locale: /pt|en/ do
     root 'shop#home'
     get 'producto/:id', to: 'shop#product', as: :product_page
 

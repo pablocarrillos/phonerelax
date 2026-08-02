@@ -219,3 +219,77 @@ post_translations = {
 }
 post_translations.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
 puts "Traducciones PT: #{Product.where.not(name_pt: [nil, '']).count} productos, #{Post.where.not(title_pt: [nil, '']).count} artículos"
+
+# --- Traducciones al inglés (en). Idempotente: vacío = se muestra el español. ---
+product_translations_en = {
+  'funda-phonerelax-version-sin-cobertura-movil' => {
+    name_en: 'PhoneRelax SignalBlocking pouch (blocks mobile signal)',
+    description_en: <<~HTML
+      <p>PhoneRelax is a magnetic pouch for mobile phones designed to prevent students or users from getting distracted by their phone in schools, concerts or private events. It's very simple to use: put the phone inside and close its lock so it stays sealed within. To take the phone out, bring the magnetic lock of the PhoneRelax pouch close to one of our special opening magnets and remove the phone.</p>
+      <p><strong>The main advantage of this version that blocks the mobile signal is that the user won't be distracted by notifications, ringtones or vibrations if they forgot to silence or turn off their phone before putting it in the PhoneRelax pouch; this way the user also avoids the anxiety and distraction caused by the constant notifications from different apps.</strong></p>
+      <p><strong>Technical specifications:</strong></p>
+      <p><strong>Product dimensions:</strong> 12 cm wide x 26 cm high x 4.5 cm deep<br><strong>Material:</strong> 30% neoprene, 40% polyester, 20% aluminium and 10% plastic.<br><strong>Compatible phones:</strong> any smartphone with a screen up to 6.8 inches.<br><strong>Colour:</strong> black<br><strong>Weight:</strong> 115 g</p>
+    HTML
+  },
+  'iman-phonerelax' => {
+    name_en: 'PhoneRelax magnet',
+    description_en: <<~HTML
+      <p>It lets the PhoneRelax pouches be opened simply by bringing the rounded part of the pouch's lock close to the centre of the magnet.</p>
+      <p>The magnet has four holes designed to fix it to any surface, preventing it from being lost or from moving during the process of opening the PhoneRelax pouches.</p>
+    HTML
+  },
+  'funda-phonerelax' => {
+    name_en: 'PhoneRelax pouch',
+    description_en: <<~HTML
+      <p>PhoneRelax is a magnetic pouch for mobile phones designed to prevent students or users from getting distracted by their phone in schools, concerts or private events. It's very simple to use: put the phone inside and close its lock so it stays sealed within. To take the phone out, bring the magnetic lock of the PhoneRelax pouch close to one of our special opening magnets and remove the phone.</p>
+      <p><strong>Technical specifications:</strong></p>
+      <p><strong>Product dimensions:</strong> 12 cm wide x 24 cm high x 4.5 cm deep<br><strong>Material:</strong> 40% neoprene, 50% polyester and 10% plastic.<br><strong>Compatible phones:</strong> any smartphone with a screen up to 6.8 inches.<br><strong>Colour:</strong> black<br><strong>Weight:</strong> 82 g</p>
+    HTML
+  }
+}
+product_translations_en.each { |handle, attrs| Product.find_by(shopify_handle: handle)&.update!(attrs) }
+
+post_translations_en = {
+  'cuales-son-las-principales-ventajas-de-prohibir-el-uso-de-telefonos-moviles-ninos-y-adolescentes-en-las-aulas' => {
+    title_en: 'Benefits of controlling mobile phone use in the classroom',
+    excerpt_en: 'Controlling the use of mobile phones in schools for children and teenagers through PhoneRelax pouches has several clear benefits, mainly the promotion of academic focus. Without phone distractions, students tend to pay more attention',
+    body_en: <<~HTML
+      <p>Controlling the use of mobile phones in schools for children and teenagers through PhoneRelax pouches has several clear benefits, mainly the <strong>promotion of academic focus</strong>. Without phone distractions, students tend to pay more attention in class, which can improve their academic performance. It's a fact that fewer distractions mean greater concentration, and without the constant temptation to check their phone, students can focus more on schoolwork and activities, improving their attention span.</p>
+      <p>Another benefit is the <strong>improvement in social interaction</strong>: by limiting phone use, face-to-face interaction between students is encouraged, strengthening their social skills and their ability to work as a team.</p>
+      <p>It has also been shown to <strong>reduce cyberbullying</strong>, since restricting the use of electronic devices can decrease cases of online harassment and access to inappropriate content, helping to create a safer school environment.</p>
+      <p>In the playground it leads to <strong>more physical activity time</strong>, since without the constant use of devices, students have more time for physical activities, which is good for their health and wellbeing.</p>
+      <p>One benefit of limiting phone use in schools is the <strong>development of problem-solving skills</strong>, since by not relying so much on technology, students can develop skills to solve problems more creatively and with more varied resources.</p>
+      <p>Despite these benefits, it's also important to consider how the ban on mobile devices is implemented, since in some cases they can be useful learning tools that, under the supervision of teachers, can support learning in certain areas or tasks.</p>
+    HTML
+  },
+  'ventajas-de-evitar-el-uso-de-moviles-en-conciertos' => {
+    title_en: 'Phone-free concerts or "Phone-Free Events"',
+    excerpt_en: 'Using PhoneRelax pouches to prevent phone use at concerts has several significant benefits, such as a more immersive experience, since attendees can fully enjoy the music, the atmosphere and the connection with the artist and the other attendees.',
+    body_en: <<~HTML
+      <p>Using PhoneRelax pouches to prevent phone use at concerts has several significant benefits, such as a <strong>more immersive experience</strong>, since attendees can fully enjoy the music, the atmosphere and the connection with the artist and the other attendees.</p>
+      <p>These events are already known as "phone free events" or "phone-free experiences".</p>
+      <p>One of the main benefits is <strong>respect for the artist</strong>, since using your phone can distract both the audience and the artist. Avoiding phone use shows respect for the musician's work and lets everyone fully enjoy the show without interruptions.</p>
+      <p>The well-known case of singer Adele asking an attendee at her concert to stop recording and enjoy the show live comes to mind.</p>
+      <p>On the other hand, by not being absorbed in their screens, attendees <strong>improve interpersonal connection</strong>: they are more likely to interact with the people around them, fostering real human connections and sharing meaningful moments with other fans.</p>
+      <p>Another key point is the <strong>improvement in sound quality and the view of the artist</strong>, since raising your phone to record or take photos often blocks other people's view and can reduce sound quality, but above all the direct view of the artist or the event.</p>
+      <p>And last but not least, <strong>creating more authentic memories</strong>: instead of capturing the whole concert on your phone screen, it's better to enjoy the moment and keep the memories in your mind to create more vivid and authentic memories that last over time.</p>
+      <p>While it's understandable to want to capture some moments of the concert, limiting phone use can significantly enrich the experience both for yourself and for the other attendees.</p>
+      <p><img alt="" src="/images/blog/phonerelax-para-eventos-cuerpo.jpg" style="display: block; margin-left: auto; margin-right: auto;"></p>
+    HTML
+  },
+  'y-que-podemos-hacer-para-evitar-que-los-alumnos-usen-los-telefonos-en-las-aulas' => {
+    title_en: 'How to prevent phone use in secondary schools',
+    excerpt_en: 'PhoneRelax magnetic-lock pouches, designed so that students themselves store their phones and cannot access them in designated areas, can be an effective tool for controlling the use of electronic devices in school environments. These pouches offer very clear benefits',
+    body_en: <<~HTML
+      <p>PhoneRelax magnetic-lock pouches, designed so that students themselves store their phones and cannot access them in designated areas, can be an effective tool for controlling the use of electronic devices in school environments. These pouches offer very clear benefits:</p>
+      <p><strong>Safety and control:</strong> by using magnetic locks that prevent access to the phone while it's stored, a higher level of safety and control over the device during school hours is guaranteed.</p>
+      <p><strong>Preventing distractions:</strong> by not being able to easily access phones, the temptation and the possibility of distractions in the classroom are minimised, which can improve students' focus on learning. We even offer a version of the PhoneRelax pouch that leaves the phone without mobile signal, preventing it from receiving calls or app notifications even if the student forgets to silence it.</p>
+      <p><strong>Uniformity and ease of management:</strong> if all students use PhoneRelax pouches, management becomes easier for teachers and school staff, keeping a uniform and clear system for everyone.</p>
+      <p><strong>Students keeping custody of their phones in their PhoneRelax pouches:</strong> by entrusting students with the responsibility of storing their own phones in the PhoneRelax pouches, any problem related to possible damage to the devices is avoided, freeing teachers and school staff from that responsibility.</p>
+      <p>However, it's important to consider some aspects:</p>
+      <p><strong>Specific needs:</strong> some students may have particular needs to access their phones due to medical or family emergencies. There should always be some flexibility to handle these situations.</p>
+    HTML
+  }
+}
+post_translations_en.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
+puts "Traducciones EN: #{Product.where.not(name_en: [nil, '']).count} productos, #{Post.where.not(title_en: [nil, '']).count} artículos"
