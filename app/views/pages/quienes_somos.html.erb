@@ -1,9 +1,10 @@
-<% content_for :title, 'Quiénes somos · PhoneRelax' %>
+<% content_for :title, "#{t('about.title')} · PhoneRelax" %>
+<% content_for :description, t('about.meta_description') %>
 <div class="container section">
-  <h1>Quiénes somos</h1>
-  <p>PhoneRelax está situada en Alicante (España) y nace para dar solución a la problemática surgida con el uso de teléfonos móviles en colegios, institutos, conciertos y eventos privados.</p>
+  <h1><%= t('about.title') %></h1>
+  <p><%= t('about.intro') %></p>
 
-  <h2>Datos de contacto</h2>
+  <h2><%= t('about.contact_data') %></h2>
   <div class="contact-details">
     <p>
       📍 C/ Carrasqueta 13 · 03610 Petrer (Alicante)<br>
@@ -13,7 +14,7 @@
     </p>
     <iframe class="contact-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
             src="https://maps.google.com/maps?q=C%2F%20Carrasqueta%2013%2C%2003610%20Petrer%2C%20Alicante&z=16&output=embed"
-            title="Mapa: C/ Carrasqueta 13, Petrer"></iframe>
+            title="<%= t('about.map_title') %>"></iframe>
   </div>
 </div>
 

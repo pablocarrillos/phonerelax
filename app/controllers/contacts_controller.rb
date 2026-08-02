@@ -10,7 +10,7 @@ class ContactsController < ApplicationController
   def create
     @contact_message = ContactMessage.new(contact_params)
     if @contact_message.save
-      redirect_to contacto_path, notice: 'Mensaje enviado. Te responderemos lo antes posible.'
+      redirect_to contacto_path, notice: t('flash.message_sent')
     else
       render :new, status: :unprocessable_entity
     end
@@ -19,7 +19,7 @@ class ContactsController < ApplicationController
   private
 
   def spam_detected
-    redirect_to contacto_path, alert: 'No se pudo verificar el envío. Inténtalo de nuevo.'
+    redirect_to contacto_path, alert: t('flash.verify_failed')
   end
 
   def contact_params

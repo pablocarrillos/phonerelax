@@ -1,17 +1,41 @@
-<% content_for :title, '¿Cómo funciona? · PhoneRelax' %>
+<% content_for :title, "#{t('how_it_works.title')} · PhoneRelax" %>
+<% content_for :description, t('how_it_works.meta_description') %>
+
+<% faqs = (1..5).map { |i| [t("how_it_works.faq.q#{i}"), t("how_it_works.faq.a#{i}")] } %>
+
+<% content_for :json_ld do %>
+  <%= json_ld_tag(
+        '@context' => 'https://schema.org',
+        '@type' => 'FAQPage',
+        'mainEntity' => faqs.map { |q, a|
+          { '@type' => 'Question', 'name' => q,
+            'acceptedAnswer' => { '@type' => 'Answer', 'text' => a } }
+        }
+      ) %>
+<% end %>
 <div class="container section">
-  <h1>¿Cómo funciona?</h1>
-  <p>Es muy sencillo, solo debes introducir el móvil en la bolsa PhoneRelax y apretar el botón de su cerradura para que el teléfono quede sellado dentro.</p>
-  <p>La principal ventaja es que será el propio dueño del móvil el encargado de custodiar su teléfono dentro de la bolsa PhoneRelax hasta que sea el momento de volverlo a utilizar.</p>
-  <p>Para liberar el móvil tan solo se debe acercar la cerradura de la bolsa PhoneRelax a nuestro imán especial PhoneRelax para poder abrirla y así sacar el teléfono de dentro.</p>
-  <p>Disponemos de dos tipos diferentes de bolsas PhoneRelax: una versión que incluye la bolsa y la cerradura de sellado, y otra versión SignalBlocking que además es capaz de bloquear la señal móvil y wifi, por lo que el teléfono quedará sin cobertura y no molestará con llamadas entrantes o notificaciones.</p>
+  <h1><%= t('how_it_works.title') %></h1>
+  <p><%= t('how_it_works.p1') %></p>
+  <p><%= t('how_it_works.p2') %></p>
+  <p><%= t('how_it_works.p3') %></p>
+  <p><%= t('how_it_works.p4') %></p>
 </div>
 
 <div class="container section">
   <div class="video-block" data-controller="video" data-video-id-value="3sTkU9dWKgM">
-    <img src="/images/site/disfruta-del-momento.jpg" alt="Vídeo PhoneRelax">
-    <button type="button" class="video-play" data-action="video#play" aria-label="Reproducir vídeo">▶</button>
+    <img src="/images/site/disfruta-del-momento.jpg" alt="<%= t('how_it_works.video_alt') %>" width="1200" height="735" loading="lazy">
+    <button type="button" class="video-play" data-action="video#play" aria-label="<%= t('common.play_video') %>">▶</button>
   </div>
 </div>
+
+<section class="container section faq" aria-labelledby="faq-title">
+  <h2 id="faq-title"><%= t('how_it_works.faq_title') %></h2>
+  <% faqs.each do |question, answer| %>
+    <details class="faq-item">
+      <summary><%= question %></summary>
+      <p><%= answer %></p>
+    </details>
+  <% end %>
+</section>
 
 <%= render 'shared/steps' %>

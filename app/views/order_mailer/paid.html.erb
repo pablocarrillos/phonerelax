@@ -1,6 +1,6 @@
-<h1 style="font-size:20px; margin:0 0 12px;">¡Gracias por tu compra, <%= @order.customer_name %>!</h1>
-<p>Hemos recibido el pago de tu pedido <strong><%= @order.number %></strong>. Lo estamos preparando y te avisaremos cuando salga hacia tu dirección.</p>
+<h1 style="font-size:20px; margin:0 0 12px;"><%= t('order_mailer.paid.title', name: @order.customer_name) %></h1>
+<p><%= t('order_mailer.paid.body_html', number: @order.number) %></p>
 <%= render 'order_summary' %>
 <p style="text-align:center; margin:22px 0;">
-  <a href="<%= order_status_url(@order.number) %>" style="background:#0E1B4D; color:#fff; text-decoration:none; padding:12px 26px; border-radius:8px; display:inline-block;">Seguir mi pedido</a>
+  <a href="<%= order_status_url(@order.number) %>" style="background:#0E1B4D; color:#fff; text-decoration:none; padding:12px 26px; border-radius:8px; display:inline-block;"><%= t('order_mailer.paid.track') %></a>
 </p>

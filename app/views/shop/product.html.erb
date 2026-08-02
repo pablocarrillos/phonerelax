@@ -1,5 +1,29 @@
 <% content_for :title, "#{@product.name} · PhoneRelax" %>
+<% content_for :description, plain_summary(@product.description) %>
+<% content_for :og_image, @product.gallery_urls.first %>
+<% breadcrumb_items = [[t('nav.home'), root_path], [@product.name, product_page_path(@product)]] %>
+<% content_for :json_ld do %>
+  <%= json_ld_tag(
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => @product.name,
+        'description' => plain_summary(@product.description),
+        'image' => @product.gallery_urls.map { |u| absolute_url(u) },
+        'sku' => @product.shopify_handle.presence || @product.id.to_s,
+        'brand' => { '@type' => 'Brand', 'name' => 'PhoneRelax' },
+        'offers' => {
+          '@type' => 'Offer',
+          'url' => canonical_url,
+          'priceCurrency' => 'EUR',
+          'price' => format('%.2f', @product.price),
+          'availability' => @product.out_of_stock? ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
+          'itemCondition' => 'https://schema.org/NewCondition'
+        }
+      ) %>
+  <%= json_ld_tag(breadcrumb_schema(breadcrumb_items)) %>
+<% end %>
 <div class="container">
+  <%= render_breadcrumbs(breadcrumb_items) %>
   <div class="product-page">
     <div data-controller="gallery">
       <img src="<%= @product.gallery_urls.first %>" alt="<%= @product.name %>" data-gallery-target="main">
@@ -7,7 +31,7 @@
         <div class="gallery-thumbs">
           <% @product.gallery_urls.each_with_index do |url, i| %>
             <button type="button" class="gallery-thumb <%= 'active' if i.zero? %>" data-gallery-target="thumb"
-                    data-action="gallery#show" data-gallery-url-param="<%= url %>" aria-label="Imagen <%= i + 1 %>">
+                    data-action="gallery#show" data-gallery-url-param="<%= url %>" aria-label="<%= t('common.image_n', n: i + 1) %>">
               <img src="<%= url %>" alt="">
             </button>
           <% end %>
@@ -17,19 +41,19 @@
     <div>
       <h1><%= @product.name %></h1>
       <div class="price"><%= number_to_currency(@product.price, unit: '€', format: '%n %u') %></div>
-      <p class="vat-note">IVA (<%= @product.vat_percentage.to_s.sub(/\.0+\z/, '') %>%) incluido</p>
+      <p class="vat-note"><%= t('common.vat_included', rate: @product.vat_percentage.to_s.sub(/\.0+\z/, '')) %></p>
       <div class="product-description"><%= sanitize @product.description %></div>
       <% if @product.out_of_stock? %>
-        <p><span class="btn btn-soldout" style="padding: 11px 34px;">Agotado</span></p>
-        <p style="color: var(--muted);">Este producto no está disponible ahora mismo.</p>
-        <%= link_to 'Volver', root_path, class: 'btn btn-outline' %>
+        <p><span class="btn btn-soldout" style="padding: 11px 34px;"><%= t('common.sold_out') %></span></p>
+        <p style="color: var(--muted);"><%= t('product.unavailable') %></p>
+        <%= link_to t('common.back'), root_path, class: 'btn btn-outline' %>
       <% else %>
       <%= form_with url: cart_add_path(@product), method: :post, local: true do %>
-        <label for="quantity">Cantidad</label>
+        <label for="quantity"><%= t('common.quantity') %></label>
         <input type="number" name="quantity" id="quantity" value="1" min="1" class="qty-input">
         <div style="margin-top: 16px;">
-          <button type="submit" class="btn btn-primary">Añadir al carrito</button>
-          <%= link_to 'Volver', root_path, class: 'btn btn-outline' %>
+          <button type="submit" class="btn btn-primary"><%= t('common.add_to_cart') %></button>
+          <%= link_to t('common.back'), root_path, class: 'btn btn-outline' %>
         </div>
       <% end %>
       <% end %>

@@ -1,21 +1,21 @@
 <div class="container section">
-  <h2>Son solo tres pasos:</h2>
+  <h2><%= t('steps.title') %></h2>
   <div class="grid">
     <div class="card step-card">
-      <img src="/images/site/paso-1-mete-el-telefono.jpg" alt="Mete el teléfono en la bolsa" class="step-img">
-      <h3>1 · Mete el teléfono en la bolsa</h3>
-      <p class="step">Mete el teléfono móvil en el interior de la bolsa PhoneRelax. A partir de ese momento se quedará con o sin cobertura dependiendo del tipo de bolsa PhoneRelax que utilices.</p>
+      <img src="/images/site/paso-1-mete-el-telefono.jpg" alt="<%= t('steps.step1_alt') %>" class="step-img" width="800" height="1067" loading="lazy">
+      <h3><%= t('steps.step1_title') %></h3>
+      <p class="step"><%= t('steps.step1_body') %></p>
     </div>
     <div class="card step-card">
-      <img src="/images/site/paso-2-cierra-la-bolsa.jpg" alt="Cierra la bolsa PhoneRelax" class="step-img">
-      <h3>2 · Cierra la bolsa PhoneRelax</h3>
-      <p class="step">Aprieta el botón de la cerradura de la bolsa PhoneRelax y el teléfono quedará sellado en su interior. Será el dueño del teléfono el que lo guardará en todo momento.</p>
+      <img src="/images/site/paso-2-cierra-la-bolsa.jpg" alt="<%= t('steps.step2_alt') %>" class="step-img" width="755" height="1006" loading="lazy">
+      <h3><%= t('steps.step2_title') %></h3>
+      <p class="step"><%= t('steps.step2_body') %></p>
     </div>
     <div class="card step-card">
-      <img src="/images/site/paso-3-abre-la-bolsa.jpg" alt="Abre la bolsa PhoneRelax" class="step-img">
-      <h3>3 · Abre la bolsa PhoneRelax</h3>
-      <p class="step">Para retirar el teléfono móvil del interior de la bolsa PhoneRelax solo hay que acercar su cerradura a uno de los imanes especiales de apertura PhoneRelax y sacar el teléfono.</p>
+      <img src="/images/site/paso-3-abre-la-bolsa.jpg" alt="<%= t('steps.step3_alt') %>" class="step-img" width="800" height="1000" loading="lazy">
+      <h3><%= t('steps.step3_title') %></h3>
+      <p class="step"><%= t('steps.step3_body') %></p>
     </div>
   </div>
-  <p style="margin-top: 26px;"><%= link_to 'Nuestros productos', root_path(anchor: 'productos'), class: 'btn btn-primary btn-block' %></p>
+  <p style="margin-top: 26px;"><%= link_to t('common.our_products'), root_path(anchor: 'productos'), class: 'btn btn-primary btn-block' %></p>
 </div>

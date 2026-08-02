@@ -1,4 +1,5 @@
 <% content_for :title, 'Política de Privacidad · PhoneRelax' %>
+<% content_for :description, 'Política de privacidad de PhoneRelax (Drop Point Systems S.L.U.): qué datos recogemos, con qué fin, cuánto los conservamos y qué derechos tienes.' %>
 <div class="container section article">
   <h1>Política de privacidad</h1>
 
@@ -10,7 +11,7 @@
 
   <h2>Qué datos personales recogemos y por qué los recogemos</h2>
   <h3>Formularios de contacto</h3>
-  <p>Si nos contactas mediante el formulario web (<a href="/contacto">el formulario de contacto</a>) guardaremos todos los datos introducidos, además de la IP, para poder darte la mejor atención posible a la hora de responder.</p>
+  <p>Si nos contactas mediante el formulario web (<%= link_to 'el formulario de contacto', contacto_path %>) guardaremos todos los datos introducidos, además de la IP, para poder darte la mejor atención posible a la hora de responder.</p>
   <h3>Pedidos</h3>
   <p>Cuando realizas un pedido recogemos los datos necesarios para gestionarlo y enviarlo (nombre, email, teléfono y dirección de envío). El pago se procesa a través de la pasarela segura de Stripe; Phone Relax no almacena los datos de tu tarjeta.</p>
   <h3>Cookies</h3>

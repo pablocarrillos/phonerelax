@@ -1,13 +1,14 @@
-<% content_for :title, 'Carrito · PhoneRelax' %>
+<% content_for :title, "#{t('cart.title')} · PhoneRelax" %>
+<% content_for :robots, 'noindex, follow' %>
 <div class="container section">
-  <h1>Tu carrito</h1>
+  <h1><%= t('cart.title') %></h1>
   <% if @lines.empty? %>
-    <p>El carrito está vacío.</p>
-    <%= link_to 'Ver productos', root_path(anchor: 'productos'), class: 'btn btn-primary' %>
+    <p><%= t('cart.empty') %></p>
+    <%= link_to t('common.view_products'), root_path(anchor: 'productos'), class: 'btn btn-primary' %>
   <% else %>
     <table class="table">
       <thead>
-        <tr><th>Producto</th><th class="num">Precio</th><th>Cantidad</th><th class="num">Subtotal</th><th></th></tr>
+        <tr><th><%= t('common.product') %></th><th class="num"><%= t('common.price') %></th><th><%= t('common.quantity') %></th><th class="num"><%= t('common.subtotal') %></th><th></th></tr>
       </thead>
       <tbody>
         <% @lines.each do |product, quantity| %>
@@ -17,12 +18,12 @@
             <td>
               <%= form_with url: cart_update_path(product), method: :patch, local: true, style: 'display:flex;gap:8px;align-items:center;' do %>
                 <input type="number" name="quantity" value="<%= quantity %>" min="0" class="qty-input">
-                <button type="submit" class="btn btn-outline" style="padding:7px 12px;">Actualizar</button>
+                <button type="submit" class="btn btn-outline" style="padding:7px 12px;"><%= t('common.update') %></button>
               <% end %>
             </td>
             <td class="num"><%= number_to_currency(product.price * quantity, unit: '€', format: '%n %u') %></td>
             <td>
-              <%= button_to cart_remove_path(product), method: :delete, class: 'btn-trash', title: 'Quitar', 'aria-label': "Quitar #{product.name}" do %>
+              <%= button_to cart_remove_path(product), method: :delete, class: 'btn-trash', title: t('common.remove'), 'aria-label': "#{t('common.remove')} #{product.name}" do %>
                 <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
                   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
@@ -32,15 +33,15 @@
           </tr>
         <% end %>
         <tr class="total-row">
-          <td colspan="3">Total</td>
+          <td colspan="3"><%= t('common.total') %></td>
           <td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>
           <td></td>
         </tr>
       </tbody>
     </table>
     <div style="margin-top: 22px; text-align: right;">
-      <%= link_to 'Seguir comprando', root_path(anchor: 'productos'), class: 'btn btn-outline' %>
-      <%= link_to 'Tramitar pedido', new_order_path, class: 'btn btn-magenta' %>
+      <%= link_to t('common.keep_shopping'), root_path(anchor: 'productos'), class: 'btn btn-outline' %>
+      <%= link_to t('common.checkout'), new_order_path, class: 'btn btn-magenta' %>
     </div>
   <% end %>
 </div>

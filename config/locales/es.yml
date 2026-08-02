@@ -37,3 +37,180 @@ es:
     format: "%{attribute} %{message}"
     messages:
       confirmation: no coincide
+
+  nav:
+    home: Inicio
+    how_it_works: "¿Cómo funciona?"
+    products: Productos
+    about: Quiénes somos
+    blog: Blog
+    contact: Contacto
+    cart: Carrito
+    admin: Admin
+    privacy: Política de privacidad
+  footer:
+    tagline: PhoneRelax — espacios libres de móviles.
+    admin: Panel de gestión
+  common:
+    add_to_cart: Añadir al carrito
+    sold_out: Agotado
+    back: Volver
+    our_products: Nuestros productos
+    view_products: Ver productos
+    keep_shopping: Seguir comprando
+    checkout: Tramitar pedido
+    product: Producto
+    price: Precio
+    quantity: Cantidad
+    subtotal: Subtotal
+    total: Total
+    vat_included: "IVA (%{rate}%) incluido"
+    whatsapp_aria: Escríbenos por WhatsApp
+    update: Actualizar
+    remove: Quitar
+    prev: Anterior
+    next: Siguiente
+    slide: "Diapositiva %{n}"
+    play_video: Reproducir vídeo
+    image_n: "Imagen %{n}"
+    main_nav: Navegación principal
+    breadcrumb: Ruta de navegación
+    language: Idioma
+    site_title: "PhoneRelax - Bolsa magnética para guardar móviles en aulas y eventos."
+    site_description: "PhoneRelax: bolsas y fundas magnéticas para guardar y bloquear la señal del móvil en aulas, eventos y espacios sin distracciones. Envío a toda España."
+  home:
+    slide1: Mejora de la concentración y la interacción en el aula
+    slide2: Evita el uso de móviles en zonas sin vigilancia
+    slide3: Son los usuarios los que custodian sus móviles
+    slide4: Disfruta del momento
+    how_title: "¿Cómo funciona?"
+    step1_title: "1 · Mete el teléfono en la bolsa"
+    step1_body: "Mete el teléfono móvil en el interior de la bolsa PhoneRelax. A partir de ese momento se quedará con o sin cobertura dependiendo del tipo de bolsa que utilices."
+    step2_title: "2 · Cierra la bolsa PhoneRelax"
+    step2_body: "Aprieta el botón de la cerradura y el teléfono quedará sellado en su interior. Será el dueño del teléfono el que lo guardará en todo momento."
+    step3_title: "3 · Abre la bolsa PhoneRelax"
+    step3_body: "Para retirar el teléfono solo hay que acercar su cerradura a uno de los imanes especiales de apertura PhoneRelax y sacar el teléfono."
+    schools_title: PhoneRelax para centros educativos
+    products_title: Productos
+    events_title: PhoneRelax para eventos
+    blog_title: Nuestro blog
+    meta_description: "Bolsas y fundas magnéticas PhoneRelax para guardar y bloquear la señal del móvil en aulas, centros educativos, eventos y espacios sin distracciones. Fáciles de usar y con envío a toda España."
+  steps:
+    title: "Son solo tres pasos:"
+    step1_title: "1 · Mete el teléfono en la bolsa"
+    step1_body: "Mete el teléfono móvil en el interior de la bolsa PhoneRelax. A partir de ese momento se quedará con o sin cobertura dependiendo del tipo de bolsa PhoneRelax que utilices."
+    step2_title: "2 · Cierra la bolsa PhoneRelax"
+    step2_body: "Aprieta el botón de la cerradura de la bolsa PhoneRelax y el teléfono quedará sellado en su interior. Será el dueño del teléfono el que lo guardará en todo momento."
+    step3_title: "3 · Abre la bolsa PhoneRelax"
+    step3_body: "Para retirar el teléfono móvil del interior de la bolsa PhoneRelax solo hay que acercar su cerradura a uno de los imanes especiales de apertura PhoneRelax y sacar el teléfono."
+    step1_alt: Mete el teléfono en la bolsa
+    step2_alt: Cierra la bolsa PhoneRelax
+    step3_alt: Abre la bolsa PhoneRelax
+  product:
+    unavailable: Este producto no está disponible ahora mismo.
+  cart:
+    title: Tu carrito
+    empty: El carrito está vacío.
+  checkout:
+    title: Tramitar pedido
+    base: Base imponible
+    vat: IVA
+    total_vat: Total (IVA incluido)
+    shipping_note: El precio del transporte se calculará tras indicar la dirección de destino.
+    your_data: Tus datos
+    customer_name: Nombre y apellidos
+    email: Email
+    phone: Teléfono
+    address: Dirección de envío
+    city: Ciudad
+    postal_code: Código postal
+    province: Provincia
+    country: País
+    submit: Calcular precio del transporte
+  order:
+    title: "Pedido %{number}"
+    payment: "Pago:"
+    status: "Estado:"
+    shipping: Transporte
+    save_note: Guarda esta página para consultar el estado de tu pedido.
+    statuses:
+      creado: Creado
+      enviado: Enviado
+      recibido: Recibido
+    payment_statuses:
+      pendiente: pendiente
+      pagado: pagado
+  pay:
+    title: Revisa y paga tu pedido
+    order_shipping: "Pedido %{number} · envío a %{destination}"
+    shipping: Transporte
+    total_to_pay: Total a pagar (IVA incluido)
+    stripe_note: "Al pulsar «Pagar» te llevaremos a la pasarela segura de Stripe."
+    pay_button: Pagar
+  contact:
+    title: Contacto
+    intro_html: "Escríbenos y te responderemos lo antes posible:"
+    form_title: Formulario de contacto
+    name: Nombre
+    email: "Correo electrónico *"
+    phone: Número de teléfono
+    message: Comentario
+    submit: Enviar
+    meta_description: "¿Tienes dudas o quieres un presupuesto para tu centro o evento? Contacta con PhoneRelax y te ayudamos a elegir la solución que necesitas."
+  about:
+    title: Quiénes somos
+    intro: "PhoneRelax está situada en Alicante (España) y nace para dar solución a la problemática surgida con el uso de teléfonos móviles en colegios, institutos, conciertos y eventos privados."
+    contact_data: Datos de contacto
+    map_title: "Mapa: C/ Carrasqueta 13, Petrer"
+    meta_description: "Conoce a PhoneRelax: ayudamos a colegios, institutos y organizadores de eventos a crear entornos sin distracciones con bolsas magnéticas para el móvil."
+  how_it_works:
+    title: "¿Cómo funciona?"
+    p1: "Es muy sencillo, solo debes introducir el móvil en la bolsa PhoneRelax y apretar el botón de su cerradura para que el teléfono quede sellado dentro."
+    p2: "La principal ventaja es que será el propio dueño del móvil el encargado de custodiar su teléfono dentro de la bolsa PhoneRelax hasta que sea el momento de volverlo a utilizar."
+    p3: "Para liberar el móvil tan solo se debe acercar la cerradura de la bolsa PhoneRelax a nuestro imán especial PhoneRelax para poder abrirla y así sacar el teléfono de dentro."
+    p4: "Disponemos de dos tipos diferentes de bolsas PhoneRelax: una versión que incluye la bolsa y la cerradura de sellado, y otra versión SignalBlocking que además es capaz de bloquear la señal móvil y wifi, por lo que el teléfono quedará sin cobertura y no molestará con llamadas entrantes o notificaciones."
+    video_alt: Vídeo PhoneRelax
+    faq_title: Preguntas frecuentes
+    meta_description: "Cómo funciona PhoneRelax: guarda el móvil en la bolsa magnética, ciérrala y recupéralo cuando toque. Una forma sencilla de crear espacios sin distracciones en aulas y eventos."
+    faq:
+      q1: "¿Cómo funciona la bolsa PhoneRelax?"
+      a1: "Introduces el móvil en la bolsa y aprietas el botón de su cerradura para que quede sellado dentro. Para liberarlo, acercas la cerradura al imán especial PhoneRelax y la bolsa se abre."
+      q2: "¿Quién custodia el teléfono?"
+      a2: "El propio dueño del móvil, que lo guarda dentro de su bolsa PhoneRelax hasta que llega el momento de volver a usarlo."
+      q3: "¿PhoneRelax bloquea la cobertura y el wifi?"
+      a3: "La versión SignalBlocking sí: bloquea la señal móvil y el wifi, por lo que el teléfono se queda sin cobertura y no molesta con llamadas ni notificaciones. La versión básica solo sella la bolsa."
+      q4: "¿Se puede abrir la bolsa sin el imán?"
+      a4: "No. La cerradura de la bolsa PhoneRelax solo se abre acercándola al imán especial PhoneRelax."
+      q5: "¿Dónde se utiliza PhoneRelax?"
+      a5: "En aulas y centros educativos, así como en eventos y espacios donde se quiere evitar el uso del móvil y las distracciones."
+  blog:
+    title: Blog
+    read_article: "Leer artículo →"
+    meta_description: "Blog de PhoneRelax: consejos e ideas sobre el uso responsable del móvil en aulas, centros educativos y eventos, y cómo reducir las distracciones."
+  flash:
+    cart_empty: El carrito está vacío.
+    out_of_stock: "No hay stock suficiente de: %{names}. Ajusta las cantidades."
+    payment_cancelled: Pago cancelado. Puedes intentarlo de nuevo cuando quieras.
+    verify_failed: No se pudo verificar el envío. Inténtalo de nuevo.
+    message_sent: Mensaje enviado. Te responderemos lo antes posible.
+    payment_start_failed: "No se pudo iniciar el pago: %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Pago recibido de tu pedido %{number}"
+      title: "¡Gracias por tu compra, %{name}!"
+      body_html: "Hemos recibido el pago de tu pedido <strong>%{number}</strong>. Lo estamos preparando y te avisaremos cuando salga hacia tu dirección."
+      track: Seguir mi pedido
+    shipped:
+      subject: "PhoneRelax · Tu pedido %{number} está en camino"
+      title: "Tu pedido está en camino 📦"
+      body_html: "Hola %{name}: tu pedido <strong>%{number}</strong> ya ha salido hacia:"
+      track: Seguir mi pedido
+    payment_reminder:
+      subject: "PhoneRelax · Tu pedido %{number} está pendiente de pago"
+      title: "Tu pedido te está esperando"
+      body_html: "Hola %{name}: tienes el pedido <strong>%{number}</strong> preparado pero pendiente de pago. Puedes completarlo cuando quieras:"
+      pay: Completar el pago
+      no_action: "Si ya no lo quieres, no tienes que hacer nada."
+    summary:
+      shipping: Transporte
+      total: Total (IVA incluido)

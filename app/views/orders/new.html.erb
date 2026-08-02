@@ -1,6 +1,7 @@
-<% content_for :title, 'Tramitar pedido · PhoneRelax' %>
+<% content_for :title, "#{t('checkout.title')} · PhoneRelax" %>
+<% content_for :robots, 'noindex, follow' %>
 <div class="container section" style="max-width: 760px;">
-  <h1>Tramitar pedido</h1>
+  <h1><%= t('checkout.title') %></h1>
 
   <table class="table">
     <tbody>
@@ -11,29 +12,29 @@
         </tr>
       <% end %>
       <% vat_total = @lines.sum { |product, quantity| (product.price - product.price / (1 + product.vat_percentage / 100)) * quantity } %>
-      <tr><td>Base imponible</td><td class="num"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td></tr>
-      <tr><td>IVA</td><td class="num"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
-      <tr class="total-row"><td>Total (IVA incluido)</td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
+      <tr><td><%= t('checkout.base') %></td><td class="num"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <tr><td><%= t('checkout.vat') %></td><td class="num"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <tr class="total-row"><td><%= t('checkout.total_vat') %></td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
     </tbody>
   </table>
-  <p class="shipping-note">El precio del transporte se calculará tras indicar la dirección de destino.</p>
+  <p class="shipping-note"><%= t('checkout.shipping_note') %></p>
 
-  <h2 style="margin-top: 30px;">Tus datos</h2>
+  <h2 style="margin-top: 30px;"><%= t('checkout.your_data') %></h2>
   <%= form_with model: @order, url: orders_path, local: true do |f| %>
     <%= invisible_captcha %>
     <% if @order.errors.any? %>
       <div class="errors"><ul><% @order.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
     <% end %>
     <div class="form-grid">
-      <div><%= f.label :customer_name, 'Nombre y apellidos' %><%= f.text_field :customer_name %></div>
-      <div><%= f.label :email, 'Email' %><%= f.email_field :email %></div>
-      <div><%= f.label :phone, 'Teléfono' %><%= f.telephone_field :phone %></div>
-      <div class="full"><%= f.label :address, 'Dirección de envío' %><%= f.text_field :address %></div>
-      <div><%= f.label :city, 'Ciudad' %><%= f.text_field :city %></div>
-      <div><%= f.label :postal_code, 'Código postal' %><%= f.text_field :postal_code %></div>
-      <div><%= f.label :province, 'Provincia' %><%= f.text_field :province %></div>
-      <div><%= f.label :country, 'País' %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España' }, { class: 'form-select' } %></div>
+      <div><%= f.label :customer_name, t('checkout.customer_name') %><%= f.text_field :customer_name %></div>
+      <div><%= f.label :email, t('checkout.email') %><%= f.email_field :email %></div>
+      <div><%= f.label :phone, t('checkout.phone') %><%= f.telephone_field :phone %></div>
+      <div class="full"><%= f.label :address, t('checkout.address') %><%= f.text_field :address %></div>
+      <div><%= f.label :city, t('checkout.city') %><%= f.text_field :city %></div>
+      <div><%= f.label :postal_code, t('checkout.postal_code') %><%= f.text_field :postal_code %></div>
+      <div><%= f.label :province, t('checkout.province') %><%= f.text_field :province %></div>
+      <div><%= f.label :country, t('checkout.country') %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España' }, { class: 'form-select' } %></div>
     </div>
-    <%= f.submit 'Calcular precio del transporte', class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>
+    <%= f.submit t('checkout.submit'), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>
   <% end %>
 </div>

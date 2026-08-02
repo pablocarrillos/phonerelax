@@ -1,61 +1,62 @@
+<% content_for :description, t('home.meta_description') %>
 <% slides = [
-     ['Mejora de la concentración y la interacción en el aula',
-      '/images/site/alumnos-en-clase.jpg'],
-     ['Evita el uso de móviles en zonas sin vigilancia',
-      '/images/site/toilet-scrolling.webp'],
-     ['Son los usuarios los que custodian sus móviles',
-      '/images/site/alumnos-con-mochila.jpg'],
-     ['Disfruta del momento',
-      '/images/site/disfruta-del-momento-slide.jpg']
+     [t('home.slide1'), '/images/site/alumnos-en-clase.jpg', 1600, 1067],
+     [t('home.slide2'), '/images/site/toilet-scrolling.webp', 720, 480],
+     [t('home.slide3'), '/images/site/alumnos-con-mochila.jpg', 1600, 1067],
+     [t('home.slide4'), '/images/site/disfruta-del-momento-slide.jpg', 1200, 735]
    ] %>
+<% content_for :head do %>
+  <link rel="preload" as="image" href="<%= slides.first[1] %>" fetchpriority="high">
+<% end %>
 <div class="container carousel" data-controller="carousel" style="margin-top: 24px;">
-  <% slides.each_with_index do |(title, image), i| %>
+  <% slides.each_with_index do |(title, image, w, h), i| %>
     <div class="hero carousel-slide <%= 'active' if i.zero? %>" data-carousel-target="slide">
-      <img src="<%= image %>" alt="<%= title %>" loading="<%= i.zero? ? 'eager' : 'lazy' %>">
+      <img src="<%= image %>" alt="<%= title %>" width="<%= w %>" height="<%= h %>"
+           loading="<%= i.zero? ? 'eager' : 'lazy' %>" <%= 'fetchpriority=high'.html_safe if i.zero? %>>
       <div class="hero-card"><h1><%= title %></h1></div>
     </div>
   <% end %>
   <div class="carousel-controls">
-    <button type="button" data-action="carousel#prev" aria-label="Anterior">‹</button>
+    <button type="button" data-action="carousel#prev" aria-label="<%= t('common.prev') %>">‹</button>
     <% slides.each_index do |i| %>
       <button type="button" class="carousel-dot <%= 'active' if i.zero? %>" data-carousel-target="dot"
-              data-action="carousel#go" data-carousel-index-param="<%= i %>" aria-label="Diapositiva <%= i + 1 %>"></button>
+              data-action="carousel#go" data-carousel-index-param="<%= i %>" aria-label="<%= t('common.slide', n: i + 1) %>"></button>
     <% end %>
-    <button type="button" data-action="carousel#next" aria-label="Siguiente">›</button>
+    <button type="button" data-action="carousel#next" aria-label="<%= t('common.next') %>">›</button>
   </div>
 </div>
 
 <div class="container section">
-  <h2>¿Cómo funciona?</h2>
+  <h2><%= t('home.how_title') %></h2>
   <div class="grid">
     <div class="card step-card">
-      <img src="/images/site/paso-1-mete-el-telefono.jpg" alt="Mete el teléfono en la bolsa" class="step-img">
-      <h3>1 · Mete el teléfono en la bolsa</h3>
-      <p class="step">Mete el teléfono móvil en el interior de la bolsa PhoneRelax. A partir de ese momento se quedará con o sin cobertura dependiendo del tipo de bolsa que utilices.</p>
+      <img src="/images/site/paso-1-mete-el-telefono.jpg" alt="<%= t('steps.step1_alt') %>" class="step-img" width="800" height="1067" loading="lazy">
+      <h3><%= t('home.step1_title') %></h3>
+      <p class="step"><%= t('home.step1_body') %></p>
     </div>
     <div class="card step-card">
-      <img src="/images/site/paso-2-cierra-la-bolsa.jpg" alt="Cierra la bolsa PhoneRelax" class="step-img">
-      <h3>2 · Cierra la bolsa PhoneRelax</h3>
-      <p class="step">Aprieta el botón de la cerradura y el teléfono quedará sellado en su interior. Será el dueño del teléfono el que lo guardará en todo momento.</p>
+      <img src="/images/site/paso-2-cierra-la-bolsa.jpg" alt="<%= t('steps.step2_alt') %>" class="step-img" width="755" height="1006" loading="lazy">
+      <h3><%= t('home.step2_title') %></h3>
+      <p class="step"><%= t('home.step2_body') %></p>
     </div>
     <div class="card step-card">
-      <img src="/images/site/paso-3-abre-la-bolsa.jpg" alt="Abre la bolsa PhoneRelax" class="step-img">
-      <h3>3 · Abre la bolsa PhoneRelax</h3>
-      <p class="step">Para retirar el teléfono solo hay que acercar su cerradura a uno de los imanes especiales de apertura PhoneRelax y sacar el teléfono.</p>
+      <img src="/images/site/paso-3-abre-la-bolsa.jpg" alt="<%= t('steps.step3_alt') %>" class="step-img" width="800" height="1000" loading="lazy">
+      <h3><%= t('home.step3_title') %></h3>
+      <p class="step"><%= t('home.step3_body') %></p>
     </div>
   </div>
 </div>
 
 <div class="container section">
-  <h2>PhoneRelax para centros educativos</h2>
+  <h2><%= t('home.schools_title') %></h2>
   <div class="video-block" data-controller="video" data-video-id-value="V8ubHFG1k20">
-    <img src="/images/site/alumnos-en-clase.jpg" alt="PhoneRelax para centros educativos">
-    <button type="button" class="video-play" data-action="video#play" aria-label="Reproducir vídeo">▶</button>
+    <img src="/images/site/alumnos-en-clase.jpg" alt="<%= t('home.schools_title') %>" width="1600" height="1067" loading="lazy">
+    <button type="button" class="video-play" data-action="video#play" aria-label="<%= t('common.play_video') %>">▶</button>
   </div>
 </div>
 
 <div class="container section" id="productos">
-  <h2>Productos</h2>
+  <h2><%= t('home.products_title') %></h2>
   <div class="grid">
     <% @products.each do |product| %>
       <div class="card product-card">
@@ -66,9 +67,9 @@
         <div class="price"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></div>
         <div class="actions">
           <% if product.out_of_stock? %>
-            <span class="btn btn-block btn-soldout">Agotado</span>
+            <span class="btn btn-block btn-soldout"><%= t('common.sold_out') %></span>
           <% else %>
-            <%= button_to 'Añadir al carrito', cart_add_path(product), class: 'btn btn-primary btn-block' %>
+            <%= button_to t('common.add_to_cart'), cart_add_path(product), class: 'btn btn-primary btn-block' %>
           <% end %>
         </div>
       </div>
@@ -77,15 +78,15 @@
 </div>
 
 <div class="container section">
-  <h2>PhoneRelax para eventos</h2>
+  <h2><%= t('home.events_title') %></h2>
   <div class="video-block" data-controller="video" data-video-id-value="3sTkU9dWKgM">
-    <img src="/images/site/disfruta-del-momento.jpg" alt="PhoneRelax para eventos">
-    <button type="button" class="video-play" data-action="video#play" aria-label="Reproducir vídeo">▶</button>
+    <img src="/images/site/disfruta-del-momento.jpg" alt="<%= t('home.events_title') %>" width="1200" height="735" loading="lazy">
+    <button type="button" class="video-play" data-action="video#play" aria-label="<%= t('common.play_video') %>">▶</button>
   </div>
 </div>
 
 <div class="container section">
-  <h2>Nuestro blog</h2>
+  <h2><%= t('home.blog_title') %></h2>
   <div class="grid">
     <%= render partial: 'blog/card', collection: @posts, as: :post %>
   </div>

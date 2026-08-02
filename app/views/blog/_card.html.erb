@@ -4,5 +4,5 @@
   <% end %>
   <h3><%= link_to post.title, blog_post_path(post), style: 'text-decoration:none;' %></h3>
   <p class="step"><%= post.excerpt %></p>
-  <div class="actions"><%= link_to 'Leer artículo →', blog_post_path(post), class: 'read-more' %></div>
+  <div class="actions"><%= link_to t('blog.read_article'), blog_post_path(post), class: 'read-more' %></div>
 </div>

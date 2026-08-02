@@ -2,6 +2,9 @@
 <h1>Pedido <%= @order.number %></h1>
 
 <p>
+  Idioma del pedido: <strong><%= @order.locale == 'pt' ? '🇵🇹 Portugués' : '🇪🇸 Español' %></strong>
+</p>
+<p>
   Pago: <span class="badge <%= @order.payment_status %>"><%= @order.payment_status %></span>
   &nbsp; Estado: <span class="badge <%= @order.status %>"><%= @order.status %></span>
   <% if @order.pago_pendiente? %>

@@ -1,0 +1,204 @@
+pt:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+    month_names: [~, janeiro, fevereiro, março, abril, maio, junho, julho, agosto, setembro, outubro, novembro, dezembro]
+    day_names: [domingo, segunda-feira, terça-feira, quarta-feira, quinta-feira, sexta-feira, sábado]
+    abbr_day_names: [dom, seg, ter, qua, qui, sex, sáb]
+    abbr_month_names: [~, jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez]
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%d de %B de %Y às %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Nome
+        email: Email
+        phone: Telefone
+        address: Morada
+        city: Cidade
+        postal_code: Código postal
+        province: Distrito
+        country: País
+      product:
+        name: Nome
+        price: Preço
+
+  nav:
+    home: Início
+    how_it_works: Como funciona?
+    products: Produtos
+    about: Quem somos
+    blog: Blog
+    contact: Contacto
+    cart: Carrinho
+    admin: Admin
+    privacy: Política de privacidade
+  footer:
+    tagline: PhoneRelax — espaços livres de telemóveis.
+    admin: Painel de gestão
+  common:
+    add_to_cart: Adicionar ao carrinho
+    sold_out: Esgotado
+    back: Voltar
+    our_products: Os nossos produtos
+    view_products: Ver produtos
+    keep_shopping: Continuar a comprar
+    checkout: Finalizar encomenda
+    product: Produto
+    price: Preço
+    quantity: Quantidade
+    subtotal: Subtotal
+    total: Total
+    vat_included: "IVA (%{rate}%) incluído"
+    whatsapp_aria: Escreva-nos pelo WhatsApp
+    update: Atualizar
+    remove: Remover
+    prev: Anterior
+    next: Seguinte
+    slide: "Diapositivo %{n}"
+    play_video: Reproduzir vídeo
+    image_n: "Imagem %{n}"
+    main_nav: Navegação principal
+    breadcrumb: Percurso de navegação
+    language: Idioma
+    site_title: "PhoneRelax - Bolsa magnética para guardar telemóveis em salas de aula e eventos."
+    site_description: "PhoneRelax: bolsas e capas magnéticas para guardar e bloquear o sinal do telemóvel em salas de aula, eventos e espaços sem distrações. Envio para todo o país."
+  home:
+    slide1: Melhoria da concentração e da interação na sala de aula
+    slide2: Evita o uso de telemóveis em zonas sem vigilância
+    slide3: São os utilizadores que guardam os seus telemóveis
+    slide4: Aproveite o momento
+    how_title: Como funciona?
+    step1_title: "1 · Coloque o telemóvel na bolsa"
+    step1_body: "Coloque o telemóvel dentro da bolsa PhoneRelax. A partir desse momento ficará com ou sem rede, consoante o tipo de bolsa que utilizar."
+    step2_title: "2 · Feche a bolsa PhoneRelax"
+    step2_body: "Carregue no botão do fecho e o telemóvel ficará selado no interior. Será o dono do telemóvel a guardá-lo a todo o momento."
+    step3_title: "3 · Abra a bolsa PhoneRelax"
+    step3_body: "Para retirar o telemóvel basta aproximar o seu fecho de um dos ímanes especiais de abertura PhoneRelax e retirar o telemóvel."
+    schools_title: PhoneRelax para escolas
+    products_title: Produtos
+    events_title: PhoneRelax para eventos
+    blog_title: O nosso blog
+    meta_description: "Bolsas e capas magnéticas PhoneRelax para guardar e bloquear o sinal do telemóvel em salas de aula, escolas, eventos e espaços sem distrações. Fáceis de usar e com envio para todo o país."
+  steps:
+    title: "São apenas três passos:"
+    step1_title: "1 · Coloque o telemóvel na bolsa"
+    step1_body: "Coloque o telemóvel dentro da bolsa PhoneRelax. A partir desse momento ficará com ou sem rede, consoante o tipo de bolsa PhoneRelax que utilizar."
+    step2_title: "2 · Feche a bolsa PhoneRelax"
+    step2_body: "Carregue no botão do fecho da bolsa PhoneRelax e o telemóvel ficará selado no interior. Será o dono do telemóvel a guardá-lo a todo o momento."
+    step3_title: "3 · Abra a bolsa PhoneRelax"
+    step3_body: "Para retirar o telemóvel do interior da bolsa PhoneRelax basta aproximar o seu fecho de um dos ímanes especiais de abertura PhoneRelax e retirar o telemóvel."
+    step1_alt: Coloque o telemóvel na bolsa
+    step2_alt: Feche a bolsa PhoneRelax
+    step3_alt: Abra a bolsa PhoneRelax
+  product:
+    unavailable: Este produto não está disponível de momento.
+  cart:
+    title: O seu carrinho
+    empty: O carrinho está vazio.
+  checkout:
+    title: Finalizar encomenda
+    base: Base tributável
+    vat: IVA
+    total_vat: Total (IVA incluído)
+    shipping_note: O preço do transporte será calculado depois de indicar a morada de destino.
+    your_data: Os seus dados
+    customer_name: Nome completo
+    email: Email
+    phone: Telefone
+    address: Morada de envio
+    city: Cidade
+    postal_code: Código postal
+    province: Distrito
+    country: País
+    submit: Calcular preço do transporte
+  order:
+    title: "Encomenda %{number}"
+    payment: "Pagamento:"
+    status: "Estado:"
+    shipping: Transporte
+    save_note: Guarde esta página para consultar o estado da sua encomenda.
+    statuses:
+      creado: Criado
+      enviado: Enviado
+      recibido: Recebido
+    payment_statuses:
+      pendiente: pendente
+      pagado: pago
+  pay:
+    title: Reveja e pague a sua encomenda
+    order_shipping: "Encomenda %{number} · envio para %{destination}"
+    shipping: Transporte
+    total_to_pay: Total a pagar (IVA incluído)
+    stripe_note: "Ao carregar em «Pagar» será encaminhado para a plataforma segura da Stripe."
+    pay_button: Pagar
+  contact:
+    title: Contacto
+    intro_html: "Escreva-nos e responderemos o mais rápido possível:"
+    form_title: Formulário de contacto
+    name: Nome
+    email: "Correio eletrónico *"
+    phone: Número de telefone
+    message: Comentário
+    submit: Enviar
+    meta_description: "Tem dúvidas ou quer um orçamento para a sua escola ou evento? Contacte a PhoneRelax e ajudamos a escolher a solução de que precisa."
+  about:
+    title: Quem somos
+    intro: "A PhoneRelax está situada em Alicante (Espanha) e nasce para dar resposta ao problema do uso de telemóveis em escolas, concertos e eventos privados."
+    contact_data: Dados de contacto
+    map_title: "Mapa: C/ Carrasqueta 13, Petrer"
+    meta_description: "Conheça a PhoneRelax: ajudamos escolas e organizadores de eventos a criar ambientes sem distrações com bolsas magnéticas para o telemóvel."
+  how_it_works:
+    title: Como funciona?
+    p1: "É muito simples: basta introduzir o telemóvel na bolsa PhoneRelax e carregar no botão do fecho para que o telemóvel fique selado no interior."
+    p2: "A principal vantagem é que será o próprio dono do telemóvel o responsável por guardar o seu telemóvel dentro da bolsa PhoneRelax até ser o momento de voltar a utilizá-lo."
+    p3: "Para libertar o telemóvel basta aproximar o fecho da bolsa PhoneRelax do nosso íman especial PhoneRelax para poder abri-la e assim retirar o telemóvel."
+    p4: "Dispomos de dois tipos de bolsas PhoneRelax: uma versão que inclui a bolsa e o fecho de selagem, e outra versão SignalBlocking que, além disso, é capaz de bloquear o sinal móvel e o wifi, pelo que o telemóvel fica sem rede e não incomoda com chamadas ou notificações."
+    video_alt: Vídeo PhoneRelax
+    faq_title: Perguntas frequentes
+    meta_description: "Como funciona a PhoneRelax: guarde o telemóvel na bolsa magnética, feche-a e recupere-o quando quiser. Uma forma simples de criar espaços sem distrações em salas de aula e eventos."
+    faq:
+      q1: "Como funciona a bolsa PhoneRelax?"
+      a1: "Introduz o telemóvel na bolsa e carrega no botão do fecho para que fique selado no interior. Para o libertar, aproxima o fecho do íman especial PhoneRelax e a bolsa abre-se."
+      q2: "Quem guarda o telemóvel?"
+      a2: "O próprio dono do telemóvel, que o guarda dentro da sua bolsa PhoneRelax até chegar o momento de voltar a usá-lo."
+      q3: "A PhoneRelax bloqueia a rede e o wifi?"
+      a3: "A versão SignalBlocking sim: bloqueia o sinal móvel e o wifi, pelo que o telemóvel fica sem rede e não incomoda com chamadas nem notificações. A versão básica apenas sela a bolsa."
+      q4: "É possível abrir a bolsa sem o íman?"
+      a4: "Não. O fecho da bolsa PhoneRelax só abre aproximando-o do íman especial PhoneRelax."
+      q5: "Onde se utiliza a PhoneRelax?"
+      a5: "Em salas de aula e escolas, bem como em eventos e espaços onde se pretende evitar o uso do telemóvel e as distrações."
+  blog:
+    title: Blog
+    read_article: "Ler artigo →"
+    meta_description: "Blog da PhoneRelax: conselhos e ideias sobre o uso responsável do telemóvel em salas de aula, escolas e eventos, e como reduzir as distrações."
+  flash:
+    cart_empty: O carrinho está vazio.
+    out_of_stock: "Não há stock suficiente de: %{names}. Ajuste as quantidades."
+    payment_cancelled: Pagamento cancelado. Pode tentar novamente quando quiser.
+    verify_failed: Não foi possível verificar o envio. Tente novamente.
+    message_sent: Mensagem enviada. Responderemos o mais rápido possível.
+    payment_start_failed: "Não foi possível iniciar o pagamento: %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Pagamento recebido da sua encomenda %{number}"
+      title: "Obrigado pela sua compra, %{name}!"
+      body_html: "Recebemos o pagamento da sua encomenda <strong>%{number}</strong>. Estamos a prepará-la e avisaremos quando seguir para a sua morada."
+      track: Seguir a minha encomenda
+    shipped:
+      subject: "PhoneRelax · A sua encomenda %{number} está a caminho"
+      title: "A sua encomenda está a caminho 📦"
+      body_html: "Olá %{name}: a sua encomenda <strong>%{number}</strong> já seguiu para:"
+      track: Seguir a minha encomenda
+    payment_reminder:
+      subject: "PhoneRelax · A sua encomenda %{number} está pendente de pagamento"
+      title: "A sua encomenda está à sua espera"
+      body_html: "Olá %{name}: tem a encomenda <strong>%{number}</strong> preparada mas pendente de pagamento. Pode concluí-la quando quiser:"
+      pay: Concluir o pagamento
+      no_action: "Se já não a quiser, não precisa de fazer nada."
+    summary:
+      shipping: Transporte
+      total: Total (IVA incluído)

@@ -1,13 +1,43 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<%= I18n.locale %>">
   <head>
-    <title><%= content_for(:title) || "PhoneRelax - Bolsa magnética para guardar móviles en aulas y eventos." %></title>
+    <% page_title = content_for(:title) || t('common.site_title') %>
+    <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= meta_description %>">
+    <link rel="canonical" href="<%= canonical_url %>">
+    <%# Alternativas por idioma (SEO multilingüe) %>
+    <% I18n.available_locales.each do |loc| %>
+      <% if (href = locale_url(loc)) %><link rel="alternate" hreflang="<%= loc %>" href="<%= href %>"><% end %>
+    <% end %>
+    <% if (xdef = locale_url(I18n.default_locale)) %><link rel="alternate" hreflang="x-default" href="<%= xdef %>"><% end %>
+    <meta name="robots" content="<%= content_for(:robots).presence || 'index, follow, max-image-preview:large' %>">
     <link rel="icon" type="image/svg+xml" href="/icon.svg">
+
+    <%# Open Graph (previews en redes sociales y respuestas de IA) %>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PhoneRelax">
+    <meta property="og:locale" content="<%= locale_region.tr('-', '_') %>">
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= meta_description %>">
+    <meta property="og:url" content="<%= canonical_url %>">
+    <meta property="og:image" content="<%= og_image_url %>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= page_title %>">
+    <meta name="twitter:description" content="<%= meta_description %>">
+    <meta name="twitter:image" content="<%= og_image_url %>">
+
+    <%# Datos estructurados: Organización + WebSite en todas las páginas, y el
+        bloque específico de cada página (Producto, Artículo, migas…) si lo define %>
+    <%= json_ld_tag(site_schema) %>
+    <%= yield :json_ld %>
+
+    <%# Recursos a precargar por página (p. ej. la imagen LCP del hero) %>
+    <%= yield :head %>
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Questrial&display=swap" rel="stylesheet">
+    <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
     <%= stylesheet_link_tag :app %>
     <%= javascript_importmap_tags %>
   </head>
@@ -15,19 +45,28 @@
     <header class="site-header">
       <div class="site-header-inner">
         <a href="/" class="brand"><span>PHONE</span><span>RELAX</span></a>
-        <nav class="site-nav">
-        <%= link_to 'Inicio', root_path %>
-        <%= link_to '¿Cómo funciona?', como_funciona_path %>
-        <%= link_to 'Productos', root_path(anchor: 'productos') %>
-        <%= link_to 'Quiénes somos', quienes_somos_path %>
-        <%= link_to 'Blog', blog_path %>
-        <%= link_to 'Contacto', contacto_path %>
+        <nav class="site-nav" aria-label="<%= t('common.main_nav') %>">
+        <%= link_to t('nav.home'), root_path %>
+        <%= link_to t('nav.how_it_works'), como_funciona_path %>
+        <%= link_to t('nav.products'), root_path(anchor: 'productos') %>
+        <%= link_to t('nav.about'), quienes_somos_path %>
+        <%= link_to t('nav.blog'), blog_path %>
+        <%= link_to t('nav.contact'), contacto_path %>
           <%= link_to cart_path, class: 'cart-link' do %>
-            Carrito<% if cart_items_count.positive? %><span class="cart-badge"><%= cart_items_count %></span><% end %>
+            <%= t('nav.cart') %><% if cart_items_count.positive? %><span class="cart-badge"><%= cart_items_count %></span><% end %>
           <% end %>
           <% if authenticated? %>
-            <%= link_to 'Admin', admin_root_path, class: 'admin-link' %>
+            <%= link_to 'Admin', admin_root_path(locale: nil), class: 'admin-link' %>
           <% end %>
+          <span class="lang-switch" aria-label="<%= t('common.language') %>">
+            <% I18n.available_locales.each do |loc| %>
+              <% if loc == I18n.locale %>
+                <span class="lang-current"><%= loc.to_s.upcase %></span>
+              <% elsif (u = locale_url(loc)) %>
+                <%= link_to loc.to_s.upcase, u, rel: 'alternate', hreflang: loc %>
+              <% end %>
+            <% end %>
+          </span>
         </nav>
       </div>
     </header>
@@ -36,24 +75,26 @@
       <div class="flash <%= kind %>"><%= message %></div>
     <% end %>
 
-    <%= yield %>
+    <main id="contenido">
+      <%= yield %>
+    </main>
 
     <a href="https://wa.me/34686341700?text=Hola%2C%20tengo%20una%20duda%20sobre%20PhoneRelax"
-       class="whatsapp-float" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+       class="whatsapp-float" target="_blank" rel="noopener" aria-label="<%= t('common.whatsapp_aria') %>">
       <svg viewBox="0 0 32 32" width="30" height="30" fill="currentColor" aria-hidden="true">
         <path d="M16.004 3C9.377 3 4 8.377 4 15.004c0 2.647.87 5.09 2.338 7.07L4.5 28.5l6.593-1.79a11.94 11.94 0 0 0 4.911 1.047c6.627 0 12.004-5.377 12.004-12.004C28.008 8.377 22.631 3 16.004 3zm0 21.83a9.9 9.9 0 0 1-4.51-1.086l-.323-.17-3.913 1.063 1.077-3.814-.21-.334a9.86 9.86 0 0 1-1.517-5.485c0-5.472 4.452-9.924 9.924-9.924 5.472 0 9.924 4.452 9.924 9.924s-4.452 9.926-9.924 9.926zm5.442-7.43c-.298-.15-1.765-.87-2.038-.97-.273-.099-.472-.148-.67.15-.199.297-.768.969-.942 1.168-.173.199-.347.223-.645.074-.298-.149-1.259-.463-2.398-1.477-.887-.79-1.485-1.767-1.66-2.065-.173-.298-.018-.459.131-.607.134-.133.298-.348.447-.522.149-.174.198-.298.298-.497.1-.198.05-.372-.025-.521-.074-.15-.669-1.612-.917-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.273.298-1.04 1.017-1.04 2.479 0 1.462 1.064 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.29.174-1.413-.074-.124-.273-.198-.571-.347z"/>
       </svg>
     </a>
 
     <footer class="site-footer">
-      <p>PhoneRelax — espacios libres de móviles.</p>
+      <p><%= t('footer.tagline') %></p>
       <p class="footer-contact">
         📍 C/ Carrasqueta 13 · 03610 Petrer (Alicante)<br>
         📞 <a href="tel:+34965371962">(+34) 965 371 962</a> ·
         💬 <a href="https://wa.me/34686341700" target="_blank" rel="noopener">WhatsApp (+34) 686 341 700</a> ·
         ✉️ <%= mail_to 'phonerelaxstore@gmail.com' %>
       </p>
-      <p><%= link_to 'Política de Privacidad', privacidad_path %> · <%= link_to 'Contacto', contacto_path %> · <%= link_to 'Panel de gestión', admin_root_path %></p>
+      <p><%= link_to t('nav.privacy'), privacidad_path %> · <%= link_to t('nav.contact'), contacto_path %> · <%= link_to t('footer.admin'), admin_root_path(locale: nil) %></p>
     </footer>
   </body>
 </html>

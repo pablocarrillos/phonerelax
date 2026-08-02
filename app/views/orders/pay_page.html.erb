@@ -1,7 +1,8 @@
-<% content_for :title, "Pago del pedido #{@order.number} · PhoneRelax" %>
+<% content_for :title, "#{t('pay.title')} · PhoneRelax" %>
+<% content_for :robots, 'noindex, nofollow' %>
 <div class="container section" style="max-width: 760px;">
-  <h1>Revisa y paga tu pedido</h1>
-  <p style="color: var(--muted);">Pedido <strong><%= @order.number %></strong> · envío a <%= [@order.city, @order.country].compact_blank.join(', ') %></p>
+  <h1><%= t('pay.title') %></h1>
+  <p style="color: var(--muted);"><%= t('pay.order_shipping', number: @order.number, destination: [@order.city, @order.country].compact_blank.join(', ')) %></p>
 
   <table class="table">
     <tbody>
@@ -12,16 +13,16 @@
         </tr>
       <% end %>
       <tr>
-        <td>Transporte</td>
+        <td><%= t('pay.shipping') %></td>
         <td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td>
       </tr>
       <tr class="total-row">
-        <td>Total a pagar (IVA incluido)</td>
+        <td><%= t('pay.total_to_pay') %></td>
         <td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td>
       </tr>
     </tbody>
   </table>
 
-  <p style="color: var(--muted); font-size: 14px; margin-top: 14px;">Al pulsar «Pagar» te llevaremos a la pasarela segura de Stripe.</p>
-  <%= button_to 'Pagar', order_payments_path(@order.number), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;', form: { data: { turbo: false } } %>
+  <p style="color: var(--muted); font-size: 14px; margin-top: 14px;"><%= t('pay.stripe_note') %></p>
+  <%= button_to t('pay.pay_button'), order_payments_path(@order.number), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;', form: { data: { turbo: false } } %>
 </div>

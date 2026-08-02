@@ -1,3 +1,19 @@
+/* Fuentes auto-hospedadas (sin render-blocking ni petición a Google) */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 800; /* variable */
+  font-display: swap;
+  src: url('/fonts/archivo-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Questrial';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/questrial-latin.woff2') format('woff2');
+}
+
 /* PhoneRelax — estética de phonerelax.com (Shopify): azul marino, magenta, tarjetas redondeadas */
 :root {
   --navy: #0E1B4D;
@@ -444,3 +460,38 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
   font-size: 14px;
 }
 .btn-exit:hover { background: #e5484d; border-color: #e5484d; color: #fff; }
+
+/* --- Migas de pan (breadcrumbs) --- */
+.breadcrumbs { margin: 4px 0 18px; font-size: 14px; }
+.breadcrumbs ol {
+  list-style: none; display: flex; flex-wrap: wrap; align-items: center;
+  gap: 6px; margin: 0; padding: 0;
+}
+.breadcrumbs li { display: flex; align-items: center; gap: 6px; }
+.breadcrumbs li + li::before { content: "›"; color: var(--muted); }
+.breadcrumbs a { color: var(--muted); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--magenta); text-decoration: underline; }
+.breadcrumbs [aria-current="page"] { color: var(--navy); font-weight: 600; }
+
+/* --- Preguntas frecuentes (FAQ) --- */
+.faq .faq-item {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--card-bg); margin-bottom: 12px; padding: 0 18px;
+}
+.faq .faq-item summary {
+  cursor: pointer; list-style: none; padding: 16px 0;
+  font-weight: 600; color: var(--navy); position: relative; padding-right: 28px;
+}
+.faq .faq-item summary::-webkit-details-marker { display: none; }
+.faq .faq-item summary::after {
+  content: "+"; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  font-size: 22px; color: var(--magenta); line-height: 1;
+}
+.faq .faq-item[open] summary::after { content: "–"; }
+.faq .faq-item p { margin: 0 0 16px; color: var(--muted); line-height: 1.6; }
+
+/* --- Selector de idioma --- */
+.lang-switch { display: inline-flex; gap: 6px; align-items: center; margin-left: 10px; font-size: 14px; }
+.lang-switch a { color: var(--muted); text-decoration: none; padding: 2px 6px; border-radius: 6px; }
+.lang-switch a:hover { color: var(--magenta); background: rgba(214,11,198,0.08); }
+.lang-switch .lang-current { color: var(--navy); font-weight: 700; padding: 2px 6px; border: 1px solid var(--border); border-radius: 6px; }

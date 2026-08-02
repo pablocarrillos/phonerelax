@@ -32,7 +32,7 @@
 <% else %>
   <table class="table">
     <thead>
-      <tr><th>Número</th><th>Fecha</th><th>Cliente</th><th class="num">Total</th><th>Pago</th><th>Estado</th><th></th></tr>
+      <tr><th>Número</th><th>Fecha</th><th>Cliente</th><th>Idioma</th><th class="num">Total</th><th>Pago</th><th>Estado</th><th></th></tr>
     </thead>
     <tbody>
       <% @orders.each do |order| %>
@@ -40,6 +40,7 @@
           <td><%= link_to order.number, admin_order_path(order) %></td>
           <td><%= l order.created_at, format: :short %></td>
           <td><%= order.customer_name %></td>
+          <td><%= order.locale == 'pt' ? '🇵🇹 PT' : '🇪🇸 ES' %></td>
           <td class="num"><%= number_to_currency(order.total, unit: '€', format: '%n %u') %></td>
           <td><span class="badge <%= order.payment_status %>"><%= order.payment_status %></span></td>
           <td><span class="badge <%= order.status %>"><%= order.status %></span></td>
