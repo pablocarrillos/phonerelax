@@ -1,0 +1,10 @@
+<div class="container section">
+  <div class="trusted-by">
+    <p class="trusted-title"><%= t('common.trusted_by') %></p>
+    <ul class="trusted-logos">
+      <% trusted_clients.each do |name| %>
+        <li><%= name %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

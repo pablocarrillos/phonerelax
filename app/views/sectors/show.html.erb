@@ -28,6 +28,8 @@
   </div>
 </div>
 
+<%= render 'shared/trusted_by' if %w[colegios oposiciones].include?(s) %>
+
 <%= render 'shared/steps' %>
 
 <div class="container section">

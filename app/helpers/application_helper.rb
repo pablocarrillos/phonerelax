@@ -26,6 +26,16 @@ module ApplicationHelper
     end
   end
 
+  # Centros que ya usan PhoneRelax (prueba social). Son clientes reales; se
+  # muestran como texto, así que no dependen de que exista la foto.
+  TRUSTED_CLIENTS = [
+    'Kensington School', 'Colegio Norfolk', 'Colegio San Fernando', 'Escola Montcau-La Mola'
+  ].freeze
+
+  def trusted_clients
+    TRUSTED_CLIENTS
+  end
+
   # --- Meta / canonical / Open Graph -------------------------------------
 
   def meta_description
