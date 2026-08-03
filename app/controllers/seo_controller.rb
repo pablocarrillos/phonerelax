@@ -41,22 +41,22 @@ class SeoController < ApplicationController
     entries = []
     entries << sitemap_entry(priority: '1.0', changefreq: 'weekly') { |l| locale_prefix(l).presence || '/' }
 
-    { '/como-funciona' => '0.7', '/presupuesto' => '0.8',
+    { '/pages/como-funciona' => '0.7', '/presupuesto' => '0.8',
       '/colegios' => '0.8', '/eventos' => '0.8', '/empresas' => '0.8', '/oposiciones' => '0.8',
-      '/quienes-somos' => '0.6', '/blog' => '0.7',
-      '/contacto' => '0.5', '/politica-privacidad' => '0.3' }.each do |path, pr|
+      '/pages/quienes-somos' => '0.6', '/blogs/news' => '0.7',
+      '/pages/contact' => '0.5', '/politica-privacidad' => '0.3' }.each do |path, pr|
       entries << sitemap_entry(priority: pr, changefreq: 'monthly') { |l| "#{locale_prefix(l)}#{path}" }
     end
 
     Product.where(active: true).order(:position).each do |product|
       entries << sitemap_entry(lastmod: product.updated_at.to_date.iso8601, priority: '0.9', changefreq: 'weekly') do |l|
-        "#{locale_prefix(l)}/producto/#{product.to_param}"
+        "#{locale_prefix(l)}/products/#{product.to_param}"
       end
     end
 
     Post.order(created_at: :desc).each do |post|
       entries << sitemap_entry(lastmod: post.updated_at.to_date.iso8601, priority: '0.6', changefreq: 'monthly') do |l|
-        "#{locale_prefix(l)}/blog/#{post.slug_for(l)}"
+        "#{locale_prefix(l)}/blogs/news/#{post.slug_for(l)}"
       end
     end
 
@@ -77,10 +77,10 @@ class SeoController < ApplicationController
     out << ''
     out << '## Páginas'
     out << "- [Inicio](#{base}/): tienda y presentación"
-    out << "- [¿Cómo funciona?](#{base}/como-funciona): funcionamiento y preguntas frecuentes"
-    out << "- [Quiénes somos](#{base}/quienes-somos)"
-    out << "- [Blog](#{base}/blog): artículos sobre el uso responsable del móvil"
-    out << "- [Contacto](#{base}/contacto)"
+    out << "- [¿Cómo funciona?](#{base}/pages/como-funciona): funcionamiento y preguntas frecuentes"
+    out << "- [Quiénes somos](#{base}/pages/quienes-somos)"
+    out << "- [Blog](#{base}/blogs/news): artículos sobre el uso responsable del móvil"
+    out << "- [Contacto](#{base}/pages/contact)"
     out << ''
     out << '## Productos'
     products.each do |p|

@@ -6,13 +6,15 @@ Rails.application.routes.draw do
   # (el idioma por defecto no lleva prefijo; ver default_url_options).
   scope '(:locale)', locale: /pt|en/ do
     root 'shop#home'
-    get 'producto/:id', to: 'shop#product', as: :product_page
+    # URLs canónicas con la misma estructura que la tienda Shopify anterior
+    # (/products, /pages/..., /blogs/news) para no perder SEO al migrar.
+    get 'products/:id', to: 'shop#product', as: :product_page
 
-    get 'como-funciona', to: 'pages#como_funciona', as: :como_funciona
-    get 'quienes-somos', to: 'pages#quienes_somos', as: :quienes_somos
+    get 'pages/como-funciona', to: 'pages#como_funciona', as: :como_funciona
+    get 'pages/quienes-somos', to: 'pages#quienes_somos', as: :quienes_somos
     get 'politica-privacidad', to: 'pages#privacidad', as: :privacidad
-    get 'contacto', to: 'contacts#new', as: :contacto
-    post 'contacto', to: 'contacts#create', as: :contact_messages
+    get 'pages/contact', to: 'contacts#new', as: :contacto
+    post 'pages/contact', to: 'contacts#create', as: :contact_messages
 
     # Presupuesto para pedidos grandes (colegios, empresas, eventos)
     get 'presupuesto', to: 'quotes#new', as: :quote
@@ -24,8 +26,8 @@ Rails.application.routes.draw do
     get 'empresas',    to: 'sectors#show', defaults: { sector: 'empresas' },    as: :sector_empresas
     get 'oposiciones', to: 'sectors#show', defaults: { sector: 'oposiciones' }, as: :sector_oposiciones
 
-    get 'blog', to: 'blog#index', as: :blog
-    get 'blog/:slug', to: 'blog#show', as: :blog_post
+    get 'blogs/news', to: 'blog#index', as: :blog
+    get 'blogs/news/:slug', to: 'blog#show', as: :blog_post
 
     get 'carrito', to: 'carts#show', as: :cart
     post 'carrito/anadir/:product_id', to: 'carts#add', as: :cart_add
@@ -40,6 +42,15 @@ Rails.application.routes.draw do
     get 'pedido/:number/pago-cancelado', to: 'orders#cancel', as: :order_cancel
     get 'pedido/:number', to: 'orders#show', as: :order_status
   end
+
+  # Redirecciones 301 de las URLs de la preview (español) a las canónicas Shopify.
+  get 'producto/:id',           to: redirect('/products/%{id}')
+  get 'como-funciona',          to: redirect('/pages/como-funciona')
+  get 'quienes-somos',          to: redirect('/pages/quienes-somos')
+  get 'contacto',               to: redirect('/pages/contact')
+  get 'blog',                   to: redirect('/blogs/news')
+  get 'blog/:slug',             to: redirect('/blogs/news/%{slug}')
+  get 'collections/frontpage',  to: redirect('/')
 
   post 'stripe/webhook', to: 'stripe_webhooks#create'
 
