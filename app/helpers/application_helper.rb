@@ -58,20 +58,28 @@ module ApplicationHelper
     "#{canonical_base}#{request.path}"
   end
 
-  # URL absoluta de la página actual en el idioma dado (para hreflang y el selector
-  # de idioma). El idioma por defecto va sin prefijo. Devuelve nil si no se puede
-  # regenerar la ruta (p. ej. acciones sin GET).
-  def locale_url(locale)
+  # Ruta (relativa al host) de la página actual en el idioma dado. Se usa en el
+  # SELECTOR DE IDIOMA para que la navegación se quede en el mismo host — así en
+  # local no salta a producción. El idioma por defecto va sin prefijo. Devuelve
+  # nil si no se puede regenerar la ruta (p. ej. acciones sin GET).
+  def locale_path(locale)
     # Si la página define rutas equivalentes por idioma (p. ej. un post del blog con
     # slug propio en cada idioma), se usan esas; si no, se regenera la ruta actual.
     if @localized_paths && (path = @localized_paths[locale.to_sym])
-      return absolute_url(path)
+      return path
     end
 
     loc = (locale.to_sym == I18n.default_locale ? nil : locale)
-    absolute_url(url_for(locale: loc, only_path: true))
+    url_for(locale: loc, only_path: true)
   rescue StandardError
     nil
+  end
+
+  # URL ABSOLUTA de la página actual en el idioma dado (para hreflang y Open
+  # Graph, donde el buscador exige URLs absolutas con el dominio canónico).
+  def locale_url(locale)
+    path = locale_path(locale)
+    path && absolute_url(path)
   end
 
   # Convierte una ruta relativa en URL absoluta (deja intactas las ya absolutas).

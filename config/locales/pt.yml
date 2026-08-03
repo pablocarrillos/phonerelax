@@ -25,6 +25,18 @@ pt:
       product:
         name: Nome
         price: Preço
+      user:
+        email_address: Email
+        password: Palavra-passe
+        password_confirmation: Confirmação da palavra-passe
+    errors:
+      messages:
+        blank: não pode ficar em branco
+        invalid: não é válido
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      confirmation: não coincide
 
   nav:
     home: Início
