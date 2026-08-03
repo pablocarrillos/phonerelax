@@ -293,3 +293,95 @@ post_translations_en = {
 }
 post_translations_en.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
 puts "Traducciones EN: #{Product.where.not(name_en: [nil, '']).count} productos, #{Post.where.not(title_en: [nil, '']).count} artículos"
+
+# --- Artículo de blog: normativa del móvil en las aulas en España (es/pt/en). Idempotente. ---
+normativa = Post.find_or_initialize_by(slug: 'normativa-movil-aulas-espana')
+normativa.assign_attributes(
+  image_url: '/images/blog/alumnos-con-telefono.jpg',
+  published_on: '2026-07-15',
+  title: 'Normativa sobre el uso del móvil en las aulas en España',
+  excerpt: 'El uso del móvil en las aulas está cada vez más restringido en España, pero la normativa depende de cada comunidad autónoma. Te contamos quién regula, las diferencias entre Primaria y Secundaria, y cómo aplicar la norma en el día a día del centro.',
+  slug_pt: 'regras-telemovel-salas-de-aula-espanha',
+  title_pt: 'Regras sobre o uso do telemóvel nas salas de aula em Espanha',
+  excerpt_pt: 'O uso do telemóvel nas salas de aula está cada vez mais restringido em Espanha, mas a regulamentação depende de cada comunidade autónoma. Explicamos quem regula, as diferenças entre o Primário e o Secundário e como aplicar a regra no dia a dia da escola.',
+  slug_en: 'mobile-phone-rules-classrooms-spain',
+  title_en: 'Mobile phone rules in classrooms in Spain',
+  excerpt_en: 'Mobile phone use in classrooms is increasingly restricted in Spain, but the rules depend on each autonomous community. We explain who regulates it, the differences between primary and secondary, and how to apply the rule day to day.',
+  body: <<~HTML_ES,
+    <p>El uso del móvil en clase se ha convertido en uno de los grandes debates de la comunidad educativa en España. En los últimos años, la mayoría de las administraciones educativas han pasado de la recomendación a la <strong>restricción</strong>, y muchos centros buscan la mejor forma de aplicarla en el día a día.</p>
+    <h2>¿Quién regula el uso del móvil en los colegios?</h2>
+    <p>En España, la educación es una <strong>competencia transferida a las comunidades autónomas</strong>. Esto significa que no existe una única ley estatal que prohíba el móvil en todos los centros por igual: cada comunidad establece su propia normativa y, dentro de ese marco, cada centro concreta las reglas en su reglamento de régimen interior.</p>
+    <p>El <strong>Consejo Escolar del Estado</strong> se ha pronunciado a favor de limitar el uso de dispositivos en las aulas, y ese consenso se ha ido trasladando a la mayoría de las comunidades.</p>
+    <h2>La tendencia: de la recomendación a la prohibición</h2>
+    <p>La dirección es clara: cada vez más comunidades restringen o prohíben el móvil en los centros educativos. Galicia fue de las primeras en limitarlo en las aulas y, en los últimos cursos, se ha sumado la mayor parte del territorio, con normas que van desde la prohibición total hasta el uso exclusivamente pedagógico y supervisado.</p>
+    <h2>Primaria y Secundaria: reglas distintas</h2>
+    <p>Aunque cada comunidad tiene sus matices, el patrón más habitual es:</p>
+    <ul>
+      <li><strong>Infantil y Primaria:</strong> prohibición general del uso del móvil durante toda la jornada, incluidos los recreos.</li>
+      <li><strong>ESO y Bachillerato:</strong> prohibición como norma, con posibles <strong>excepciones para uso pedagógico</strong> cuando lo indica el profesorado y siempre bajo su supervisión.</li>
+    </ul>
+    <h2>El reto no es la norma, es aplicarla</h2>
+    <p>Aprobar la norma es la parte fácil; el reto está en cumplirla sin convertir al profesorado en vigilante. Las soluciones más comunes —apagar el móvil, dejarlo en la mochila o depositarlo en una caja del aula— generan dudas: ¿quién se responsabiliza si un teléfono se daña o desaparece? ¿Cómo se evita que el alumno lo consulte a escondidas?</p>
+    <h2>Cómo lo resuelve PhoneRelax</h2>
+    <p>Con las bolsas magnéticas <strong>PhoneRelax</strong>, cada alumno guarda su propio teléfono en una bolsa que se sella y solo se abre acercándola al imán del centro. Así:</p>
+    <ul>
+      <li>Es <strong>el propio alumno quien custodia su móvil</strong>: el centro no se hace responsable de posibles daños.</li>
+      <li>La versión <strong>SignalBlocking</strong> deja el teléfono sin cobertura ni wifi, evitando notificaciones o su uso a escondidas, especialmente útil en exámenes.</li>
+      <li>Es un sistema <strong>uniforme y sencillo</strong> para todo el centro, fácil de aplicar cada día.</li>
+    </ul>
+    <h2>Antes de decidir</h2>
+    <p>La normativa concreta depende de cada comunidad autónoma y puede cambiar de un curso a otro, así que conviene consultar la de tu región y reflejarla en el reglamento del centro. Si buscas una forma práctica de cumplirla, <a href="/colegios">PhoneRelax para colegios</a> te ayuda a crear aulas sin distracciones. ¿Necesitas equipar varias aulas? <a href="/presupuesto">Pide presupuesto</a>.</p>
+  HTML_ES
+  body_pt: <<~HTML_PT,
+    <p>O uso do telemóvel na aula tornou-se um dos grandes debates da comunidade educativa em Espanha. Nos últimos anos, a maioria das administrações educativas passou da recomendação à <strong>restrição</strong>, e muitas escolas procuram a melhor forma de a aplicar no dia a dia.</p>
+    <h2>Quem regula o uso do telemóvel nas escolas?</h2>
+    <p>Em Espanha, a educação é uma <strong>competência transferida para as comunidades autónomas</strong>. Ou seja, não existe uma única lei estatal que proíba o telemóvel em todas as escolas da mesma forma: cada comunidade estabelece a sua própria regulamentação e, dentro desse enquadramento, cada escola concretiza as regras no seu regulamento interno.</p>
+    <p>O <strong>Conselho Escolar do Estado</strong> pronunciou-se a favor de limitar o uso de dispositivos nas aulas, e esse consenso foi-se transferindo para a maioria das comunidades.</p>
+    <h2>A tendência: da recomendação à proibição</h2>
+    <p>A direção é clara: cada vez mais comunidades restringem ou proíbem o telemóvel nas escolas. A Galiza foi das primeiras a limitá-lo nas salas de aula e, nos últimos anos letivos, juntou-se a maior parte do território, com regras que vão da proibição total ao uso exclusivamente pedagógico e supervisionado.</p>
+    <h2>Primário e Secundário: regras diferentes</h2>
+    <p>Embora cada comunidade tenha as suas particularidades, o padrão mais habitual é:</p>
+    <ul>
+      <li><strong>Pré-escolar e Primário:</strong> proibição geral do uso do telemóvel durante todo o dia, incluindo os intervalos.</li>
+      <li><strong>Secundário:</strong> proibição como regra, com possíveis <strong>exceções para uso pedagógico</strong> quando indicado pelo professor e sempre sob a sua supervisão.</li>
+    </ul>
+    <h2>O desafio não é a regra, é aplicá-la</h2>
+    <p>Aprovar a regra é a parte fácil; o desafio está em cumpri-la sem transformar o professor em vigilante. As soluções mais comuns — desligar o telemóvel, deixá-lo na mochila ou colocá-lo numa caixa da sala — geram dúvidas: quem se responsabiliza se um telemóvel se danifica ou desaparece? Como se evita que o aluno o consulte às escondidas?</p>
+    <h2>Como a PhoneRelax resolve isto</h2>
+    <p>Com as bolsas magnéticas <strong>PhoneRelax</strong>, cada aluno guarda o seu próprio telemóvel numa bolsa que se sela e só abre aproximando-a do íman da escola. Assim:</p>
+    <ul>
+      <li>É <strong>o próprio aluno que guarda o seu telemóvel</strong>: a escola não se responsabiliza por eventuais danos.</li>
+      <li>A versão <strong>SignalBlocking</strong> deixa o telemóvel sem rede nem wifi, evitando notificações ou o uso às escondidas, especialmente útil em exames.</li>
+      <li>É um sistema <strong>uniforme e simples</strong> para toda a escola, fácil de aplicar todos os dias.</li>
+    </ul>
+    <h2>Antes de decidir</h2>
+    <p>A regulamentação concreta depende de cada comunidade autónoma e pode mudar de um ano letivo para outro, por isso convém consultar a da sua região e refleti-la no regulamento da escola. Se procura uma forma prática de a cumprir, a <a href="/pt/colegios">PhoneRelax para escolas</a> ajuda a criar salas de aula sem distrações. Precisa de equipar várias salas? <a href="/pt/presupuesto">Peça orçamento</a>.</p>
+  HTML_PT
+  body_en: <<~HTML_EN
+    <p>Mobile phone use in class has become one of the biggest debates in Spain's education community. In recent years, most education authorities have moved from recommendation to <strong>restriction</strong>, and many schools are looking for the best way to apply it day to day.</p>
+    <h2>Who regulates phone use in schools?</h2>
+    <p>In Spain, education is a <strong>power devolved to the autonomous communities</strong>. This means there is no single national law banning phones in every school in the same way: each community sets its own rules and, within that framework, each school spells out the details in its internal regulations.</p>
+    <p>The <strong>State School Council</strong> has come out in favour of limiting the use of devices in classrooms, and that consensus has spread to most communities.</p>
+    <h2>The trend: from recommendation to ban</h2>
+    <p>The direction is clear: more and more communities are restricting or banning phones in schools. Galicia was one of the first to limit it in classrooms, and in recent school years most of the country has followed, with rules ranging from a total ban to strictly educational, supervised use.</p>
+    <h2>Primary and secondary: different rules</h2>
+    <p>Although each community has its own nuances, the most common pattern is:</p>
+    <ul>
+      <li><strong>Pre-school and primary:</strong> a general ban on phone use throughout the day, including breaks.</li>
+      <li><strong>Secondary:</strong> a ban as the rule, with possible <strong>exceptions for educational use</strong> when the teacher decides and always under their supervision.</li>
+    </ul>
+    <h2>The challenge isn't the rule, it's enforcing it</h2>
+    <p>Passing the rule is the easy part; the challenge is enforcing it without turning teachers into watchmen. The most common solutions — turning the phone off, leaving it in the backpack or dropping it in a classroom box — raise doubts: who is liable if a phone is damaged or goes missing? How do you stop a student from secretly checking it?</p>
+    <h2>How PhoneRelax solves it</h2>
+    <p>With <strong>PhoneRelax</strong> magnetic pouches, each student stores their own phone in a pouch that seals and only opens by bringing it close to the school's magnet. This way:</p>
+    <ul>
+      <li><strong>Each student keeps their own phone</strong>: the school is not liable for any damage.</li>
+      <li>The <strong>SignalBlocking</strong> version leaves the phone with no reception or wifi, preventing notifications or secret use, especially useful during exams.</li>
+      <li>It's a <strong>uniform, simple</strong> system for the whole school, easy to apply every day.</li>
+    </ul>
+    <h2>Before you decide</h2>
+    <p>The specific rules depend on each autonomous community and can change from one school year to the next, so it's worth checking your region's and reflecting it in your school's regulations. If you're looking for a practical way to comply, <a href="/en/colegios">PhoneRelax for schools</a> helps you create distraction-free classrooms. Need to equip several classrooms? <a href="/en/presupuesto">Request a quote</a>.</p>
+  HTML_EN
+)
+normativa.save!
+puts "Artículo normativa: es/pt/en OK (posts: #{Post.count})"
