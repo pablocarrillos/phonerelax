@@ -242,6 +242,7 @@ es:
     sector_academia: "Academias y universidades: exámenes y oposiciones."
     customization_title: "Personalización con tu marca"
     customization_body: "Añadimos tu logo y colores a las bolsas. Cuéntanos tu proyecto en el formulario y te enseñamos ejemplos y opciones."
+    customization_alt: "Bolsa PhoneRelax personalizada para %{name}"
     form_title: "Pide tu presupuesto"
     form_intro: "Te respondemos en 24-48 h laborables."
     f_name: "Nombre y apellidos"

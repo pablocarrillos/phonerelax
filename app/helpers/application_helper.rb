@@ -9,6 +9,23 @@ module ApplicationHelper
   # Imagen por defecto para Open Graph (previews en redes y en respuestas de IA).
   DEFAULT_OG_IMAGE = '/images/site/alumnos-en-clase.jpg'.freeze
 
+  # Ejemplos reales de personalización (fotos de bolsas con la marca del cliente).
+  # Se muestran en la galería de /presupuesto solo si el archivo existe en
+  # public/images/personalizacion/, así que basta con dejar ahí la foto.
+  CUSTOMIZATION_EXAMPLES = [
+    { file: 'kensington-school.jpg',    name: 'Kensington School' },
+    { file: 'colegio-norfolk.jpg',      name: 'Colegio Norfolk' },
+    { file: 'colegio-san-fernando.jpg', name: 'Colegio San Fernando' },
+    { file: 'montcau-la-mola.jpg',      name: 'Escola Montcau-La Mola' },
+    { file: 'phonerelax-basica.jpg',    name: 'PhoneRelax' }
+  ].freeze
+
+  def customization_examples
+    CUSTOMIZATION_EXAMPLES.select do |ex|
+      File.exist?(Rails.root.join('public', 'images', 'personalizacion', ex[:file]))
+    end
+  end
+
   # --- Meta / canonical / Open Graph -------------------------------------
 
   def meta_description

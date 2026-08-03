@@ -230,6 +230,7 @@ en:
     sector_academia: "Academies and universities: exams and official tests."
     customization_title: "Custom branding"
     customization_body: "We add your logo and colours to the pouches. Tell us about your project in the form and we'll show you examples and options."
+    customization_alt: "Custom PhoneRelax pouch for %{name}"
     form_title: "Request your quote"
     form_intro: "We reply within 24-48 working hours."
     f_name: "Full name"

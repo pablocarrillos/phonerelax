@@ -230,6 +230,7 @@ pt:
     sector_academia: "Academias e universidades: exames e concursos."
     customization_title: "Personalização com a sua marca"
     customization_body: "Adicionamos o seu logótipo e cores às bolsas. Conte-nos o seu projeto no formulário e mostramos exemplos e opções."
+    customization_alt: "Bolsa PhoneRelax personalizada para %{name}"
     form_title: "Peça o seu orçamento"
     form_intro: "Respondemos em 24-48 h úteis."
     f_name: "Nome completo"
