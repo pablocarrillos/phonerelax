@@ -193,6 +193,17 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     assert_equal stock_was + 1, products(:funda).reload.stock
   end
 
+  test "un pedido reembolsado no se puede marcar como enviado" do
+    order = paid_order(manual: true)
+    order.refund!(order.amount_paid)
+    assert_nil order.next_status
+    patch advance_admin_order_path(order), params: { tracking_carrier: "SEUR", tracking_number: "X1" }
+    assert_equal "creado", order.reload.status
+    get admin_order_path(order)
+    assert_response :success
+    assert_no_match "Marcar como enviado", response.body
+  end
+
   test "un pedido pagado también se puede borrar y devuelve su stock" do
     order = paid_order(manual: true)
     stock_was = products(:funda).stock

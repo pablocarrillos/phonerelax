@@ -68,6 +68,8 @@ class Order < ApplicationRecord
   end
 
   def next_status
+    return if pago_reembolsado? # un pedido reembolsado ya no avanza (no se envía)
+
     { "creado" => "enviado", "enviado" => "recibido" }[status]
   end
 
