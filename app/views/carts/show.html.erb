@@ -33,12 +33,13 @@
           </tr>
         <% end %>
         <tr class="total-row">
-          <td colspan="3"><%= t('common.total') %></td>
+          <td colspan="3"><%= t('checkout.total_vat') %></td>
           <td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>
           <td></td>
         </tr>
       </tbody>
     </table>
+    <p class="shipping-note"><%= t('checkout.shipping_note') %></p>
     <div style="margin-top: 22px; text-align: right;">
       <%= link_to t('common.keep_shopping'), root_path(anchor: 'productos'), class: 'btn btn-outline' %>
       <%= link_to t('common.checkout'), new_order_path, class: 'btn btn-magenta' %>
