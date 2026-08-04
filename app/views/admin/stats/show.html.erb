@@ -1,0 +1,63 @@
+<h1>Estadísticas de ventas</h1>
+
+<% card = 'flex:1; min-width:170px; padding:14px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius);' %>
+<div style="display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 26px;">
+  <% { 'Hoy' => @totals[:today], 'Esta semana' => @totals[:week], 'Este mes' => @totals[:month], 'Total histórico' => @totals[:all] }.each do |label, t| %>
+    <div style="<%= card %>">
+      <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= number_to_currency(t[:revenue], unit: '€', format: '%n %u') %></div>
+      <div style="color:var(--muted); font-size:13px;"><%= label %> · <%= t[:orders] %> pedidos · <%= t[:units] %> uds.</div>
+    </div>
+  <% end %>
+</div>
+
+<div class="lang-tabs" data-controller="tabs">
+  <div class="tab-buttons" role="tablist">
+    <button type="button" class="tab-button active" data-tabs-target="tab" data-action="tabs#select">Diario</button>
+    <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">Semanal</button>
+    <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">Mensual</button>
+  </div>
+
+  <% max_daily = [@daily.map { |_, t| t[:revenue] }.max, 1].max
+     max_weekly = [@weekly.map { |_, t| t[:revenue] }.max, 1].max
+     max_monthly = [@monthly.map { |_, t| t[:revenue] }.max, 1].max %>
+
+  <% [
+       [ @daily,   max_daily,   ->(d) { l(d, format: '%a %d/%m') } ],
+       [ @weekly,  max_weekly,  ->(d) { "#{l(d, format: '%d/%m')} – #{l(d + 6, format: '%d/%m')}" } ],
+       [ @monthly, max_monthly, ->(d) { l(d, format: '%B %Y') } ]
+     ].each_with_index do |(serie, maximo, etiqueta), i| %>
+    <div class="tab-panel" data-tabs-target="panel" <%= 'hidden' unless i.zero? %>>
+      <table class="table" style="max-width: 860px;">
+        <thead><tr><th>Periodo</th><th class="num">Pedidos</th><th class="num">Unidades</th><th class="num">Ingresos</th><th style="width:34%;"></th></tr></thead>
+        <tbody>
+          <% serie.reverse_each do |fecha, t| %>
+            <tr>
+              <td><%= etiqueta.call(fecha) %></td>
+              <td class="num"><%= t[:orders] %></td>
+              <td class="num"><%= t[:units] %></td>
+              <td class="num"><%= number_to_currency(t[:revenue], unit: '€', format: '%n %u') %></td>
+              <td><div class="stat-bar" style="width: <%= ((t[:revenue] / maximo) * 100).round(1) %>%;"></div></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
+
+<% if @top_products.any? %>
+  <h2 style="margin-top: 32px;">Productos más vendidos</h2>
+  <table class="table" style="max-width: 640px;">
+    <thead><tr><th>Producto</th><th class="num">Unidades</th><th class="num">Ingresos (líneas)</th></tr></thead>
+    <tbody>
+      <% @top_products.each do |name, units, revenue| %>
+        <tr>
+          <td><%= name %></td>
+          <td class="num"><%= units %></td>
+          <td class="num"><%= number_to_currency(revenue, unit: '€', format: '%n %u') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p style="color:var(--muted); font-size:13px;">Los ingresos por producto son brutos (líneas de pedido, sin transporte ni reembolsos). Las cifras de arriba son netas: descuentan los reembolsos.</p>
+<% end %>

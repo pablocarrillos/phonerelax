@@ -72,6 +72,7 @@ Rails.application.routes.draw do
     end
     resources :posts, except: :show
     resources :users, except: [ :show ]
+    get "estadisticas", to: "stats#show", as: :stats
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
