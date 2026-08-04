@@ -147,6 +147,7 @@ es:
     payment_statuses:
       pendiente: pendiente
       pagado: pagado
+      reembolsado: reembolsado
   pay:
     title: Revisa y paga tu pedido
     order_shipping: "Pedido %{number} · envío a %{destination}"

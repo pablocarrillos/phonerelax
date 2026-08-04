@@ -109,4 +109,83 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     get admin_orders_path
     assert_redirected_to new_session_path
   end
+
+  # --- Reembolsos ---
+
+  def paid_order(manual: false)
+    order = pending_order
+    order.update!(total: BigDecimal("22.90"), shipping_cost: BigDecimal("7.95"),
+                  payment_status: :pagado, paid_manually: manual,
+                  stripe_session_id: manual ? nil : "cs_test_abc")
+    order
+  end
+
+  test "reembolso parcial vía Stripe deja el pedido pagado y anota el importe" do
+    order = paid_order
+    refunds = with_stripe_refund_stubs do
+      post refund_admin_order_path(order), params: { amount: "10,50" }
+    end
+    assert_redirected_to admin_order_path(order)
+    assert_equal [ { payment_intent: "pi_test_1", amount: 1050 } ], refunds
+    order.reload
+    assert order.pago_pagado?
+    assert_equal BigDecimal("10.5"), order.refunded_amount
+    assert_equal "pi_test_1", order.stripe_payment_intent_id
+    assert_equal BigDecimal("12.4"), order.refundable_amount
+  end
+
+  test "reembolso total pasa el pedido a «reembolsado»" do
+    order = paid_order
+    refunds = with_stripe_refund_stubs do
+      post refund_admin_order_path(order), params: { amount: "22.90" }
+    end
+    assert_equal 2290, refunds.first[:amount]
+    order.reload
+    assert order.pago_reembolsado?
+    assert_equal BigDecimal("22.9"), order.refunded_amount
+    assert_equal "reembolsado", order.order_events.last.event
+  end
+
+  test "dos reembolsos parciales acaban en «reembolsado»" do
+    order = paid_order
+    with_stripe_refund_stubs do
+      post refund_admin_order_path(order), params: { amount: "12.90" }
+      post refund_admin_order_path(order), params: { amount: "10.00" }
+    end
+    assert order.reload.pago_reembolsado?
+  end
+
+  test "el reembolso de un cobro manual se registra sin llamar a Stripe" do
+    order = paid_order(manual: true)
+    post refund_admin_order_path(order), params: { amount: "22.90" }
+    assert_redirected_to admin_order_path(order)
+    assert order.reload.pago_reembolsado?
+  end
+
+  test "no se puede reembolsar más de lo cobrado ni un pedido sin pagar" do
+    order = paid_order
+    post refund_admin_order_path(order), params: { amount: "99" }
+    assert_equal 0, order.reload.refunded_amount
+    unpaid = pending_order
+    post refund_admin_order_path(unpaid), params: { amount: "5" }
+    assert_equal 0, unpaid.reload.refunded_amount
+  end
+
+  private
+
+  # Stubs de Stripe para reembolsos: la sesión devuelve un payment_intent fijo y
+  # Refund.create captura sus argumentos en la lista que se devuelve al bloque.
+  def with_stripe_refund_stubs
+    session = Struct.new(:payment_intent).new("pi_test_1")
+    retrieve_original = Stripe::Checkout::Session.method(:retrieve)
+    refund_original = Stripe::Refund.method(:create)
+    refunds = []
+    Stripe::Checkout::Session.singleton_class.define_method(:retrieve) { |*_args| session }
+    Stripe::Refund.singleton_class.define_method(:create) { |**kwargs| refunds << kwargs; nil }
+    yield
+    refunds
+  ensure
+    Stripe::Checkout::Session.singleton_class.define_method(:retrieve, retrieve_original)
+    Stripe::Refund.singleton_class.define_method(:create, refund_original)
+  end
 end

@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       patch :advance, on: :member # creado → enviado → recibido
       patch :revert, on: :member  # deshace un avance de estado
       post :mark_paid, on: :member # cobro manual (fuera de Stripe)
+      post :refund, on: :member # reembolso total o parcial
       post :payment_reminder, on: :member
       get :packing_slip, on: :member # albarán imprimible
     end

@@ -22,6 +22,23 @@
     </div>
   <% end %>
 
+  <% if @order.pago_pagado? %>
+    <%= form_with url: refund_admin_order_path(@order), method: :post, data: { turbo: false },
+                  onsubmit: "return confirm('¿Reembolsar el importe indicado del pedido #{@order.number}?#{@order.paid_manually? ? '' : ' Se devolverá a la tarjeta del cliente a través de Stripe.'}')" do %>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; margin-bottom:4px;">
+        <div><label style="font-size:13px; color:var(--muted);">Importe a reembolsar (€)</label><br>
+          <input type="number" name="amount" step="0.01" min="0.01" max="<%= @order.refundable_amount %>"
+                 value="<%= format('%.2f', @order.refundable_amount) %>" class="orders-search-input" style="width:150px;" required></div>
+        <button type="submit" class="btn btn-outline">Reembolsar</button>
+      </div>
+      <% if @order.refunded_amount.positive? %>
+        <p style="margin:4px 0 8px; color:var(--muted); font-size:13px;">Ya reembolsado: <%= format('%.2f', @order.refunded_amount) %> € de <%= format('%.2f', @order.amount_paid) %> € cobrados.</p>
+      <% end %>
+    <% end %>
+  <% elsif @order.pago_reembolsado? %>
+    <p style="margin:0 0 12px; color:var(--muted);">Devuelto íntegramente al cliente: <%= format('%.2f', @order.refunded_amount) %> €<%= @order.paid_manually? ? ' (cobro manual, devolución registrada a mano)' : ' vía Stripe' %>.</p>
+  <% end %>
+
   <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end;">
     <% if @order.next_status == 'enviado' %>
       <%= form_with url: advance_admin_order_path(@order), method: :patch, data: { turbo: false } do %>

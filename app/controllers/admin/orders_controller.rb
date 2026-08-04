@@ -67,6 +67,24 @@ module Admin
       end
     end
 
+
+    # Reembolsa el importe indicado (total o parcial). Los pagos de Stripe se
+    # devuelven a la tarjeta; los cobros manuales solo se registran.
+    def refund
+      order = Order.find(params[:id])
+      amount = params[:amount].to_s.tr(",", ".")
+      order.refund!(amount)
+      if order.pago_reembolsado?
+        redirect_to admin_order_path(order), notice: "Pedido #{order.number} reembolsado por completo."
+      else
+        redirect_to admin_order_path(order), notice: "Reembolso parcial realizado; quedan #{format('%.2f', order.refundable_amount)} € cobrados."
+      end
+    rescue ArgumentError => e
+      redirect_to admin_order_path(order), alert: e.message
+    rescue Stripe::StripeError => e
+      redirect_to admin_order_path(order), alert: "Stripe rechazó el reembolso: #{e.message}"
+    end
+
     # Reenvía al cliente el aviso de pago pendiente (acción manual del admin).
     def payment_reminder
       order = Order.find(params[:id])

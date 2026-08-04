@@ -147,6 +147,7 @@ en:
     payment_statuses:
       pendiente: pending
       pagado: paid
+      reembolsado: refunded
   pay:
     title: Review and pay for your order
     order_shipping: "Order %{number} · shipping to %{destination}"

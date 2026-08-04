@@ -39,7 +39,8 @@ class Order < ApplicationRecord
   # Estado logístico del pedido, gestionado a mano desde el admin.
   enum :status, { creado: 0, enviado: 1, recibido: 2 }
   # Estado del cobro, gestionado por Stripe (webhook / retorno del Checkout).
-  enum :payment_status, { pendiente: 0, pagado: 1 }, prefix: :pago
+  # "reembolsado" = devuelto íntegramente al cliente (desde el admin).
+  enum :payment_status, { pendiente: 0, pagado: 1, reembolsado: 2 }, prefix: :pago
 
   validates :customer_name, :email, :phone, :address, :city, :postal_code, :province, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -104,6 +105,39 @@ class Order < ApplicationRecord
       end
     end
     OrderMailer.paid(self).deliver_later
+  end
+
+  # Importe cobrado al cliente: el total se congela con el transporte incluido
+  # al confirmarse el pedido.
+  def amount_paid
+    total.to_d
+  end
+
+  # Lo que queda por devolver tras los reembolsos ya hechos.
+  def refundable_amount
+    amount_paid - refunded_amount
+  end
+
+  # Reembolsa `amount` euros (parcial o total). Los pagos de Stripe se devuelven
+  # allí (a la tarjeta del cliente); los cobros manuales solo se registran. Cuando
+  # lo devuelto alcanza lo cobrado, el pedido pasa a "reembolsado".
+  def refund!(amount)
+    amount = BigDecimal(amount.to_s)
+    raise ArgumentError, "Este pedido no tiene ningún cobro que reembolsar" unless pago_pagado?
+    raise ArgumentError, "El importe debe ser mayor que cero" if amount <= 0
+    raise ArgumentError, "El importe supera lo pendiente de devolver" if amount > refundable_amount
+
+    if stripe_session_id.present? && !paid_manually?
+      self.stripe_payment_intent_id ||= Stripe::Checkout::Session.retrieve(stripe_session_id).payment_intent
+      Stripe::Refund.create(payment_intent: stripe_payment_intent_id, amount: (amount * 100).to_i)
+    end
+
+    transaction do
+      self.refunded_amount += amount
+      self.payment_status = :reembolsado if refunded_amount >= amount_paid
+      save!
+      order_events.create!(event: pago_reembolsado? ? "reembolsado" : "reembolso parcial (#{format('%.2f', amount)} €)")
+    end
   end
 
   # Avanza el estado logístico dejando rastro en el histórico. Al pasar a "enviado"
