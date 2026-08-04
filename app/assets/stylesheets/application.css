@@ -809,7 +809,10 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
   /* Botón flotante de WhatsApp algo más discreto. */
   .whatsapp-float { width: 52px; height: 52px; right: 16px; bottom: 16px; }
 
-  /* Personalización y galerías: una imagen por fila se ve mejor. */
+  /* Personalización: la imagen de la bolsa se ve completa (sin recortar por
+     arriba/abajo), a su proporción real y a todo el ancho de la tarjeta. */
+  .personalizacion-card img { height: auto; object-fit: contain; }
+  /* Galerías: una imagen por fila se ve mejor. */
   .gallery-thumb { width: 68px; height: 68px; }
 }
 .line-qty { color: var(--muted); margin-left: 4px; }
