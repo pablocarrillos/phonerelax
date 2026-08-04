@@ -1,0 +1,15 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 4,
+      "fingerprint": "a598d97f44b8ea8c4c07788e1c98e1f42ad0fa941a1253507a6b3ec65b7c2e97",
+      "check_name": "LinkToHref",
+      "message": "Potentially unsafe model attribute in `link_to` href",
+      "file": "app/views/admin/orders/show.html.erb",
+      "line": 51,
+      "note": "Falso positivo: Order#tracking_url no es un atributo libre; se construye desde la lista blanca CARRIER_TRACKING_URLS con el número de seguimiento pasado por CGI.escape."
+    }
+  ],
+  "brakeman_version": "8.0.5"
+}
