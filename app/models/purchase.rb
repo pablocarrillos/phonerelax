@@ -13,11 +13,27 @@ class Purchase < ApplicationRecord
   validates :shipping_cost, :customs_cost, :other_costs,
             numericality: { greater_than_or_equal_to: 0 }
 
+  CURRENCIES = %w[EUR USD].freeze
+  validates :currency, inclusion: { in: CURRENCIES }
+
+  # Al guardar en USD con fecha de factura, fija el tipo de cambio de ese día.
+  before_save :set_exchange_rate
+
   scope :recent_first, -> { order(ordered_on: :desc, id: :desc) }
   scope :received, -> { where.not(received_on: nil) }
 
   def received?
     received_on.present?
+  end
+
+  def usd?
+    currency == "USD"
+  end
+
+  # Euros por cada unidad de la moneda de la compra: 1 si ya está en EUR; si es
+  # USD, el tipo de cambio USD→EUR fijado en la fecha de factura (1 si falta).
+  def eur_rate
+    usd? ? (exchange_rate || BigDecimal("1")) : BigDecimal("1")
   end
 
   # Suma de las líneas (sin costes adicionales).
@@ -34,14 +50,24 @@ class Purchase < ApplicationRecord
     lines_total + extra_costs
   end
 
-  # Coste real («aterrizado») de una unidad de la línea: su coste de compra más
-  # la parte proporcional de los costes adicionales según el peso de la línea.
-  def landed_unit_cost(line)
-    return line.unit_cost if lines_total.zero?
+  # Coste total ya convertido a euros (la moneda base del negocio).
+  def total_cost_eur
+    total_cost * eur_rate
+  end
 
-    line_subtotal = line.unit_cost * line.quantity
-    share = extra_costs * (line_subtotal / lines_total)
-    line.unit_cost + (share / line.quantity)
+  # Coste real («aterrizado») de una unidad de la línea, EN EUROS: su coste de
+  # compra más la parte proporcional de los costes adicionales según el peso de
+  # la línea, convertido a euros con el tipo de cambio de la compra.
+  def landed_unit_cost(line)
+    base =
+      if lines_total.zero?
+        line.unit_cost
+      else
+        line_subtotal = line.unit_cost * line.quantity
+        share = extra_costs * (line_subtotal / lines_total)
+        line.unit_cost + (share / line.quantity)
+      end
+    base * eur_rate
   end
 
   # Marca la compra como recibida y suma las unidades al stock (una sola vez).
@@ -78,5 +104,21 @@ class Purchase < ApplicationRecord
       end
     end
     result.transform_values { |e| { units: e[:units], avg_cost: e[:cost] / e[:units] } }
+  end
+
+  private
+
+  # Consulta y fija el tipo de cambio USD→EUR de la fecha de factura cuando la
+  # compra está en dólares. En EUR se limpia. Si la API falla, se deja el valor
+  # anterior (o el que se haya introducido a mano) sin bloquear el guardado.
+  def set_exchange_rate
+    if usd? && invoice_date.present?
+      if exchange_rate.blank? || will_save_change_to_invoice_date? || will_save_change_to_currency?
+        rate = ExchangeRate.usd_to_eur(invoice_date)
+        self.exchange_rate = rate if rate
+      end
+    else
+      self.exchange_rate = nil
+    end
   end
 end

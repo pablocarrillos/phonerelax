@@ -11,22 +11,35 @@
     <div><%= f.label :ordered_on, 'Fecha de compra *' %><%= f.date_field :ordered_on, required: true %></div>
     <div><%= f.label :reference, 'Referencia (nº de factura, pedido…)' %><%= f.text_field :reference %></div>
     <div>
+      <%= f.label :currency, 'Moneda' %>
+      <%= f.select :currency, [['Euro (€)', 'EUR'], ['Dólar ($)', 'USD']], {}, { class: 'form-select' } %>
+    </div>
+    <div>
+      <%= f.label :invoice_date, 'Fecha de la factura' %>
+      <%= f.date_field :invoice_date %>
+      <p class="action-note" style="margin-top:4px;">Si la compra es en dólares, al guardar se fija automáticamente el tipo de cambio USD→€ de esta fecha.</p>
+      <% if purchase.usd? && purchase.exchange_rate.present? %>
+        <p class="action-note" style="margin-top:4px;">Tipo de cambio aplicado: <strong>1&nbsp;$ = <%= number_with_precision(purchase.exchange_rate, precision: 4) %>&nbsp;€</strong></p>
+      <% end %>
+    </div>
+    <div>
       <%= f.label :invoice, 'Factura (PDF)' %>
       <%= f.file_field :invoice, accept: 'application/pdf' %>
       <% if purchase.invoice.attached? %>
         <p class="action-note" style="margin-top:4px;">Ya adjunta: <%= link_to '📄 ver factura', rails_blob_path(purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener' %> (sube otra para sustituirla)</p>
       <% end %>
     </div>
-    <div><%= f.label :shipping_cost, 'Transporte (€)' %><%= f.number_field :shipping_cost, step: 0.01, min: 0 %></div>
-    <div><%= f.label :customs_cost, 'Aduanas / trámites (€)' %><%= f.number_field :customs_cost, step: 0.01, min: 0 %></div>
-    <div><%= f.label :other_costs, 'Otros costes (€)' %><%= f.number_field :other_costs, step: 0.01, min: 0 %></div>
+    <div><%= f.label :shipping_cost, 'Transporte' %><%= f.number_field :shipping_cost, step: 0.01, min: 0 %></div>
+    <div><%= f.label :customs_cost, 'Aduanas / trámites' %><%= f.number_field :customs_cost, step: 0.01, min: 0 %></div>
+    <div><%= f.label :other_costs, 'Otros costes' %><%= f.number_field :other_costs, step: 0.01, min: 0 %></div>
     <div class="full"><%= f.label :notes, 'Notas' %><%= f.text_area :notes, rows: 2 %></div>
   </div>
+  <p class="action-note" style="max-width:860px;">Introduce todos los importes (transporte, aduanas, otros costes y coste por unidad) en la <strong>moneda seleccionada</strong>. Si la compra es en dólares, se convierten a euros con el tipo de cambio de la fecha de factura para calcular el coste real por producto.</p>
 
   <h2 style="margin-top:24px;">Líneas de la compra</h2>
   <p class="action-note" style="margin-top:0;">Elige producto, unidades y coste unitario. Deja el producto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
   <table class="table" style="max-width: 720px;">
-    <thead><tr><th>Producto</th><th>Unidades</th><th>Coste por unidad (€)</th><% if purchase.purchase_lines.any?(&:persisted?) %><th>Quitar</th><% end %></tr></thead>
+    <thead><tr><th>Producto</th><th>Unidades</th><th>Coste por unidad</th><% if purchase.purchase_lines.any?(&:persisted?) %><th>Quitar</th><% end %></tr></thead>
     <tbody>
       <%= f.fields_for :purchase_lines do |lf| %>
         <tr>
