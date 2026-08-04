@@ -13,13 +13,13 @@
               <span><%= product.display_name %> × <%= quantity %></span>
             </div>
           </td>
-          <td class="num"><%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>
       <% vat_total = @lines.sum { |product, quantity| p = product.price_for_quantity(quantity); (p - p / (1 + product.vat_percentage / 100)) * quantity } %>
-      <tr><td><%= t('checkout.base') %></td><td class="num"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td></tr>
-      <tr><td><%= t('checkout.vat') %></td><td class="num"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
-      <tr class="total-row"><td><%= t('checkout.total_vat') %></td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
+      <tr><td><%= t('checkout.base') %></td><td class="num"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <tr><td><%= t('checkout.vat') %></td><td class="num"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <tr class="total-row"><td><%= t('checkout.total_vat') %></td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
     </tbody>
   </table>
   <p class="shipping-note"><%= t('checkout.shipping_note') %></p>

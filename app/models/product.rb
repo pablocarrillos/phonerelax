@@ -47,9 +47,11 @@ class Product < ApplicationRecord
   # stock de sus componentes (el mínimo); para el resto, su propio stock.
   def available_stock
     return stock unless pack?
-    return 0 if pack_items.empty?
 
-    pack_items.map { |item| item.component.stock / item.quantity }.min
+    items = pack_items.select(&:component)
+    return 0 if items.empty?
+
+    items.map { |item| item.component.stock / item.quantity }.min
   end
 
   # Agotado: se sigue mostrando en la tienda pero no se puede comprar.
@@ -63,6 +65,8 @@ class Product < ApplicationRecord
     if pack?
       pack_items.includes(:component).each do |item|
         c = item.component
+        next unless c
+
         c.update!(stock: [ c.stock - (item.quantity * units), 0 ].max)
       end
     else
@@ -73,7 +77,7 @@ class Product < ApplicationRecord
   # Devuelve al stock las unidades (al borrar un pedido cobrado o deshacer).
   def restore_stock!(units)
     if pack?
-      pack_items.includes(:component).each { |item| item.component.increment!(:stock, item.quantity * units) }
+      pack_items.includes(:component).each { |item| item.component&.increment!(:stock, item.quantity * units) }
     else
       increment!(:stock, units)
     end
@@ -112,6 +116,8 @@ class Product < ApplicationRecord
   def pack_price_for(pack_qty)
     qty = [ pack_qty.to_i, 1 ].max
     total = pack_items.sum do |item|
+      next 0 unless item.component
+
       units = item.quantity * qty
       item.component.price_for_quantity(units) * units
     end
@@ -123,21 +129,27 @@ class Product < ApplicationRecord
     pack_price_for(1)
   end
 
-  # Precio a mostrar en la tienda: calculado para packs, el guardado para el resto.
+  # Precio a mostrar en la tienda (grid y ficha): el precio de 1 unidad según su
+  # escalado (para un pack, el de 1 pack), de modo que coincida con lo que se
+  # cobra en el carrito por una unidad.
   def display_price
-    pack? ? pack_unit_price : price
+    price_for_quantity(1)
   end
 
   # Desglose del pack: por componente, precio normal vs. precio en pack y ahorro.
   # => [{ component:, quantity:, base_unit:, pack_unit:, line_total:, base_total:, saving: }]
   def pack_breakdown
-    pack_items.map do |item|
+    pack_items.filter_map do |item|
       c = item.component
+      next unless c
+
       base_unit = c.price                              # PVP normal (IVA incl.)
       pack_unit = c.price_for_quantity(item.quantity)  # con el escalado del pack
+      base_total = base_unit * item.quantity
+      saving = (base_unit - pack_unit) * item.quantity
       { component: c, quantity: item.quantity, base_unit: base_unit, pack_unit: pack_unit,
-        line_total: pack_unit * item.quantity, base_total: base_unit * item.quantity,
-        saving: (base_unit - pack_unit) * item.quantity }
+        line_total: pack_unit * item.quantity, base_total: base_total, saving: saving,
+        discount_pct: base_total.positive? ? (saving / base_total * 100) : BigDecimal("0") }
     end
   end
 
@@ -148,6 +160,11 @@ class Product < ApplicationRecord
 
   def pack_total_saving
     pack_breakdown.sum { |r| r[:saving] }
+  end
+
+  # Porcentaje de descuento global del pack respecto a comprar los productos sueltos.
+  def pack_total_discount_pct
+    pack_base_total.positive? ? (pack_total_saving / pack_base_total * 100) : BigDecimal("0")
   end
 
   # Precio SIN IVA para una cantidad (para ventas exentas: Canarias, exportación,

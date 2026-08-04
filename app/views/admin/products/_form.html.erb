@@ -5,7 +5,15 @@
   <div class="form-grid" style="max-width: 860px;">
     <div><%= f.label :price, 'Precio (€, IVA incluido)' %><%= f.number_field :price, step: 0.01 %></div>
     <div><%= f.label :position, 'Posición' %><%= f.number_field :position %></div>
-    <div><%= f.label :stock, 'Stock (unidades restantes)' %><%= f.number_field :stock, min: 0 %></div>
+    <div>
+      <%= f.label :stock, 'Stock (unidades restantes)' %>
+      <% if product.pack? %>
+        <input type="text" value="<%= product.available_stock %> packs" disabled class="input-compact" style="width:100%; background:#f2f3f7;">
+        <p class="action-note" style="margin-top:4px;">Automático: máximo de packs que permite el stock de los componentes.</p>
+      <% else %>
+        <%= f.number_field :stock, min: 0 %>
+      <% end %>
+    </div>
     <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
     <div class="full"><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
     <div class="full"><label><%= f.check_box :auto_carousel %> Mostrar la galería como carrusel automático (sin miniaturas, cambia sola cada 3&nbsp;s)</label></div>

@@ -7,7 +7,7 @@
       <tr>
         <td class="num"><%= product.position %></td>
         <td><%= product.name %></td>
-        <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
         <td class="num"><% if product.out_of_stock? %><span class="badge pendiente">0</span><% else %><%= product.stock %><% end %></td>
         <td><%= product.active? ? 'Sí' : 'No' %></td>
         <td>

@@ -136,14 +136,14 @@
     <% @order.order_lines.each do |line| %>
       <tr>
         <td><%= line.product.name %></td>
-        <td class="num"><%= line.quantity %> × <%= number_to_currency(line.unit_price, unit: '€', format: '%n %u') %></td>
-        <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
+        <td class="num"><%= line.quantity %> × <%= number_to_currency(line.unit_price, unit: '€', format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
       </tr>
     <% end %>
     <% if @order.shipping_cost.positive? %>
-      <tr><td colspan="2">Transporte</td><td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td></tr>
+      <tr><td colspan="2">Transporte</td><td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td></tr>
     <% end %>
-    <tr class="total-row"><td colspan="2">Total</td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
+    <tr class="total-row"><td colspan="2">Total</td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
   </tbody>
 </table>
 

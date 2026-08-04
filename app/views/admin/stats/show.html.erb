@@ -4,7 +4,7 @@
 <div style="display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 26px;">
   <% { 'Hoy' => @totals[:today], 'Esta semana' => @totals[:week], 'Este mes' => @totals[:month], 'Total histórico' => @totals[:all] }.each do |label, t| %>
     <div style="<%= card %>">
-      <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= number_to_currency(t[:revenue], unit: '€', format: '%n %u') %></div>
+      <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= number_to_currency(t[:revenue], unit: '€', format: '%n %u') %></div>
       <div style="color:var(--muted); font-size:13px;"><%= label %> · <%= t[:orders] %> pedidos · <%= t[:units] %> uds.</div>
     </div>
   <% end %>
@@ -35,7 +35,7 @@
               <td><%= etiqueta.call(fecha) %></td>
               <td class="num"><%= t[:orders] %></td>
               <td class="num"><%= t[:units] %></td>
-              <td class="num"><%= number_to_currency(t[:revenue], unit: '€', format: '%n %u') %></td>
+              <td class="num"><%= number_to_currency(t[:revenue], unit: '€', format: '%n %u') %></td>
               <td><div class="stat-bar" style="width: <%= ((t[:revenue] / maximo) * 100).round(1) %>%;"></div></td>
             </tr>
           <% end %>
@@ -54,7 +54,7 @@
         <tr>
           <td><%= name %></td>
           <td class="num"><%= units %></td>
-          <td class="num"><%= number_to_currency(revenue, unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= number_to_currency(revenue, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>
     </tbody>

@@ -4,14 +4,14 @@
 <div style="display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 18px;">
   <div style="<%= card %>">
     <div style="font-size:24px; font-weight:700; color:#e67e22;"><%= @samples.count { |s| !s.returned? } %></div>
-    <div style="color:var(--muted); font-size:13px;">Fuera (sin devolver) · <%= number_to_currency(@pending_cost, unit: '€', format: '%n %u') %></div>
+    <div style="color:var(--muted); font-size:13px;">Fuera (sin devolver) · <%= number_to_currency(@pending_cost, unit: '€', format: '%n %u') %></div>
   </div>
   <div style="<%= card %>">
     <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= @samples.count(&:returned?) %></div>
     <div style="color:var(--muted); font-size:13px;">Devueltas</div>
   </div>
   <div style="<%= card %>">
-    <div style="font-size:24px; font-weight:700;"><%= number_to_currency(@total_cost, unit: '€', format: '%n %u') %></div>
+    <div style="font-size:24px; font-weight:700;"><%= number_to_currency(@total_cost, unit: '€', format: '%n %u') %></div>
     <div style="color:var(--muted); font-size:13px;">Coste total de todas las muestras</div>
   </div>
 </div>
@@ -40,7 +40,7 @@
           <td style="font-size:13px;">
             <%= sample.sample_lines.map { |line| "#{line.quantity} × #{line.product.name.truncate(28)}" }.join('<br>').html_safe.presence || '—' %>
           </td>
-          <td class="num"><%= number_to_currency(sample.cost(@landed_costs), unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= number_to_currency(sample.cost(@landed_costs), unit: '€', format: '%n %u') %></td>
           <td style="text-align:right; white-space:nowrap;">
             <% unless sample.returned? %>
               <%= button_to '✓ Devuelta', mark_returned_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',

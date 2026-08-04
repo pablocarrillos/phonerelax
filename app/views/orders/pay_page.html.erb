@@ -9,16 +9,16 @@
       <% @order.order_lines.each do |line| %>
         <tr>
           <td><%= line.product.display_name %> × <%= line.quantity %></td>
-          <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>
       <tr>
         <td><%= t('pay.shipping') %></td>
-        <td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td>
       </tr>
       <tr class="total-row">
         <td><%= t('pay.total_to_pay') %></td>
-        <td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td>
       </tr>
     </tbody>
   </table>

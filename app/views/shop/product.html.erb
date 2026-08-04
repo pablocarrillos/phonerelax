@@ -40,7 +40,7 @@
     </div>
     <div>
       <h1><%= @product.display_name %></h1>
-      <div class="price"><%= number_to_currency(@product.display_price, unit: '€', format: '%n %u') %></div>
+      <div class="price"><%= number_to_currency(@product.display_price, unit: '€', format: '%n %u') %></div>
       <p class="vat-note"><%= t('common.vat_included', rate: @product.vat_percentage.to_s.sub(/\.0+\z/, '')) %></p>
 
       <% if @product.pack? %>
@@ -53,21 +53,29 @@
                 <tr>
                   <td><%= r[:component].display_name %></td>
                   <td class="num"><%= r[:quantity] %></td>
-                  <td class="num"><%= number_to_currency(r[:base_total], unit: '€', format: '%n %u') %></td>
-                  <td class="num"><strong><%= number_to_currency(r[:line_total], unit: '€', format: '%n %u') %></strong></td>
-                  <td class="num pack-saving-cell"><%= r[:saving].positive? ? number_to_currency(r[:saving], unit: '€', format: '%n %u') : '—' %></td>
+                  <td class="num"><%= number_to_currency(r[:base_total], unit: '€', format: '%n %u') %></td>
+                  <td class="num"><strong><%= number_to_currency(r[:line_total], unit: '€', format: '%n %u') %></strong></td>
+                  <td class="num pack-saving-cell">
+                    <% if r[:saving].positive? %>
+                      <%= number_to_currency(r[:saving], unit: '€', format: '%n %u') %> <span class="pack-pct">(<%= number_to_percentage(r[:discount_pct], precision: 1) %>)</span>
+                    <% else %>—<% end %>
+                  </td>
                 </tr>
               <% end %>
               <tr class="total-row">
                 <td colspan="2"><%= t('common.total') %></td>
-                <td class="num"><%= number_to_currency(@product.pack_base_total, unit: '€', format: '%n %u') %></td>
-                <td class="num"><strong><%= number_to_currency(@product.pack_unit_price, unit: '€', format: '%n %u') %></strong></td>
-                <td class="num pack-saving-cell"><strong><%= @product.pack_total_saving.positive? ? number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u') : '—' %></strong></td>
+                <td class="num"><%= number_to_currency(@product.pack_base_total, unit: '€', format: '%n %u') %></td>
+                <td class="num"><strong><%= number_to_currency(@product.pack_unit_price, unit: '€', format: '%n %u') %></strong></td>
+                <td class="num pack-saving-cell">
+                  <% if @product.pack_total_saving.positive? %>
+                    <strong><%= number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u') %> <span class="pack-pct">(<%= number_to_percentage(@product.pack_total_discount_pct, precision: 1) %>)</span></strong>
+                  <% else %>—<% end %>
+                </td>
               </tr>
             </tbody>
           </table>
           <% if @product.pack_total_saving.positive? %>
-            <p class="pack-saving-note"><%= t('product.pack_saving_total', amount: number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u')) %></p>
+            <p class="pack-saving-note"><%= t('product.pack_saving_total', amount: number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u')) %></p>
           <% end %>
         </div>
       <% end %>

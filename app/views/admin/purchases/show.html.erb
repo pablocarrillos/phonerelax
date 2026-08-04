@@ -43,12 +43,12 @@
       <tr>
         <td><%= line.product.name %></td>
         <td class="num"><%= line.quantity %></td>
-        <td class="num"><%= number_to_currency(line.unit_cost, unit: sym, format: '%n %u') %></td>
-        <td class="num"><%= number_to_currency(line.shipping_cost, unit: sym, format: '%n %u') %></td>
-        <td class="num"><%= number_to_currency(line.customs_cost, unit: sym, format: '%n %u') %></td>
-        <td class="num"><%= number_to_currency(line.other_costs, unit: sym, format: '%n %u') %></td>
-        <td class="num"><strong><%= number_to_currency(line.total, unit: sym, format: '%n %u') %></strong></td>
-        <td class="num"><strong><%= number_to_currency(@purchase.landed_unit_cost(line), unit: '€', format: '%n %u') %></strong></td>
+        <td class="num"><%= number_to_currency(line.unit_cost, unit: sym, format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.shipping_cost, unit: sym, format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.customs_cost, unit: sym, format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.other_costs, unit: sym, format: '%n %u') %></td>
+        <td class="num"><strong><%= number_to_currency(line.total, unit: sym, format: '%n %u') %></strong></td>
+        <td class="num"><strong><%= number_to_currency(@purchase.landed_unit_cost(line), unit: '€', format: '%n %u') %></strong></td>
       </tr>
     <% end %>
   </tbody>
@@ -63,16 +63,16 @@
     </tr>
     <tr class="total-row">
       <td colspan="3"></td>
-      <td class="num"><%= number_to_currency(@purchase.total_shipping, unit: sym, format: '%n %u') %></td>
-      <td class="num"><%= number_to_currency(@purchase.total_customs, unit: sym, format: '%n %u') %></td>
-      <td class="num"><%= number_to_currency(@purchase.total_other, unit: sym, format: '%n %u') %></td>
-      <td class="num"><strong><%= number_to_currency(@purchase.total_cost, unit: sym, format: '%n %u') %></strong></td>
+      <td class="num"><%= number_to_currency(@purchase.total_shipping, unit: sym, format: '%n %u') %></td>
+      <td class="num"><%= number_to_currency(@purchase.total_customs, unit: sym, format: '%n %u') %></td>
+      <td class="num"><%= number_to_currency(@purchase.total_other, unit: sym, format: '%n %u') %></td>
+      <td class="num"><strong><%= number_to_currency(@purchase.total_cost, unit: sym, format: '%n %u') %></strong></td>
       <td></td>
     </tr>
     <% if @purchase.usd? %>
       <tr class="total-row">
         <td colspan="6" style="text-align:right;">Total factura en euros</td>
-        <td class="num"><strong><%= number_to_currency(@purchase.total_cost_eur, unit: '€', format: '%n %u') %></strong></td>
+        <td class="num"><strong><%= number_to_currency(@purchase.total_cost_eur, unit: '€', format: '%n %u') %></strong></td>
         <td></td>
       </tr>
     <% end %>

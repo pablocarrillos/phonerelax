@@ -19,14 +19,14 @@
                 <%= link_to product.display_name, product_page_path(product) %>
               </div>
             </td>
-            <td class="num"><%= number_to_currency(product.price_for_quantity(quantity), unit: '€', format: '%n %u') %><% if product.price_for_quantity(quantity) < product.price %><br><span style="color:var(--muted); font-size:12px; text-decoration:line-through;"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></span><% end %></td>
+            <td class="num"><%= number_to_currency(product.price_for_quantity(quantity), unit: '€', format: '%n %u') %><% if product.price_for_quantity(quantity) < product.price %><br><span style="color:var(--muted); font-size:12px; text-decoration:line-through;"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></span><% end %></td>
             <td>
               <%= form_with url: cart_update_path(product), method: :patch, local: true, style: 'display:flex;gap:8px;align-items:center;' do %>
                 <input type="number" name="quantity" value="<%= quantity %>" min="0" class="qty-input">
                 <button type="submit" class="btn btn-outline" style="padding:7px 12px;"><%= t('common.update') %></button>
               <% end %>
             </td>
-            <td class="num"><%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %></td>
+            <td class="num"><%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %></td>
             <td>
               <%= button_to cart_remove_path(product), method: :delete, class: 'btn-trash', title: t('common.remove'), 'aria-label': "#{t('common.remove')} #{product.display_name}" do %>
                 <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
@@ -39,7 +39,7 @@
         <% end %>
         <tr class="total-row">
           <td colspan="3"><%= t('checkout.total_vat') %></td>
-          <td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>
           <td></td>
         </tr>
       </tbody>

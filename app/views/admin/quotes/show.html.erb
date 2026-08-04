@@ -49,9 +49,9 @@
       <td class="num">1</td>
       <td class="num"><%= number_with_precision(@quote.shipping_cost, precision: 2) %></td>
     </tr>
-    <tr><td colspan="<%= span %>" style="text-align:right;"><strong>Total Oferta</strong></td><td class="num"><strong><%= number_to_currency(@quote.subtotal, unit: '€', format: '%n %u') %></strong></td></tr>
-    <tr><td colspan="<%= span %>" style="text-align:right;">Importe IVA</td><td class="num"><%= number_to_currency(@quote.vat_amount, unit: '€', format: '%n %u') %></td></tr>
-    <tr class="total-row"><td colspan="<%= span %>" style="text-align:right;">Total Euros</td><td class="num"><%= number_to_currency(@quote.total, unit: '€', format: '%n %u') %></td></tr>
+    <tr><td colspan="<%= span %>" style="text-align:right;"><strong>Total Oferta</strong></td><td class="num"><strong><%= number_to_currency(@quote.subtotal, unit: '€', format: '%n %u') %></strong></td></tr>
+    <tr><td colspan="<%= span %>" style="text-align:right;">Importe IVA</td><td class="num"><%= number_to_currency(@quote.vat_amount, unit: '€', format: '%n %u') %></td></tr>
+    <tr class="total-row"><td colspan="<%= span %>" style="text-align:right;">Total Euros</td><td class="num"><%= number_to_currency(@quote.total, unit: '€', format: '%n %u') %></td></tr>
   </tbody>
 </table>
 

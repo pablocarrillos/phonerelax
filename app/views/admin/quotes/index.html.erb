@@ -18,8 +18,8 @@
           <td><%= l quote.issued_on, format: '%d/%m/%Y' %></td>
           <td><%= quote.client.name %></td>
           <td style="color:var(--muted); font-size:14px;"><%= quote.internal_description.presence || '—' %></td>
-          <td class="num"><%= number_to_currency(quote.subtotal, unit: '€', format: '%n %u') %></td>
-          <td class="num"><strong><%= number_to_currency(quote.total, unit: '€', format: '%n %u') %></strong></td>
+          <td class="num"><%= number_to_currency(quote.subtotal, unit: '€', format: '%n %u') %></td>
+          <td class="num"><strong><%= number_to_currency(quote.total, unit: '€', format: '%n %u') %></strong></td>
           <td style="text-align:right;"><%= link_to '🖨 PDF', print_admin_quote_path(quote), target: '_blank', rel: 'noopener' %></td>
         </tr>
       <% end %>
