@@ -73,6 +73,32 @@ a { color: var(--navy); }
   font-size: 12px;
   margin-left: 4px;
 }
+/* Botón hamburguesa: oculto en escritorio, visible al colapsar la navegación. */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.nav-toggle-bar {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+/* Las tres barras se convierten en un aspa cuando el menú está abierto. */
+.site-header.nav-open .nav-toggle-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.site-header.nav-open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+.site-header.nav-open .nav-toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* Hero */
 .hero { position: relative; }
@@ -691,4 +717,99 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
   display: block;
 }
 .line-product a { text-decoration: none; font-weight: 600; }
+
+/* ============================================================
+   RESPONSIVE / MÓVIL
+   ============================================================ */
+
+/* --- Navegación: menú hamburguesa al quedarse sin sitio (≤ 900px) --- */
+@media (max-width: 900px) {
+  .site-header { position: relative; }
+  .site-header-inner { min-height: 64px; gap: 12px; padding: 0 16px; }
+  .brand span { font-size: 22px; }
+  .nav-toggle { display: flex; }
+
+  /* La navegación pasa a panel desplegable a todo el ancho, bajo la cabecera. */
+  .site-nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 1001;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 6px 16px 14px;
+    background: var(--navy);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28);
+  }
+  .site-header.nav-open .site-nav { display: flex; }
+  .site-nav a {
+    font-size: 16px;
+    padding: 13px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .site-nav a:hover { text-decoration: none; }
+  .site-nav .cart-link { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+  .site-nav .admin-link { align-self: flex-start; margin: 12px 0 4px; }
+  .lang-switch { justify-content: flex-start; gap: 6px; padding-top: 12px; font-size: 15px; }
+  .lang-switch a, .lang-switch .lang-current { padding: 4px 8px; }
+}
+
+/* --- Pulido general para móvil (≤ 760px) --- */
+@media (max-width: 760px) {
+  html, body { overflow-x: hidden; }
+  img, iframe, video { max-width: 100%; }
+
+  .container { padding: 0 16px; }
+  .section { margin: 34px auto; }
+  .section > h2 { font-size: 24px; margin-bottom: 16px; line-height: 1.25; }
+
+  /* Tarjeta del hero: en vez de flotar centrada (y desbordar), se ajusta al
+     ancho con un margen lateral y se centra verticalmente sobre la imagen. */
+  .hero-card {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+    width: auto;
+    transform: translateY(-50%);
+    padding: 18px 20px;
+    box-shadow: 0 8px 22px rgba(14, 27, 77, 0.18);
+  }
+  .hero-card h1 { font-size: 20px; }
+
+  /* Formularios de dos columnas → una sola en móvil. */
+  .form-grid { grid-template-columns: 1fr; }
+
+  /* Títulos y textos largos que no deben desbordar. */
+  .article h1 { font-size: 26px; }
+  .article-body h2, .article-body h3 { margin-top: 22px; }
+
+  /* Tablas anchas (carrito, pedidos): se pueden desplazar en horizontal en vez
+     de romper el diseño, con celdas algo más compactas. */
+  .table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table th, .table td { padding: 10px 8px; font-size: 14px; }
+  input[type=number].qty-input { width: 66px; }
+
+  /* Buscador del admin: el campo deja de forzar 260px y llena el ancho. */
+  .orders-search-input { min-width: 0; width: 100%; }
+  .orders-search, .orders-search form { width: 100%; }
+
+  /* Timeline de estado del pedido: etiquetas más pequeñas para que quepan. */
+  .status-step { font-size: 12px; }
+
+  /* Cabecera del admin: sus enlaces se envuelven en vez de apelotonarse. */
+  .admin-header-inner { flex-wrap: wrap; gap: 8px 14px; padding: 12px 16px; }
+  .admin-header a { margin-right: 0; }
+  .admin-main { margin: 20px auto; padding: 0 16px; }
+
+  /* Botón flotante de WhatsApp algo más discreto. */
+  .whatsapp-float { width: 52px; height: 52px; right: 16px; bottom: 16px; }
+
+  /* Personalización y galerías: una imagen por fila se ve mejor. */
+  .gallery-thumb { width: 68px; height: 68px; }
+}
 .line-qty { color: var(--muted); margin-left: 4px; }
