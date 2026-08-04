@@ -150,6 +150,26 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_equal [ "Uno" ], quote.reload.quote_lines.pluck(:description)
   end
 
+  test "el transporte calculado usa la config de Transporte y el país de envío" do
+    ShippingRate.create!(country: "España", base_cost: BigDecimal("5.95"))
+    ShippingRate.create!(country: "Francia", base_cost: BigDecimal("11.50"))
+    products(:funda).update!(shipping_unit_cost: BigDecimal("2"))
+
+    quote = Quote.new(client: @client, issued_on: Date.current, vat_rate: 21, shipping_country: "España")
+    quote.quote_lines.build(product: products(:funda), description: "Fundas", quantity: 10, unit_price: 10)
+    # (5,95 + 10 × 2) / 1,21 = 21,45 sin IVA
+    assert_equal BigDecimal("21.45"), quote.computed_shipping
+
+    quote.shipping_country = "Francia"
+    assert_equal BigDecimal("26.03"), quote.computed_shipping # (11,50 + 20) / 1,21
+
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "21.45", shipping_country: "Francia",
+      quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 10 } }
+    } }
+    assert_equal "Francia", Quote.last.shipping_country
+  end
+
   test "duplicar un presupuesto crea uno nuevo con número y fechas nuevos" do
     post admin_quotes_path, params: { quote: {
       client_id: @client.id, issued_on: "2026-07-01", valid_until: "2026-07-08", shipping_cost: "29.75",

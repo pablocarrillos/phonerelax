@@ -6,19 +6,34 @@ import { Controller } from "@hotwired/stimulus"
 // y los totales (sin IVA, IVA y con IVA) se recalculan en vivo, descuentos y
 // transporte incluidos.
 export default class extends Controller {
-  static targets = ["line", "linesBody", "template", "shipping", "shippingVat",
-    "globalDiscount", "totalNet", "totalVat", "totalGross"]
+  static targets = ["line", "linesBody", "template", "shipping", "shippingVat", "shippingWarning",
+    "shippingCountry", "globalDiscount", "totalNet", "totalVat", "totalGross"]
 
-  static values = { products: Object }
+  static values = { products: Object, rates: Object }
 
   connect() {
     this.visibleLines().forEach((row) => this.refreshWarning(row))
+    this.refreshShippingWarning()
     this.recalc()
   }
 
   addLine() {
     const html = this.templateTarget.innerHTML.replaceAll("NEW_RECORD", Date.now().toString())
     this.linesBodyTarget.insertAdjacentHTML("beforeend", html)
+    this.recalc()
+  }
+
+  // Aplica al campo de transporte el valor calculado con la config de
+  // Transporte (base del país + coste/ud. de cada producto), pasado a sin IVA.
+  applyShipping() {
+    const computed = this.computedShipping()
+    if (computed !== null) this.shippingTarget.value = computed.toFixed(2)
+    this.refreshShippingWarning()
+    this.recalc()
+  }
+
+  shippingEdited() {
+    this.refreshShippingWarning()
     this.recalc()
   }
 
@@ -33,7 +48,7 @@ export default class extends Controller {
     } else {
       row.remove()
     }
-    this.recalc()
+    this.applyShipping()
   }
 
   productChanged(event) {
@@ -42,10 +57,12 @@ export default class extends Controller {
     const product = this.productData(row)
     if (product && description && !description.value) description.value = product.name
     this.applyTierPrice(row)
+    this.applyShipping()
   }
 
   quantityChanged(event) {
     this.applyTierPrice(event.target.closest("tr"))
+    this.applyShipping()
   }
 
   priceEdited(event) {
@@ -82,6 +99,31 @@ export default class extends Controller {
 
   visibleLines() {
     return this.lineTargets.filter((row) => !row.hidden)
+  }
+
+  // Transporte sin IVA según la config de Transporte, o null si no hay datos.
+  computedShipping() {
+    const base = this.ratesValue[this.shippingCountryTarget?.value] ?? this.ratesValue["España (Península)"]
+    if (base === undefined) return null
+
+    let gross = base
+    this.visibleLines().forEach((row) => {
+      const product = this.productData(row)
+      const quantity = this.number(row, "quantity")
+      if (product && !isNaN(quantity)) gross += product.shipping_unit * quantity
+    })
+    const vat = parseFloat(this.shippingVatTarget?.value) || 0
+    return Math.round((gross / (1 + vat / 100)) * 100) / 100
+  }
+
+  refreshShippingWarning() {
+    if (!this.hasShippingWarningTarget) return
+
+    const computed = this.computedShipping()
+    const manual = parseFloat(this.shippingTarget?.value)
+    const differs = computed !== null && !isNaN(manual) && Math.abs(manual - computed) > 0.005
+    this.shippingWarningTarget.hidden = !differs
+    if (differs) this.shippingWarningTarget.textContent = `⚠ No coincide con el transporte calculado (${computed.toFixed(2)} €)`
   }
 
   // Total de la fila (uds. × precio × descuento de línea), o null si está incompleta.

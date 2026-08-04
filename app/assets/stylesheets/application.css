@@ -215,6 +215,10 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
   max-width: 900px;
 }
 
+/* Avisos bajo un campo (p. ej. precio que no coincide con el escalado) */
+.field-warning { display: block; color: #b3261e; font-size: 12px; margin-top: 2px; }
+.field-warning[hidden] { display: none; }
+
 /* Barras del panel de estadísticas de ventas */
 .stat-bar {
   height: 12px;

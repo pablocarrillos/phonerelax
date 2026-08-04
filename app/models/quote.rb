@@ -38,6 +38,15 @@ class Quote < ApplicationRecord
     bank_account.presence || BANK_ACCOUNTS.first
   end
 
+  # Transporte según la configuración de Transporte (base del país de envío +
+  # coste por unidad de cada producto), pasado a SIN IVA con el tipo del
+  # transporte. Es el valor que el editor propone; se puede fijar a mano.
+  def computed_shipping
+    gross = ShippingRate.base_for(shipping_country.presence || "España") +
+            active_lines.sum { |line| line.product ? line.product.shipping_unit_cost * line.quantity.to_i : 0 }
+    (gross / (1 + (vat_rate.to_d / 100))).round(2)
+  end
+
   before_validation :fill_lines_from_catalog
   before_create :assign_number
 

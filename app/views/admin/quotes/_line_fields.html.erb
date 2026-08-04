@@ -5,7 +5,7 @@
   <td><%= lf.number_field :quantity, min: 1, style: 'width:80px;', data: { role: 'quantity', action: 'input->quote-form#quantityChanged' } %></td>
   <td>
     <%= lf.number_field :unit_price, step: 0.0001, min: 0, style: 'width:120px;', placeholder: 'escalado', data: { role: 'price', action: 'input->quote-form#priceEdited' } %>
-    <span data-role="warning" hidden style="display:block; color:#b3261e; font-size:12px; margin-top:2px;"></span>
+    <span data-role="warning" hidden class="field-warning"></span>
   </td>
   <td><%= lf.number_field :discount_percent, step: 0.1, min: 0, max: 100, style: 'width:75px;', placeholder: '0',
                           data: { role: 'discount', action: 'input->quote-form#recalc' } %></td>

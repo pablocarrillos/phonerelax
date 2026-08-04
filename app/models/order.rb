@@ -1,15 +1,20 @@
 class Order < ApplicationRecord
-  # Solo se envía a países de la Unión Europea (nombre => código ISO para validar teléfonos).
+  # Solo se envía a países de la Unión Europea (nombre => código ISO para
+  # validar teléfonos). España va primero, desdoblada en Península y Canarias
+  # porque su transporte es distinto.
   EU_COUNTRY_CODES = {
+    "España (Península)" => "ES", "España (Canarias)" => "ES",
     "Alemania" => "DE", "Austria" => "AT", "Bélgica" => "BE", "Bulgaria" => "BG",
     "Chequia" => "CZ", "Chipre" => "CY", "Croacia" => "HR", "Dinamarca" => "DK",
-    "Eslovaquia" => "SK", "Eslovenia" => "SI", "España" => "ES", "Estonia" => "EE",
+    "Eslovaquia" => "SK", "Eslovenia" => "SI", "Estonia" => "EE",
     "Finlandia" => "FI", "Francia" => "FR", "Grecia" => "GR", "Hungría" => "HU",
     "Irlanda" => "IE", "Italia" => "IT", "Letonia" => "LV", "Lituania" => "LT",
     "Luxemburgo" => "LU", "Malta" => "MT", "Países Bajos" => "NL", "Polonia" => "PL",
     "Portugal" => "PT", "Rumanía" => "RO", "Suecia" => "SE"
   }.freeze
   EU_COUNTRIES = EU_COUNTRY_CODES.keys.freeze
+  # La «España» sin desdoblar de los pedidos y tarifas antiguos sigue siendo válida.
+  LEGACY_COUNTRY_CODES = { "España" => "ES" }.freeze
 
   # Un pedido pendiente de pago se considera "antiguo" pasados estos días.
   STALE_UNPAID_DAYS = 3
@@ -38,7 +43,7 @@ class Order < ApplicationRecord
 
   validates :customer_name, :email, :phone, :address, :city, :postal_code, :province, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :country, inclusion: { in: EU_COUNTRIES, message: "debe ser un país de la Unión Europea" }
+  validates :country, inclusion: { in: EU_COUNTRIES + LEGACY_COUNTRY_CODES.keys, message: "debe ser un país de la Unión Europea" }
   validate :phone_matches_country
 
   before_create :assign_number
@@ -187,7 +192,7 @@ class Order < ApplicationRecord
   def phone_matches_country
     return if phone.blank?
 
-    code = EU_COUNTRY_CODES[country]
+    code = EU_COUNTRY_CODES[country] || LEGACY_COUNTRY_CODES[country]
     return if Phonelib.valid_for_country?(phone, code)
 
     errors.add(:phone, "no parece un número válido de #{country || 'ese país'}")

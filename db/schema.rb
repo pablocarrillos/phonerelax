@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_04_160031) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_04_162004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -231,6 +231,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_160031) do
     t.string "payment_terms"
     t.text "remarks"
     t.decimal "shipping_cost", precision: 10, scale: 2, default: "0.0", null: false
+    t.string "shipping_country", default: "España (Península)", null: false
     t.datetime "updated_at", null: false
     t.date "valid_until"
     t.decimal "vat_rate", precision: 5, scale: 2, default: "21.0", null: false

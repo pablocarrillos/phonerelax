@@ -5,12 +5,14 @@ class ShippingRate < ApplicationRecord
   DEFAULT_BASE = BigDecimal("5.95")
   DEFAULT_FOREIGN_SURCHARGE = BigDecimal("8")
 
-  validates :country, presence: true, uniqueness: true, inclusion: { in: Order::EU_COUNTRIES }
+  validates :country, presence: true, uniqueness: true,
+                      inclusion: { in: Order::EU_COUNTRIES + Order::LEGACY_COUNTRY_CODES.keys }
   validates :base_cost, numericality: { greater_than_or_equal_to: 0 }
 
-  # Base de envío para un país: su tarifa guardada o el valor por defecto.
+  # Base de envío para un país: su tarifa guardada o el valor por defecto
+  # (peninsular para España/Península; con recargo para Canarias y el resto).
   def self.base_for(country)
     find_by(country: country)&.base_cost ||
-      (country == "España" ? DEFAULT_BASE : DEFAULT_BASE + DEFAULT_FOREIGN_SURCHARGE)
+      ([ "España", "España (Península)" ].include?(country) ? DEFAULT_BASE : DEFAULT_BASE + DEFAULT_FOREIGN_SURCHARGE)
   end
 end

@@ -387,10 +387,10 @@ normativa.save!
 puts "Artículo normativa: es/pt/en OK (posts: #{Post.count})"
 
 # Tarifas de transporte por país (solo si aún no existen): base actual de la
-# tienda — España 5,95 €, resto de la UE 13,95 € — editable desde el admin.
+# tienda — Península 5,95 €, Canarias y resto de la UE 13,95 € — editable desde el admin.
 Order::EU_COUNTRIES.each do |country|
   ShippingRate.find_or_create_by!(country: country) do |rate|
-    rate.base_cost = country == "España" ? BigDecimal("5.95") : BigDecimal("13.95")
+    rate.base_cost = country == "España (Península)" ? BigDecimal("5.95") : BigDecimal("13.95")
   end
 end
 puts "Tarifas de envío: #{ShippingRate.count} países"

@@ -33,7 +33,7 @@
       <div><%= f.label :city, t('checkout.city') %><%= f.text_field :city, required: true %></div>
       <div><%= f.label :postal_code, t('checkout.postal_code') %><%= f.text_field :postal_code, required: true %></div>
       <div><%= f.label :province, t('checkout.province') %><%= f.text_field :province, required: true %></div>
-      <div><%= f.label :country, t('checkout.country') %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España' }, { class: 'form-select' } %></div>
+      <div><%= f.label :country, t('checkout.country') %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España (Península)' }, { class: 'form-select' } %></div>
     </div>
     <%= f.submit t('checkout.submit'), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>
   <% end %>

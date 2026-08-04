@@ -85,7 +85,7 @@ module Admin
 
     def quote_params
       params.require(:quote).permit(:client_id, :issued_on, :valid_until, :shipping_cost, :vat_rate,
-                                    :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent,
+                                    :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent, :shipping_country,
                                     quote_lines_attributes: [ :id, :product_id, :description, :quantity,
                                                               :unit_price, :vat_rate, :discount_percent, :_destroy ])
     end
