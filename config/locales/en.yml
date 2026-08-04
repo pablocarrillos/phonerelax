@@ -117,6 +117,7 @@ en:
     pack_normal: Bought separately
     pack_in_pack: In the pack
     pack_saving: Saving
+    pack_max: "max %{n}"
     pack_saving_total: "You save %{amount} by buying the pack instead of the products separately."
   cart:
     title: Your cart

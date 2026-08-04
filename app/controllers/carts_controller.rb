@@ -12,9 +12,9 @@ class CartsController < ApplicationController
 
     quantity = [ params[:quantity].to_i, 1 ].max
     wanted = (cart[product.id.to_s] || 0) + quantity
-    cart[product.id.to_s] = [ wanted, product.stock ].min
-    if wanted > product.stock
-      redirect_to cart_path, alert: "Solo quedan #{product.stock} unidades de #{product.name}; hemos ajustado la cantidad."
+    cart[product.id.to_s] = [ wanted, product.available_stock ].min
+    if wanted > product.available_stock
+      redirect_to cart_path, alert: "Solo quedan #{product.available_stock} unidades de #{product.name}; hemos ajustado la cantidad."
     else
       redirect_to cart_path, notice: "#{product.name} añadido al carrito."
     end
@@ -24,9 +24,9 @@ class CartsController < ApplicationController
     product = Product.find_by_param!(params[:product_id])
     quantity = params[:quantity].to_i
     if quantity.positive?
-      capped = [ quantity, product.stock ].min
+      capped = [ quantity, product.available_stock ].min
       cart[product.id.to_s] = capped
-      return redirect_to cart_path, alert: "Solo quedan #{product.stock} unidades de #{product.name}." if capped < quantity
+      return redirect_to cart_path, alert: "Solo quedan #{product.available_stock} unidades de #{product.name}." if capped < quantity
     else
       cart.delete(product.id.to_s)
     end

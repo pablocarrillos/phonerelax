@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     # URLs canónicas con la misma estructura que la tienda Shopify anterior
     # (/products, /pages/..., /blogs/news) para no perder SEO al migrar.
     get "products/:id", to: "shop#product", as: :product_page
+    # Precio y desglose de un pack para una cantidad dada (JSON, recálculo en vivo).
+    get "products/:id/pack-precio", to: "shop#pack_price", as: :pack_price
 
     get "pages/como-funciona", to: "pages#como_funciona", as: :como_funciona
     # «Quiénes somos» se fusionó con Contacto; redirección para enlaces antiguos

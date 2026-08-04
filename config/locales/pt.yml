@@ -117,6 +117,7 @@ pt:
     pack_normal: Comprado à parte
     pack_in_pack: No pack
     pack_saving: Poupança
+    pack_max: "máx. %{n}"
     pack_saving_total: "Poupa %{amount} ao comprar o pack em vez dos produtos separadamente."
   cart:
     title: O seu carrinho

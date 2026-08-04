@@ -744,6 +744,7 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .pack-breakdown { margin: 18px 0 20px; }
 .pack-breakdown h2 { font-size: 20px; margin: 0 0 10px; }
 .pack-breakdown .table { font-size: 14px; }
+.pack-in-pack { font-weight: 700; }
 .pack-saving-cell { color: #14532d; font-weight: 600; white-space: nowrap; }
 .pack-pct { font-weight: 600; opacity: 0.85; }
 .pack-saving-note { margin: 10px 0 0; color: #14532d; font-weight: 600; background: #dcfce7; border-radius: 8px; padding: 10px 14px; }

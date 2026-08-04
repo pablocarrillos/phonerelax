@@ -139,16 +139,24 @@ class Product < ApplicationRecord
   # Desglose del pack: por componente, precio normal vs. precio en pack y ahorro.
   # => [{ component:, quantity:, base_unit:, pack_unit:, line_total:, base_total:, saving: }]
   def pack_breakdown
+    pack_breakdown_for(1)
+  end
+
+  # Desglose para `pack_qty` packs: cada componente al escalado del TOTAL de
+  # unidades pedidas (unidades por pack × nº de packs), con su ahorro y %.
+  def pack_breakdown_for(pack_qty)
+    qty = [ pack_qty.to_i, 1 ].max
     pack_items.filter_map do |item|
       c = item.component
       next unless c
 
-      base_unit = c.price                              # PVP normal (IVA incl.)
-      pack_unit = c.price_for_quantity(item.quantity)  # con el escalado del pack
-      base_total = base_unit * item.quantity
-      saving = (base_unit - pack_unit) * item.quantity
-      { component: c, quantity: item.quantity, base_unit: base_unit, pack_unit: pack_unit,
-        line_total: pack_unit * item.quantity, base_total: base_total, saving: saving,
+      units = item.quantity * qty
+      base_unit = c.price                       # PVP normal (IVA incl.)
+      pack_unit = c.price_for_quantity(units)   # con el escalado del total
+      base_total = base_unit * units
+      saving = (base_unit - pack_unit) * units
+      { component: c, units: units, base_unit: base_unit, pack_unit: pack_unit,
+        line_total: pack_unit * units, base_total: base_total, saving: saving,
         discount_pct: base_total.positive? ? (saving / base_total * 100) : BigDecimal("0") }
     end
   end

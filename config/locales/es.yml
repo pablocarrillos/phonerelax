@@ -119,6 +119,7 @@ es:
     pack_normal: Precio suelto
     pack_in_pack: En el pack
     pack_saving: Ahorro
+    pack_max: "máx. %{n}"
     pack_saving_total: "Ahorras %{amount} comprando el pack en vez de los productos por separado."
   cart:
     title: Tu carrito

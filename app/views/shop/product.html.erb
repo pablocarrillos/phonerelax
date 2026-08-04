@@ -38,45 +38,36 @@
         </div>
       <% end %>
     </div>
-    <div>
+    <%= tag.div data: (@product.pack? ? { controller: 'pack-quantity', 'pack-quantity-url-value': pack_price_path(@product), 'pack-quantity-available-value': @product.available_stock } : {}) do %>
       <h1><%= @product.display_name %></h1>
-      <div class="price"><%= number_to_currency(@product.display_price, unit: '€', format: '%n %u') %></div>
+      <div class="price" data-pack-quantity-target="price"><%= number_to_currency(@product.display_price, unit: '€', format: "%n %u") %></div>
       <p class="vat-note"><%= t('common.vat_included', rate: @product.vat_percentage.to_s.sub(/\.0+\z/, '')) %></p>
 
       <% if @product.pack? %>
+        <% saving_text = ->(amount, pct) { amount.positive? ? "#{number_to_currency(amount, unit: '€', format: "%n %u")} (#{number_to_percentage(pct, precision: 1)})" : '—' } %>
         <div class="pack-breakdown">
           <h2><%= t('product.pack_includes') %></h2>
           <table class="table">
             <thead><tr><th><%= t('common.product') %></th><th class="num"><%= t('common.quantity') %></th><th class="num"><%= t('product.pack_normal') %></th><th class="num"><%= t('product.pack_in_pack') %></th><th class="num"><%= t('product.pack_saving') %></th></tr></thead>
             <tbody>
-              <% @product.pack_breakdown.each do |r| %>
-                <tr>
+              <% @product.pack_breakdown_for(1).each do |r| %>
+                <tr data-pack-quantity-target="row">
                   <td><%= r[:component].display_name %></td>
-                  <td class="num"><%= r[:quantity] %></td>
-                  <td class="num"><%= number_to_currency(r[:base_total], unit: '€', format: '%n %u') %></td>
-                  <td class="num"><strong><%= number_to_currency(r[:line_total], unit: '€', format: '%n %u') %></strong></td>
-                  <td class="num pack-saving-cell">
-                    <% if r[:saving].positive? %>
-                      <%= number_to_currency(r[:saving], unit: '€', format: '%n %u') %> <span class="pack-pct">(<%= number_to_percentage(r[:discount_pct], precision: 1) %>)</span>
-                    <% else %>—<% end %>
-                  </td>
+                  <td class="num" data-cell="units"><%= r[:units] %></td>
+                  <td class="num" data-cell="base"><%= number_to_currency(r[:base_total], unit: '€', format: "%n %u") %></td>
+                  <td class="num pack-in-pack" data-cell="pack"><%= number_to_currency(r[:line_total], unit: '€', format: "%n %u") %></td>
+                  <td class="num pack-saving-cell" data-cell="saving"><%= saving_text.(r[:saving], r[:discount_pct]) %></td>
                 </tr>
               <% end %>
               <tr class="total-row">
                 <td colspan="2"><%= t('common.total') %></td>
-                <td class="num"><%= number_to_currency(@product.pack_base_total, unit: '€', format: '%n %u') %></td>
-                <td class="num"><strong><%= number_to_currency(@product.pack_unit_price, unit: '€', format: '%n %u') %></strong></td>
-                <td class="num pack-saving-cell">
-                  <% if @product.pack_total_saving.positive? %>
-                    <strong><%= number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u') %> <span class="pack-pct">(<%= number_to_percentage(@product.pack_total_discount_pct, precision: 1) %>)</span></strong>
-                  <% else %>—<% end %>
-                </td>
+                <td class="num" data-pack-quantity-target="totalBase"><%= number_to_currency(@product.pack_base_total, unit: '€', format: "%n %u") %></td>
+                <td class="num" data-pack-quantity-target="totalPack"><%= number_to_currency(@product.pack_unit_price, unit: '€', format: "%n %u") %></td>
+                <td class="num pack-saving-cell" data-pack-quantity-target="totalSaving"><%= saving_text.(@product.pack_total_saving, @product.pack_total_discount_pct) %></td>
               </tr>
             </tbody>
           </table>
-          <% if @product.pack_total_saving.positive? %>
-            <p class="pack-saving-note"><%= t('product.pack_saving_total', amount: number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u')) %></p>
-          <% end %>
+          <p class="pack-saving-note" data-pack-quantity-target="note"<%= ' hidden'.html_safe unless @product.pack_total_saving.positive? %>><%= t('product.pack_saving_total', amount: number_to_currency(@product.pack_total_saving, unit: '€', format: "%n %u")) if @product.pack_total_saving.positive? %></p>
         </div>
       <% end %>
 
@@ -87,14 +78,15 @@
         <%= link_to t('common.back'), root_path, class: 'btn btn-outline' %>
       <% else %>
       <%= form_with url: cart_add_path(@product), method: :post, local: true do %>
-        <label for="quantity"><%= t('common.quantity') %></label>
-        <input type="number" name="quantity" id="quantity" value="1" min="1" class="qty-input">
+        <label for="quantity"><%= t('common.quantity') %><% if @product.pack? %> <span class="action-note" style="display:inline;">(<%= t('product.pack_max', n: @product.available_stock) %>)</span><% end %></label>
+        <input type="number" name="quantity" id="quantity" value="1" min="1" <%= "max=\"#{@product.available_stock}\"".html_safe if @product.pack? %> class="qty-input"
+               <% if @product.pack? %>data-pack-quantity-target="quantity" data-action="input->pack-quantity#change"<% end %>>
         <div style="margin-top: 16px;">
           <button type="submit" class="btn btn-primary"><%= t('common.add_to_cart') %></button>
           <%= link_to t('common.back'), root_path, class: 'btn btn-outline' %>
         </div>
       <% end %>
       <% end %>
-    </div>
+    <% end %>
   </div>
 </div>

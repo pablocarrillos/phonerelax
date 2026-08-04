@@ -8,7 +8,7 @@
         <td class="num"><%= product.position %></td>
         <td><%= product.name %></td>
         <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
-        <td class="num"><% if product.out_of_stock? %><span class="badge pendiente">0</span><% else %><%= product.stock %><% end %></td>
+        <td class="num"><% if product.out_of_stock? %><span class="badge pendiente">0</span><% else %><%= product.available_stock %><%= ' packs'.html_safe if product.pack? %><% end %></td>
         <td><%= product.active? ? 'Sí' : 'No' %></td>
         <td>
           <%= link_to 'Editar', edit_admin_product_path(product), class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>
