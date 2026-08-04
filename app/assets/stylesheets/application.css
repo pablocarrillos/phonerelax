@@ -588,31 +588,72 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 /* --- Prueba social: centros que ya confían en PhoneRelax --- */
 .trusted-by { text-align: center; }
 .trusted-title { text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); margin: 0 0 14px; }
-/* Dos filas equilibradas de cuatro logos (dos columnas en móvil) */
+/* Las Rozas como logo destacado a la izquierda, con EXACTAMENTE el mismo alto
+   que las dos filas de logos de la derecha (el título va por encima, fuera de
+   la rejilla). El resto de logos se reparten en 3 (arriba) + 4 (abajo). */
+.trusted-logos-wrap.has-featured {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  align-items: stretch;
+  gap: 0 48px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+/* La imagen va en absoluto: no aporta altura intrínseca, así la fila la marcan
+   solo las dos filas de logos y el destacado se ajusta EXACTO a ese alto. */
+.trusted-featured { position: relative; }
+.trusted-logo--featured {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: grayscale(1);
+  opacity: 0.7;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+.trusted-logo--featured:hover { filter: grayscale(0); opacity: 1; }
+.trusted-main { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
 .trusted-logos {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, auto);
-  justify-content: center;
+  justify-items: center;
   align-items: center;
-  gap: 26px 48px;
+  gap: 26px 40px;
 }
-.trusted-logos li { font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; display: flex; justify-content: center; }
-/* Logos de clientes en tonos grises; recuperan el color al pasar el ratón. */
+/* Fila superior: 3 logos. Fila inferior: 4 logos (Montcau-LaMola incluido). */
+.trusted-logos--top { grid-template-columns: repeat(3, 1fr); margin-bottom: 26px; }
+.trusted-logos--bottom { grid-template-columns: repeat(4, 1fr); }
+.trusted-logos li { font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; display: flex; justify-content: center; width: 100%; }
+/* Logos de clientes en tonos grises; recuperan el color al pasar el ratón.
+   max-width:100% evita que un logo ancho (Montcau-LaMola) se salga de su celda;
+   se limita la altura y la anchura mantiene la proporción sin deformar. */
 .trusted-logo {
-  height: 62px;
+  max-height: 58px;
+  max-width: 100%;
   width: auto;
-  max-width: 230px;
+  height: auto;
   object-fit: contain;
   display: block;
   filter: grayscale(1);
   opacity: 0.65;
   transition: filter 0.2s ease, opacity 0.2s ease;
 }
+/* La fila inferior tiene celdas más estrechas: logos algo más bajos para que
+   Villalkor, Madariaga y Peñíscola quepan holgados junto a Montcau-LaMola. */
+.trusted-logos--bottom .trusted-logo { max-height: 50px; }
 .trusted-logo:hover { filter: grayscale(0); opacity: 1; }
-@media (max-width: 760px) { .trusted-logos { grid-template-columns: repeat(2, auto); gap: 20px 32px; } }
+@media (max-width: 760px) {
+  .trusted-logos-wrap.has-featured { grid-template-columns: 1fr; gap: 20px; align-items: center; justify-items: center; }
+  .trusted-logos--top,
+  .trusted-logos--bottom { grid-template-columns: repeat(2, 1fr); gap: 22px 28px; }
+  .trusted-logos--top { margin-bottom: 22px; }
+  .trusted-featured { position: static; }
+  .trusted-logo--featured { position: static; inset: auto; width: auto; height: auto; max-height: 130px; }
+}
 
 /* Insignias con icono de los bloques de ventajas (p. ej. «Por qué elegir PhoneRelax») */
 .benefit-icon {
