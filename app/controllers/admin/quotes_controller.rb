@@ -13,6 +13,18 @@ module Admin
       render layout: false
     end
 
+    # Previsualiza el PDF con lo que hay en el formulario, sin guardar nada.
+    def preview
+      @quote = Quote.new(quote_params)
+      unless @quote.client
+        return render plain: "Elige un cliente para poder previsualizar el presupuesto.", status: :unprocessable_entity
+      end
+
+      @quote.valid? # autocompleta descripciones y precios del escalado, como al guardar
+      @quote.number = "BORRADOR"
+      render :print, layout: false
+    end
+
     def new
       @quote = Quote.new(issued_on: Date.current,
                          valid_until: Date.current + Quote::DEFAULT_VALIDITY_DAYS.days,
@@ -73,9 +85,9 @@ module Admin
 
     def quote_params
       params.require(:quote).permit(:client_id, :issued_on, :valid_until, :shipping_cost, :vat_rate,
-                                    :payment_terms, :delivery_terms, :notes, :remarks, :bank_account,
+                                    :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent,
                                     quote_lines_attributes: [ :id, :product_id, :description, :quantity,
-                                                              :unit_price, :vat_rate, :_destroy ])
+                                                              :unit_price, :vat_rate, :discount_percent, :_destroy ])
     end
   end
 end

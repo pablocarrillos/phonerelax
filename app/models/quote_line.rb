@@ -7,8 +7,14 @@ class QuoteLine < ApplicationRecord
   validates :description, presence: true
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
   validates :unit_price, :vat_rate, numericality: { greater_than_or_equal_to: 0 }
+  validates :discount_percent, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
 
+  def discounted?
+    discount_percent.to_d.positive?
+  end
+
+  # Total de la línea con su descuento aplicado.
   def total
-    (unit_price * quantity).round(2)
+    ((unit_price * quantity) * (1 - (discount_percent.to_d / 100))).round(2)
   end
 end

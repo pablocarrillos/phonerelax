@@ -31,6 +31,7 @@ class Quote < ApplicationRecord
 
   validates :issued_on, presence: true
   validates :shipping_cost, numericality: { greater_than_or_equal_to: 0 }
+  validates :discount_percent, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
 
   # Cuenta donde se pide el pago (con respaldo a la histórica).
   def bank_account_display
@@ -46,15 +47,30 @@ class Quote < ApplicationRecord
     quote_lines.reject(&:marked_for_destruction?)
   end
 
-  # Total Oferta (sin IVA): líneas + transporte.
-  def subtotal
-    active_lines.sum(&:total) + shipping_cost
+  # ¿Alguna línea usa descuento? (decide si el documento muestra esa columna)
+  def line_discounts?
+    active_lines.any?(&:discounted?)
   end
 
-  # Importe IVA: cada línea con su tipo; el transporte con el tipo general.
+  def lines_total
+    active_lines.sum(&:total)
+  end
+
+  # Descuento global sobre las líneas (el transporte no se descuenta).
+  def discount_amount
+    (lines_total * (discount_percent.to_d / 100)).round(2)
+  end
+
+  # Total Oferta (sin IVA): líneas − descuento global + transporte.
+  def subtotal
+    lines_total - discount_amount + shipping_cost
+  end
+
+  # Importe IVA: cada línea con su tipo (el descuento global reduce la base
+  # proporcionalmente); el transporte con el tipo general.
   def vat_amount
     lines_vat = active_lines.sum { |line| line.total * line.vat_rate / 100 }
-    lines_vat + (shipping_cost * vat_rate / 100)
+    (lines_vat * (1 - (discount_percent.to_d / 100))) + (shipping_cost * vat_rate / 100)
   end
 
   # Total Euros (IVA incluido).

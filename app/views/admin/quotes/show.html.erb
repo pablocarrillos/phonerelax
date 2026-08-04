@@ -19,28 +19,39 @@
   </div>
 </div>
 
-<table class="table" style="max-width: 860px;">
-  <thead><tr><th>Producto</th><th class="num">IVA</th><th class="num">P. Uni.</th><th class="num">Ud.</th><th class="num">Total</th></tr></thead>
+<% with_discounts = @quote.line_discounts? %>
+<% span = with_discounts ? 5 : 4 %>
+<table class="table" style="max-width: 900px;">
+  <thead><tr><th>Producto</th><th class="num">IVA</th><th class="num">P. Uni.</th><% if with_discounts %><th class="num">Dto.</th><% end %><th class="num">Ud.</th><th class="num">Total</th></tr></thead>
   <tbody>
     <% @quote.quote_lines.each do |line| %>
       <tr>
         <td><%= line.description %></td>
         <td class="num"><%= number_to_percentage(line.vat_rate, precision: 0) %></td>
         <td class="num"><%= number_with_precision(line.unit_price, precision: 2) %></td>
+        <% if with_discounts %><td class="num"><%= line.discounted? ? number_to_percentage(line.discount_percent, precision: 0) : '—' %></td><% end %>
         <td class="num"><%= line.quantity %></td>
         <td class="num"><%= number_with_precision(line.total, precision: 2) %></td>
+      </tr>
+    <% end %>
+    <% if @quote.discount_percent.to_d.positive? %>
+      <tr>
+        <td><strong>Descuento <%= number_to_percentage(@quote.discount_percent, precision: 0) %></strong></td>
+        <td class="num" colspan="<%= span - 1 %>"></td>
+        <td class="num">−<%= number_with_precision(@quote.discount_amount, precision: 2) %></td>
       </tr>
     <% end %>
     <tr>
       <td>Transporte</td>
       <td class="num"><%= number_to_percentage(@quote.vat_rate, precision: 0) %></td>
       <td class="num"><%= number_with_precision(@quote.shipping_cost, precision: 2) %></td>
+      <% if with_discounts %><td class="num"></td><% end %>
       <td class="num">1</td>
       <td class="num"><%= number_with_precision(@quote.shipping_cost, precision: 2) %></td>
     </tr>
-    <tr><td colspan="4" style="text-align:right;"><strong>Total Oferta</strong></td><td class="num"><strong><%= number_to_currency(@quote.subtotal, unit: '€', format: '%n %u') %></strong></td></tr>
-    <tr><td colspan="4" style="text-align:right;">Importe IVA</td><td class="num"><%= number_to_currency(@quote.vat_amount, unit: '€', format: '%n %u') %></td></tr>
-    <tr class="total-row"><td colspan="4" style="text-align:right;">Total Euros</td><td class="num"><%= number_to_currency(@quote.total, unit: '€', format: '%n %u') %></td></tr>
+    <tr><td colspan="<%= span %>" style="text-align:right;"><strong>Total Oferta</strong></td><td class="num"><strong><%= number_to_currency(@quote.subtotal, unit: '€', format: '%n %u') %></strong></td></tr>
+    <tr><td colspan="<%= span %>" style="text-align:right;">Importe IVA</td><td class="num"><%= number_to_currency(@quote.vat_amount, unit: '€', format: '%n %u') %></td></tr>
+    <tr class="total-row"><td colspan="<%= span %>" style="text-align:right;">Total Euros</td><td class="num"><%= number_to_currency(@quote.total, unit: '€', format: '%n %u') %></td></tr>
   </tbody>
 </table>
 

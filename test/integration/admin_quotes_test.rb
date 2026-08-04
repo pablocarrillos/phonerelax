@@ -86,6 +86,70 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "EN EL ASUNTO DE LA TRANSFERENCIA"
   end
 
+  test "la previsualización muestra el PDF del formulario sin guardar nada" do
+    assert_no_difference "Quote.count" do
+      post preview_admin_quotes_path, params: { quote: {
+        client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "29.75",
+        quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 180 } }
+      } }
+    end
+    assert_response :success
+    assert_includes response.body, "BORRADOR"
+    assert_includes response.body, "Colegio San Luis"
+    assert_includes response.body, "11.12" # precio del escalado aplicado también en la preview
+    assert_includes response.body, "Total Oferta"
+  end
+
+  test "la previsualización sin cliente avisa en lugar de fallar" do
+    post preview_admin_quotes_path, params: { quote: { issued_on: "2026-08-04" } }
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Elige un cliente"
+  end
+
+  test "descuento por línea y descuento global se aplican a los totales" do
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0", vat_rate: "21", discount_percent: "5",
+      quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 100, unit_price: "10", vat_rate: "21", discount_percent: "10" } }
+    } }
+    quote = Quote.last
+    assert_equal BigDecimal("900"), quote.quote_lines.sole.total # 1000 − 10 %
+    assert_equal BigDecimal("45"), quote.discount_amount          # 5 % de 900
+    assert_equal BigDecimal("855"), quote.subtotal
+    assert_in_delta 179.55, quote.vat_amount.to_f, 0.01           # 21 % sobre la base con descuentos
+    assert_in_delta 1034.55, quote.total.to_f, 0.01
+  end
+
+  test "el documento solo muestra los descuentos cuando se usan" do
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
+      quote_lines_attributes: { "0" => { description: "Sin descuento", quantity: 1, unit_price: "10" } }
+    } }
+    get print_admin_quote_path(Quote.last)
+    assert_not_includes response.body, "Dto."
+    assert_not_includes response.body, "Descuento"
+
+    Quote.last.update!(discount_percent: 5)
+    Quote.last.quote_lines.sole.update!(discount_percent: 10)
+    get print_admin_quote_path(Quote.last)
+    assert_includes response.body, "Dto."
+    assert_includes response.body, "Descuento 5%"
+  end
+
+  test "las líneas marcadas con _destroy se eliminan al guardar" do
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
+      quote_lines_attributes: { "0" => { description: "Uno", quantity: 1, unit_price: "10" },
+                                "1" => { description: "Dos", quantity: 2, unit_price: "5" } }
+    } }
+    quote = Quote.last
+    doomed = quote.quote_lines.find_by(description: "Dos")
+    patch admin_quote_path(quote), params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04",
+      quote_lines_attributes: { "0" => { id: doomed.id, _destroy: "1" } }
+    } }
+    assert_equal [ "Uno" ], quote.reload.quote_lines.pluck(:description)
+  end
+
   test "duplicar un presupuesto crea uno nuevo con número y fechas nuevos" do
     post admin_quotes_path, params: { quote: {
       client_id: @client.id, issued_on: "2026-07-01", valid_until: "2026-07-08", shipping_cost: "29.75",

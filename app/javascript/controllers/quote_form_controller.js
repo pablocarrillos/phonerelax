@@ -2,14 +2,37 @@ import { Controller } from "@hotwired/stimulus"
 
 // Editor de presupuestos: al cambiar producto o cantidad se aplica el precio
 // del escalado; si el precio se toca a mano y no coincide con el escalado se
-// muestra un aviso; y los totales (sin IVA, IVA y con IVA) se recalculan en
-// vivo, transporte incluido.
+// muestra un aviso; se pueden añadir y quitar líneas; y el total de cada línea
+// y los totales (sin IVA, IVA y con IVA) se recalculan en vivo, descuentos y
+// transporte incluidos.
 export default class extends Controller {
-  static targets = ["line", "shipping", "shippingVat", "totalNet", "totalVat", "totalGross"]
+  static targets = ["line", "linesBody", "template", "shipping", "shippingVat",
+    "globalDiscount", "totalNet", "totalVat", "totalGross"]
+
   static values = { products: Object }
 
   connect() {
-    this.lineTargets.forEach((row) => this.refreshWarning(row))
+    this.visibleLines().forEach((row) => this.refreshWarning(row))
+    this.recalc()
+  }
+
+  addLine() {
+    const html = this.templateTarget.innerHTML.replaceAll("NEW_RECORD", Date.now().toString())
+    this.linesBodyTarget.insertAdjacentHTML("beforeend", html)
+    this.recalc()
+  }
+
+  // Quita la fila: las guardadas se marcan para borrar (_destroy) y se ocultan;
+  // las nuevas se eliminan del formulario sin más.
+  removeLine(event) {
+    const row = event.target.closest("tr")
+    const destroy = row.querySelector("[data-role=destroy]")
+    if (destroy) {
+      destroy.value = "1"
+      row.hidden = true
+    } else {
+      row.remove()
+    }
     this.recalc()
   }
 
@@ -31,17 +54,20 @@ export default class extends Controller {
   }
 
   recalc() {
-    let net = 0
-    let vat = 0
-    this.lineTargets.forEach((row) => {
-      const quantity = this.number(row, "quantity")
-      const price = this.number(row, "price")
-      if (isNaN(quantity) || isNaN(price)) return
+    let linesTotal = 0
+    let linesVat = 0
+    this.visibleLines().forEach((row) => {
+      const total = this.lineTotal(row)
+      const cell = row.querySelector("[data-role=line-total]")
+      if (cell) cell.textContent = total === null ? "—" : this.euros(total)
+      if (total === null) return
 
-      const lineTotal = quantity * price
-      net += lineTotal
-      vat += (lineTotal * (this.number(row, "vat") || 0)) / 100
+      linesTotal += total
+      linesVat += (total * (this.number(row, "vat") || 0)) / 100
     })
+    const globalFactor = 1 - (parseFloat(this.globalDiscountTarget?.value) || 0) / 100
+    let net = linesTotal * globalFactor
+    let vat = linesVat * globalFactor
     const shipping = parseFloat(this.shippingTarget?.value)
     if (!isNaN(shipping)) {
       net += shipping
@@ -53,6 +79,20 @@ export default class extends Controller {
   }
 
   // --- utilidades ---
+
+  visibleLines() {
+    return this.lineTargets.filter((row) => !row.hidden)
+  }
+
+  // Total de la fila (uds. × precio × descuento de línea), o null si está incompleta.
+  lineTotal(row) {
+    const quantity = this.number(row, "quantity")
+    const price = this.number(row, "price")
+    if (isNaN(quantity) || isNaN(price)) return null
+
+    const discount = 1 - (this.number(row, "discount") || 0) / 100
+    return Math.round(quantity * price * discount * 100) / 100
+  }
 
   applyTierPrice(row) {
     const expected = this.tierPrice(row)

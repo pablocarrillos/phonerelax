@@ -82,6 +82,7 @@ Rails.application.routes.draw do
     resources :quotes do
       get :print, on: :member # versión imprimible (PDF con el diálogo del navegador)
       post :duplicate, on: :member # nuevo presupuesto partiendo de este
+      post :preview, on: :collection # previsualiza el PDF con el formulario, sin guardar
     end
     resources :suppliers, except: :show
     resources :purchases do
