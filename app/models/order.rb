@@ -105,6 +105,7 @@ class Order < ApplicationRecord
       end
     end
     OrderMailer.paid(self).deliver_later
+    OrderMailer.new_sale(self).deliver_later
   end
 
   # Importe cobrado al cliente: el total se congela con el transporte incluido

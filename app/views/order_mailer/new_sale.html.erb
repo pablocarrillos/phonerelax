@@ -1,0 +1,15 @@
+<h2>Pedido <%= @order.number %> pagado<%= " (cobro manual)" if @order.paid_manually? %></h2>
+
+<%= render "order_summary" %>
+
+<h3 style="margin:20px 0 6px;">Datos de envío</h3>
+<p style="margin:0; line-height:1.8;">
+  <strong><%= @order.customer_name %></strong><br>
+  <%= @order.address %><br>
+  <%= @order.postal_code %> <%= @order.city %> (<%= @order.province %>) · <%= @order.country %><br>
+  ✉️ <%= @order.email %> · 📞 <%= @order.phone %>
+</p>
+
+<p style="margin:20px 0 0;">
+  <%= link_to "Ver el pedido en el panel de gestión", admin_order_url(@order, locale: nil) %>
+</p>

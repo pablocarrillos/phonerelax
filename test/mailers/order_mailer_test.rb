@@ -54,4 +54,20 @@ class OrderMailerTest < ActionMailer::TestCase
     assert_match order.number, body
     assert_match "/pagar", body
   end
+
+  test "new_sale: aviso interno a la tienda con artículos y datos de envío" do
+    order = orders(:uno)
+    order.update!(locale: "pt") # el aviso interno va SIEMPRE en español
+    mail = OrderMailer.new_sale(order)
+
+    assert_equal [ "phonerelaxstore@gmail.com" ], mail.to
+    assert_equal [ order.email ], mail.reply_to
+    assert_match "Pedido pagado: #{order.number}", mail.subject
+    body = mail.body.decoded
+    assert_match "Datos de envío", body
+    assert_match order.customer_name, body
+    assert_match order.address, body
+    assert_match order.order_lines.first.product.display_name, body
+    assert_match "/admin/orders/#{order.id}", body
+  end
 end

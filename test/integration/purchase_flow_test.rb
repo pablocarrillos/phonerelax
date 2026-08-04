@@ -44,7 +44,7 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     assert_equal "cs_test_ok", order.reload.stripe_session_id
     assert session[:cart].blank?, "el carrito debe vaciarse al ir al pago"
 
-    assert_emails 1 do
+    assert_emails 2 do # confirmación al cliente + aviso interno a la tienda
       post_webhook "cs_test_ok"
       assert_response :ok
     end
@@ -53,9 +53,12 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     assert_not order.paid_manually?
     assert_equal 8, @funda.reload.stock, "el pago descuenta el stock"
     assert_includes order.order_events.pluck(:event), "pagado"
-    mail = ActionMailer::Base.deliveries.last
-    assert_equal [ order.email ], mail.to
+    mail = ActionMailer::Base.deliveries.find { |m| m.to == [ order.email ] }
+    assert mail, "el cliente recibe su confirmación"
     assert_includes mail.subject, order.number
+    shop_mail = ActionMailer::Base.deliveries.find { |m| m.to == [ "phonerelaxstore@gmail.com" ] }
+    assert shop_mail, "la tienda recibe el aviso de venta"
+    assert_includes shop_mail.body.decoded, order.address
 
     # La página de estado agradece la compra y enlaza cada producto comprado.
     get order_status_path(order.number)
@@ -96,7 +99,7 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
   test "la vuelta de Stripe confirma el pago si el webhook aún no ha llegado" do
     order = order_with_session("cs_test_retorno")
     paid_session = FakeCheckoutSession.new("cs_test_retorno", nil, "paid")
-    assert_emails 1 do
+    assert_emails 2 do # confirmación al cliente + aviso interno a la tienda
       with_stripe_session_stub(:retrieve, paid_session) do
         get order_success_path(order.number)
       end
