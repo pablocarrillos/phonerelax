@@ -524,9 +524,9 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .trusted-logos li { font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; display: flex; justify-content: center; }
 /* Logos de clientes en tonos grises; recuperan el color al pasar el ratón. */
 .trusted-logo {
-  height: 48px;
+  height: 62px;
   width: auto;
-  max-width: 190px;
+  max-width: 230px;
   object-fit: contain;
   display: block;
   filter: grayscale(1);
