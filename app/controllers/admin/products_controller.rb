@@ -40,8 +40,7 @@ module Admin
     private
 
     def set_product
-      # to_param usa shopify_handle (slug); buscamos por ahí y, si no, por id.
-      @product = Product.find_by(shopify_handle: params[:id]) || Product.find(params[:id])
+      @product = Product.find_by_param!(params[:id])
     end
 
     def product_params

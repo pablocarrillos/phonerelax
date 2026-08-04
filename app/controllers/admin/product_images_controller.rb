@@ -32,7 +32,7 @@ module Admin
     private
 
     def set_product
-      @product = Product.find(params[:product_id])
+      @product = Product.find_by_param!(params[:product_id])
     end
   end
 end

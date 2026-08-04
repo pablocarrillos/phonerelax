@@ -1,5 +1,6 @@
 funda:
   name: Funda de prueba
+  shopify_handle: funda-de-prueba
   price: 9.95
   stock: 10
   active: true

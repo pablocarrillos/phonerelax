@@ -7,12 +7,12 @@ class CartsController < ApplicationController
   end
 
   def add
-    product = Product.active.find(params[:product_id])
+    product = Product.active.find_by_param!(params[:product_id])
     return redirect_back(fallback_location: root_path, alert: "#{product.name} está agotado.") if product.out_of_stock?
 
-    quantity = [params[:quantity].to_i, 1].max
+    quantity = [ params[:quantity].to_i, 1 ].max
     wanted = (cart[product.id.to_s] || 0) + quantity
-    cart[product.id.to_s] = [wanted, product.stock].min
+    cart[product.id.to_s] = [ wanted, product.stock ].min
     if wanted > product.stock
       redirect_to cart_path, alert: "Solo quedan #{product.stock} unidades de #{product.name}; hemos ajustado la cantidad."
     else
@@ -21,10 +21,10 @@ class CartsController < ApplicationController
   end
 
   def update_quantity
-    product = Product.find(params[:product_id])
+    product = Product.find_by_param!(params[:product_id])
     quantity = params[:quantity].to_i
     if quantity.positive?
-      capped = [quantity, product.stock].min
+      capped = [ quantity, product.stock ].min
       cart[product.id.to_s] = capped
       return redirect_to cart_path, alert: "Solo quedan #{product.stock} unidades de #{product.name}." if capped < quantity
     else
@@ -34,7 +34,8 @@ class CartsController < ApplicationController
   end
 
   def remove
-    cart.delete(params[:product_id].to_s)
+    product = Product.find_by_param(params[:product_id])
+    cart.delete(product.id.to_s) if product
     redirect_to cart_path
   end
 
@@ -42,6 +43,6 @@ class CartsController < ApplicationController
 
   def cart_lines
     products = Product.where(id: cart.keys).index_by { |p| p.id.to_s }
-    cart.filter_map { |id, quantity| [products[id], quantity] if products[id] }
+    cart.filter_map { |id, quantity| [ products[id], quantity ] if products[id] }
   end
 end
