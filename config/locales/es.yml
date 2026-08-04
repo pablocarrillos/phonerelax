@@ -115,6 +115,11 @@ es:
     step3_alt: Abre la bolsa PhoneRelax
   product:
     unavailable: Este producto no está disponible ahora mismo.
+    pack_includes: Qué incluye este pack
+    pack_normal: Precio suelto
+    pack_in_pack: En el pack
+    pack_saving: Ahorro
+    pack_saving_total: "Ahorras %{amount} comprando el pack en vez de los productos por separado."
   cart:
     title: Tu carrito
     empty: El carrito está vacío.

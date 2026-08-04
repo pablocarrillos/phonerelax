@@ -17,7 +17,7 @@ class OrdersController < ApplicationController
     return redirect_to(cart_path, alert: t("flash.cart_empty")) if lines.empty?
 
     # Última comprobación de stock antes de cobrar.
-    without_stock = lines.select { |product, quantity| quantity > product.stock }
+    without_stock = lines.select { |product, quantity| quantity > product.available_stock }
     if without_stock.any?
       names = without_stock.map { |product, _| product.name }.join(", ")
       return redirect_to(cart_path, alert: t("flash.out_of_stock", names: names))

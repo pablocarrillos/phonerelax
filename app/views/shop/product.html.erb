@@ -15,7 +15,7 @@
           '@type' => 'Offer',
           'url' => canonical_url,
           'priceCurrency' => 'EUR',
-          'price' => format('%.2f', @product.price),
+          'price' => format('%.2f', @product.display_price),
           'availability' => @product.out_of_stock? ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
           'itemCondition' => 'https://schema.org/NewCondition'
         }
@@ -40,8 +40,38 @@
     </div>
     <div>
       <h1><%= @product.display_name %></h1>
-      <div class="price"><%= number_to_currency(@product.price, unit: '€', format: '%n %u') %></div>
+      <div class="price"><%= number_to_currency(@product.display_price, unit: '€', format: '%n %u') %></div>
       <p class="vat-note"><%= t('common.vat_included', rate: @product.vat_percentage.to_s.sub(/\.0+\z/, '')) %></p>
+
+      <% if @product.pack? %>
+        <div class="pack-breakdown">
+          <h2><%= t('product.pack_includes') %></h2>
+          <table class="table">
+            <thead><tr><th><%= t('common.product') %></th><th class="num"><%= t('common.quantity') %></th><th class="num"><%= t('product.pack_normal') %></th><th class="num"><%= t('product.pack_in_pack') %></th><th class="num"><%= t('product.pack_saving') %></th></tr></thead>
+            <tbody>
+              <% @product.pack_breakdown.each do |r| %>
+                <tr>
+                  <td><%= r[:component].display_name %></td>
+                  <td class="num"><%= r[:quantity] %></td>
+                  <td class="num"><%= number_to_currency(r[:base_total], unit: '€', format: '%n %u') %></td>
+                  <td class="num"><strong><%= number_to_currency(r[:line_total], unit: '€', format: '%n %u') %></strong></td>
+                  <td class="num pack-saving-cell"><%= r[:saving].positive? ? number_to_currency(r[:saving], unit: '€', format: '%n %u') : '—' %></td>
+                </tr>
+              <% end %>
+              <tr class="total-row">
+                <td colspan="2"><%= t('common.total') %></td>
+                <td class="num"><%= number_to_currency(@product.pack_base_total, unit: '€', format: '%n %u') %></td>
+                <td class="num"><strong><%= number_to_currency(@product.pack_unit_price, unit: '€', format: '%n %u') %></strong></td>
+                <td class="num pack-saving-cell"><strong><%= @product.pack_total_saving.positive? ? number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u') : '—' %></strong></td>
+              </tr>
+            </tbody>
+          </table>
+          <% if @product.pack_total_saving.positive? %>
+            <p class="pack-saving-note"><%= t('product.pack_saving_total', amount: number_to_currency(@product.pack_total_saving, unit: '€', format: '%n %u')) %></p>
+          <% end %>
+        </div>
+      <% end %>
+
       <div class="product-description"><%= sanitize @product.display_description %></div>
       <% if @product.out_of_stock? %>
         <p><span class="btn btn-soldout" style="padding: 11px 34px;"><%= t('common.sold_out') %></span></p>

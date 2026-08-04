@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_05_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_05_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -119,6 +119,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_000000) do
     t.index ["number"], name: "index_orders_on_number", unique: true
   end
 
+  create_table "pack_items", force: :cascade do |t|
+    t.bigint "component_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "pack_id", null: false
+    t.integer "position", default: 0, null: false
+    t.integer "quantity", default: 1, null: false
+    t.datetime "updated_at", null: false
+    t.index ["component_id"], name: "index_pack_items_on_component_id"
+    t.index ["pack_id"], name: "index_pack_items_on_pack_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.text "body"
     t.text "body_en"
@@ -171,6 +182,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_000000) do
     t.string "name", null: false
     t.string "name_en"
     t.string "name_pt"
+    t.boolean "pack", default: false, null: false
     t.integer "position", default: 0, null: false
     t.decimal "price", precision: 8, scale: 2, null: false
     t.decimal "shipping_unit_cost", precision: 8, scale: 2, default: "1.0", null: false
@@ -321,6 +333,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_000000) do
   add_foreign_key "order_events", "orders"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"
+  add_foreign_key "pack_items", "products", column: "component_id"
+  add_foreign_key "pack_items", "products", column: "pack_id"
   add_foreign_key "price_tiers", "products"
   add_foreign_key "product_images", "products"
   add_foreign_key "purchase_lines", "products"

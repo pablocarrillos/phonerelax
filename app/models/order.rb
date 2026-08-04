@@ -140,9 +140,7 @@ class Order < ApplicationRecord
     transaction do
       update!(payment_status: :pagado, paid_manually: manual)
       order_events.create!(event: manual ? "pagado (manual)" : "pagado")
-      order_lines.includes(:product).each do |line|
-        line.product.update!(stock: [ line.product.stock - line.quantity, 0 ].max)
-      end
+      order_lines.includes(:product).each { |line| line.product.consume_stock!(line.quantity) }
     end
     OrderMailer.paid(self).deliver_later
     OrderMailer.new_sale(self).deliver_later
@@ -170,7 +168,7 @@ class Order < ApplicationRecord
   def destroy_restoring_stock!
     transaction do
       unless pago_pendiente?
-        order_lines.includes(:product).each { |line| line.product.increment!(:stock, line.quantity) }
+        order_lines.includes(:product).each { |line| line.product.restore_stock!(line.quantity) }
       end
       destroy!
     end

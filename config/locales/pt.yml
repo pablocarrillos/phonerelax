@@ -113,6 +113,11 @@ pt:
     step3_alt: Abra a bolsa PhoneRelax
   product:
     unavailable: Este produto não está disponível de momento.
+    pack_includes: O que inclui este pack
+    pack_normal: Comprado à parte
+    pack_in_pack: No pack
+    pack_saving: Poupança
+    pack_saving_total: "Poupa %{amount} ao comprar o pack em vez dos produtos separadamente."
   cart:
     title: O seu carrinho
     empty: O carrinho está vazio.

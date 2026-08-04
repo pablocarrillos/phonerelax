@@ -74,7 +74,7 @@
           <% end %>
         <% end %>
         <h3><%= link_to product.display_name, product_page_path(product), style: 'text-decoration:none;' %></h3>
-        <div class="price"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></div>
+        <div class="price"><%= number_to_currency(product.display_price, unit: '€', format: '%n %u') %></div>
         <div class="actions">
           <% if product.out_of_stock? %>
             <span class="btn btn-block btn-soldout"><%= t('common.sold_out') %></span>

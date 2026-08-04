@@ -9,6 +9,7 @@
     <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
     <div class="full"><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
     <div class="full"><label><%= f.check_box :auto_carousel %> Mostrar la galería como carrusel automático (sin miniaturas, cambia sola cada 3&nbsp;s)</label></div>
+    <div class="full"><label><%= f.check_box :pack %> Es un pack (su precio se calcula a partir de los componentes de abajo; el precio y el escalado propios se ignoran)</label></div>
 
     <div class="full">
       <%= f.label :cover_image, 'Imagen de portada' %>
@@ -89,6 +90,23 @@
               <% end %>
             </td>
             <td style="text-align:center;"><%= tf.check_box :_destroy if tier.persisted? %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="max-width: 860px; margin-top: 26px;">
+    <h2>Componentes del pack</h2>
+    <p class="action-note" style="margin-top:0;">Solo aplica si marcas «Es un pack». Elige los productos y cuántas unidades incluye el pack. El precio se calcula con el <strong>escalado de cada componente</strong> para esa cantidad, y el stock disponible del pack depende del stock de sus componentes.</p>
+    <table class="table" style="max-width:620px;">
+      <thead><tr><th>Producto</th><th class="num">Unidades</th><th>Quitar</th></tr></thead>
+      <tbody>
+        <%= f.fields_for :pack_items do |pf| %>
+          <tr>
+            <td><%= pf.collection_select :component_id, Product.singles.where.not(id: product.id).ordered, :id, :name, { include_blank: true }, { class: 'form-select' } %></td>
+            <td class="num"><%= pf.number_field :quantity, min: 1, class: 'input-compact', style: 'width:100px; text-align:right;' %></td>
+            <td style="text-align:center;"><%= pf.check_box :_destroy if pf.object.persisted? %></td>
           </tr>
         <% end %>
       </tbody>

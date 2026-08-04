@@ -8,7 +8,7 @@ module Admin
 
     def new
       @product = Product.new(active: true)
-      build_blank_tiers
+      build_blank_rows
     end
 
     def create
@@ -16,20 +16,20 @@ module Admin
       if @product.save
         redirect_to admin_products_path, notice: "Producto creado."
       else
-        build_blank_tiers
+        build_blank_rows
         render :new, status: :unprocessable_entity
       end
     end
 
     def edit
-      build_blank_tiers
+      build_blank_rows
     end
 
     def update
       if @product.update(product_params)
         redirect_to admin_products_path, notice: "Producto actualizado."
       else
-        build_blank_tiers
+        build_blank_rows
         render :edit, status: :unprocessable_entity
       end
     end
@@ -44,9 +44,10 @@ module Admin
 
     private
 
-    # Huecos para añadir tramos de escalado nuevos desde el formulario.
-    def build_blank_tiers
+    # Huecos para añadir tramos de escalado y componentes de pack nuevos.
+    def build_blank_rows
       2.times { @product.price_tiers.build }
+      3.times { @product.pack_items.build }
     end
 
     def set_product
@@ -54,8 +55,9 @@ module Admin
     end
 
     def product_params
-      params.require(:product).permit(:name, :description, :name_pt, :description_pt, :name_en, :description_en, :price, :cover_image, :active, :position, :stock, :vat_percentage, :auto_carousel,
-                                      price_tiers_attributes: [ :id, :min_units, :unit_price, :_destroy ])
+      params.require(:product).permit(:name, :description, :name_pt, :description_pt, :name_en, :description_en, :price, :cover_image, :active, :position, :stock, :vat_percentage, :auto_carousel, :pack,
+                                      price_tiers_attributes: [ :id, :min_units, :unit_price, :_destroy ],
+                                      pack_items_attributes: [ :id, :component_id, :quantity, :position, :_destroy ])
     end
   end
 end
