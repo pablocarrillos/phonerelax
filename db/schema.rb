@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_04_095053) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_04_105455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_095053) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.text "address"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name", null: false
+    t.text "notes"
+    t.string "phone"
+    t.string "tax_id"
+    t.datetime "updated_at", null: false
   end
 
   create_table "contact_messages", force: :cascade do |t|
@@ -119,6 +130,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_095053) do
     t.index ["slug_pt"], name: "index_posts_on_slug_pt", unique: true
   end
 
+  create_table "price_tiers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "min_units", null: false
+    t.bigint "product_id", null: false
+    t.decimal "unit_price", precision: 10, scale: 4, null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id", "min_units"], name: "index_price_tiers_on_product_id_and_min_units", unique: true
+    t.index ["product_id"], name: "index_price_tiers_on_product_id"
+  end
+
   create_table "product_images", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "position"
@@ -172,6 +193,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_095053) do
     t.index ["supplier_id"], name: "index_purchases_on_supplier_id"
   end
 
+  create_table "quote_lines", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.bigint "product_id"
+    t.integer "quantity", null: false
+    t.bigint "quote_id", null: false
+    t.decimal "unit_price", precision: 10, scale: 4, null: false
+    t.datetime "updated_at", null: false
+    t.decimal "vat_rate", precision: 5, scale: 2, default: "21.0", null: false
+    t.index ["product_id"], name: "index_quote_lines_on_product_id"
+    t.index ["quote_id"], name: "index_quote_lines_on_quote_id"
+  end
+
   create_table "quote_requests", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -181,6 +215,45 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_095053) do
     t.string "phone"
     t.string "sector"
     t.integer "units"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "quotes", force: :cascade do |t|
+    t.string "bank_account"
+    t.bigint "client_id", null: false
+    t.datetime "created_at", null: false
+    t.string "delivery_terms"
+    t.date "issued_on", null: false
+    t.text "notes"
+    t.string "number", null: false
+    t.string "payment_terms"
+    t.text "remarks"
+    t.decimal "shipping_cost", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "updated_at", null: false
+    t.date "valid_until"
+    t.decimal "vat_rate", precision: 5, scale: 2, default: "21.0", null: false
+    t.index ["client_id"], name: "index_quotes_on_client_id"
+    t.index ["number"], name: "index_quotes_on_number", unique: true
+  end
+
+  create_table "sample_lines", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity", default: 1, null: false
+    t.bigint "sample_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_sample_lines_on_product_id"
+    t.index ["sample_id"], name: "index_sample_lines_on_sample_id"
+  end
+
+  create_table "samples", force: :cascade do |t|
+    t.string "contact_name"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.text "notes"
+    t.string "organization", null: false
+    t.date "returned_on"
+    t.date "sent_on"
     t.datetime "updated_at", null: false
   end
 
@@ -228,9 +301,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_095053) do
   add_foreign_key "order_events", "orders"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"
+  add_foreign_key "price_tiers", "products"
   add_foreign_key "product_images", "products"
   add_foreign_key "purchase_lines", "products"
   add_foreign_key "purchase_lines", "purchases"
   add_foreign_key "purchases", "suppliers"
+  add_foreign_key "quote_lines", "products"
+  add_foreign_key "quote_lines", "quotes"
+  add_foreign_key "quotes", "clients"
+  add_foreign_key "sample_lines", "products"
+  add_foreign_key "sample_lines", "samples"
   add_foreign_key "sessions", "users"
 end

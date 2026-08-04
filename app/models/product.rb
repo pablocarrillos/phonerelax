@@ -5,6 +5,9 @@ class Product < ApplicationRecord
   has_many :order_lines, dependent: :restrict_with_error
   has_many :product_images, -> { ordered }, dependent: :destroy, inverse_of: :product
   has_one_attached :cover_image
+  has_many :price_tiers, -> { ordered }, dependent: :destroy, inverse_of: :product
+  accepts_nested_attributes_for :price_tiers, allow_destroy: true,
+                                              reject_if: ->(attrs) { attrs["min_units"].blank? && attrs["unit_price"].blank? }
 
   validates :name, :price, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }
@@ -43,9 +46,18 @@ class Product < ApplicationRecord
     end
   end
 
+  # PVP (IVA incluido) para una cantidad: aplica el escalado si hay tramo
+  # alcanzado; si no, el precio normal de la tienda.
+  def price_for_quantity(quantity)
+    tier = price_tiers.where(min_units: ..quantity).reorder(min_units: :desc).first
+    return price unless tier
+
+    (tier.unit_price * (1 + (vat_percentage.to_d / 100))).round(2)
+  end
+
   # Galería de la ficha: las imágenes gestionadas, o la de portada si no hay ninguna.
   def gallery_urls
-    urls = product_images.map(&:url)
+    urls = product_images.map(&:src)
     urls.presence || [ cover_url ].compact_blank
   end
 end

@@ -59,6 +59,41 @@
       </div>
     </div>
   </div>
+  <div style="max-width: 860px; margin-top: 26px;">
+    <h2>Escalado de precios por cantidad</h2>
+    <p class="action-note" style="margin-top:0;">Precio unitario a partir de cada tramo de unidades. Se aplica en la <strong>tienda</strong> (carrito y pedidos) y en los <strong>presupuestos</strong>. Los tres valores están sincronizados: al editar uno se recalculan los otros (descuento respecto al primer tramo). Sin tramos, se usa siempre el precio normal.</p>
+    <table class="table" style="max-width:620px;" data-controller="price-tiers" data-price-tiers-rate-value="<%= product.vat_percentage || 21 %>">
+      <thead><tr><th>Desde (uds.)</th><th class="num">€/ud. sin IVA</th><th class="num">€/ud. con IVA</th><th class="num">Dto. %</th><th>Quitar</th></tr></thead>
+      <tbody>
+        <% factor = 1 + ((product.vat_percentage || 21).to_d / 100) %>
+        <% base_price = product.price_tiers.reject(&:new_record?).min_by(&:min_units)&.unit_price %>
+        <%= f.fields_for :price_tiers do |tf| %>
+          <% tier = tf.object %>
+          <tr data-price-tiers-target="row">
+            <td><%= tf.number_field :min_units, min: 1, class: 'orders-search-input', style: 'width:100px;', placeholder: ('nuevo tramo' if tier.new_record?) %></td>
+            <td class="num"><%= tf.number_field :unit_price, step: 0.0001, min: 0, class: 'orders-search-input', style: 'width:110px; text-align:right;',
+                                                placeholder: ('sin IVA' if tier.new_record?), data: { role: 'net', action: 'input->price-tiers#fromNet' } %></td>
+            <td class="num">
+              <input type="number" step="0.01" min="0" class="orders-search-input" style="width:100px; text-align:right;"
+                     value="<%= number_with_precision(tier.unit_price * factor, precision: 2, separator: '.') if tier.unit_price.present? %>"
+                     placeholder="con IVA" data-role="gross" data-action="input->price-tiers#fromGross">
+            </td>
+            <td class="num">
+              <% if !tier.new_record? && tier.unit_price == base_price %>
+                <span style="color:var(--muted);">base</span>
+              <% else %>
+                <input type="number" step="0.1" class="orders-search-input" style="width:80px; text-align:right;"
+                       value="<%= number_with_precision(100 * (1 - (tier.unit_price / base_price)), precision: 1, separator: '.') if tier.unit_price.present? && base_price&.positive? %>"
+                       placeholder="dto. %" data-role="discount" data-action="input->price-tiers#fromDiscount">
+              <% end %>
+            </td>
+            <td style="text-align:center;"><%= tf.check_box :_destroy if tier.persisted? %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
   <p><%= f.submit 'Guardar producto', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %></p>
 <% end %>
 
@@ -67,7 +102,7 @@
   <div class="admin-images">
     <% product.product_images.each do |image| %>
       <div class="admin-image">
-        <img src="<%= image.url %>" alt="">
+        <img src="<%= image.src %>" alt="">
         <div class="admin-image-actions">
           <%= button_to '←', move_admin_product_product_image_path(product, image, direction: 'up'), method: :patch, class: 'btn btn-outline btn-move', title: 'Mover antes' %>
           <%= button_to 'Quitar', admin_product_product_image_path(product, image), method: :delete,
@@ -77,10 +112,11 @@
       </div>
     <% end %>
   </div>
-  <%= form_with url: admin_product_product_images_path(product), method: :post, local: true, class: 'add-image-form' do %>
-    <input type="text" name="url" placeholder="URL de la nueva imagen…" required>
-    <button type="submit" class="btn btn-outline">Añadir imagen</button>
+  <%= form_with url: admin_product_product_images_path(product), method: :post, local: true, multipart: true, class: 'add-image-form' do %>
+    <input type="file" name="files[]" accept="image/*" multiple required>
+    <button type="submit" class="btn btn-outline">Añadir imágenes</button>
   <% end %>
+  <p class="action-note">Puedes seleccionar varias a la vez; se añaden al final (reordénalas con las flechas).</p>
 <% else %>
   <p class="help-block" style="color: var(--muted);">Guarda el producto para poder gestionar su galería de imágenes.</p>
 <% end %>

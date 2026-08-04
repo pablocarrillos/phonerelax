@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Presupuesto <%= @quote.number %></title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #111; margin: 0; padding: 32px 40px 90px; font-size: 14px; line-height: 1.45; }
+    .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+    .top img { width: 220px; }
+    .doc-meta { text-align: left; }
+    .doc-meta h1 { margin: 0 0 4px; font-size: 20px; }
+    .boxes { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+    .box { border: 1.5px solid #111; padding: 12px 16px; width: 48%; min-height: 130px; }
+    .lines { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+    .lines th, .lines td { border: 1px solid #111; padding: 8px 10px; }
+    .lines th { background: #d9d9d9; }
+    .lines td.center { text-align: center; }
+    .lines td.num { text-align: right; }
+    .totals { width: 45%; margin-left: auto; border-collapse: collapse; margin-top: 12px; }
+    .totals td { padding: 4px 10px; text-align: right; }
+    .totals .grand td { font-weight: bold; border-top: 1.5px solid #111; }
+    .foot { display: flex; justify-content: space-between; gap: 24px; margin-top: 26px; }
+    .conditions { width: 50%; }
+    .accept { border: 1.5px solid #111; padding: 10px 14px; width: 45%; min-height: 110px; font-weight: bold; text-align: center; }
+    .small-print { margin-top: 22px; }
+    .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 12px; padding: 8px 0 14px; border-top: 1px solid #111; background: #fff; }
+    .print-bar { position: fixed; bottom: 70px; right: 16px; }
+    @media print { .print-bar { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="print-bar"><button onclick="window.print()" style="padding:10px 18px; font-size:15px; cursor:pointer;">🖨 Imprimir / Guardar PDF</button></div>
+
+  <div class="top">
+    <img src="/images/site/drop-point-systems-logo.png" alt="Drop Point Systems">
+    <div class="doc-meta">
+      <h1>Presupuesto</h1>
+      Oferta Nº <%= @quote.number %><br>
+      Fecha: <%= l @quote.issued_on, format: '%d/%m/%Y' %><br>
+      <% if @quote.valid_until %>Válido hasta: <%= l @quote.valid_until, format: '%d/%m/%Y' %><% end %>
+    </div>
+  </div>
+
+  <div class="boxes">
+    <div class="box">
+      <strong>Nombre comercial:</strong><br>
+      <strong><%= Quote::COMPANY[:trade_name] %></strong><br>
+      <strong>Razón social:</strong><br>
+      <strong><%= Quote::COMPANY[:legal_name] %></strong><br>
+      <strong>CIF: <%= Quote::COMPANY[:tax_id] %></strong><br>
+      <% Quote::COMPANY[:address_lines].each do |line| %><%= line %><br><% end %>
+      <%= Quote::COMPANY[:web] %>
+    </div>
+    <div class="box">
+      <strong><%= @quote.client.name %></strong><br>
+      <span style="white-space: pre-line;"><%= @quote.client.address %></span>
+      <% if @quote.client.tax_id.present? %><br><strong>CIF / NIF</strong>&nbsp;&nbsp;<%= @quote.client.tax_id %><% end %>
+    </div>
+  </div>
+
+  <table class="lines">
+    <thead><tr><th>Productos</th><th>IVA</th><th>P. Uni.</th><th>Ud.</th><th>Total</th></tr></thead>
+    <tbody>
+      <% @quote.quote_lines.each do |line| %>
+        <tr>
+          <td style="text-align:center;"><%= line.description %></td>
+          <td class="center"><%= number_to_percentage(line.vat_rate, precision: 0) %></td>
+          <td class="num"><%= number_with_precision(line.unit_price, precision: 2) %></td>
+          <td class="center"><%= line.quantity %></td>
+          <td class="num"><%= number_with_precision(line.total, precision: 2, delimiter: '.', separator: ',') %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td style="text-align:center;">Transporte</td>
+        <td class="center"><%= number_to_percentage(@quote.vat_rate, precision: 0) %></td>
+        <td class="num"><%= number_with_precision(@quote.shipping_cost, precision: 2) %></td>
+        <td class="center">1</td>
+        <td class="num"><%= number_with_precision(@quote.shipping_cost, precision: 2, delimiter: '.', separator: ',') %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="totals">
+    <tr class="grand"><td>Total Oferta</td><td><%= number_with_precision(@quote.subtotal, precision: 2, delimiter: '.', separator: ',') %> €</td></tr>
+    <tr><td>Importe IVA</td><td><%= number_with_precision(@quote.vat_amount, precision: 2, delimiter: '.', separator: ',') %> €</td></tr>
+    <tr><td>Total Euros</td><td><%= number_with_precision(@quote.total, precision: 2, delimiter: '.', separator: ',') %> €</td></tr>
+  </table>
+
+  <div class="foot">
+    <div class="conditions">
+      <% if @quote.payment_terms.present? %><p>Condiciones de pago: <%= @quote.payment_terms %></p><% end %>
+      <p>Cuenta Bancaria: <%= @quote.bank_account_display %></p>
+      <% if @quote.delivery_terms.present? %><p>Plazo de entrega: <%= @quote.delivery_terms %>.</p><% end %>
+    </div>
+    <div class="accept">Aceptación por escrito, sello de la empresa, fecha y firma.</div>
+  </div>
+
+  <% if @quote.remarks.present? %>
+    <div style="margin-top:16px;"><strong>Observaciones:</strong> <span style="white-space:pre-line;"><%= @quote.remarks %></span></div>
+  <% end %>
+
+  <div class="small-print">
+    <p>Una vez realizada rogamos pasen comprobante al correo electrónico <%= Quote::COMPANY[:email] %> para poder cursar el pedido.</p>
+    <p><strong>IMPORTANTE: EN EL ASUNTO DE LA TRANSFERENCIA PONGAN EL Nº DE LA OFERTA, GRACIAS.</strong></p>
+  </div>
+
+  <div class="page-footer">
+    <em><%= Quote::COMPANY[:address_lines].join(' · ') %></em><br>
+    <strong>Telf:</strong> <%= Quote::COMPANY[:phone] %> <strong>correo:</strong> <%= Quote::COMPANY[:email] %> <strong>web:</strong> <%= Quote::COMPANY[:web] %>
+  </div>
+</body>
+</html>

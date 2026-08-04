@@ -1,0 +1,17 @@
+<%= form_with model: [:admin, client], local: true do |f| %>
+  <% if client.errors.any? %>
+    <div class="errors"><ul><% client.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+  <div class="form-grid" style="max-width: 760px;">
+    <div><%= f.label :name, 'Nombre *' %><%= f.text_field :name %></div>
+    <div><%= f.label :tax_id, 'CIF / NIF' %><%= f.text_field :tax_id %></div>
+    <div class="full">
+      <%= f.label :address, 'Dirección (tal y como debe salir en el PDF)' %>
+      <%= f.text_area :address, rows: 3, placeholder: "C/ Portugalete, 1\nPOZUELO DE ALARCÓN (MADRID)\nESPAÑA" %>
+    </div>
+    <div><%= f.label :email, 'Email' %><%= f.email_field :email %></div>
+    <div><%= f.label :phone, 'Teléfono' %><%= f.telephone_field :phone %></div>
+    <div class="full"><%= f.label :notes, 'Notas internas' %><%= f.text_area :notes, rows: 2 %></div>
+  </div>
+  <p><%= f.submit 'Guardar cliente', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_clients_path, class: 'btn btn-outline' %></p>
+<% end %>

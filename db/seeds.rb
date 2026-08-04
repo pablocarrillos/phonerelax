@@ -394,3 +394,99 @@ Order::EU_COUNTRIES.each do |country|
   end
 end
 puts "Tarifas de envío: #{ShippingRate.count} países"
+
+# Productos solo para presupuestos (no visibles en la tienda pública).
+lanyard = Product.find_or_create_by!(name: "Lanyard PhoneRelax") do |p|
+  p.price = BigDecimal("1.95") # 1,6116 € sin IVA
+  p.active = false
+  p.stock = 0
+  p.position = 90
+end
+if lanyard.description.blank?
+  lanyard.update!(
+    description: "<p>Lanyard PhoneRelax para colgar la bolsa. Fabricado en <strong>poliéster</strong> de <strong>6 mm de grosor</strong>.</p>",
+    description_pt: "<p>Lanyard PhoneRelax para pendurar a bolsa. Fabricado em <strong>poliéster</strong> de <strong>6 mm de espessura</strong>.</p>",
+    description_en: "<p>PhoneRelax lanyard to hang the pouch. Made of <strong>polyester</strong>, <strong>6 mm thick</strong>.</p>"
+  )
+end
+dtf = Product.find_or_create_by!(name: "Personalización DTF funda") do |p|
+  p.price = BigDecimal("1.51") # 1,25 € sin IVA
+  p.active = false
+  p.stock = 0
+  p.position = 91
+end
+if dtf.description.blank?
+  dtf.update!(
+    description: "<p>Personalización DTF de la funda con tu logo o marca. <strong>Cantidad mínima: 25 unidades.</strong> Añade al carrito tantas unidades de personalización como bolsas PhoneRelax lleve tu pedido (SignalBlocking o no SignalBlocking).</p>",
+    description_pt: "<p>Personalização DTF da bolsa com o seu logótipo ou marca. <strong>Quantidade mínima: 25 unidades.</strong> Adicione ao carrinho tantas unidades de personalização como bolsas PhoneRelax do seu pedido (SignalBlocking ou não SignalBlocking).</p>",
+    description_en: "<p>DTF customisation of the pouch with your logo or brand. <strong>Minimum quantity: 25 units.</strong> Add as many customisation units to your cart as PhoneRelax pouches in your order (SignalBlocking or not).</p>"
+  )
+end
+
+# Escalado de precios para presupuestos (precios SIN IVA por tramos de unidades).
+sb    = Product.find_by(name: "Funda PhoneRelax SignalBlocking (bloquea cobertura móvil)")
+iman  = Product.find_by(name: "Imán PhoneRelax")
+basica = Product.find_by(name: "Funda PhoneRelax")
+{
+  sb => { 1 => "12.3554", 25 => "11.7376", 50 => "11.3669", 100 => "11.1198",
+          250 => "10.5021", 500 => "9.8843", 1000 => "9.2665" },
+  lanyard => { 1 => "1.6116", 25 => "1.5793", 50 => "1.5632", 100 => "1.531",
+               250 => "1.4504", 500 => "1.3698", 1000 => "1.2893" },
+  dtf => { 1 => "1.25", 25 => "1.225", 50 => "1.2125", 100 => "1.1875",
+           250 => "1.125", 500 => "1.0625", 1000 => "1" },
+  iman => { 1 => "49.5041", 10 => "45.5438", 25 => "43.5636", 50 => "42.0785", 100 => "40.5934" },
+  # La funda básica hereda los mismos descuentos por tramo que la SignalBlocking
+  # (5, 8, 10, 15, 20 y 25 %) aplicados a su precio sin IVA (9,95 € / 1,21).
+  basica => { 1 => "8.2231", 25 => "7.8120", 50 => "7.5653", 100 => "7.4008",
+              250 => "6.9897", 500 => "6.5785", 1000 => "6.1674" }
+}.each do |product, tiers|
+  next if product.nil? || product.price_tiers.exists?
+
+  tiers.each { |units, price| product.price_tiers.create!(min_units: units, unit_price: BigDecimal(price)) }
+end
+puts "Escalado de precios: #{PriceTier.count} tramos en #{PriceTier.distinct.count(:product_id)} productos"
+
+# Importación inicial del excel de muestras enviadas (solo la primera vez).
+# La captura no incluía los productos de cada muestra: se añaden a mano al editarlas.
+if Sample.none?
+  [
+    [ "Colegio Eduardo Pondal", "Tomás Rodriguez", "direccionpondal@gmail.com", "2025-08-28", nil, "preguntad" ],
+    [ "Montcau-La Mola", "Cristina Abad", "cabad@montcaulamola.com", "2025-08-25", nil, "consulto si han tenido problema y si el cambio ha valido la pena" ],
+    [ "IES Cañada Real", "Manuel Lorente", "mmlm152@educastillalamancha.es", "2025-07-03", "2025-10-15", nil ],
+    [ "Salesianos", "Julio Alberto del Castillo", "julioalberto.delcastillo@salesianos.edu", "2025-07-19", nil, "próximo verano volverá a exponer" ],
+    [ "IES San Isidro", "Roberto Riquelme", "rriquelme@educa.madrid.org", "2025-07-18", nil, "no contesta :(" ],
+    [ "Norfolk", "María Muñoz", nil, "2025-07-25", nil, nil ],
+    [ "Norfolk", "José María Vaquero", "josemaria.vaquerosanchez@colegionorfolk.es", "2025-07-25", nil, "indico cambio tamaño y pregunto para el próximo curso" ],
+    [ "Salvador de Madariaga", "Rodrigo García-Muñoz", "ies.salvador.madariaga@edu.xunta.gal", "2025-07-17", nil, "no contesta" ],
+    [ "Tienda", "Luis Manuel", "luis@kblex.es", "2025-07-17", "2026-07-12", nil ],
+    [ "Colegio San Fernando", "Antonio José de la Rosa Martos", "direccion@colegiosanfernandogranada.es", "2025-07-02", nil, "pregunto estado" ],
+    [ "Ayto. Denia", "Fátima Castellano", "fcastellano@ayto-denia.es", "2025-10-16", "2026-02-16", nil ],
+    [ "Institut Escola Mirades", "Sílvia Martínez Grau", "direccio@escolamirades.cat", "2025-10-24", nil, "PAGADAS" ],
+    [ "Colegio Las Chapas - ECOS", "Maila Piconi", "maila.piconi@laschapas-ecos.com", "2025-11-10", nil, nil ],
+    [ "IES Agora", "Amalia Gil", "secretaria.ies.agora.alcobendas@educa.madrid.org", "2025-11-14", nil, nil ],
+    [ "Liceo Francés Sevilla", "Joseph Hadjadj", "joseph.hadjadj@mlfmonde.org", "2025-12-09", nil, nil ],
+    [ "Irlandesas Bami", "Sandra Campanela", "s.campanella.bami@feducativamaryward.org", "2025-12-18", nil, "pregunto estado y envío noticia" ],
+    [ "Colegio Alemán de Las Palmas", "Martin Schweinsberg", "martin.schweinsberg@dslpa.org", "2026-01-09", nil, "pregunto si quieren presupuesto formal para el próximo curso" ],
+    [ "Padre de colegio Liceo Francés", "Hubert", "hubert.dubrule@gmail.com", nil, nil, "le llegan 2 defectuosas y hacemos cambio" ],
+    [ "Kensington School", "Duncan", "dgiles@kensingtonschoolbcn.com", nil, nil, nil ],
+    [ "Colegio Reial Monestir de Santa Isabel", "María Cereceda", "mcereceda@rmsantaisabel.com", "2026-02-19", "2026-04-17", "pregunta por 35 bolsas y 2 imanes" ],
+    [ "Insti. Cristo Rey Valladolid", "Jose Manuel Trillo Ruiz", "josemanueltr@cristoreyva.com", "2026-04-08", nil, nil ],
+    [ "Instituto Solokoetxe", "Aintzane Saez de Guinoa", "2saez.ai@solokoetxebhi.net", nil, nil, nil ],
+    [ "Casa Salesianas Elche", "Fini Lledó", nil, "2026-05-14", nil, nil ],
+    [ "Ernesto Poveda", nil, nil, nil, nil, "datos y precios para Ernesto Poveda" ],
+    [ "Baleares", "Laura Monzó", nil, "2026-05-14", nil, nil ],
+    [ "Tomás Ordoñez", nil, nil, "2026-06-12", nil, nil ],
+    [ "Alcorcón", "Jesús Carnicero", "jbarranco@andel.es", "2026-06-12", nil, nil ],
+    [ "Sage College", "Laura Monzó", "laura.martin@sagecollege.eu", "2026-06-30", nil, nil ],
+    [ "Laura Felices Cáceres", nil, "l.felices@slf.edu.es", "2026-07-07", nil, nil ],
+    [ "Colegio Villaeuropa", "Luís Fernando Roldán", "direccion@colegio-villaeuropa.com", "2026-07-07", nil, nil ],
+    [ "Mundo Estudiante", "Javier Errea", "j.errea@mundoestudiante.com", "2026-07-09", nil, nil ],
+    [ "Setroc", nil, nil, "2026-07-21", nil, nil ],
+    [ "Ayto. Peñíscola", "Cristina Castell", "ccastell@peniscola.org", "2026-07-22", nil, nil ],
+    [ "IEC Miguel de Cervantes", nil, "18700441.edu@juntadeandalucia.es jromfer765@g.educaand.es", "2026-07-22", "2026-07-24", nil ]
+  ].each do |organization, contact, email, sent, returned, notes|
+    Sample.create!(organization: organization, contact_name: contact, email: email,
+                   sent_on: sent, returned_on: returned, notes: notes)
+  end
+  puts "Muestras importadas del excel: #{Sample.count}"
+end

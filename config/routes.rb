@@ -75,6 +75,14 @@ Rails.application.routes.draw do
     get "estadisticas", to: "stats#show", as: :stats
     get "transporte", to: "shipping#show", as: :shipping
     patch "transporte", to: "shipping#update"
+    resources :clients, except: :show
+    resources :samples, except: :show do
+      patch :mark_returned, on: :member # recogida/devuelta hoy
+    end
+    resources :quotes do
+      get :print, on: :member # versión imprimible (PDF con el diálogo del navegador)
+      post :duplicate, on: :member # nuevo presupuesto partiendo de este
+    end
     resources :suppliers, except: :show
     resources :purchases do
       patch :receive, on: :member   # marca recibida y suma stock

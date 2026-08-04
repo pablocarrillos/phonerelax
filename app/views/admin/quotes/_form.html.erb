@@ -1,0 +1,67 @@
+<% product_data = Product.ordered.includes(:price_tiers).each_with_object({}) do |p, h|
+     tiers = p.price_tiers.map { |t| [ t.min_units, t.unit_price.to_f ] }
+     tiers = [ [ 1, (p.price / (1 + (p.vat_percentage.to_d / 100))).round(4).to_f ] ] if tiers.empty?
+     h[p.id] = { name: p.name, tiers: tiers }
+   end %>
+
+<%= form_with model: [:admin, quote], local: true,
+              data: { controller: 'quote-form', quote_form_products_value: product_data.to_json } do |f| %>
+  <% if quote.errors.any? %>
+    <div class="errors"><ul><% quote.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+
+  <div class="form-grid" style="max-width: 860px;">
+    <div>
+      <%= f.label :client_id, 'Cliente *' %>
+      <%= f.collection_select :client_id, Client.ordered, :id, :name, { include_blank: true }, { class: 'form-select', required: true } %>
+      <p class="action-note" style="margin-top:4px;"><%= link_to '+ crear cliente nuevo', new_admin_client_path, target: '_blank', rel: 'noopener' %></p>
+    </div>
+    <div><%= f.label :issued_on, 'Fecha *' %><%= f.date_field :issued_on, required: true %></div>
+    <div><%= f.label :valid_until, 'Válido hasta' %><%= f.date_field :valid_until %></div>
+    <div><%= f.label :shipping_cost, 'Transporte (€, sin IVA)' %><%= f.number_field :shipping_cost, step: 0.01, min: 0, data: { quote_form_target: 'shipping', action: 'input->quote-form#recalc' } %></div>
+    <div><%= f.label :vat_rate, 'IVA del transporte (%)' %><%= f.number_field :vat_rate, step: 0.1, min: 0, data: { quote_form_target: 'shippingVat', action: 'input->quote-form#recalc' } %></div>
+    <div><%= f.label :payment_terms, 'Condiciones de pago' %><%= f.text_field :payment_terms %></div>
+    <div>
+      <%= f.label :bank_account, 'Cuenta de cobro' %>
+      <%= f.select :bank_account,
+                   Quote::BANK_ACCOUNTS.map { |account| bank, iban = account.split(' ', 2); [ "#{iban} (#{bank})", account ] },
+                   {}, { class: 'form-select' } %>
+    </div>
+    <div class="full"><%= f.label :delivery_terms, 'Plazo de entrega' %><%= f.text_field :delivery_terms, placeholder: '1 de septiembre de 2026' %></div>
+    <div class="full"><%= f.label :remarks, 'Observaciones (SÍ salen en el presupuesto)' %><%= f.text_area :remarks, rows: 2 %></div>
+    <div class="full"><%= f.label :notes, 'Notas internas (no salen en el PDF)' %><%= f.text_area :notes, rows: 2 %></div>
+  </div>
+
+  <h2 style="margin-top:24px;">Líneas</h2>
+  <p class="action-note" style="margin-top:0;">Al elegir producto y cambiar las unidades, el precio se rellena solo con el <strong>escalado</strong> (y la descripción, si está vacía). Si tocas el precio a mano y no coincide con el escalado, verás un aviso — puedes dejarlo así a propósito. También puedes escribir líneas libres sin producto.</p>
+  <table class="table" style="max-width: 960px;">
+    <thead><tr><th>Producto (opcional)</th><th>Descripción</th><th>Uds.</th><th>P. unitario (€ sin IVA)</th><th>IVA %</th><% if quote.quote_lines.any?(&:persisted?) %><th>Quitar</th><% end %></tr></thead>
+    <tbody>
+      <%= f.fields_for :quote_lines do |lf| %>
+        <tr data-quote-form-target="line">
+          <td><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true },
+                                       { class: 'form-select', data: { role: 'product', action: 'change->quote-form#productChanged' } } %></td>
+          <td><%= lf.text_field :description, placeholder: '(del producto si se deja vacío)', data: { role: 'description' } %></td>
+          <td><%= lf.number_field :quantity, min: 1, style: 'width:90px;', data: { role: 'quantity', action: 'input->quote-form#quantityChanged' } %></td>
+          <td>
+            <%= lf.number_field :unit_price, step: 0.0001, min: 0, style: 'width:130px;', placeholder: 'escalado', data: { role: 'price', action: 'input->quote-form#priceEdited' } %>
+            <span data-role="warning" hidden style="display:block; color:#b3261e; font-size:12px; margin-top:2px;"></span>
+          </td>
+          <td><%= lf.number_field :vat_rate, step: 0.1, min: 0, style: 'width:80px;', data: { role: 'vat', action: 'input->quote-form#recalc' } %></td>
+          <% if quote.quote_lines.any?(&:persisted?) %>
+            <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div style="max-width:960px; margin:14px 0; padding:12px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); display:flex; gap:26px; flex-wrap:wrap; font-size:15px;">
+    <span><strong>Total sin IVA:</strong> <span data-quote-form-target="totalNet">—</span></span>
+    <span><strong>IVA:</strong> <span data-quote-form-target="totalVat">—</span></span>
+    <span><strong>Total con IVA:</strong> <span data-quote-form-target="totalGross">—</span></span>
+    <span class="action-note" style="margin:0;">(en vivo, transporte incluido)</span>
+  </div>
+
+  <p><%= f.submit 'Guardar presupuesto', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_quotes_path, class: 'btn btn-outline' %></p>
+<% end %>

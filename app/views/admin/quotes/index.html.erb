@@ -1,0 +1,25 @@
+<h1>Presupuestos</h1>
+<p>
+  <%= link_to '+ Nuevo presupuesto', new_admin_quote_path, class: 'btn btn-primary' %>
+  <%= link_to "Clientes (#{Client.count})", admin_clients_path, class: 'btn btn-outline' %>
+</p>
+
+<% if @quotes.any? %>
+  <table class="table">
+    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
+    <tbody>
+      <% @quotes.each do |quote| %>
+        <tr>
+          <td><%= link_to quote.number, admin_quote_path(quote) %></td>
+          <td><%= l quote.issued_on, format: '%d/%m/%Y' %></td>
+          <td><%= quote.client.name %></td>
+          <td class="num"><%= number_to_currency(quote.subtotal, unit: '€', format: '%n %u') %></td>
+          <td class="num"><strong><%= number_to_currency(quote.total, unit: '€', format: '%n %u') %></strong></td>
+          <td style="text-align:right;"><%= link_to '🖨 PDF', print_admin_quote_path(quote), target: '_blank', rel: 'noopener' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="action-note">Todavía no hay presupuestos.</p>
+<% end %>

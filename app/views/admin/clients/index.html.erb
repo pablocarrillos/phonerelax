@@ -1,0 +1,27 @@
+<p><%= link_to '← Volver a presupuestos', admin_quotes_path %></p>
+<h1>Clientes</h1>
+<p><%= link_to '+ Nuevo cliente', new_admin_client_path, class: 'btn btn-primary' %></p>
+
+<% if @clients.any? %>
+  <table class="table">
+    <thead><tr><th>Nombre</th><th>CIF / NIF</th><th>Dirección</th><th>Contacto</th><th class="num">Presupuestos</th><th></th></tr></thead>
+    <tbody>
+      <% @clients.each do |client| %>
+        <tr>
+          <td><strong><%= client.name %></strong></td>
+          <td><%= client.tax_id.presence || '—' %></td>
+          <td style="white-space:pre-line; font-size:14px;"><%= client.address.presence || '—' %></td>
+          <td style="font-size:14px;"><%= client.email.present? ? mail_to(client.email) : '' %><% if client.phone.present? %><br><%= client.phone %><% end %></td>
+          <td class="num"><%= client.quotes.count %></td>
+          <td style="text-align:right; white-space:nowrap;">
+            <%= link_to 'Editar', edit_admin_client_path(client), class: 'btn btn-outline' %>
+            <%= button_to '🗑', admin_client_path(client), method: :delete, class: 'btn btn-danger',
+                          form: { style: 'display:inline-block', data: { turbo_confirm: "¿Borrar el cliente #{client.name}?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="action-note">Todavía no hay clientes. Crea el primero para poder hacer presupuestos.</p>
+<% end %>

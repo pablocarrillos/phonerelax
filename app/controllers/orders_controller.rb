@@ -7,7 +7,7 @@ class OrdersController < ApplicationController
   def new
     @lines = cart_lines
     redirect_to cart_path, alert: t("flash.cart_empty") if @lines.empty?
-    @total = @lines.sum { |product, quantity| product.price * quantity }
+    @total = @lines.sum { |product, quantity| product.price_for_quantity(quantity) * quantity }
     @order = Order.new
   end
 
@@ -26,7 +26,8 @@ class OrdersController < ApplicationController
     @order = Order.new(order_params)
     @order.locale = I18n.locale # idioma en que el cliente completó la compra
     lines.each do |product, quantity|
-      @order.order_lines.build(product: product, quantity: quantity, unit_price: product.price)
+      # El precio unitario se congela con el escalado por cantidad aplicado.
+      @order.order_lines.build(product: product, quantity: quantity, unit_price: product.price_for_quantity(quantity))
     end
     @order.total = @order.compute_total
 

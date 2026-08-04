@@ -3,7 +3,7 @@ class CartsController < ApplicationController
 
   def show
     @lines = cart_lines
-    @total = @lines.sum { |product, quantity| product.price * quantity }
+    @total = @lines.sum { |product, quantity| product.price_for_quantity(quantity) * quantity }
   end
 
   def add

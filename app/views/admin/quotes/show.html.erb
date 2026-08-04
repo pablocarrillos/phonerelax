@@ -1,0 +1,54 @@
+<p><%= link_to '← Volver a presupuestos', admin_quotes_path %></p>
+<h1>Presupuesto <%= @quote.number %></h1>
+
+<div class="order-actions">
+  <p class="order-badges">
+    <strong>Cliente:</strong> <%= @quote.client.name %>
+    &nbsp;&nbsp;<strong>Fecha:</strong> <%= l @quote.issued_on, format: '%d/%m/%Y' %>
+    <% if @quote.valid_until %>&nbsp;&nbsp;<strong>Válido hasta:</strong> <%= l @quote.valid_until, format: '%d/%m/%Y' %><% end %>
+  </p>
+  <div class="action-section">
+    <div class="action-row">
+      <%= link_to '🖨 Imprimir / PDF', print_admin_quote_path(@quote), target: '_blank', rel: 'noopener', class: 'btn btn-primary' %>
+      <%= link_to 'Editar', edit_admin_quote_path(@quote), class: 'btn btn-outline' %>
+      <%= button_to '⧉ Duplicar', duplicate_admin_quote_path(@quote), method: :post, class: 'btn btn-outline',
+                    form: { data: { turbo_confirm: "¿Crear un presupuesto nuevo partiendo de #{@quote.number}? Tendrá número y fechas nuevos." } } %>
+      <%= button_to '🗑 Borrar', admin_quote_path(@quote), method: :delete, class: 'btn btn-danger',
+                    form: { data: { turbo_confirm: "¿Borrar el presupuesto #{@quote.number}?" } } %>
+    </div>
+  </div>
+</div>
+
+<table class="table" style="max-width: 860px;">
+  <thead><tr><th>Producto</th><th class="num">IVA</th><th class="num">P. Uni.</th><th class="num">Ud.</th><th class="num">Total</th></tr></thead>
+  <tbody>
+    <% @quote.quote_lines.each do |line| %>
+      <tr>
+        <td><%= line.description %></td>
+        <td class="num"><%= number_to_percentage(line.vat_rate, precision: 0) %></td>
+        <td class="num"><%= number_with_precision(line.unit_price, precision: 2) %></td>
+        <td class="num"><%= line.quantity %></td>
+        <td class="num"><%= number_with_precision(line.total, precision: 2) %></td>
+      </tr>
+    <% end %>
+    <tr>
+      <td>Transporte</td>
+      <td class="num"><%= number_to_percentage(@quote.vat_rate, precision: 0) %></td>
+      <td class="num"><%= number_with_precision(@quote.shipping_cost, precision: 2) %></td>
+      <td class="num">1</td>
+      <td class="num"><%= number_with_precision(@quote.shipping_cost, precision: 2) %></td>
+    </tr>
+    <tr><td colspan="4" style="text-align:right;"><strong>Total Oferta</strong></td><td class="num"><strong><%= number_to_currency(@quote.subtotal, unit: '€', format: '%n %u') %></strong></td></tr>
+    <tr><td colspan="4" style="text-align:right;">Importe IVA</td><td class="num"><%= number_to_currency(@quote.vat_amount, unit: '€', format: '%n %u') %></td></tr>
+    <tr class="total-row"><td colspan="4" style="text-align:right;">Total Euros</td><td class="num"><%= number_to_currency(@quote.total, unit: '€', format: '%n %u') %></td></tr>
+  </tbody>
+</table>
+
+<p>
+  <% if @quote.payment_terms.present? %><strong>Condiciones de pago:</strong> <%= @quote.payment_terms %><br><% end %>
+  <% if @quote.delivery_terms.present? %><strong>Plazo de entrega:</strong> <%= @quote.delivery_terms %><% end %>
+</p>
+<% if @quote.notes.present? %>
+  <h2>Notas internas</h2>
+  <p><%= simple_format(@quote.notes) %></p>
+<% end %>
