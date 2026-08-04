@@ -19,14 +19,13 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Mayorista UE"
   end
 
-  test "una compra con líneas, factura PDF y costes se registra y calcula el coste real" do
+  test "una compra con líneas, factura PDF y costes por línea se registra y calcula el coste real" do
     post admin_purchases_path, params: { purchase: {
       supplier_id: @supplier.id, ordered_on: "2026-08-01", reference: "INV-77",
-      shipping_cost: "30", customs_cost: "8", other_costs: "2",
       invoice: fixture_file_upload("factura.pdf", "application/pdf"),
       purchase_lines_attributes: {
-        "0" => { product_id: products(:funda).id, quantity: 100, unit_cost: "2.00" },
-        "1" => { product_id: products(:iman).id, quantity: 50, unit_cost: "4.00" },
+        "0" => { product_id: products(:funda).id, quantity: 100, unit_cost: "2.00", shipping_cost: "15", customs_cost: "4", other_costs: "1" },
+        "1" => { product_id: products(:iman).id, quantity: 50, unit_cost: "4.00", shipping_cost: "15", customs_cost: "4", other_costs: "1" },
         "2" => { product_id: "", quantity: "", unit_cost: "" } # fila vacía: se ignora
       }
     } }
@@ -34,12 +33,16 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_purchase_path(purchase)
     assert purchase.invoice.attached?
     assert_equal 2, purchase.purchase_lines.count
+    # Totales por concepto (suma de lo imputado en cada línea) y total factura.
+    assert_equal BigDecimal("30"), purchase.total_shipping
+    assert_equal BigDecimal("8"), purchase.total_customs
+    assert_equal BigDecimal("2"), purchase.total_other
     assert_equal BigDecimal("440"), purchase.total_cost
-    # Reparto proporcional: cada línea pesa 200 € → 20 € de extras cada una.
+    # Coste real/ud. = total de la línea (productos + sus extras) entre unidades.
     funda_line = purchase.purchase_lines.find_by(product: products(:funda))
     iman_line = purchase.purchase_lines.find_by(product: products(:iman))
-    assert_equal BigDecimal("2.2"), purchase.landed_unit_cost(funda_line)
-    assert_equal BigDecimal("4.4"), purchase.landed_unit_cost(iman_line)
+    assert_equal BigDecimal("2.2"), purchase.landed_unit_cost(funda_line) # (200 + 20) / 100
+    assert_equal BigDecimal("4.4"), purchase.landed_unit_cost(iman_line)  # (200 + 20) / 50
   end
 
   test "recibir una compra suma stock y deshacerla lo resta" do
@@ -87,8 +90,8 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
   private
 
   def purchase_with_line(quantity:, unit_cost: "2.00", shipping: "0")
-    purchase = Purchase.create!(supplier: @supplier, ordered_on: Date.current, shipping_cost: shipping)
-    purchase.purchase_lines.create!(product: products(:funda), quantity: quantity, unit_cost: unit_cost)
+    purchase = Purchase.create!(supplier: @supplier, ordered_on: Date.current)
+    purchase.purchase_lines.create!(product: products(:funda), quantity: quantity, unit_cost: unit_cost, shipping_cost: shipping)
     purchase
   end
 end

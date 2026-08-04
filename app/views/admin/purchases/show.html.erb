@@ -35,28 +35,51 @@
 <% if @purchase.usd? %>
   <p class="action-note">Importes en <strong>dólares</strong>. Tipo de cambio de la fecha de factura (<%= @purchase.invoice_date ? l(@purchase.invoice_date, format: '%d/%m/%Y') : '—' %>): <strong>1&nbsp;$ = <%= number_with_precision(@purchase.exchange_rate || 1, precision: 4) %>&nbsp;€</strong>. El «coste real/ud.» y el total en euros ya están convertidos.</p>
 <% end %>
-<table class="table" style="max-width: 860px;">
-  <thead><tr><th>Producto</th><th class="num">Unidades</th><th class="num">Coste/ud.</th><th class="num">Subtotal</th><th class="num">Coste real/ud. (€)*</th></tr></thead>
+<div style="overflow-x:auto;">
+<table class="table" style="min-width: 820px;">
+  <thead><tr><th>Producto</th><th class="num">Uds.</th><th class="num">Coste/ud.</th><th class="num">Transporte</th><th class="num">Aduanas</th><th class="num">Otros</th><th class="num">Total línea</th><th class="num">Coste real/ud. (€)*</th></tr></thead>
   <tbody>
     <% @purchase.purchase_lines.each do |line| %>
       <tr>
         <td><%= line.product.name %></td>
         <td class="num"><%= line.quantity %></td>
         <td class="num"><%= number_to_currency(line.unit_cost, unit: sym, format: '%n %u') %></td>
-        <td class="num"><%= number_to_currency(line.subtotal, unit: sym, format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.shipping_cost, unit: sym, format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.customs_cost, unit: sym, format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.other_costs, unit: sym, format: '%n %u') %></td>
+        <td class="num"><strong><%= number_to_currency(line.total, unit: sym, format: '%n %u') %></strong></td>
         <td class="num"><strong><%= number_to_currency(@purchase.landed_unit_cost(line), unit: '€', format: '%n %u') %></strong></td>
       </tr>
     <% end %>
-    <tr><td colspan="3">Transporte</td><td class="num" colspan="2"><%= number_to_currency(@purchase.shipping_cost, unit: sym, format: '%n %u') %></td></tr>
-    <tr><td colspan="3">Aduanas / trámites</td><td class="num" colspan="2"><%= number_to_currency(@purchase.customs_cost, unit: sym, format: '%n %u') %></td></tr>
-    <tr><td colspan="3">Otros costes</td><td class="num" colspan="2"><%= number_to_currency(@purchase.other_costs, unit: sym, format: '%n %u') %></td></tr>
-    <tr class="total-row"><td colspan="3">Total compra<%= " (#{sym})".html_safe if @purchase.usd? %></td><td class="num" colspan="2"><%= number_to_currency(@purchase.total_cost, unit: sym, format: '%n %u') %></td></tr>
-    <% if @purchase.usd? %>
-      <tr class="total-row"><td colspan="3">Total en euros</td><td class="num" colspan="2"><strong><%= number_to_currency(@purchase.total_cost_eur, unit: '€', format: '%n %u') %></strong></td></tr>
-    <% end %>
   </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3" class="field-label" style="text-align:right;">Totales:</td>
+      <td class="field-label">Total transporte</td>
+      <td class="field-label">Total aduanas</td>
+      <td class="field-label">Total otros</td>
+      <td class="field-label" style="text-align:right;">Total factura</td>
+      <td></td>
+    </tr>
+    <tr class="total-row">
+      <td colspan="3"></td>
+      <td class="num"><%= number_to_currency(@purchase.total_shipping, unit: sym, format: '%n %u') %></td>
+      <td class="num"><%= number_to_currency(@purchase.total_customs, unit: sym, format: '%n %u') %></td>
+      <td class="num"><%= number_to_currency(@purchase.total_other, unit: sym, format: '%n %u') %></td>
+      <td class="num"><strong><%= number_to_currency(@purchase.total_cost, unit: sym, format: '%n %u') %></strong></td>
+      <td></td>
+    </tr>
+    <% if @purchase.usd? %>
+      <tr class="total-row">
+        <td colspan="6" style="text-align:right;">Total factura en euros</td>
+        <td class="num"><strong><%= number_to_currency(@purchase.total_cost_eur, unit: '€', format: '%n %u') %></strong></td>
+        <td></td>
+      </tr>
+    <% end %>
+  </tfoot>
 </table>
-<p class="action-note">* Coste real por unidad, en euros: precio de compra más la parte proporcional de transporte, aduanas y otros costes, convertido con el tipo de cambio de la factura.</p>
+</div>
+<p class="action-note">* Coste real por unidad, en euros: total de la línea (productos más su transporte, aduanas y otros costes) dividido entre las unidades, convertido con el tipo de cambio de la factura.</p>
 
 <% if @purchase.notes.present? %>
   <h2>Notas</h2>

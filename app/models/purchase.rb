@@ -10,8 +10,6 @@ class Purchase < ApplicationRecord
                                                  reject_if: ->(attrs) { attrs["product_id"].blank? }
 
   validates :ordered_on, presence: true
-  validates :shipping_cost, :customs_cost, :other_costs,
-            numericality: { greater_than_or_equal_to: 0 }
 
   CURRENCIES = %w[EUR USD].freeze
   validates :currency, inclusion: { in: CURRENCIES }
@@ -36,14 +34,27 @@ class Purchase < ApplicationRecord
     usd? ? (exchange_rate || BigDecimal("1")) : BigDecimal("1")
   end
 
-  # Suma de las líneas (sin costes adicionales).
+  # Suma del coste de los productos de todas las líneas (sin extras).
   def lines_total
-    purchase_lines.sum { |line| line.unit_cost * line.quantity }
+    purchase_lines.sum { |line| line.subtotal }
   end
 
-  # Costes adicionales repartibles: transporte + aduanas + otros.
+  # Totales de cada concepto de coste, sumando lo imputado en cada línea.
+  def total_shipping
+    purchase_lines.sum { |line| line.shipping_cost }
+  end
+
+  def total_customs
+    purchase_lines.sum { |line| line.customs_cost }
+  end
+
+  def total_other
+    purchase_lines.sum { |line| line.other_costs }
+  end
+
+  # Costes adicionales totales: transporte + aduanas + otros (de las líneas).
   def extra_costs
-    shipping_cost + customs_cost + other_costs
+    total_shipping + total_customs + total_other
   end
 
   def total_cost
@@ -55,19 +66,11 @@ class Purchase < ApplicationRecord
     total_cost * eur_rate
   end
 
-  # Coste real («aterrizado») de una unidad de la línea, EN EUROS: su coste de
-  # compra más la parte proporcional de los costes adicionales según el peso de
-  # la línea, convertido a euros con el tipo de cambio de la compra.
+  # Coste real («aterrizado») de una unidad de la línea, EN EUROS: el total de
+  # la línea (productos + sus extras) repartido entre las unidades, convertido a
+  # euros con el tipo de cambio de la compra.
   def landed_unit_cost(line)
-    base =
-      if lines_total.zero?
-        line.unit_cost
-      else
-        line_subtotal = line.unit_cost * line.quantity
-        share = extra_costs * (line_subtotal / lines_total)
-        line.unit_cost + (share / line.quantity)
-      end
-    base * eur_rate
+    line.landed_unit_cost * eur_rate
   end
 
   # Marca la compra como recibida y suma las unidades al stock (una sola vez).

@@ -1,4 +1,4 @@
-<%= form_with model: [:admin, purchase], local: true do |f| %>
+<%= form_with model: [:admin, purchase], local: true, data: { controller: 'purchase-form' } do |f| %>
   <% if purchase.errors.any? %>
     <div class="errors"><ul><% purchase.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>
@@ -12,7 +12,7 @@
     <div><%= f.label :reference, 'Referencia (nº de factura, pedido…)' %><%= f.text_field :reference %></div>
     <div>
       <%= f.label :currency, 'Moneda' %>
-      <%= f.select :currency, [['Euro (€)', 'EUR'], ['Dólar ($)', 'USD']], {}, { class: 'form-select' } %>
+      <%= f.select :currency, [['Euro (€)', 'EUR'], ['Dólar ($)', 'USD']], {}, { class: 'form-select', data: { purchase_form_target: 'currency', action: 'change->purchase-form#recalc' } } %>
     </div>
     <div>
       <%= f.label :invoice_date, 'Fecha de la factura' %>
@@ -29,30 +29,44 @@
         <p class="action-note" style="margin-top:4px;">Ya adjunta: <%= link_to '📄 ver factura', rails_blob_path(purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener' %> (sube otra para sustituirla)</p>
       <% end %>
     </div>
-    <div><%= f.label :shipping_cost, 'Transporte' %><%= f.number_field :shipping_cost, step: 0.01, min: 0 %></div>
-    <div><%= f.label :customs_cost, 'Aduanas / trámites' %><%= f.number_field :customs_cost, step: 0.01, min: 0 %></div>
-    <div><%= f.label :other_costs, 'Otros costes' %><%= f.number_field :other_costs, step: 0.01, min: 0 %></div>
     <div class="full"><%= f.label :notes, 'Notas' %><%= f.text_area :notes, rows: 2 %></div>
   </div>
-  <p class="action-note" style="max-width:860px;">Introduce todos los importes (transporte, aduanas, otros costes y coste por unidad) en la <strong>moneda seleccionada</strong>. Si la compra es en dólares, se convierten a euros con el tipo de cambio de la fecha de factura para calcular el coste real por producto.</p>
 
   <h2 style="margin-top:24px;">Líneas de la compra</h2>
-  <p class="action-note" style="margin-top:0;">Elige producto, unidades y coste unitario. Deja el producto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
-  <table class="table" style="max-width: 720px;">
-    <thead><tr><th>Producto</th><th>Unidades</th><th>Coste por unidad</th><% if purchase.purchase_lines.any?(&:persisted?) %><th>Quitar</th><% end %></tr></thead>
-    <tbody>
-      <%= f.fields_for :purchase_lines do |lf| %>
+  <p class="action-note" style="margin-top:0;">Cada línea lleva su producto, unidades, coste por unidad y los costes de transporte, aduanas y otros imputados a esa línea. Introduce todos los importes en la <strong>moneda seleccionada</strong>. Deja el producto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
+  <div style="overflow-x:auto;">
+    <table class="table" style="min-width: 860px;">
+      <thead>
         <tr>
-          <td><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select' } %></td>
-          <td><%= lf.number_field :quantity, min: 1, style: 'width:110px;' %></td>
-          <td><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:140px;' %></td>
-          <% if purchase.purchase_lines.any?(&:persisted?) %>
-            <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>
-          <% end %>
+          <th>Producto</th><th>Unidades</th><th>Coste/ud.</th>
+          <th>Transporte</th><th>Aduanas</th><th>Otros costes</th>
+          <th class="num">Total línea</th>
+          <% if purchase.purchase_lines.any?(&:persisted?) %><th>Quitar</th><% end %>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <%= f.fields_for :purchase_lines do |lf| %>
+          <tr data-purchase-form-target="line">
+            <td><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select', data: { action: 'change->purchase-form#recalc' } } %></td>
+            <td><%= lf.number_field :quantity, min: 1, style: 'width:90px;', data: { field: 'quantity', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:120px;', data: { field: 'unit_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'shipping_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :customs_cost, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'customs_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :other_costs, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'other_costs', action: 'input->purchase-form#recalc' } %></td>
+            <td class="num"><strong data-line-total>—</strong></td>
+            <% if purchase.purchase_lines.any?(&:persisted?) %>
+              <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3"></td><td class="num"><strong data-purchase-form-target="totalShipping">—</strong></td><td class="num"><strong data-purchase-form-target="totalCustoms">—</strong></td><td class="num"><strong data-purchase-form-target="totalOther">—</strong></td><td class="num"><strong data-purchase-form-target="totalInvoice">—</strong></td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
+        <tr><td colspan="3"></td><td class="field-label">Total transporte</td><td class="field-label">Total aduanas</td><td class="field-label">Total otros</td><td class="field-label" style="text-align:right;">Total factura</td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
+      </tfoot>
+    </table>
+  </div>
+  <p class="action-note">Los totales de arriba se muestran en la moneda seleccionada. Si la compra es en dólares, su valor en euros (con el tipo de cambio de la factura) aparece al guardar la compra.</p>
 
   <p><%= f.submit 'Guardar compra', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_purchases_path, class: 'btn btn-outline' %></p>
 <% end %>

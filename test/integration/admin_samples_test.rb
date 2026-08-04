@@ -40,8 +40,8 @@ class AdminSamplesTest < ActionDispatch::IntegrationTest
 
   test "el coste usa el coste real medio de compras cuando existe" do
     supplier = Supplier.create!(name: "Fábrica")
-    purchase = Purchase.create!(supplier: supplier, ordered_on: Date.current, shipping_cost: 10)
-    purchase.purchase_lines.create!(product: products(:funda), quantity: 10, unit_cost: BigDecimal("2"))
+    purchase = Purchase.create!(supplier: supplier, ordered_on: Date.current)
+    purchase.purchase_lines.create!(product: products(:funda), quantity: 10, unit_cost: BigDecimal("2"), shipping_cost: 10)
     purchase.receive! # coste real: 3,00 €/ud.
     sample = Sample.create!(organization: "Colegio X", sent_on: Date.current)
     sample.sample_lines.create!(product: products(:funda), quantity: 4)
