@@ -112,19 +112,17 @@ class Order < ApplicationRecord
     amount_paid - refunded_amount
   end
 
-  # ¿Se puede borrar? Nunca con dinero cobrado sin devolver: los pagados (en
-  # cualquier estado logístico) exigen reembolsar antes.
-  def deletable?
-    pago_pendiente? || pago_reembolsado?
+  # Dinero cobrado que no se ha devuelto (para avisar antes de borrar).
+  def unrefunded_amount
+    pago_pagado? ? refundable_amount : 0
   end
 
   # Borra el pedido devolviendo al stock las unidades que se descontaron al
-  # cobrarse. Los pendientes de pago nunca descontaron stock, así que no suman.
+  # cobrarse (pagados y reembolsados); los pendientes nunca descontaron stock.
+  # OJO: borrar NO reembolsa el dinero: eso se hace antes, si procede.
   def destroy_restoring_stock!
-    raise ArgumentError, "No se puede borrar un pedido con dinero cobrado; reembólsalo antes" unless deletable?
-
     transaction do
-      if pago_reembolsado?
+      unless pago_pendiente?
         order_lines.includes(:product).each { |line| line.product.increment!(:stock, line.quantity) }
       end
       destroy!

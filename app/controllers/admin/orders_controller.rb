@@ -85,14 +85,12 @@ module Admin
       redirect_to admin_order_path(order), alert: "Stripe rechazó el reembolso: #{e.message}"
     end
 
-    # Borra el pedido (solo sin dinero cobrado) devolviendo el stock descontado.
+    # Borra el pedido devolviendo el stock descontado. No reembolsa nada.
     def destroy
       order = Order.find(params[:id])
       number = order.number
       order.destroy_restoring_stock!
       redirect_to admin_orders_path, notice: "Pedido #{number} borrado."
-    rescue ArgumentError => e
-      redirect_to admin_order_path(order), alert: e.message
     end
 
     # Reenvía al cliente el aviso de pago pendiente (acción manual del admin).
