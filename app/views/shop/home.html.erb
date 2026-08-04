@@ -59,7 +59,7 @@
 
 <div class="container section" id="productos">
   <h2><%= t('home.products_title') %></h2>
-  <div class="grid">
+  <div class="grid products-grid">
     <% @products.each do |product| %>
       <div class="card product-card">
         <%= link_to product_page_path(product) do %>
