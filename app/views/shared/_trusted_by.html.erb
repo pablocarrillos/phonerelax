@@ -3,7 +3,13 @@
     <p class="trusted-title"><%= t('common.trusted_by') %></p>
     <ul class="trusted-logos">
       <% trusted_clients.each do |name| %>
-        <li><%= name %></li>
+        <li>
+          <% if (logo = trusted_client_logo(name)) %>
+            <%= image_tag logo, alt: name, title: name, class: 'trusted-logo', loading: 'lazy' %>
+          <% else %>
+            <%= name %>
+          <% end %>
+        </li>
       <% end %>
     </ul>
   </div>

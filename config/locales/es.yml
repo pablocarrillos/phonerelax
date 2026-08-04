@@ -43,7 +43,6 @@ es:
     how_it_works: "¿Cómo funciona?"
     products: Productos
     bulk: Pedidos grandes
-    about: Quiénes somos
     blog: Blog
     contact: Contacto
     cart: Carrito
@@ -78,7 +77,7 @@ es:
     breadcrumb: Ruta de navegación
     language: Idioma
     country: España
-    trusted_by: "Centros que ya confían en PhoneRelax"
+    trusted_by: "Clientes que ya confían en PhoneRelax"
     site_title: "PhoneRelax - Bolsa magnética para guardar móviles en aulas y eventos."
     site_description: "PhoneRelax: bolsas y fundas magnéticas para guardar y bloquear la señal del móvil en aulas, eventos y espacios sin distracciones. Envío a toda España."
   home:
@@ -135,6 +134,8 @@ es:
     submit: Calcular precio del transporte
   order:
     title: "Pedido %{number}"
+    thanks_title: "¡Gracias por tu compra, %{name}!"
+    thanks_text: "Tu pago se ha recibido correctamente. Te hemos enviado la confirmación a %{email} y te avisaremos en cuanto tu pedido salga de camino."
     payment: "Pago:"
     status: "Estado:"
     shipping: Transporte
@@ -155,6 +156,8 @@ es:
     pay_button: Pagar
   contact:
     title: Contacto
+    about: "PhoneRelax está situada en Alicante (España) y nace para dar solución a la problemática surgida con el uso de teléfonos móviles en colegios, institutos, conciertos y eventos privados."
+    map_title: "Mapa: C/ Carrasqueta 13, Petrer"
     intro_html: "Escríbenos y te responderemos lo antes posible:"
     form_title: Formulario de contacto
     name: Nombre
@@ -163,12 +166,6 @@ es:
     message: Comentario
     submit: Enviar
     meta_description: "¿Tienes dudas o quieres un presupuesto para tu centro o evento? Contacta con PhoneRelax y te ayudamos a elegir la solución que necesitas."
-  about:
-    title: Quiénes somos
-    intro: "PhoneRelax está situada en Alicante (España) y nace para dar solución a la problemática surgida con el uso de teléfonos móviles en colegios, institutos, conciertos y eventos privados."
-    contact_data: Datos de contacto
-    map_title: "Mapa: C/ Carrasqueta 13, Petrer"
-    meta_description: "Conoce a PhoneRelax: ayudamos a colegios, institutos y organizadores de eventos a crear entornos sin distracciones con bolsas magnéticas para el móvil."
   how_it_works:
     title: "¿Cómo funciona?"
     p1: "Es muy sencillo, solo debes introducir el móvil en la bolsa PhoneRelax y apretar el botón de su cerradura para que el teléfono quede sellado dentro."

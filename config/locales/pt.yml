@@ -43,7 +43,6 @@ pt:
     how_it_works: Como funciona?
     products: Produtos
     bulk: Encomendas grandes
-    about: Quem somos
     blog: Blog
     contact: Contacto
     cart: Carrinho
@@ -78,7 +77,7 @@ pt:
     breadcrumb: Percurso de navegação
     language: Idioma
     country: Espanha
-    trusted_by: "Escolas que já confiam na PhoneRelax"
+    trusted_by: "Clientes que já confiam na PhoneRelax"
     site_title: "PhoneRelax - Bolsa magnética para guardar telemóveis em salas de aula e eventos."
     site_description: "PhoneRelax: bolsas e capas magnéticas para guardar e bloquear o sinal do telemóvel em salas de aula, eventos e espaços sem distrações. Envio para todo o país."
   home:
@@ -135,6 +134,8 @@ pt:
     submit: Calcular preço do transporte
   order:
     title: "Encomenda %{number}"
+    thanks_title: "Obrigado pela sua compra, %{name}!"
+    thanks_text: "O seu pagamento foi recebido com sucesso. Enviámos a confirmação para %{email} e avisaremos assim que a sua encomenda estiver a caminho."
     payment: "Pagamento:"
     status: "Estado:"
     shipping: Transporte
@@ -155,6 +156,8 @@ pt:
     pay_button: Pagar
   contact:
     title: Contacto
+    about: "A PhoneRelax está situada em Alicante (Espanha) e nasce para dar resposta ao problema do uso de telemóveis em escolas, concertos e eventos privados."
+    map_title: "Mapa: C/ Carrasqueta 13, Petrer"
     intro_html: "Escreva-nos e responderemos o mais rápido possível:"
     form_title: Formulário de contacto
     name: Nome
@@ -163,12 +166,6 @@ pt:
     message: Comentário
     submit: Enviar
     meta_description: "Tem dúvidas ou quer um orçamento para a sua escola ou evento? Contacte a PhoneRelax e ajudamos a escolher a solução de que precisa."
-  about:
-    title: Quem somos
-    intro: "A PhoneRelax está situada em Alicante (Espanha) e nasce para dar resposta ao problema do uso de telemóveis em escolas, concertos e eventos privados."
-    contact_data: Dados de contacto
-    map_title: "Mapa: C/ Carrasqueta 13, Petrer"
-    meta_description: "Conheça a PhoneRelax: ajudamos escolas e organizadores de eventos a criar ambientes sem distrações com bolsas magnéticas para o telemóvel."
   how_it_works:
     title: Como funciona?
     p1: "É muito simples: basta introduzir o telemóvel na bolsa PhoneRelax e carregar no botão do fecho para que o telemóvel fique selado no interior."

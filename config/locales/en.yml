@@ -43,7 +43,6 @@ en:
     how_it_works: How does it work?
     products: Products
     bulk: Bulk orders
-    about: About us
     blog: Blog
     contact: Contact
     cart: Cart
@@ -78,7 +77,7 @@ en:
     breadcrumb: Breadcrumb
     language: Language
     country: Spain
-    trusted_by: "Schools that already trust PhoneRelax"
+    trusted_by: "Clients that already trust PhoneRelax"
     site_title: "PhoneRelax - Magnetic pouch to store phones in classrooms and events."
     site_description: "PhoneRelax: magnetic pouches and cases to store and block your phone's signal in classrooms, events and distraction-free spaces. Shipping across Europe."
   home:
@@ -135,6 +134,8 @@ en:
     submit: Calculate shipping cost
   order:
     title: "Order %{number}"
+    thanks_title: "Thank you for your purchase, %{name}!"
+    thanks_text: "Your payment has been received. We have sent a confirmation to %{email} and we will let you know as soon as your order is on its way."
     payment: "Payment:"
     status: "Status:"
     shipping: Shipping
@@ -155,6 +156,8 @@ en:
     pay_button: Pay
   contact:
     title: Contact
+    about: "PhoneRelax is based in Alicante (Spain) and was created to solve the problems caused by mobile phone use in schools, concerts and private events."
+    map_title: "Map: C/ Carrasqueta 13, Petrer"
     intro_html: "Write to us and we'll get back to you as soon as possible:"
     form_title: Contact form
     name: Name
@@ -163,12 +166,6 @@ en:
     message: Message
     submit: Send
     meta_description: "Questions or need a quote for your school or event? Contact PhoneRelax and we'll help you choose the right solution."
-  about:
-    title: About us
-    intro: "PhoneRelax is based in Alicante (Spain) and was created to solve the problems caused by mobile phone use in schools, concerts and private events."
-    contact_data: Contact details
-    map_title: "Map: C/ Carrasqueta 13, Petrer"
-    meta_description: "Meet PhoneRelax: we help schools and event organisers create distraction-free environments with magnetic phone pouches."
   how_it_works:
     title: How does it work?
     p1: "It's very simple: just put the phone in the PhoneRelax pouch and press its lock button so the phone is sealed inside."

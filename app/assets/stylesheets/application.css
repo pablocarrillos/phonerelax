@@ -50,9 +50,10 @@ a { color: var(--navy); }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
   min-height: 84px;
 }
-.brand { text-decoration: none; line-height: 1; }
+.brand { text-decoration: none; line-height: 1; flex-shrink: 0; }
 .brand span {
   display: block;
   color: #fff;
@@ -60,8 +61,8 @@ a { color: var(--navy); }
   font-size: 26px;
   letter-spacing: 0.06em;
 }
-.site-nav { display: flex; align-items: center; gap: 26px; }
-.site-nav a { color: #fff; text-decoration: none; font-size: 15px; }
+.site-nav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px 16px; }
+.site-nav a { color: #fff; text-decoration: none; font-size: 15px; white-space: nowrap; }
 .site-nav a:hover { text-decoration: underline; text-underline-offset: 5px; }
 .site-nav .cart-link { font-weight: 700; }
 .cart-badge {
@@ -265,17 +266,19 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
 
 /* Enlace al panel (solo con sesión de admin iniciada) */
 .site-nav .admin-link {
-  border: 1.5px solid var(--pink);
+  border: 1px solid var(--pink);
   border-radius: 999px;
-  padding: 5px 14px;
+  padding: 2px 10px;
   color: var(--pink);
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 13px;
 }
 .site-nav .admin-link:hover { background: var(--pink); color: #fff; text-decoration: none; }
 
 /* El carrusel va en el bloque central, con esquinas redondeadas */
 .carousel .hero img { border-radius: var(--radius); }
 .carousel .carousel-controls { border-bottom: 0; }
+.carousel + .section { margin-top: 10px; }
 
 /* Botón flotante de WhatsApp */
 .whatsapp-float {
@@ -491,10 +494,12 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .faq .faq-item p { margin: 0 0 16px; color: var(--muted); line-height: 1.6; }
 
 /* --- Selector de idioma --- */
-.lang-switch { display: inline-flex; gap: 6px; align-items: center; margin-left: 10px; font-size: 14px; }
-.lang-switch a { color: var(--muted); text-decoration: none; padding: 2px 6px; border-radius: 6px; }
-.lang-switch a:hover { color: var(--magenta); background: rgba(214,11,198,0.08); }
-.lang-switch .lang-current { color: var(--navy); font-weight: 700; padding: 2px 6px; border: 1px solid var(--border); border-radius: 6px; }
+/* Selector de idioma compacto sobre la cabecera oscura: el idioma actual en
+   blanco y los demás atenuados, sin cajas ni márgenes extra. */
+.lang-switch { display: inline-flex; gap: 2px; align-items: center; font-size: 13px; }
+.lang-switch a { color: rgba(255, 255, 255, 0.55); text-decoration: none; padding: 2px 4px; border-radius: 6px; }
+.lang-switch a:hover { color: #fff; background: rgba(255, 255, 255, 0.12); text-decoration: none; }
+.lang-switch .lang-current { color: #fff; font-weight: 700; padding: 2px 4px; }
 
 /* --- Galería de personalización (ejemplos reales con marca del cliente) --- */
 .personalizacion-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
@@ -505,5 +510,56 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 /* --- Prueba social: centros que ya confían en PhoneRelax --- */
 .trusted-by { text-align: center; }
 .trusted-title { text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); margin: 0 0 14px; }
-.trusted-logos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 28px; }
+.trusted-logos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 24px; }
 .trusted-logos li { font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; }
+/* Logos de centros en tonos grises; recuperan el color al pasar el ratón.
+   El tope de anchura evita que los logos apaisados rompan la línea única. */
+.trusted-logo {
+  height: 44px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  display: block;
+  filter: grayscale(1);
+  opacity: 0.65;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+.trusted-logo:hover { filter: grayscale(0); opacity: 1; }
+
+/* Insignias con icono de los bloques de ventajas (p. ej. «Por qué elegir PhoneRelax») */
+.benefit-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: rgba(214, 11, 198, 0.10);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+/* Página de estado del pedido: agradecimiento tras el pago y líneas con foto */
+.thanks-hero {
+  text-align: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  margin-bottom: 24px;
+}
+.thanks-hero .thanks-icon { font-size: 42px; }
+.thanks-hero h1 { margin: 8px 0 6px; }
+.thanks-hero p { margin: 4px 0; color: var(--muted); }
+.thanks-hero .thanks-number { font-weight: 700; color: var(--navy); }
+.line-product { display: flex; align-items: center; gap: 12px; }
+.line-product img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  display: block;
+}
+.line-product a { text-decoration: none; font-weight: 600; }
+.line-qty { color: var(--muted); margin-left: 4px; }
