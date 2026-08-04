@@ -1,9 +1,9 @@
+# Mensaje del formulario público de contacto. Ya no se persiste: se valida aquí
+# y se reenvía por email (ContactMailer). La tabla conserva los mensajes antiguos.
 class ContactMessage < ApplicationRecord
   validates :name, :email, :message, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validate :phone_looks_valid
-
-  scope :recent_first, -> { order(created_at: :desc) }
 
   private
 
@@ -11,6 +11,6 @@ class ContactMessage < ApplicationRecord
   def phone_looks_valid
     return if phone.blank? || Phonelib.parse(phone).valid?
 
-    errors.add(:phone, 'no parece un número de teléfono válido')
+    errors.add(:phone, "no parece un número de teléfono válido")
   end
 end

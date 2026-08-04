@@ -2,13 +2,22 @@
 <% content_for :description, t('contact.meta_description') %>
 <div class="container section" style="max-width: 720px;">
   <h1><%= t('contact.title') %></h1>
-  <p>
-    <%= t('contact.intro_html') %><br>
-    ✉️ <%= mail_to 'phonerelaxstore@gmail.com' %> · 📞 (+34) 965 371 962<br>
-    📍 C/ Carrasqueta 13 · 03610 Petrer (Alicante) · <%= t('common.country') %>
-  </p>
+  <p><%= t('contact.about') %></p>
+
+  <div class="contact-details">
+    <p>
+      📍 C/ Carrasqueta 13 · 03610 Petrer (Alicante) · <%= t('common.country') %><br>
+      📞 <a href="tel:+34965371962">(+34) 965 371 962</a><br>
+      ✉️ <%= mail_to 'phonerelaxstore@gmail.com' %><br>
+      💬 <a href="https://wa.me/34686341700" target="_blank" rel="noopener">WhatsApp: (+34) 686 341 700</a>
+    </p>
+    <iframe class="contact-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            src="https://maps.google.com/maps?q=C%2F%20Carrasqueta%2013%2C%2003610%20Petrer%2C%20Alicante&z=16&output=embed"
+            title="<%= t('contact.map_title') %>"></iframe>
+  </div>
 
   <h2><%= t('contact.form_title') %></h2>
+  <p><%= t('contact.intro_html') %></p>
   <%= form_with model: @contact_message, url: contact_messages_path, local: true do |f| %>
     <%= invisible_captcha %>
     <% if @contact_message.errors.any? %>

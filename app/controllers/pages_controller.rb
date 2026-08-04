@@ -3,7 +3,5 @@ class PagesController < ApplicationController
 
   def como_funciona; end
 
-  def quienes_somos; end
-
   def privacidad; end
 end

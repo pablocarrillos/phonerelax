@@ -43,7 +43,7 @@ class SeoController < ApplicationController
 
     { '/pages/como-funciona' => '0.7', '/presupuesto' => '0.8',
       '/colegios' => '0.8', '/eventos' => '0.8', '/empresas' => '0.8', '/oposiciones' => '0.8',
-      '/pages/quienes-somos' => '0.6', '/blogs/news' => '0.7',
+      '/blogs/news' => '0.7',
       '/pages/contact' => '0.5', '/politica-privacidad' => '0.3' }.each do |path, pr|
       entries << sitemap_entry(priority: pr, changefreq: 'monthly') { |l| "#{locale_prefix(l)}#{path}" }
     end
@@ -78,7 +78,6 @@ class SeoController < ApplicationController
     out << '## Páginas'
     out << "- [Inicio](#{base}/): tienda y presentación"
     out << "- [¿Cómo funciona?](#{base}/pages/como-funciona): funcionamiento y preguntas frecuentes"
-    out << "- [Quiénes somos](#{base}/pages/quienes-somos)"
     out << "- [Blog](#{base}/blogs/news): artículos sobre el uso responsable del móvil"
     out << "- [Contacto](#{base}/pages/contact)"
     out << ''

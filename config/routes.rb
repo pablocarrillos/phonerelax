@@ -11,7 +11,8 @@ Rails.application.routes.draw do
     get 'products/:id', to: 'shop#product', as: :product_page
 
     get 'pages/como-funciona', to: 'pages#como_funciona', as: :como_funciona
-    get 'pages/quienes-somos', to: 'pages#quienes_somos', as: :quienes_somos
+    # «Quiénes somos» se fusionó con Contacto; redirección para enlaces antiguos
+    get 'pages/quienes-somos', to: redirect { |p, _req| p[:locale] ? "/#{p[:locale]}/pages/contact" : '/pages/contact' }
     get 'politica-privacidad', to: 'pages#privacidad', as: :privacidad
     get 'pages/contact', to: 'contacts#new', as: :contacto
     post 'pages/contact', to: 'contacts#create', as: :contact_messages
@@ -46,7 +47,7 @@ Rails.application.routes.draw do
   # Redirecciones 301 de las URLs de la preview (español) a las canónicas Shopify.
   get 'producto/:id',           to: redirect('/products/%{id}')
   get 'como-funciona',          to: redirect('/pages/como-funciona')
-  get 'quienes-somos',          to: redirect('/pages/quienes-somos')
+  get 'quienes-somos',          to: redirect('/pages/contact')
   get 'contacto',               to: redirect('/pages/contact')
   get 'blog',                   to: redirect('/blogs/news')
   get 'blog/:slug',             to: redirect('/blogs/news/%{slug}')
@@ -69,7 +70,6 @@ Rails.application.routes.draw do
       end
     end
     resources :posts, except: :show
-    resources :contact_messages, only: [:index, :destroy]
     resources :quote_requests, only: [:index, :destroy]
     resources :users, except: [:show]
   end
