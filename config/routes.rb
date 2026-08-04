@@ -57,7 +57,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "orders#index"
-    resources :orders, only: [ :index, :show, :update ] do
+    resources :orders, only: [ :index, :show, :update, :destroy ] do
       patch :advance, on: :member # creado → enviado → recibido
       patch :revert, on: :member  # deshace un avance de estado
       post :mark_paid, on: :member # cobro manual (fuera de Stripe)

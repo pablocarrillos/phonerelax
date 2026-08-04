@@ -119,6 +119,25 @@ class Order < ApplicationRecord
     amount_paid - refunded_amount
   end
 
+  # ¿Se puede borrar? Nunca con dinero cobrado sin devolver: los pagados (en
+  # cualquier estado logístico) exigen reembolsar antes.
+  def deletable?
+    pago_pendiente? || pago_reembolsado?
+  end
+
+  # Borra el pedido devolviendo al stock las unidades que se descontaron al
+  # cobrarse. Los pendientes de pago nunca descontaron stock, así que no suman.
+  def destroy_restoring_stock!
+    raise ArgumentError, "No se puede borrar un pedido con dinero cobrado; reembólsalo antes" unless deletable?
+
+    transaction do
+      if pago_reembolsado?
+        order_lines.includes(:product).each { |line| line.product.increment!(:stock, line.quantity) }
+      end
+      destroy!
+    end
+  end
+
   # Reembolsa `amount` euros (parcial o total). Los pagos de Stripe se devuelven
   # allí (a la tarjeta del cliente); los cobros manuales solo se registran. Cuando
   # lo devuelto alcanza lo cobrado, el pedido pasa a "reembolsado".

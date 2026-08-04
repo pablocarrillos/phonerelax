@@ -171,6 +171,36 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     assert_equal 0, unpaid.reload.refunded_amount
   end
 
+  # --- Borrado de pedidos ---
+
+  test "borrar un pedido pendiente no toca el stock" do
+    order = pending_order
+    stock_was = products(:funda).stock
+    assert_difference "Order.count", -1 do
+      delete admin_order_path(order)
+    end
+    assert_redirected_to admin_orders_path
+    assert_equal stock_was, products(:funda).reload.stock
+  end
+
+  test "borrar un pedido reembolsado devuelve las unidades al stock" do
+    order = paid_order(manual: true)
+    order.refund!(order.amount_paid)
+    stock_was = products(:funda).stock
+    assert_difference "Order.count", -1 do
+      delete admin_order_path(order)
+    end
+    assert_equal stock_was + 1, products(:funda).reload.stock
+  end
+
+  test "un pedido con dinero cobrado no se puede borrar" do
+    order = paid_order(manual: true)
+    assert_no_difference "Order.count" do
+      delete admin_order_path(order)
+    end
+    assert_redirected_to admin_order_path(order)
+  end
+
   private
 
   # Stubs de Stripe para reembolsos: la sesión devuelve un payment_intent fijo y

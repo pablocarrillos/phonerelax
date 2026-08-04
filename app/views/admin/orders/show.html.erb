@@ -68,6 +68,15 @@
       if @order.tracking_url %> · <%= link_to @order.tracking_number, @order.tracking_url, target: '_blank', rel: 'noopener' %><%
       elsif @order.tracking_number.present? %> · <%= @order.tracking_number %><% end %></p>
   <% end %>
+
+  <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border);">
+    <% if @order.deletable? %>
+      <%= button_to '🗑 Borrar pedido', admin_order_path(@order), method: :delete, class: 'btn-danger-link',
+                    form: { data: { turbo_confirm: "¿Borrar definitivamente el pedido #{@order.number}?#{' Las unidades volverán al stock.' if @order.pago_reembolsado?} Esta acción no se puede deshacer." } } %>
+    <% else %>
+      <p style="margin:0; color:var(--muted); font-size:13px;">Este pedido no se puede borrar: tiene dinero cobrado. Reembólsalo antes si de verdad quieres eliminarlo.</p>
+    <% end %>
+  </div>
 </div>
 
 <h2>Cliente</h2>
