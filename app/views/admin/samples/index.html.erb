@@ -1,0 +1,60 @@
+<h1>Muestras enviadas</h1>
+
+<% card = 'flex:1; min-width:180px; padding:14px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius);' %>
+<div style="display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 18px;">
+  <div style="<%= card %>">
+    <div style="font-size:24px; font-weight:700; color:#e67e22;"><%= @samples.count { |s| !s.returned? } %></div>
+    <div style="color:var(--muted); font-size:13px;">Fuera (sin devolver) · <%= number_to_currency(@pending_cost, unit: '€', format: '%n %u') %></div>
+  </div>
+  <div style="<%= card %>">
+    <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= @samples.count(&:returned?) %></div>
+    <div style="color:var(--muted); font-size:13px;">Devueltas</div>
+  </div>
+  <div style="<%= card %>">
+    <div style="font-size:24px; font-weight:700;"><%= number_to_currency(@total_cost, unit: '€', format: '%n %u') %></div>
+    <div style="color:var(--muted); font-size:13px;">Coste total de todas las muestras</div>
+  </div>
+</div>
+
+<p><%= link_to '+ Nueva muestra', new_admin_sample_path, class: 'btn btn-primary' %></p>
+
+<% if @samples.any? %>
+  <table class="table">
+    <thead><tr><th>Centro / cliente</th><th>Contacto</th><th>Enviada</th><th>Recogida</th><th>Productos</th><th class="num">Coste</th><th></th></tr></thead>
+    <tbody>
+      <% @samples.each do |sample| %>
+        <tr>
+          <td>
+            <strong><%= sample.organization %></strong>
+            <% if sample.notes.present? %><br><span style="color:var(--muted); font-size:12px;"><%= truncate(sample.notes, length: 70) %></span><% end %>
+          </td>
+          <td style="font-size:14px;"><%= sample.contact_name.presence || '—' %><% if sample.email.present? %><br><%= mail_to sample.email, sample.email, style: 'font-size:12px;' %><% end %></td>
+          <td><%= sample.sent_on ? l(sample.sent_on, format: '%d/%m/%Y') : '—' %></td>
+          <td>
+            <% if sample.returned? %>
+              <span class="badge recibido"><%= l(sample.returned_on, format: '%d/%m/%Y') %></span>
+            <% else %>
+              <span class="badge pendiente">fuera</span>
+            <% end %>
+          </td>
+          <td style="font-size:13px;">
+            <%= sample.sample_lines.map { |line| "#{line.quantity} × #{line.product.name.truncate(28)}" }.join('<br>').html_safe.presence || '—' %>
+          </td>
+          <td class="num"><%= number_to_currency(sample.cost(@landed_costs), unit: '€', format: '%n %u') %></td>
+          <td style="text-align:right; white-space:nowrap;">
+            <% unless sample.returned? %>
+              <%= button_to '✓ Devuelta', mark_returned_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
+                            form: { style: 'display:inline-block', data: { turbo_confirm: "¿Marcar la muestra de #{sample.organization} como devuelta hoy?" } } %>
+            <% end %>
+            <%= link_to 'Editar', edit_admin_sample_path(sample), class: 'btn btn-outline' %>
+            <%= button_to '🗑', admin_sample_path(sample), method: :delete, class: 'btn btn-danger',
+                          form: { style: 'display:inline-block', data: { turbo_confirm: "¿Borrar la muestra de #{sample.organization}?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p class="action-note">El coste usa el <strong>coste real medio</strong> de las compras recibidas de cada producto; si aún no hay compras, su PVP sin IVA.</p>
+<% else %>
+  <p class="action-note">Todavía no hay muestras registradas.</p>
+<% end %>

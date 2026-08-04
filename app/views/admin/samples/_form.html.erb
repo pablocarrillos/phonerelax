@@ -1,0 +1,32 @@
+<%= form_with model: [:admin, sample], local: true do |f| %>
+  <% if sample.errors.any? %>
+    <div class="errors"><ul><% sample.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+  <div class="form-grid" style="max-width: 760px;">
+    <div><%= f.label :organization, 'Centro / cliente *' %><%= f.text_field :organization %></div>
+    <div><%= f.label :contact_name, 'Persona de contacto' %><%= f.text_field :contact_name %></div>
+    <div><%= f.label :email, 'Email' %><%= f.text_field :email %></div>
+    <div></div>
+    <div><%= f.label :sent_on, 'Fecha de envío' %><%= f.date_field :sent_on %></div>
+    <div><%= f.label :returned_on, 'Fecha de recogida (vacío = sigue fuera)' %><%= f.date_field :returned_on %></div>
+    <div class="full"><%= f.label :notes, 'Comentarios' %><%= f.text_area :notes, rows: 2 %></div>
+  </div>
+
+  <h2 style="margin-top:22px;">Productos enviados</h2>
+  <table class="table" style="max-width: 560px;">
+    <thead><tr><th>Producto</th><th>Unidades</th><% if sample.sample_lines.any?(&:persisted?) %><th>Quitar</th><% end %></tr></thead>
+    <tbody>
+      <%= f.fields_for :sample_lines do |lf| %>
+        <tr>
+          <td><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select' } %></td>
+          <td><%= lf.number_field :quantity, min: 1, style: 'width:100px;' %></td>
+          <% if sample.sample_lines.any?(&:persisted?) %>
+            <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p><%= f.submit 'Guardar muestra', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_samples_path, class: 'btn btn-outline' %></p>
+<% end %>
