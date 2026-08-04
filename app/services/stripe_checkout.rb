@@ -9,8 +9,8 @@ class StripeCheckout
   def create_session
     Stripe::Checkout::Session.create(
       mode: "payment",
-      # Tarjeta (incluye Google Pay / Apple Pay como wallets), PayPal y Alipay.
-      payment_method_types: %w[card paypal alipay],
+      # Sin payment_method_types: el Checkout ofrece los métodos activados en el
+      # dashboard de Stripe (tarjeta con Google/Apple Pay y los que se activen).
       customer_email: @order.email,
       client_reference_id: @order.number,
       line_items: line_items,
