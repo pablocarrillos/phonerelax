@@ -108,6 +108,28 @@
   </tbody>
 </table>
 
+<% if @order.needs_invoice %>
+  <h2>Factura solicitada</h2>
+  <table class="table" style="max-width: 620px;">
+    <tbody>
+      <tr><th>Razón social</th><td><%= @order.tax_name.presence || '—' %></td></tr>
+      <tr>
+        <th>NIF / NIF-IVA</th>
+        <td>
+          <%= @order.tax_id.presence || '—' %>
+          <% if @order.tax_id.present? && TaxId.eu_vat?(@order.tax_id) && TaxId.split_eu_vat(@order.tax_id).first != 'ES' %>
+            <% if @order.vies_valid == true %><span class="badge recibido">VIES válido</span>
+            <% elsif @order.vies_valid == false %><span class="badge pendiente">VIES no válido</span>
+            <% else %><span class="badge">VIES sin comprobar</span><% end %>
+          <% end %>
+        </td>
+      </tr>
+      <tr><th>Dirección fiscal</th><td><%= [@order.tax_address, @order.tax_postal_code, @order.tax_city, @order.tax_province, @order.tax_country].map(&:presence).compact.join(' · ').presence || '—' %></td></tr>
+      <tr><th>IVA</th><td><%= @order.vat_exempt? ? "Exento (#{@order.vat_exempt_reason})" : 'Con IVA' %></td></tr>
+    </tbody>
+  </table>
+<% end %>
+
 <h2>Líneas</h2>
 <table class="table">
   <tbody>

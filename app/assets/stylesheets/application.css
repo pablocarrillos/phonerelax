@@ -722,6 +722,15 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 }
 .line-product a { text-decoration: none; font-weight: 600; }
 
+/* Bloque de factura del checkout: casilla + datos fiscales plegables. */
+.invoice-block { margin: 18px 0 6px; }
+.invoice-check { display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0; }
+.invoice-check input[type="checkbox"] { width: auto; margin: 0; }
+.invoice-fields { margin-top: 14px; padding: 16px 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card-bg); }
+.vies-status { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); min-height: 1em; }
+.vies-status.ok { color: #14532d; font-weight: 600; }
+.vies-status.ko { color: #b3261e; font-weight: 600; }
+
 /* ============================================================
    RESPONSIVE / MÓVIL
    ============================================================ */

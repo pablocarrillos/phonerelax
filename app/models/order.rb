@@ -19,6 +19,18 @@ class Order < ApplicationRecord
   # Un pedido pendiente de pago se considera "antiguo" pasados estos días.
   STALE_UNPAID_DAYS = 3
 
+  # --- Exención de IVA (facturación) ---
+  # Interruptores. Actívalos SOLO cuando estés dada de alta en los registros
+  # correspondientes; mientras estén en false TODA venta lleva IVA (no se cambia
+  # ningún precio) y solo se capturan y validan los datos fiscales.
+  #   EXPORT   → exportación a Canarias/Ceuta/Melilla (requiere justificar la salida).
+  #   INTRA_EU → entrega intracomunitaria B2B (requiere alta en el ROI y modelo 349).
+  EXPORT_VAT_EXEMPTION_ENABLED = false
+  INTRA_EU_VAT_EXEMPTION_ENABLED = false
+
+  # Destinos que son exportación a efectos de IVA (pagan IGIC/IPSI en destino).
+  EXPORT_COUNTRIES = [ "España (Canarias)" ].freeze
+
   # Plantillas de URL de seguimiento por transportista (se detecta por el nombre).
   CARRIER_TRACKING_URLS = {
     "correos" => "https://www.correos.es/es/es/herramientas/localizador/envios/detalle?tracking-number=%s",
@@ -46,6 +58,13 @@ class Order < ApplicationRecord
   validates :country, inclusion: { in: EU_COUNTRIES + LEGACY_COUNTRY_CODES.keys, message: "debe ser un país de la Unión Europea" }
   validate :phone_matches_country
 
+  # Si el cliente pide factura, los datos fiscales son obligatorios y el
+  # identificador fiscal debe ser válido (NIF/CIF/NIE o NIF-IVA europeo).
+  with_options if: :needs_invoice do
+    validates :tax_name, :tax_id, :tax_address, :tax_city, :tax_postal_code, :tax_province, :tax_country, presence: true
+    validate :tax_id_is_valid
+  end
+
   before_create :assign_number
   after_create { order_events.create!(event: "creado") }
 
@@ -70,6 +89,27 @@ class Order < ApplicationRecord
   def compute_shipping
     base = ShippingRate.base_for(country)
     base + order_lines.sum { |line| line.product.shipping_unit_cost * line.quantity }
+  end
+
+  # ¿NIF-IVA intracomunitario de otro país de la UE, verificado en VIES?
+  def intra_eu_business?
+    needs_invoice && tax_id.present? && TaxId.eu_vat?(tax_id) &&
+      TaxId.split_eu_vat(tax_id).first != "ES" && vies_valid == true
+  end
+
+  # Fija el tratamiento de IVA del pedido. Con los interruptores en false el
+  # resultado es siempre "con IVA" (no se altera ningún precio); la lógica queda
+  # lista para activarse al estar de alta en ROI/OSS. Se llama antes de montar
+  # las líneas, para que su precio unitario sea con o sin IVA según corresponda.
+  def apply_vat_exemption!
+    self.vat_exempt, self.vat_exempt_reason =
+      if EXPORT_VAT_EXEMPTION_ENABLED && EXPORT_COUNTRIES.include?(country)
+        [ true, "export" ]
+      elsif INTRA_EU_VAT_EXEMPTION_ENABLED && intra_eu_business?
+        [ true, "intra_eu" ]
+      else
+        [ false, nil ]
+      end
   end
 
   def next_status
@@ -187,6 +227,14 @@ class Order < ApplicationRecord
   end
 
   private
+
+  # El identificador fiscal debe ser un NIF/CIF/NIE español válido o un NIF-IVA
+  # europeo con formato correcto.
+  def tax_id_is_valid
+    return if tax_id.blank?
+
+    errors.add(:tax_id, "no es un NIF/CIF/NIE ni un NIF-IVA europeo válido") unless TaxId.valid?(tax_id)
+  end
 
   # El teléfono, si se indica, debe ser válido para el país de envío (ni cortos ni largos).
   def phone_matches_country

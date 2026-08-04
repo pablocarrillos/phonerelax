@@ -25,9 +25,19 @@ class OrdersController < ApplicationController
 
     @order = Order.new(order_params)
     @order.locale = I18n.locale # idioma en que el cliente completó la compra
+
+    # Si pide factura con un NIF-IVA europeo, lo comprobamos en VIES en el
+    # servidor (no nos fiamos del navegador) y guardamos el resultado.
+    if @order.needs_invoice && @order.tax_id.present? && TaxId.eu_vat?(@order.tax_id)
+      @order.vies_valid = Vies.check(@order.tax_id)[:valid]
+    end
+    @order.apply_vat_exemption! # fija vat_exempt (hoy siempre false salvo interruptor)
+
     lines.each do |product, quantity|
-      # El precio unitario se congela con el escalado por cantidad aplicado.
-      @order.order_lines.build(product: product, quantity: quantity, unit_price: product.price_for_quantity(quantity))
+      # El precio unitario se congela con el escalado por cantidad aplicado; sin
+      # IVA si la venta resulta exenta.
+      unit_price = @order.vat_exempt? ? product.net_price_for_quantity(quantity) : product.price_for_quantity(quantity)
+      @order.order_lines.build(product: product, quantity: quantity, unit_price: unit_price)
     end
     @order.total = @order.compute_total
 
@@ -88,7 +98,9 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(:customer_name, :email, :phone, :address, :city, :postal_code, :province, :country)
+    params.require(:order).permit(:customer_name, :email, :phone, :address, :city, :postal_code, :province, :country,
+                                  :needs_invoice, :tax_name, :tax_id, :tax_address, :tax_city, :tax_postal_code,
+                                  :tax_province, :tax_country)
   end
 
   def cart_lines

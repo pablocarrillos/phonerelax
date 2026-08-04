@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_04_211500) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_04_230000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -90,6 +90,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_211500) do
     t.string "customer_name", null: false
     t.string "email", null: false
     t.string "locale", default: "es", null: false
+    t.boolean "needs_invoice", default: false, null: false
     t.string "number", null: false
     t.boolean "paid_manually", default: false, null: false
     t.integer "payment_status", default: 0, null: false
@@ -101,10 +102,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_211500) do
     t.integer "status", default: 0, null: false
     t.string "stripe_payment_intent_id"
     t.string "stripe_session_id"
+    t.string "tax_address"
+    t.string "tax_city"
+    t.string "tax_country"
+    t.string "tax_id"
+    t.string "tax_name"
+    t.string "tax_postal_code"
+    t.string "tax_province"
     t.decimal "total", precision: 8, scale: 2
     t.string "tracking_carrier"
     t.string "tracking_number"
     t.datetime "updated_at", null: false
+    t.boolean "vat_exempt", default: false, null: false
+    t.string "vat_exempt_reason"
+    t.boolean "vies_valid"
     t.index ["number"], name: "index_orders_on_number", unique: true
   end
 

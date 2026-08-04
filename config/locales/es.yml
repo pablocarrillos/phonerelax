@@ -134,6 +134,20 @@ es:
     province: Provincia
     country: País
     submit: Calcular precio del transporte
+    needs_invoice: Necesito factura
+    invoice_note: Introduce tus datos fiscales. Si eres empresa de otro país de la UE, indica tu NIF-IVA para comprobarlo en VIES.
+    tax_name: Nombre o razón social
+    tax_id: NIF / CIF / NIE o NIF-IVA
+    tax_same_as_shipping: Usar la dirección de envío como dirección fiscal
+    tax_address: Dirección fiscal
+    tax_city: Ciudad
+    tax_postal_code: Código postal
+    tax_province: Provincia
+    tax_country: País
+    vies_checking: Comprobando en VIES…
+    vies_ok: "✓ NIF-IVA válido en VIES"
+    vies_ko: "✗ NIF-IVA no válido en VIES"
+    vies_unavailable: No se pudo comprobar ahora; lo verificaremos al procesar el pedido.
   order:
     title: "Pedido %{number}"
     thanks_title: "¡Gracias por tu compra, %{name}!"

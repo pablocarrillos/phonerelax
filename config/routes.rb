@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
+  # Comprobación en vivo de un NIF-IVA europeo contra VIES (JSON, desde el checkout).
+  get "comprobar-vies", to: "vies#check", as: :vies_check
+
   # Rutas públicas bilingües: español sin prefijo, portugués bajo /pt
   # (el idioma por defecto no lleva prefijo; ver default_url_options).
   scope "(:locale)", locale: /pt|en/ do

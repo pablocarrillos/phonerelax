@@ -132,6 +132,20 @@ en:
     province: Province
     country: Country
     submit: Calculate shipping cost
+    needs_invoice: I need an invoice
+    invoice_note: Enter your tax details. If you are a company from another EU country, provide your EU VAT number so we can check it in VIES.
+    tax_name: Name or company name
+    tax_id: Tax ID or EU VAT number
+    tax_same_as_shipping: Use the shipping address as billing address
+    tax_address: Billing address
+    tax_city: City
+    tax_postal_code: Postal code
+    tax_province: Province
+    tax_country: Country
+    vies_checking: Checking in VIES…
+    vies_ok: "✓ Valid EU VAT number"
+    vies_ko: "✗ VAT number not valid in VIES"
+    vies_unavailable: Couldn't check right now; we'll verify it when processing your order.
   order:
     title: "Order %{number}"
     thanks_title: "Thank you for your purchase, %{name}!"

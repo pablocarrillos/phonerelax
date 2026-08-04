@@ -35,6 +35,38 @@
       <div><%= f.label :province, t('checkout.province') %><%= f.text_field :province, required: true %></div>
       <div><%= f.label :country, t('checkout.country') %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España (Península)' }, { class: 'form-select' } %></div>
     </div>
+
+    <div class="invoice-block" data-controller="invoice" data-invoice-vies-url-value="<%= vies_check_path %>">
+      <label class="invoice-check">
+        <%= f.check_box :needs_invoice, data: { invoice_target: 'checkbox', action: 'change->invoice#toggle' } %>
+        <span><%= t('checkout.needs_invoice') %></span>
+      </label>
+      <div class="invoice-fields" data-invoice-target="fields" hidden>
+        <p class="action-note" style="margin-top:0;"><%= t('checkout.invoice_note') %></p>
+        <div class="form-grid">
+          <div class="full"><%= f.label :tax_name, t('checkout.tax_name') %><%= f.text_field :tax_name, data: { required: true } %></div>
+          <div class="full">
+            <%= f.label :tax_id, t('checkout.tax_id') %>
+            <%= f.text_field :tax_id, data: { invoice_target: 'taxId', required: true, action: 'change->invoice#checkVies input->invoice#clearVies' } %>
+            <span class="vies-status" data-invoice-target="viesStatus"
+                  data-checking="<%= t('checkout.vies_checking') %>" data-ok="<%= t('checkout.vies_ok') %>"
+                  data-ko="<%= t('checkout.vies_ko') %>" data-unavailable="<%= t('checkout.vies_unavailable') %>"></span>
+          </div>
+          <div class="full">
+            <label class="invoice-check">
+              <input type="checkbox" data-action="change->invoice#copyShipping">
+              <span><%= t('checkout.tax_same_as_shipping') %></span>
+            </label>
+          </div>
+          <div class="full"><%= f.label :tax_address, t('checkout.tax_address') %><%= f.text_field :tax_address, data: { required: true } %></div>
+          <div><%= f.label :tax_city, t('checkout.tax_city') %><%= f.text_field :tax_city, data: { required: true } %></div>
+          <div><%= f.label :tax_postal_code, t('checkout.tax_postal_code') %><%= f.text_field :tax_postal_code, data: { required: true } %></div>
+          <div><%= f.label :tax_province, t('checkout.tax_province') %><%= f.text_field :tax_province, data: { required: true } %></div>
+          <div><%= f.label :tax_country, t('checkout.tax_country') %><%= f.select :tax_country, Order::EU_COUNTRIES, { include_blank: true }, { class: 'form-select', data: { required: true } } %></div>
+        </div>
+      </div>
+    </div>
+
     <%= f.submit t('checkout.submit'), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>
   <% end %>
 </div>

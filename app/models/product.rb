@@ -55,6 +55,12 @@ class Product < ApplicationRecord
     (tier.unit_price * (1 + (vat_percentage.to_d / 100))).round(2)
   end
 
+  # Precio SIN IVA para una cantidad (para ventas exentas: Canarias, exportación,
+  # entrega intracomunitaria…). Es el PVP con IVA descontado el porcentaje.
+  def net_price_for_quantity(quantity)
+    (price_for_quantity(quantity) / (1 + (vat_percentage.to_d / 100))).round(2)
+  end
+
   # Galería de la ficha: las imágenes gestionadas, o la de portada si no hay ninguna.
   def gallery_urls
     urls = product_images.map(&:src)
