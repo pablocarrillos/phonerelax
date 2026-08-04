@@ -38,4 +38,22 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     @product.update!(image_url: "/images/products/antigua.jpg")
     assert_equal "/images/products/antigua.jpg", @product.cover_url
   end
+
+  test "la galería acepta subir varios ficheros a la vez" do
+    assert_difference -> { @product.product_images.count }, 2 do
+      post admin_product_product_images_path(@product),
+           params: { files: [ fixture_file_upload("cover.png", "image/png"),
+                              fixture_file_upload("cover.png", "image/png") ] }
+    end
+    assert_redirected_to edit_admin_product_path(@product)
+    nuevas = @product.product_images.ordered.last(2)
+    assert nuevas.all? { |image| image.file.attached? }
+    assert_match %r{/rails/active_storage/blobs/}, nuevas.first.src
+    assert_includes @product.reload.gallery_urls, nuevas.first.src
+  end
+
+  test "las imágenes históricas por URL siguen funcionando en la galería" do
+    assert_equal [ "https://example.com/frontal.jpg", "https://example.com/trasera.jpg" ],
+                 @product.gallery_urls
+  end
 end

@@ -2,14 +2,19 @@ module Admin
   class ProductImagesController < BaseController
     before_action :set_product
 
+    # Sube una o varias imágenes a la galería (ficheros, como la portada).
     def create
-      image = @product.product_images.new(url: params[:url].to_s.strip,
-                                          position: (@product.product_images.maximum(:position) || 0) + 1)
-      if image.save
-        redirect_to edit_admin_product_path(@product), notice: "Imagen añadida."
-      else
-        redirect_to edit_admin_product_path(@product), alert: image.errors.full_messages.to_sentence
+      files = Array(params[:files]).reject(&:blank?)
+      if files.none?
+        return redirect_to edit_admin_product_path(@product), alert: "Elige una o varias imágenes."
       end
+
+      position = @product.product_images.maximum(:position) || 0
+      files.each { |file| @product.product_images.create!(file: file, position: (position += 1)) }
+      redirect_to edit_admin_product_path(@product),
+                  notice: files.size == 1 ? "Imagen añadida." : "#{files.size} imágenes añadidas."
+    rescue ActiveRecord::RecordInvalid => e
+      redirect_to edit_admin_product_path(@product), alert: e.record.errors.full_messages.to_sentence
     end
 
     # Intercambia la imagen con su vecina (direction: up/down) y renumera posiciones.
