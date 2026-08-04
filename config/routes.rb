@@ -70,7 +70,6 @@ Rails.application.routes.draw do
       end
     end
     resources :posts, except: :show
-    resources :quote_requests, only: [ :index, :destroy ]
     resources :users, except: [ :show ]
   end
 

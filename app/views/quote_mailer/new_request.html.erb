@@ -1,0 +1,15 @@
+<h2>Nueva solicitud de presupuesto desde la web</h2>
+<p><strong>Nombre:</strong> <%= @quote[:name] %></p>
+<p><strong>Organización:</strong> <%= @quote[:organization] %></p>
+<p><strong>Email:</strong> <%= @quote[:email] %></p>
+<% if @quote[:phone].present? %>
+  <p><strong>Teléfono:</strong> <%= @quote[:phone] %></p>
+<% end %>
+<% if @quote[:sector].present? %>
+  <p><strong>Sector:</strong> <%= @quote[:sector] %></p>
+<% end %>
+<% if @quote[:units].present? %>
+  <p><strong>Unidades:</strong> <%= @quote[:units] %></p>
+<% end %>
+<p><strong>Mensaje:</strong></p>
+<%= simple_format(@quote[:message]) %>
