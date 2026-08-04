@@ -1,0 +1,35 @@
+<h1>Transporte</h1>
+<p class="action-note" style="margin-top:0;">El precio del envío de un pedido = <strong>base del país de destino</strong> + la suma de <strong>coste por unidad × unidades</strong> de cada producto enviado. Precios con IVA incluido.</p>
+
+<h2>Coste por producto</h2>
+<%= form_with url: admin_shipping_path, method: :patch, data: { turbo: false } do %>
+  <table class="table" style="max-width: 620px;">
+    <thead><tr><th>Producto</th><th class="num">Coste por unidad enviada (€)</th></tr></thead>
+    <tbody>
+      <% @products.each do |product| %>
+        <tr>
+          <td><%= product.name %></td>
+          <td class="num">
+            <input type="number" name="product_costs[<%= product.id %>]" step="0.01" min="0"
+                   value="<%= format('%.2f', product.shipping_unit_cost) %>" class="orders-search-input" style="width:110px; text-align:right;">
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p><button type="submit" class="btn btn-primary">Guardar costes por producto</button></p>
+<% end %>
+
+<h2 style="margin-top:30px;">Base por país de destino</h2>
+<%= form_with url: admin_shipping_path, method: :patch, data: { turbo: false } do %>
+  <div class="shipping-countries">
+    <% @rates.each do |country, base| %>
+      <div class="shipping-country">
+        <label class="field-label" for="rate-<%= country.parameterize %>"><%= country %></label>
+        <input id="rate-<%= country.parameterize %>" type="number" name="rates[<%= country %>]" step="0.01" min="0"
+               value="<%= format('%.2f', base) %>" class="orders-search-input" style="width:110px; text-align:right;">
+      </div>
+    <% end %>
+  </div>
+  <p><button type="submit" class="btn btn-primary">Guardar tarifas por país</button></p>
+<% end %>

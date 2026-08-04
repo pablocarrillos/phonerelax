@@ -73,6 +73,8 @@ Rails.application.routes.draw do
     resources :posts, except: :show
     resources :users, except: [ :show ]
     get "estadisticas", to: "stats#show", as: :stats
+    get "transporte", to: "shipping#show", as: :shipping
+    patch "transporte", to: "shipping#update"
     resources :suppliers, except: :show
     resources :purchases do
       patch :receive, on: :member   # marca recibida y suma stock

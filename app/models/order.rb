@@ -1,10 +1,4 @@
 class Order < ApplicationRecord
-  # Tarifa de transporte (precios con IVA incluido): base para 1-10 bolsas,
-  # más un euro por cada bolsa o imán, y recargo fuera de España.
-  SHIPPING_BASE = BigDecimal("5.95")
-  SHIPPING_PER_UNIT = BigDecimal("1")
-  SHIPPING_FOREIGN_SURCHARGE = BigDecimal("8")
-
   # Solo se envía a países de la Unión Europea (nombre => código ISO para validar teléfonos).
   EU_COUNTRY_CODES = {
     "Alemania" => "DE", "Austria" => "AT", "Bélgica" => "BE", "Bulgaria" => "BG",
@@ -66,12 +60,11 @@ class Order < ApplicationRecord
     order_lines.sum { |line| line.unit_price * line.quantity }
   end
 
-  # Precio del transporte según la dirección y las unidades del pedido.
+  # Precio del transporte: base del país de destino (configurable en el admin)
+  # más el coste por unidad propio de cada producto enviado.
   def compute_shipping
-    units = order_lines.sum(&:quantity)
-    cost = SHIPPING_BASE + (SHIPPING_PER_UNIT * units)
-    cost += SHIPPING_FOREIGN_SURCHARGE unless country == "España"
-    cost
+    base = ShippingRate.base_for(country)
+    base + order_lines.sum { |line| line.product.shipping_unit_cost * line.quantity }
   end
 
   def next_status

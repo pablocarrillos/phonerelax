@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_04_094240) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_04_095053) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -140,6 +140,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_094240) do
     t.string "name_pt"
     t.integer "position", default: 0, null: false
     t.decimal "price", precision: 8, scale: 2, null: false
+    t.decimal "shipping_unit_cost", precision: 8, scale: 2, default: "1.0", null: false
     t.string "shopify_handle"
     t.integer "stock", default: 0, null: false
     t.datetime "updated_at", null: false
@@ -190,6 +191,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_094240) do
     t.string "user_agent"
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "shipping_rates", force: :cascade do |t|
+    t.decimal "base_cost", precision: 8, scale: 2, null: false
+    t.string "country", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["country"], name: "index_shipping_rates_on_country", unique: true
   end
 
   create_table "suppliers", force: :cascade do |t|
