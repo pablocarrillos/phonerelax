@@ -6,13 +6,14 @@
 #
 # El remitente (info@phonerelax.com) debe estar verificado en SendGrid: o bien
 # autenticando el dominio phonerelax.com (DNS), o como "single sender".
-if ENV['SENDGRID_API_KEY'].present?
+# En test nunca: el entorno usa :test y los asserts cuentan las entregas.
+if ENV["SENDGRID_API_KEY"].present? && !Rails.env.test?
   ActionMailer::Base.smtp_settings = {
-    address:              'smtp.sendgrid.net',
+    address:              "smtp.sendgrid.net",
     port:                 587,
-    domain:               ENV['SMTP_DOMAIN'].presence || 'phonerelax.com',
-    user_name:            'apikey', # literal exigido por SendGrid
-    password:             ENV['SENDGRID_API_KEY'],
+    domain:               ENV["SMTP_DOMAIN"].presence || "phonerelax.com",
+    user_name:            "apikey", # literal exigido por SendGrid
+    password:             ENV["SENDGRID_API_KEY"],
     authentication:       :plain,
     enable_starttls_auto: true
   }
