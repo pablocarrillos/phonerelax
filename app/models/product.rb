@@ -4,6 +4,7 @@ class Product < ApplicationRecord
 
   has_many :order_lines, dependent: :restrict_with_error
   has_many :product_images, -> { ordered }, dependent: :destroy, inverse_of: :product
+  has_one_attached :cover_image
 
   validates :name, :price, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }
@@ -32,9 +33,19 @@ class Product < ApplicationRecord
     stock <= 0
   end
 
+  # Portada: la imagen subida desde el admin o, para productos antiguos que aún
+  # no la tienen, la ruta estática guardada en image_url.
+  def cover_url
+    if cover_image.attached?
+      Rails.application.routes.url_helpers.rails_blob_path(cover_image, only_path: true)
+    else
+      image_url
+    end
+  end
+
   # Galería de la ficha: las imágenes gestionadas, o la de portada si no hay ninguna.
   def gallery_urls
     urls = product_images.map(&:url)
-    urls.presence || [ image_url ].compact_blank
+    urls.presence || [ cover_url ].compact_blank
   end
 end

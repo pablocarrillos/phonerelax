@@ -3,39 +3,60 @@
     <div class="errors"><ul><% product.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>
   <div class="form-grid" style="max-width: 860px;">
-    <div class="full"><%= f.label :name, 'Nombre' %><%= f.text_field :name %></div>
     <div><%= f.label :price, 'Precio (€, IVA incluido)' %><%= f.number_field :price, step: 0.01 %></div>
     <div><%= f.label :position, 'Posición' %><%= f.number_field :position %></div>
     <div><%= f.label :stock, 'Stock (unidades restantes)' %><%= f.number_field :stock, min: 0 %></div>
     <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
-    <div><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
-    <div class="full"><%= f.label :image_url, 'URL de la imagen de portada' %><%= f.text_field :image_url %></div>
-    <div class="full">
-      <%= f.label :description, 'Descripción' %>
-      <%= f.hidden_field :description, id: 'product_description' %>
-      <trix-editor input="product_description" class="trix-content"></trix-editor>
-    </div>
+    <div class="full"><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
 
     <div class="full">
-      <h3 style="margin: 22px 0 4px;">🇵🇹 Portugués (opcional)</h3>
-      <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /pt se mostrará el contenido en español.</p>
-    </div>
-    <div class="full"><%= f.label :name_pt, 'Nombre (PT)' %><%= f.text_field :name_pt %></div>
-    <div class="full">
-      <%= f.label :description_pt, 'Descripción (PT)' %>
-      <%= f.hidden_field :description_pt, id: 'product_description_pt' %>
-      <trix-editor input="product_description_pt" class="trix-content"></trix-editor>
+      <%= f.label :cover_image, 'Imagen de portada' %>
+      <div class="cover-field">
+        <% if product.cover_url.present? %>
+          <img src="<%= product.cover_url %>" alt="Portada actual" class="cover-preview">
+        <% end %>
+        <div>
+          <%= f.file_field :cover_image, accept: 'image/*' %>
+          <p class="help-block" style="color: var(--muted); font-size: 13px; margin: 6px 0 0;">Sube una imagen para sustituir la portada actual.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="full">
-      <h3 style="margin: 22px 0 4px;">🇬🇧 Inglés (opcional)</h3>
-      <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /en se mostrará el contenido en español.</p>
-    </div>
-    <div class="full"><%= f.label :name_en, 'Nombre (EN)' %><%= f.text_field :name_en %></div>
-    <div class="full">
-      <%= f.label :description_en, 'Descripción (EN)' %>
-      <%= f.hidden_field :description_en, id: 'product_description_en' %>
-      <trix-editor input="product_description_en" class="trix-content"></trix-editor>
+    <div class="full lang-tabs" data-controller="tabs">
+      <div class="tab-buttons" role="tablist">
+        <button type="button" class="tab-button active" data-tabs-target="tab" data-action="tabs#select">🇪🇸 Español</button>
+        <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇵🇹 Portugués</button>
+        <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇬🇧 Inglés</button>
+      </div>
+
+      <div class="tab-panel" data-tabs-target="panel">
+        <div><%= f.label :name, 'Nombre' %><%= f.text_field :name %></div>
+        <div>
+          <%= f.label :description, 'Descripción' %>
+          <%= f.hidden_field :description, id: 'product_description' %>
+          <trix-editor input="product_description" class="trix-content"></trix-editor>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tabs-target="panel" hidden>
+        <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /pt se mostrará el contenido en español.</p>
+        <div><%= f.label :name_pt, 'Nombre (PT)' %><%= f.text_field :name_pt %></div>
+        <div>
+          <%= f.label :description_pt, 'Descripción (PT)' %>
+          <%= f.hidden_field :description_pt, id: 'product_description_pt' %>
+          <trix-editor input="product_description_pt" class="trix-content"></trix-editor>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tabs-target="panel" hidden>
+        <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /en se mostrará el contenido en español.</p>
+        <div><%= f.label :name_en, 'Nombre (EN)' %><%= f.text_field :name_en %></div>
+        <div>
+          <%= f.label :description_en, 'Descripción (EN)' %>
+          <%= f.hidden_field :description_en, id: 'product_description_en' %>
+          <trix-editor input="product_description_en" class="trix-content"></trix-editor>
+        </div>
+      </div>
     </div>
   </div>
   <p><%= f.submit 'Guardar producto', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %></p>

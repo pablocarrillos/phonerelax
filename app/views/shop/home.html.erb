@@ -63,7 +63,7 @@
     <% @products.each do |product| %>
       <div class="card product-card">
         <%= link_to product_page_path(product) do %>
-          <img src="<%= product.image_url %>" alt="<%= product.display_name %>">
+          <img src="<%= product.cover_url %>" alt="<%= product.display_name %>">
         <% end %>
         <h3><%= link_to product.display_name, product_page_path(product), style: 'text-decoration:none;' %></h3>
         <div class="price"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></div>
