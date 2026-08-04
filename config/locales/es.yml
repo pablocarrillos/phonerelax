@@ -84,8 +84,8 @@ es:
     site_description: "PhoneRelax: bolsas y fundas magnéticas para guardar y bloquear la señal del móvil en aulas, eventos y espacios sin distracciones. Envío a toda España."
   home:
     slide1: Mejora de la concentración y la interacción en el aula
-    slide2: Evita el uso de móviles en zonas sin vigilancia
-    slide3: Son los usuarios los que custodian sus móviles
+    slide2: "Evita el uso del móvil <br>en zonas sin vigilancia"
+    slide3: "Los usuarios se encargan de <br>custodiar sus propios móviles"
     slide4: Disfruta del momento
     how_title: "¿Cómo funciona?"
     step1_title: "1 · Mete el teléfono en la bolsa"
