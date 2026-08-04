@@ -2,8 +2,8 @@ require "test_helper"
 
 class OrderTest < ActiveSupport::TestCase
   def pending_order(quantity: 1)
-    order = Order.create!(customer_name: "Ana", email: "a@x.com", address: "C 1",
-                          city: "Madrid", postal_code: "28001", country: "España", locale: "es")
+    order = Order.create!(customer_name: "Ana", email: "a@x.com", phone: "612345678", address: "C 1",
+                          city: "Madrid", postal_code: "28001", province: "Madrid", country: "España", locale: "es")
     order.order_lines.create!(product: products(:funda), quantity: quantity, unit_price: products(:funda).price)
     order
   end

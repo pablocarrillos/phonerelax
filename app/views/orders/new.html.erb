@@ -26,13 +26,13 @@
       <div class="errors"><ul><% @order.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
     <% end %>
     <div class="form-grid">
-      <div><%= f.label :customer_name, t('checkout.customer_name') %><%= f.text_field :customer_name %></div>
-      <div><%= f.label :email, t('checkout.email') %><%= f.email_field :email %></div>
-      <div><%= f.label :phone, t('checkout.phone') %><%= f.telephone_field :phone %></div>
-      <div class="full"><%= f.label :address, t('checkout.address') %><%= f.text_field :address %></div>
-      <div><%= f.label :city, t('checkout.city') %><%= f.text_field :city %></div>
-      <div><%= f.label :postal_code, t('checkout.postal_code') %><%= f.text_field :postal_code %></div>
-      <div><%= f.label :province, t('checkout.province') %><%= f.text_field :province %></div>
+      <div><%= f.label :customer_name, t('checkout.customer_name') %><%= f.text_field :customer_name, required: true %></div>
+      <div><%= f.label :email, t('checkout.email') %><%= f.email_field :email, required: true %></div>
+      <div><%= f.label :phone, t('checkout.phone') %><%= f.telephone_field :phone, required: true %></div>
+      <div class="full"><%= f.label :address, t('checkout.address') %><%= f.text_field :address, required: true %></div>
+      <div><%= f.label :city, t('checkout.city') %><%= f.text_field :city, required: true %></div>
+      <div><%= f.label :postal_code, t('checkout.postal_code') %><%= f.text_field :postal_code, required: true %></div>
+      <div><%= f.label :province, t('checkout.province') %><%= f.text_field :province, required: true %></div>
       <div><%= f.label :country, t('checkout.country') %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España' }, { class: 'form-select' } %></div>
     </div>
     <%= f.submit t('checkout.submit'), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;' %>

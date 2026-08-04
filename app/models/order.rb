@@ -41,7 +41,7 @@ class Order < ApplicationRecord
   # Estado del cobro, gestionado por Stripe (webhook / retorno del Checkout).
   enum :payment_status, { pendiente: 0, pagado: 1 }, prefix: :pago
 
-  validates :customer_name, :email, :address, :city, :postal_code, :country, presence: true
+  validates :customer_name, :email, :phone, :address, :city, :postal_code, :province, :country, presence: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :country, inclusion: { in: EU_COUNTRIES, message: 'debe ser un país de la Unión Europea' }
   validate :phone_matches_country

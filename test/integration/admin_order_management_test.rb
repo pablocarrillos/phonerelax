@@ -1,11 +1,13 @@
 require "test_helper"
 
 class AdminOrderManagementTest < ActionDispatch::IntegrationTest
+  include ActionMailer::TestHelper
+
   setup { sign_in_as(users(:one)) }
 
   def pending_order
-    order = Order.create!(customer_name: "Ana", email: "a@x.com", address: "C 1",
-                          city: "Madrid", postal_code: "28001", country: "España", locale: "es")
+    order = Order.create!(customer_name: "Ana", email: "a@x.com", phone: "612345678", address: "C 1",
+                          city: "Madrid", postal_code: "28001", province: "Madrid", country: "España", locale: "es")
     order.order_lines.create!(product: products(:funda), quantity: 1, unit_price: products(:funda).price)
     order
   end
@@ -71,5 +73,40 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     assert_response :success
     get admin_orders_path(from: "2020-01-01", to: Date.current.iso8601)
     assert_response :success
+  end
+
+  test "el recordatorio de pago envía el email al cliente" do
+    order = pending_order
+    assert_emails 1 do
+      post payment_reminder_admin_order_path(order)
+    end
+    assert_redirected_to admin_order_path(order)
+    assert_equal [ order.email ], ActionMailer::Base.deliveries.last.to
+  end
+
+  test "el recordatorio no se envía si el pedido ya está pagado" do
+    order = pending_order
+    order.mark_paid!(manual: true)
+    perform_enqueued_jobs # entrega el email de «pagado» para dejar la cola limpia
+    assert_emails 0 do
+      post payment_reminder_admin_order_path(order)
+    end
+    assert_redirected_to admin_order_path(order)
+  end
+
+  test "avanzar a enviado notifica al cliente por email" do
+    order = pending_order
+    assert_emails 1 do
+      patch advance_admin_order_path(order), params: { tracking_carrier: "SEUR", tracking_number: "XYZ9" }
+    end
+    mail = ActionMailer::Base.deliveries.last
+    assert_equal [ order.email ], mail.to
+    assert_includes mail.body.decoded, "XYZ9"
+  end
+
+  test "el panel exige sesión iniciada" do
+    sign_out
+    get admin_orders_path
+    assert_redirected_to new_session_path
   end
 end

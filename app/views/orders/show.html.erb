@@ -1,7 +1,16 @@
 <% content_for :title, "#{t('order.title', number: @order.number)} · PhoneRelax" %>
 <% content_for :robots, 'noindex, nofollow' %>
 <div class="container section" style="max-width: 760px;">
-  <h1><%= t('order.title', number: @order.number) %></h1>
+  <% if @order.pago_pagado? %>
+    <div class="thanks-hero">
+      <div class="thanks-icon">🎉</div>
+      <h1><%= t('order.thanks_title', name: @order.customer_name.split.first) %></h1>
+      <p><%= t('order.thanks_text', email: @order.email) %></p>
+      <p class="thanks-number"><%= t('order.title', number: @order.number) %></p>
+    </div>
+  <% else %>
+    <h1><%= t('order.title', number: @order.number) %></h1>
+  <% end %>
   <p>
     <%= t('order.payment') %> <span class="badge <%= @order.payment_status %>"><%= t("order.payment_statuses.#{@order.payment_status}", default: @order.payment_status) %></span>
     &nbsp; <%= t('order.status') %> <span class="badge <%= @order.status %>"><%= t("order.statuses.#{@order.status}", default: @order.status) %></span>
@@ -17,7 +26,18 @@
     <tbody>
       <% @order.order_lines.each do |line| %>
         <tr>
-          <td><%= line.product.display_name %> × <%= line.quantity %></td>
+          <td>
+            <div class="line-product">
+              <% if (photo = line.product.gallery_urls.first) %>
+                <%= link_to_if line.product.active?, image_tag(photo, alt: line.product.display_name),
+                               product_page_path(line.product), class: 'line-thumb' %>
+              <% end %>
+              <span>
+                <%= link_to_if line.product.active?, line.product.display_name, product_page_path(line.product) %>
+                <span class="line-qty">× <%= line.quantity %></span>
+              </span>
+            </div>
+          </td>
           <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>
