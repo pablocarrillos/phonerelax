@@ -1,7 +1,7 @@
 <h1>Compras</h1>
 <p>
   <%= link_to '+ Nueva compra', new_admin_purchase_path, class: 'btn btn-primary' %>
-  <%= link_to 'Proveedores', admin_suppliers_path, class: 'btn btn-outline' %>
+  <%= link_to "Proveedores (#{Supplier.count})", admin_suppliers_path, class: 'btn btn-outline' %>
 </p>
 
 <% if @purchases.any? %>
