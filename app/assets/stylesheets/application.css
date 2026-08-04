@@ -116,6 +116,9 @@ a { color: var(--navy); }
   box-shadow: 0 10px 30px rgba(14, 27, 77, 0.18);
 }
 .hero-card h1 { margin: 0; font-size: 26px; }
+/* En la slide del baño el cuadro se baja para dejar ver el teléfono que la
+   chica sostiene entre las manos. */
+.hero-card.hero-card--low { top: 66%; }
 
 .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 .section { margin: 48px auto; }

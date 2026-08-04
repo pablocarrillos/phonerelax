@@ -13,7 +13,7 @@
     <div class="hero carousel-slide <%= 'active' if i.zero? %>" data-carousel-target="slide">
       <img src="<%= image %>" alt="<%= strip_tags(title) %>" width="<%= w %>" height="<%= h %>"
            loading="<%= i.zero? ? 'eager' : 'lazy' %>" <%= 'fetchpriority=high'.html_safe if i.zero? %>>
-      <div class="hero-card"><h1><%= sanitize title, tags: %w[br] %></h1></div>
+      <div class="hero-card<%= ' hero-card--low' if image.include?('toilet-scrolling') %>"><h1><%= sanitize title, tags: %w[br] %></h1></div>
     </div>
   <% end %>
   <div class="carousel-controls">
