@@ -1,0 +1,57 @@
+<p><%= link_to '← Volver a compras', admin_purchases_path %></p>
+<h1>Compra de <%= @purchase.supplier.name %> · <%= l @purchase.ordered_on, format: '%d/%m/%Y' %></h1>
+
+<div class="order-actions">
+  <p class="order-badges">
+    <% if @purchase.received? %>
+      <span class="badge recibido">recibida el <%= l @purchase.received_on, format: '%d/%m/%Y' %></span>
+    <% else %>
+      <span class="badge pendiente">pendiente de recibir</span>
+    <% end %>
+    <% if @purchase.reference.present? %>&nbsp;&nbsp;<strong>Ref.:</strong> <%= @purchase.reference %><% end %>
+    <% if @purchase.invoice.attached? %>&nbsp;&nbsp;<%= link_to '📄 Ver factura', rails_blob_path(@purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener' %><% end %>
+  </p>
+
+  <div class="action-section">
+    <div class="action-row">
+      <% if @purchase.received? %>
+        <%= button_to '↩ Deshacer recepción', unreceive_admin_purchase_path(@purchase), method: :patch, class: 'btn btn-outline',
+                      form: { data: { turbo_confirm: '¿Deshacer la recepción? Se restarán del stock las unidades de esta compra.' } } %>
+      <% else %>
+        <%= button_to '✓ Marcar como recibida', receive_admin_purchase_path(@purchase), method: :patch, class: 'btn btn-primary',
+                      form: { data: { turbo_confirm: '¿Marcar la compra como recibida? Las unidades se sumarán al stock de cada producto.' } } %>
+      <% end %>
+      <%= link_to 'Editar', edit_admin_purchase_path(@purchase), class: 'btn btn-outline' %>
+      <% unless @purchase.received? %>
+        <%= button_to 'Borrar', admin_purchase_path(@purchase), method: :delete, class: 'btn-danger-link',
+                      form: { data: { turbo_confirm: '¿Borrar esta compra?' } } %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<h2>Líneas</h2>
+<table class="table" style="max-width: 860px;">
+  <thead><tr><th>Producto</th><th class="num">Unidades</th><th class="num">Coste/ud.</th><th class="num">Subtotal</th><th class="num">Coste real/ud.*</th></tr></thead>
+  <tbody>
+    <% @purchase.purchase_lines.each do |line| %>
+      <tr>
+        <td><%= line.product.name %></td>
+        <td class="num"><%= line.quantity %></td>
+        <td class="num"><%= number_to_currency(line.unit_cost, unit: '€', format: '%n %u') %></td>
+        <td class="num"><%= number_to_currency(line.subtotal, unit: '€', format: '%n %u') %></td>
+        <td class="num"><strong><%= number_to_currency(@purchase.landed_unit_cost(line), unit: '€', format: '%n %u') %></strong></td>
+      </tr>
+    <% end %>
+    <tr><td colspan="3">Transporte</td><td class="num" colspan="2"><%= number_to_currency(@purchase.shipping_cost, unit: '€', format: '%n %u') %></td></tr>
+    <tr><td colspan="3">Aduanas / trámites</td><td class="num" colspan="2"><%= number_to_currency(@purchase.customs_cost, unit: '€', format: '%n %u') %></td></tr>
+    <tr><td colspan="3">Otros costes</td><td class="num" colspan="2"><%= number_to_currency(@purchase.other_costs, unit: '€', format: '%n %u') %></td></tr>
+    <tr class="total-row"><td colspan="3">Total compra</td><td class="num" colspan="2"><%= number_to_currency(@purchase.total_cost, unit: '€', format: '%n %u') %></td></tr>
+  </tbody>
+</table>
+<p class="action-note">* Coste real por unidad: precio de compra más la parte proporcional de transporte, aduanas y otros costes.</p>
+
+<% if @purchase.notes.present? %>
+  <h2>Notas</h2>
+  <p><%= simple_format(@purchase.notes) %></p>
+<% end %>

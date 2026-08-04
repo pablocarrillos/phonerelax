@@ -1,0 +1,16 @@
+<%= form_with model: [:admin, supplier], local: true do |f| %>
+  <% if supplier.errors.any? %>
+    <div class="errors"><ul><% supplier.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+  <div class="form-grid" style="max-width: 760px;">
+    <div><%= f.label :name, 'Nombre *' %><%= f.text_field :name %></div>
+    <div><%= f.label :tax_id, 'NIF / VAT' %><%= f.text_field :tax_id %></div>
+    <div><%= f.label :email, 'Email' %><%= f.email_field :email %></div>
+    <div><%= f.label :phone, 'Teléfono' %><%= f.telephone_field :phone %></div>
+    <div><%= f.label :website, 'Web' %><%= f.text_field :website, placeholder: 'https://…' %></div>
+    <div><%= f.label :country, 'País' %><%= f.text_field :country %></div>
+    <div class="full"><%= f.label :address, 'Dirección' %><%= f.text_field :address %></div>
+    <div class="full"><%= f.label :notes, 'Notas' %><%= f.text_area :notes, rows: 3 %></div>
+  </div>
+  <p><%= f.submit 'Guardar proveedor', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_suppliers_path, class: 'btn btn-outline' %></p>
+<% end %>

@@ -1,0 +1,51 @@
+<h1>Compras</h1>
+<p>
+  <%= link_to '+ Nueva compra', new_admin_purchase_path, class: 'btn btn-primary' %>
+  <%= link_to 'Proveedores', admin_suppliers_path, class: 'btn btn-outline' %>
+</p>
+
+<% if @purchases.any? %>
+  <table class="table">
+    <thead><tr><th>Fecha</th><th>Proveedor</th><th>Referencia</th><th class="num">Líneas</th><th class="num">Total</th><th>Factura</th><th>Estado</th></tr></thead>
+    <tbody>
+      <% @purchases.each do |purchase| %>
+        <tr>
+          <td><%= link_to l(purchase.ordered_on, format: '%d/%m/%Y'), admin_purchase_path(purchase) %></td>
+          <td><%= purchase.supplier.name %></td>
+          <td><%= purchase.reference.presence || '—' %></td>
+          <td class="num"><%= purchase.purchase_lines.sum(&:quantity) %> uds.</td>
+          <td class="num"><%= number_to_currency(purchase.total_cost, unit: '€', format: '%n %u') %></td>
+          <td><%= purchase.invoice.attached? ? link_to('📄 PDF', rails_blob_path(purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener') : '—' %></td>
+          <td>
+            <% if purchase.received? %>
+              <span class="badge recibido">recibida <%= l(purchase.received_on, format: '%d/%m') %></span>
+            <% else %>
+              <span class="badge pendiente">pendiente</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="action-note">Todavía no hay compras registradas.</p>
+<% end %>
+
+<% if @landed_costs.any? %>
+  <h2 style="margin-top:32px;">Coste real por producto</h2>
+  <table class="table" style="max-width: 860px;">
+    <thead><tr><th>Producto</th><th class="num">Uds. compradas</th><th class="num">Coste real/ud.</th><th class="num">PVP</th><th class="num">Margen</th></tr></thead>
+    <tbody>
+      <% @landed_costs.each do |product, data| %>
+        <tr>
+          <td><%= product.name %></td>
+          <td class="num"><%= data[:units] %></td>
+          <td class="num"><%= number_to_currency(data[:avg_cost], unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
+          <td class="num"><strong><%= number_to_percentage(100 * (product.price - data[:avg_cost]) / product.price, precision: 1) %></strong></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p class="action-note">Coste real = precio de compra + parte proporcional de transporte, aduanas y otros costes, ponderado por unidades de las compras <strong>recibidas</strong>. El margen compara con el PVP actual (IVA incluido).</p>
+<% end %>

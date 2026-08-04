@@ -1,0 +1,5 @@
+<h1>Editar compra</h1>
+<% if @purchase.received? %>
+  <p class="action-note">Esta compra ya está recibida: si cambias unidades, recuerda que el stock no se recalcula solo (deshaz la recepción antes de editar líneas).</p>
+<% end %>
+<%= render 'form', purchase: @purchase %>

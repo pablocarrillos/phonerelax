@@ -1,0 +1,45 @@
+<%= form_with model: [:admin, purchase], local: true do |f| %>
+  <% if purchase.errors.any? %>
+    <div class="errors"><ul><% purchase.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+
+  <div class="form-grid" style="max-width: 860px;">
+    <div>
+      <%= f.label :supplier_id, 'Proveedor *' %>
+      <%= f.collection_select :supplier_id, Supplier.ordered, :id, :name, { include_blank: true }, { class: 'form-select', required: true } %>
+    </div>
+    <div><%= f.label :ordered_on, 'Fecha de compra *' %><%= f.date_field :ordered_on, required: true %></div>
+    <div><%= f.label :reference, 'Referencia (nº de factura, pedido…)' %><%= f.text_field :reference %></div>
+    <div>
+      <%= f.label :invoice, 'Factura (PDF)' %>
+      <%= f.file_field :invoice, accept: 'application/pdf' %>
+      <% if purchase.invoice.attached? %>
+        <p class="action-note" style="margin-top:4px;">Ya adjunta: <%= link_to '📄 ver factura', rails_blob_path(purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener' %> (sube otra para sustituirla)</p>
+      <% end %>
+    </div>
+    <div><%= f.label :shipping_cost, 'Transporte (€)' %><%= f.number_field :shipping_cost, step: 0.01, min: 0 %></div>
+    <div><%= f.label :customs_cost, 'Aduanas / trámites (€)' %><%= f.number_field :customs_cost, step: 0.01, min: 0 %></div>
+    <div><%= f.label :other_costs, 'Otros costes (€)' %><%= f.number_field :other_costs, step: 0.01, min: 0 %></div>
+    <div class="full"><%= f.label :notes, 'Notas' %><%= f.text_area :notes, rows: 2 %></div>
+  </div>
+
+  <h2 style="margin-top:24px;">Líneas de la compra</h2>
+  <p class="action-note" style="margin-top:0;">Elige producto, unidades y coste unitario. Deja el producto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
+  <table class="table" style="max-width: 720px;">
+    <thead><tr><th>Producto</th><th>Unidades</th><th>Coste por unidad (€)</th><% if purchase.purchase_lines.any?(&:persisted?) %><th>Quitar</th><% end %></tr></thead>
+    <tbody>
+      <%= f.fields_for :purchase_lines do |lf| %>
+        <tr>
+          <td><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select' } %></td>
+          <td><%= lf.number_field :quantity, min: 1, style: 'width:110px;' %></td>
+          <td><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:140px;' %></td>
+          <% if purchase.purchase_lines.any?(&:persisted?) %>
+            <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p><%= f.submit 'Guardar compra', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_purchases_path, class: 'btn btn-outline' %></p>
+<% end %>

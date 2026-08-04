@@ -73,6 +73,11 @@ Rails.application.routes.draw do
     resources :posts, except: :show
     resources :users, except: [ :show ]
     get "estadisticas", to: "stats#show", as: :stats
+    resources :suppliers, except: :show
+    resources :purchases do
+      patch :receive, on: :member   # marca recibida y suma stock
+      patch :unreceive, on: :member # deshace la recepción
+    end
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_04_091425) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_04_094240) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -146,6 +146,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_091425) do
     t.decimal "vat_percentage", precision: 5, scale: 2, default: "21.0", null: false
   end
 
+  create_table "purchase_lines", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "product_id", null: false
+    t.bigint "purchase_id", null: false
+    t.integer "quantity", null: false
+    t.decimal "unit_cost", precision: 10, scale: 4, null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_purchase_lines_on_product_id"
+    t.index ["purchase_id"], name: "index_purchase_lines_on_purchase_id"
+  end
+
+  create_table "purchases", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.decimal "customs_cost", precision: 10, scale: 2, default: "0.0", null: false
+    t.text "notes"
+    t.date "ordered_on", null: false
+    t.decimal "other_costs", precision: 10, scale: 2, default: "0.0", null: false
+    t.date "received_on"
+    t.string "reference"
+    t.decimal "shipping_cost", precision: 10, scale: 2, default: "0.0", null: false
+    t.bigint "supplier_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["supplier_id"], name: "index_purchases_on_supplier_id"
+  end
+
   create_table "quote_requests", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -167,6 +192,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_091425) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "suppliers", force: :cascade do |t|
+    t.string "address"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name", null: false
+    t.text "notes"
+    t.string "phone"
+    t.string "tax_id"
+    t.datetime "updated_at", null: false
+    t.string "website"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -182,5 +220,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_091425) do
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"
   add_foreign_key "product_images", "products"
+  add_foreign_key "purchase_lines", "products"
+  add_foreign_key "purchase_lines", "purchases"
+  add_foreign_key "purchases", "suppliers"
   add_foreign_key "sessions", "users"
 end

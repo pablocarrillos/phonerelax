@@ -1,0 +1,28 @@
+<p><%= link_to '← Volver a compras', admin_purchases_path %></p>
+<h1>Proveedores</h1>
+<p><%= link_to '+ Nuevo proveedor', new_admin_supplier_path, class: 'btn btn-primary' %></p>
+
+<% if @suppliers.any? %>
+  <table class="table">
+    <thead><tr><th>Nombre</th><th>NIF/VAT</th><th>Email</th><th>Teléfono</th><th>País</th><th>Compras</th><th></th></tr></thead>
+    <tbody>
+      <% @suppliers.each do |supplier| %>
+        <tr>
+          <td><strong><%= supplier.name %></strong><% if supplier.website.present? %><br><a href="<%= supplier.website %>" target="_blank" rel="noopener" style="font-size:13px;"><%= supplier.website %></a><% end %></td>
+          <td><%= supplier.tax_id.presence || '—' %></td>
+          <td><%= supplier.email.present? ? mail_to(supplier.email) : '—' %></td>
+          <td><%= supplier.phone.presence || '—' %></td>
+          <td><%= supplier.country.presence || '—' %></td>
+          <td class="num"><%= supplier.purchases.count %></td>
+          <td style="text-align:right; white-space:nowrap;">
+            <%= link_to 'Editar', edit_admin_supplier_path(supplier), class: 'btn btn-outline' %>
+            <%= button_to 'Borrar', admin_supplier_path(supplier), method: :delete, class: 'btn-danger-link',
+                          form: { style: 'display:inline-block', data: { turbo_confirm: "¿Borrar el proveedor #{supplier.name}?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="action-note">Todavía no hay proveedores. Crea el primero para poder registrar compras.</p>
+<% end %>
