@@ -126,6 +126,8 @@ a { color: var(--navy); }
 .btn-magenta { background: var(--magenta); color: #fff; }
 .btn-outline { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); }
 .btn-danger-link { background: none; border: none; color: #b3261e; cursor: pointer; padding: 0; font-size: 14px; }
+.btn-danger { background: #b3261e; color: #fff; }
+.btn-danger:hover { background: #8c1d18; }
 .btn-block { display: block; width: 100%; }
 
 /* Producto */

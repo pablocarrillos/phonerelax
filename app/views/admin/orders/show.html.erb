@@ -87,7 +87,7 @@
 
   <div class="action-section">
     <% if @order.deletable? %>
-      <%= button_to '🗑 Borrar pedido', admin_order_path(@order), method: :delete, class: 'btn-danger-link',
+      <%= button_to '🗑 Borrar pedido', admin_order_path(@order), method: :delete, class: 'btn btn-danger',
                     form: { data: { turbo_confirm: "¿Borrar definitivamente el pedido #{@order.number}?#{' Las unidades volverán al stock.' if @order.pago_reembolsado?} Esta acción no se puede deshacer." } } %>
     <% else %>
       <p class="action-note" style="margin:0;">Este pedido no se puede borrar: tiene dinero cobrado. Reembólsalo antes si de verdad quieres eliminarlo.</p>
