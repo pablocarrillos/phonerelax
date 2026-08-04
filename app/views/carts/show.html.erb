@@ -13,7 +13,12 @@
       <tbody>
         <% @lines.each do |product, quantity| %>
           <tr>
-            <td><%= link_to product.display_name, product_page_path(product) %></td>
+            <td>
+              <div class="line-cell">
+                <%= link_to product_page_path(product) do %><img src="<%= product.cover_url %>" alt="<%= product.display_name %>" class="line-thumb"><% end %>
+                <%= link_to product.display_name, product_page_path(product) %>
+              </div>
+            </td>
             <td class="num"><%= number_to_currency(product.price_for_quantity(quantity), unit: '€', format: '%n %u') %><% if product.price_for_quantity(quantity) < product.price %><br><span style="color:var(--muted); font-size:12px; text-decoration:line-through;"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></span><% end %></td>
             <td>
               <%= form_with url: cart_update_path(product), method: :patch, local: true, style: 'display:flex;gap:8px;align-items:center;' do %>

@@ -54,7 +54,7 @@ module Admin
     end
 
     def product_params
-      params.require(:product).permit(:name, :description, :name_pt, :description_pt, :name_en, :description_en, :price, :cover_image, :active, :position, :stock, :vat_percentage,
+      params.require(:product).permit(:name, :description, :name_pt, :description_pt, :name_en, :description_en, :price, :cover_image, :active, :position, :stock, :vat_percentage, :auto_carousel,
                                       price_tiers_attributes: [ :id, :min_units, :unit_price, :_destroy ])
     end
   end

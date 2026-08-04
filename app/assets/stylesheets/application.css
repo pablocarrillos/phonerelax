@@ -731,6 +731,17 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .vies-status.ok { color: #14532d; font-weight: 600; }
 .vies-status.ko { color: #b3261e; font-weight: 600; }
 
+/* Carrusel automático en la tarjeta del grid de productos (sin controles): las
+   imágenes se apilan en la misma caja que .card img y solo se ve la activa; el
+   controlador va cambiándola cada 3 s. */
+.card-carousel-slide { display: none; }
+.card-carousel-slide.active { display: block; }
+
+/* Miniatura del producto en las líneas del carrito y del checkout. */
+.line-thumb { width: 52px; height: 52px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); background: #fff; flex-shrink: 0; }
+.line-cell { display: flex; align-items: center; gap: 12px; }
+.line-cell a { text-decoration: none; }
+
 /* ============================================================
    RESPONSIVE / MÓVIL
    ============================================================ */

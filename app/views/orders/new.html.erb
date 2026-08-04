@@ -7,7 +7,12 @@
     <tbody>
       <% @lines.each do |product, quantity| %>
         <tr>
-          <td><%= product.display_name %> × <%= quantity %></td>
+          <td>
+            <div class="line-cell">
+              <img src="<%= product.cover_url %>" alt="<%= product.display_name %>" class="line-thumb">
+              <span><%= product.display_name %> × <%= quantity %></span>
+            </div>
+          </td>
           <td class="num"><%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>

@@ -8,6 +8,7 @@
     <div><%= f.label :stock, 'Stock (unidades restantes)' %><%= f.number_field :stock, min: 0 %></div>
     <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
     <div class="full"><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
+    <div class="full"><label><%= f.check_box :auto_carousel %> Mostrar la galería como carrusel automático (sin miniaturas, cambia sola cada 3&nbsp;s)</label></div>
 
     <div class="full">
       <%= f.label :cover_image, 'Imagen de portada' %>

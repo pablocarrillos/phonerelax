@@ -63,7 +63,15 @@
     <% @products.each do |product| %>
       <div class="card product-card">
         <%= link_to product_page_path(product) do %>
-          <img src="<%= product.cover_url %>" alt="<%= product.display_name %>">
+          <% if product.auto_carousel? && product.gallery_urls.size > 1 %>
+            <div class="card-carousel" data-controller="autocarousel">
+              <% product.gallery_urls.each_with_index do |url, i| %>
+                <img src="<%= url %>" alt="<%= product.display_name %>" class="card-carousel-slide <%= 'active' if i.zero? %>" data-autocarousel-target="slide" loading="lazy">
+              <% end %>
+            </div>
+          <% else %>
+            <img src="<%= product.cover_url %>" alt="<%= product.display_name %>">
+          <% end %>
         <% end %>
         <h3><%= link_to product.display_name, product_page_path(product), style: 'text-decoration:none;' %></h3>
         <div class="price"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></div>
