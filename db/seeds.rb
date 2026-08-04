@@ -26,7 +26,7 @@ products = [
 </div>
 </div>',
     position: 1,
-    images: ['/images/products/funda-signalblocking-frontal.jpg', '/images/products/funda-signalblocking-trasera.jpg']
+    images: [ '/images/products/funda-signalblocking-frontal.jpg', '/images/products/funda-signalblocking-trasera.jpg' ]
   },
   {
     shopify_handle: 'iman-phonerelax',
@@ -36,7 +36,7 @@ products = [
     description: '<p>Permite la apertura de las bolsas PhoneRelax simplemente acercando la parte redondeada de la cerradura de la bolsa al centro del imán.</p>
 <p>El imán dispone de cuatro agujeros pensados para poder fijarlo en cualquier superficie y así evitar que pueda perderse o que se mueva durante el proceso de apertura de las bolsas PhoneRelax.</p>',
     position: 2,
-    images: ['/images/products/iman-1.jpg', '/images/products/iman-2.jpg']
+    images: [ '/images/products/iman-1.jpg', '/images/products/iman-2.jpg' ]
   },
   {
     shopify_handle: 'funda-phonerelax',
@@ -56,8 +56,8 @@ products = [
 </div>
 </div>',
     position: 3,
-    images: ['/images/products/funda-1.jpg', '/images/products/funda-2.jpg']
-  },
+    images: [ '/images/products/funda-1.jpg', '/images/products/funda-2.jpg' ]
+  }
 ]
 
 products.each do |attrs|
@@ -150,7 +150,7 @@ blog_posts = [
 <p><span style="font-weight: 400;"><strong>Custodia por parte de los alumnos de los teléfonos en sus bolsas PhoneRelax:</strong> Al confiar a los estudiantes la responsabilidad de guardar sus propios teléfonos en las bolsas PhoneRelax se evita cualquier problema relacionado con posibles daños en los dispositivos liberando así de la responsabilidad a profesores y personal escolar.</span></p>
 <p><span style="font-weight: 400;">Sin embargo, es importante considerar algunos aspectos:</span></p>
 <p><span style="font-weight: 400;"><strong>Necesidades específicas:</strong> Algunos estudiantes pueden tener necesidades particulares para acceder a sus teléfonos debido a emergencias médicas o familiares. Siempre debería haber cierta flexibilidad para atender estas situaciones.</span></p>'
-  },
+  }
 ]
 blog_posts.each do |attrs|
   post = Post.find_or_initialize_by(slug: attrs[:slug])
@@ -218,7 +218,7 @@ post_translations = {
   }
 }
 post_translations.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
-puts "Traducciones PT: #{Product.where.not(name_pt: [nil, '']).count} productos, #{Post.where.not(title_pt: [nil, '']).count} artículos"
+puts "Traducciones PT: #{Product.where.not(name_pt: [ nil, '' ]).count} productos, #{Post.where.not(title_pt: [ nil, '' ]).count} artículos"
 
 # --- Traducciones al inglés (en). Idempotente: vacío = se muestra el español. ---
 product_translations_en = {
@@ -292,7 +292,7 @@ post_translations_en = {
   }
 }
 post_translations_en.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
-puts "Traducciones EN: #{Product.where.not(name_en: [nil, '']).count} productos, #{Post.where.not(title_en: [nil, '']).count} artículos"
+puts "Traducciones EN: #{Product.where.not(name_en: [ nil, '' ]).count} productos, #{Post.where.not(title_en: [ nil, '' ]).count} artículos"
 
 # --- Artículo de blog: normativa del móvil en las aulas en España (es/pt/en). Idempotente. ---
 normativa = Post.find_or_initialize_by(slug: 'normativa-movil-aulas-espana')

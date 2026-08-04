@@ -1,7 +1,7 @@
 module Admin
   # Todo el panel exige sesión iniciada (concern Authentication del ApplicationController).
   class BaseController < ApplicationController
-    layout 'admin'
+    layout "admin"
 
     helper_method :pending_to_prepare_count
 

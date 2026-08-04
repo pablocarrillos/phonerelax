@@ -1,12 +1,12 @@
 class OrdersController < ApplicationController
   allow_unauthenticated_access
   # Protección antibots: honeypot + tiempo mínimo de envío.
-  invisible_captcha only: [:create], on_spam: :spam_detected, on_timestamp_spam: :spam_detected
+  invisible_captcha only: [ :create ], on_spam: :spam_detected, on_timestamp_spam: :spam_detected
 
   # Formulario de datos del cliente con el resumen del carrito.
   def new
     @lines = cart_lines
-    redirect_to cart_path, alert: t('flash.cart_empty') if @lines.empty?
+    redirect_to cart_path, alert: t("flash.cart_empty") if @lines.empty?
     @total = @lines.sum { |product, quantity| product.price * quantity }
     @order = Order.new
   end
@@ -14,13 +14,13 @@ class OrdersController < ApplicationController
   # Crea el pedido desde el carrito, calcula el transporte y muestra el paso de pago.
   def create
     lines = cart_lines
-    return redirect_to(cart_path, alert: t('flash.cart_empty')) if lines.empty?
+    return redirect_to(cart_path, alert: t("flash.cart_empty")) if lines.empty?
 
     # Última comprobación de stock antes de cobrar.
     without_stock = lines.select { |product, quantity| quantity > product.stock }
     if without_stock.any?
-      names = without_stock.map { |product, _| product.name }.join(', ')
-      return redirect_to(cart_path, alert: t('flash.out_of_stock', names: names))
+      names = without_stock.map { |product, _| product.name }.join(", ")
+      return redirect_to(cart_path, alert: t("flash.out_of_stock", names: names))
     end
 
     @order = Order.new(order_params)
@@ -58,7 +58,7 @@ class OrdersController < ApplicationController
     session[:cart] = {}
     redirect_to checkout.url, allow_other_host: true
   rescue Stripe::StripeError => e
-    redirect_to order_pay_path(@order.number), alert: t('flash.payment_start_failed', error: e.message)
+    redirect_to order_pay_path(@order.number), alert: t("flash.payment_start_failed", error: e.message)
   end
 
   # Vuelta del Checkout: confirmamos contra Stripe (el webhook es la fuente definitiva).
@@ -70,7 +70,7 @@ class OrdersController < ApplicationController
 
   def cancel
     @order = Order.find_by!(number: params[:number])
-    flash[:alert] = t('flash.payment_cancelled')
+    flash[:alert] = t("flash.payment_cancelled")
     redirect_to order_pay_path(@order.number)
   end
 
@@ -83,7 +83,7 @@ class OrdersController < ApplicationController
 
   # Peticiones que no parecen humanas: de vuelta al carrito sin crear nada.
   def spam_detected
-    redirect_to cart_path, alert: t('flash.verify_failed')
+    redirect_to cart_path, alert: t("flash.verify_failed")
   end
 
   def order_params
@@ -92,6 +92,6 @@ class OrdersController < ApplicationController
 
   def cart_lines
     products = Product.active.where(id: cart.keys).index_by { |p| p.id.to_s }
-    cart.filter_map { |id, quantity| [products[id], quantity] if products[id] }
+    cart.filter_map { |id, quantity| [ products[id], quantity ] if products[id] }
   end
 end

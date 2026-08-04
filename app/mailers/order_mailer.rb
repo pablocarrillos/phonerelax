@@ -5,7 +5,7 @@ class OrderMailer < ApplicationMailer
   def paid(order)
     @order = order
     with_order_locale do
-      mail(to: @order.email, subject: t('order_mailer.paid.subject', number: @order.number))
+      mail(to: @order.email, subject: t("order_mailer.paid.subject", number: @order.number))
     end
   end
 
@@ -13,7 +13,7 @@ class OrderMailer < ApplicationMailer
   def shipped(order)
     @order = order
     with_order_locale do
-      mail(to: @order.email, subject: t('order_mailer.shipped.subject', number: @order.number))
+      mail(to: @order.email, subject: t("order_mailer.shipped.subject", number: @order.number))
     end
   end
 
@@ -21,7 +21,7 @@ class OrderMailer < ApplicationMailer
   def payment_reminder(order)
     @order = order
     with_order_locale do
-      mail(to: @order.email, subject: t('order_mailer.payment_reminder.subject', number: @order.number))
+      mail(to: @order.email, subject: t("order_mailer.payment_reminder.subject", number: @order.number))
     end
   end
 

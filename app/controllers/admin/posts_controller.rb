@@ -1,6 +1,6 @@
 module Admin
   class PostsController < BaseController
-    before_action :set_post, only: [:edit, :update, :destroy]
+    before_action :set_post, only: [ :edit, :update, :destroy ]
 
     def index
       @posts = Post.recent_first
@@ -14,7 +14,7 @@ module Admin
       @post = Post.new(post_params)
       @post.slug = @post.title.to_s.parameterize if @post.slug.blank?
       if @post.save
-        redirect_to admin_posts_path, notice: 'Artículo creado.'
+        redirect_to admin_posts_path, notice: "Artículo creado."
       else
         render :new, status: :unprocessable_entity
       end
@@ -24,7 +24,7 @@ module Admin
 
     def update
       if @post.update(post_params)
-        redirect_to admin_posts_path, notice: 'Artículo actualizado.'
+        redirect_to admin_posts_path, notice: "Artículo actualizado."
       else
         render :edit, status: :unprocessable_entity
       end
@@ -32,7 +32,7 @@ module Admin
 
     def destroy
       @post.destroy
-      redirect_to admin_posts_path, notice: 'Artículo borrado.'
+      redirect_to admin_posts_path, notice: "Artículo borrado."
     end
 
     private

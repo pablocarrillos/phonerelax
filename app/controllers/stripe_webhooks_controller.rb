@@ -5,10 +5,10 @@ class StripeWebhooksController < ApplicationController
 
   def create
     payload = request.body.read
-    signature = request.env['HTTP_STRIPE_SIGNATURE']
-    event = Stripe::Webhook.construct_event(payload, signature, ENV.fetch('STRIPE_WEBHOOK_SECRET'))
+    signature = request.env["HTTP_STRIPE_SIGNATURE"]
+    event = Stripe::Webhook.construct_event(payload, signature, ENV.fetch("STRIPE_WEBHOOK_SECRET"))
 
-    if event.type == 'checkout.session.completed'
+    if event.type == "checkout.session.completed"
       order = Order.find_by(stripe_session_id: event.data.object.id)
       order&.mark_paid!
     end

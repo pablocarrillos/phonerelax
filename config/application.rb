@@ -25,18 +25,18 @@ module Phonerelax
 
     # Variables de entorno locales (claves de Stripe, etc.), mismo patrón que el resto de proyectos.
     config.before_configuration do
-      env_file = Rails.root.join('config/local_env.yml')
+      env_file = Rails.root.join("config/local_env.yml")
       if File.exist?(env_file)
         values = YAML.load_file(env_file)
         values.each { |key, value| ENV[key.to_s] ||= value.to_s } if values.is_a?(Hash)
       end
     end
 
-    config.i18n.available_locales = [:es, :pt, :en]
+    config.i18n.available_locales = [ :es, :pt, :en ]
     config.i18n.default_locale = :es
     # El portugués cae al español mientras se completan las traducciones.
-    config.i18n.fallbacks = [:es]
-    config.time_zone = 'Europe/Madrid'
+    config.i18n.fallbacks = [ :es ]
+    config.time_zone = "Europe/Madrid"
 
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do

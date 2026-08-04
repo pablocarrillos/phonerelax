@@ -6,7 +6,7 @@ module Admin
 
     def destroy
       QuoteRequest.find(params[:id]).destroy
-      redirect_to admin_quote_requests_path, notice: 'Solicitud borrada.'
+      redirect_to admin_quote_requests_path, notice: "Solicitud borrada."
     end
   end
 end

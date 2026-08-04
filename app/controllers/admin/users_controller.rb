@@ -1,7 +1,7 @@
 module Admin
   # Gestión de administradores del panel (por ahora todos con el mismo rol).
   class UsersController < BaseController
-    before_action :set_user, only: [:edit, :update, :destroy]
+    before_action :set_user, only: [ :edit, :update, :destroy ]
 
     def index
       @users = User.order(:email_address)
@@ -14,7 +14,7 @@ module Admin
     def create
       @user = User.new(user_params)
       if @user.save
-        redirect_to admin_users_path, notice: 'Administrador creado.'
+        redirect_to admin_users_path, notice: "Administrador creado."
       else
         render :new, status: :unprocessable_entity
       end
@@ -27,7 +27,7 @@ module Admin
       # Si no se escribe contraseña nueva, se conserva la actual.
       attrs = attrs.except(:password, :password_confirmation) if attrs[:password].blank?
       if @user.update(attrs)
-        redirect_to admin_users_path, notice: 'Administrador actualizado.'
+        redirect_to admin_users_path, notice: "Administrador actualizado."
       else
         render :edit, status: :unprocessable_entity
       end
@@ -35,12 +35,12 @@ module Admin
 
     def destroy
       if @user == Current.user
-        redirect_to admin_users_path, alert: 'No puedes borrar tu propio usuario.'
+        redirect_to admin_users_path, alert: "No puedes borrar tu propio usuario."
       elsif User.count <= 1
-        redirect_to admin_users_path, alert: 'Debe quedar al menos un administrador.'
+        redirect_to admin_users_path, alert: "Debe quedar al menos un administrador."
       else
         @user.destroy
-        redirect_to admin_users_path, notice: 'Administrador borrado.'
+        redirect_to admin_users_path, notice: "Administrador borrado."
       end
     end
 

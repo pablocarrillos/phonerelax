@@ -14,6 +14,6 @@ class QuoteRequest < ApplicationRecord
   def phone_looks_valid
     return if phone.blank? || Phonelib.parse(phone).valid?
 
-    errors.add(:phone, 'no parece un número de teléfono válido')
+    errors.add(:phone, "no parece un número de teléfono válido")
   end
 end

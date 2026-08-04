@@ -5,7 +5,7 @@ class SectorPagesTest < ActionDispatch::IntegrationTest
 
   test "cada landing de sector se renderiza en es/pt/en sin claves sin traducir" do
     PATHS.each do |helper|
-      [nil, :pt, :en].each do |locale|
+      [ nil, :pt, :en ].each do |locale|
         get send(helper, locale: locale)
         assert_response :success, "#{helper} (#{locale || :es}) no responde 200"
         assert_select "h1"

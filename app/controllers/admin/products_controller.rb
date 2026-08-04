@@ -1,6 +1,6 @@
 module Admin
   class ProductsController < BaseController
-    before_action :set_product, only: [:edit, :update, :destroy]
+    before_action :set_product, only: [ :edit, :update, :destroy ]
 
     def index
       @products = Product.ordered
@@ -13,7 +13,7 @@ module Admin
     def create
       @product = Product.new(product_params)
       if @product.save
-        redirect_to admin_products_path, notice: 'Producto creado.'
+        redirect_to admin_products_path, notice: "Producto creado."
       else
         render :new, status: :unprocessable_entity
       end
@@ -23,7 +23,7 @@ module Admin
 
     def update
       if @product.update(product_params)
-        redirect_to admin_products_path, notice: 'Producto actualizado.'
+        redirect_to admin_products_path, notice: "Producto actualizado."
       else
         render :edit, status: :unprocessable_entity
       end
@@ -31,7 +31,7 @@ module Admin
 
     def destroy
       if @product.destroy
-        redirect_to admin_products_path, notice: 'Producto borrado.'
+        redirect_to admin_products_path, notice: "Producto borrado."
       else
         redirect_to admin_products_path, alert: @product.errors.full_messages.to_sentence
       end
