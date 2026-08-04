@@ -3,7 +3,6 @@
 class Quote < ApplicationRecord
   # Datos de la empresa tal y como aparecen en el PDF.
   COMPANY = {
-    trade_name: "PHONE RELAX BAGS",
     legal_name: "Drop Point Systems S.L.U.",
     tax_id: "B02631976",
     address_lines: [ "Calle Carrasqueta Nº14", "P.I. Salinetas", "03610 Petrer (Alicante)" ],
@@ -20,18 +19,21 @@ class Quote < ApplicationRecord
 
   # Transporte por defecto (sin IVA): la tarifa habitual de los presupuestos.
   DEFAULT_SHIPPING = BigDecimal("29.75")
-  DEFAULT_PAYMENT_TERMS = "Pago a 30 días."
+  DEFAULT_PAYMENT_TERMS = "50% IVA incluido para confirmar y 50% a la entrega."
   DEFAULT_VALIDITY_DAYS = 15
 
   belongs_to :client
-  has_many :quote_lines, dependent: :destroy, inverse_of: :quote
+  has_many :quote_lines, -> { order(:position, :id) }, dependent: :destroy, inverse_of: :quote
 
+  # Solo se descartan filas NUEVAS vacías; las existentes (con id) siempre se procesan.
   accepts_nested_attributes_for :quote_lines, allow_destroy: true,
-                                              reject_if: ->(attrs) { attrs["product_id"].blank? && attrs["description"].blank? }
+                                              reject_if: ->(attrs) { attrs["id"].blank? && attrs["product_id"].blank? && attrs["description"].blank? }
 
   validates :issued_on, presence: true
+  validates :delivery_terms, presence: true
   validates :shipping_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :discount_percent, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+  validate :must_have_lines
 
   # Cuenta donde se pide el pago (con respaldo a la histórica).
   def bank_account_display
@@ -95,9 +97,14 @@ class Quote < ApplicationRecord
     quote_lines.each do |line|
       next if line.product.blank?
 
-      line.description = line.product.name if line.description.blank?
+      line.description = line.product.name if line.description.blank? || (line.persisted? && line.will_save_change_to_product_id?)
       line.unit_price = PriceTier.price_for(line.product, line.quantity || 1) if line.unit_price.blank?
     end
+  end
+
+  # Un presupuesto sin productos no tiene sentido (el transporte no cuenta).
+  def must_have_lines
+    errors.add(:base, "El presupuesto necesita al menos una línea de producto") if active_lines.empty?
   end
 
   # Nº de oferta tipo PR2608-0359 (PR + año/mes + 4 cifras).

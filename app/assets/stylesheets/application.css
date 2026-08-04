@@ -207,13 +207,28 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
 .field-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
 .action-note { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
 
+/* Campo numérico compacto del admin (tarifas, tramos, cantidades…):
+   como .orders-search-input pero sin su min-width de 260px. */
+.input-compact {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14.5px;
+  min-width: 0;
+}
+
 /* Pantalla de transporte: rejilla de países */
 .shipping-countries {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px 22px;
-  max-width: 900px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, max-content));
+  gap: 20px 44px;
+  max-width: 980px;
 }
+.shipping-country .field-label { margin-bottom: 6px; }
+
+/* Asa para reordenar líneas del presupuesto arrastrando */
+.drag-handle { cursor: grab; color: var(--muted); user-select: none; font-size: 18px; width: 26px; text-align: center; }
+tr[draggable="true"] { opacity: 0.6; }
 
 /* Avisos bajo un campo (p. ej. precio que no coincide con el escalado) */
 .field-warning { display: block; color: #b3261e; font-size: 12px; margin-top: 2px; }

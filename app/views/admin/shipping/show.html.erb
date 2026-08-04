@@ -11,7 +11,7 @@
           <td><%= product.name %></td>
           <td class="num">
             <input type="number" name="product_costs[<%= product.id %>]" step="0.01" min="0"
-                   value="<%= format('%.2f', product.shipping_unit_cost) %>" class="orders-search-input" style="width:110px; text-align:right;">
+                   value="<%= format('%.2f', product.shipping_unit_cost) %>" class="input-compact" style="width:110px; text-align:right;">
           </td>
         </tr>
       <% end %>
@@ -27,7 +27,7 @@
       <div class="shipping-country">
         <label class="field-label" for="rate-<%= country.parameterize %>"><%= country %></label>
         <input id="rate-<%= country.parameterize %>" type="number" name="rates[<%= country %>]" step="0.01" min="0"
-               value="<%= format('%.2f', base) %>" class="orders-search-input" style="width:110px; text-align:right;">
+               value="<%= format('%.2f', base) %>" class="input-compact" style="width:110px; text-align:right;">
       </div>
     <% end %>
   </div>

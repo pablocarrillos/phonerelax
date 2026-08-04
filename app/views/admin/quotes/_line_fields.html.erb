@@ -1,7 +1,8 @@
-<tr data-quote-form-target="line">
-  <td><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true },
+<tr data-quote-form-target="line"
+    data-action="dragstart->quote-form#dragStart dragover->quote-form#dragOver dragend->quote-form#dragEnd">
+  <td class="drag-handle" title="Arrastra para reordenar" data-action="mousedown->quote-form#armDrag">⠿</td>
+  <td><%= lf.hidden_field :position, data: { role: 'position' } %><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true },
                                { class: 'form-select', data: { role: 'product', action: 'change->quote-form#productChanged' } } %></td>
-  <td><%= lf.text_field :description, placeholder: '(del producto si se deja vacío)', data: { role: 'description' } %></td>
   <td><%= lf.number_field :quantity, min: 1, style: 'width:80px;', data: { role: 'quantity', action: 'input->quote-form#quantityChanged' } %></td>
   <td>
     <%= lf.number_field :unit_price, step: 0.0001, min: 0, style: 'width:120px;', placeholder: 'escalado', data: { role: 'price', action: 'input->quote-form#priceEdited' } %>
@@ -9,7 +10,8 @@
   </td>
   <td><%= lf.number_field :discount_percent, step: 0.1, min: 0, max: 100, style: 'width:75px;', placeholder: '0',
                           data: { role: 'discount', action: 'input->quote-form#recalc' } %></td>
-  <td><%= lf.number_field :vat_rate, step: 0.1, min: 0, style: 'width:75px;', data: { role: 'vat', action: 'input->quote-form#recalc' } %></td>
+  <td><%= lf.select :vat_rate, [ [ '21 %', 21 ], [ '0 %', 0 ] ], { selected: lf.object.vat_rate.to_i },
+                    { class: 'form-select', style: 'min-width:90px;', data: { role: 'vat', action: 'change->quote-form#recalc' } } %></td>
   <td class="num" style="white-space:nowrap;"><span data-role="line-total">—</span></td>
   <td style="text-align:center;">
     <%= lf.hidden_field :_destroy, data: { role: 'destroy' } if lf.object.persisted? %>

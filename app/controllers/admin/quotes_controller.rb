@@ -4,6 +4,8 @@ module Admin
 
     def index
       @quotes = Quote.includes(:client, :quote_lines).recent_first
+      @client_filter = Client.find_by(id: params[:client_id])
+      @quotes = @quotes.where(client: @client_filter) if @client_filter
     end
 
     def show; end
@@ -13,17 +15,6 @@ module Admin
       render layout: false
     end
 
-    # Previsualiza el PDF con lo que hay en el formulario, sin guardar nada.
-    def preview
-      @quote = Quote.new(quote_params)
-      unless @quote.client
-        return render plain: "Elige un cliente para poder previsualizar el presupuesto.", status: :unprocessable_entity
-      end
-
-      @quote.valid? # autocompleta descripciones y precios del escalado, como al guardar
-      @quote.number = "BORRADOR"
-      render :print, layout: false
-    end
 
     def new
       @quote = Quote.new(issued_on: Date.current,
@@ -36,6 +27,9 @@ module Admin
 
     def create
       @quote = Quote.new(quote_params)
+      # El botón «Previsualizar PDF» envía el mismo formulario con preview=1.
+      return render_preview if params[:preview]
+
       if @quote.save
         redirect_to admin_quote_path(@quote), notice: "Presupuesto #{@quote.number} creado."
       else
@@ -49,6 +43,11 @@ module Admin
     end
 
     def update
+      if params[:preview]
+        @quote.assign_attributes(quote_params)
+        return render_preview
+      end
+
       if @quote.update(quote_params)
         redirect_to admin_quote_path(@quote), notice: "Presupuesto actualizado."
       else
@@ -75,6 +74,17 @@ module Admin
 
     private
 
+    # El documento con lo que hay en el formulario, sin guardar nada.
+    def render_preview
+      unless @quote.client
+        return render plain: "Elige un cliente para poder previsualizar el presupuesto.", status: :unprocessable_entity
+      end
+
+      @quote.valid? # autocompleta descripciones y precios del escalado, como al guardar
+      @quote.number = "BORRADOR" unless @quote.persisted?
+      render :print, layout: false
+    end
+
     def set_quote
       @quote = Quote.includes(quote_lines: :product).find(params[:id])
     end
@@ -85,9 +95,9 @@ module Admin
 
     def quote_params
       params.require(:quote).permit(:client_id, :issued_on, :valid_until, :shipping_cost, :vat_rate,
-                                    :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent, :shipping_country,
+                                    :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent, :shipping_country, :internal_description,
                                     quote_lines_attributes: [ :id, :product_id, :description, :quantity,
-                                                              :unit_price, :vat_rate, :discount_percent, :_destroy ])
+                                                              :unit_price, :vat_rate, :discount_percent, :position, :_destroy ])
     end
   end
 end

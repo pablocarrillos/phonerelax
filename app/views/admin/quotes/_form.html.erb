@@ -19,17 +19,8 @@
       <p class="action-note" style="margin-top:4px;"><%= link_to '+ crear cliente nuevo', new_admin_client_path, target: '_blank', rel: 'noopener' %></p>
     </div>
     <div><%= f.label :issued_on, 'Fecha *' %><%= f.date_field :issued_on, required: true %></div>
+    <div><%= f.label :internal_description, 'Descripción (para uso interno)' %><%= f.text_field :internal_description, placeholder: 'p. ej. 180 uds. curso 26/27' %></div>
     <div><%= f.label :valid_until, 'Válido hasta' %><%= f.date_field :valid_until %></div>
-    <div>
-      <%= f.label :shipping_country, 'País de envío (para el transporte)' %>
-      <%= f.select :shipping_country, Order::EU_COUNTRIES, {}, { class: 'form-select', data: { quote_form_target: 'shippingCountry', action: 'change->quote-form#applyShipping' } } %>
-    </div>
-    <div>
-      <%= f.label :shipping_cost, 'Transporte (€, sin IVA)' %>
-      <%= f.number_field :shipping_cost, step: 0.01, min: 0, data: { quote_form_target: 'shipping', action: 'input->quote-form#shippingEdited' } %>
-      <span data-quote-form-target="shippingWarning" hidden class="field-warning"></span>
-    </div>
-    <div><%= f.label :vat_rate, 'IVA del transporte (%)' %><%= f.number_field :vat_rate, step: 0.1, min: 0, data: { quote_form_target: 'shippingVat', action: 'input->quote-form#recalc' } %></div>
     <div><%= f.label :payment_terms, 'Condiciones de pago' %><%= f.text_field :payment_terms %></div>
     <div>
       <%= f.label :bank_account, 'Cuenta de cobro' %>
@@ -37,20 +28,42 @@
                    Quote::BANK_ACCOUNTS.map { |account| bank, iban = account.split(' ', 2); [ "#{iban} (#{bank})", account ] },
                    {}, { class: 'form-select' } %>
     </div>
-    <div class="full"><%= f.label :delivery_terms, 'Plazo de entrega' %><%= f.text_field :delivery_terms, placeholder: '1 de septiembre de 2026' %></div>
+    <div class="full"><%= f.label :delivery_terms, 'Plazo de entrega *' %><%= f.text_field :delivery_terms, required: true, placeholder: '1 de septiembre de 2026' %></div>
     <div class="full"><%= f.label :remarks, 'Observaciones (SÍ salen en el presupuesto)' %><%= f.text_area :remarks, rows: 2 %></div>
     <div class="full"><%= f.label :notes, 'Notas internas (no salen en el PDF)' %><%= f.text_area :notes, rows: 2 %></div>
   </div>
 
   <h2 style="margin-top:24px;">Líneas</h2>
-  <p class="action-note" style="margin-top:0;">Al elegir producto y cambiar las unidades, el precio se rellena solo con el <strong>escalado</strong> (y la descripción, si está vacía). Si tocas el precio a mano y no coincide con el escalado, verás un aviso — puedes dejarlo así a propósito. Los descuentos son opcionales: solo aparecen en el documento si los usas.</p>
+  <p class="action-note" style="margin-top:0;">Al elegir producto y cambiar las unidades, el precio se rellena solo con el <strong>escalado</strong>; en el documento cada línea sale con el nombre del producto. Si tocas el precio a mano y no coincide con el escalado, verás un aviso — puedes dejarlo así a propósito. Los descuentos son opcionales: solo aparecen en el documento si los usas.</p>
   <table class="table" style="max-width: 1080px;">
-    <thead><tr><th>Producto (opcional)</th><th>Descripción</th><th>Uds.</th><th>P. unitario (€ sin IVA)</th><th>Dto. %</th><th>IVA %</th><th class="num">Total línea</th><th></th></tr></thead>
+    <thead><tr><th></th><th>Producto</th><th>Uds.</th><th>P. unitario (€ sin IVA)</th><th>Dto. %</th><th>IVA %</th><th class="num">Total línea</th><th></th></tr></thead>
     <tbody data-quote-form-target="linesBody">
       <%= f.fields_for :quote_lines do |lf| %>
         <%= render 'line_fields', lf: lf %>
       <% end %>
     </tbody>
+    <tfoot>
+      <%# El transporte es siempre la última línea: se recalcula solo con la
+          config de Transporte al cambiar líneas o país, es editable a mano
+          (con aviso) y no se puede quitar. %>
+      <tr style="background: var(--card-bg);">
+        <td></td>
+        <td>
+          <strong>Transporte</strong><br>
+          <%= f.select :shipping_country, Order::EU_COUNTRIES, {}, { class: 'form-select', data: { quote_form_target: 'shippingCountry', action: 'change->quote-form#applyShipping' } } %>
+        </td>
+        <td style="text-align:center;">1</td>
+        <td>
+          <%= f.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:120px;', data: { quote_form_target: 'shipping', action: 'input->quote-form#shippingEdited' } %>
+          <span data-quote-form-target="shippingWarning" hidden class="field-warning"></span>
+        </td>
+        <td style="text-align:center; color:var(--muted);">—</td>
+        <td><%= f.select :vat_rate, [ [ '21 %', 21 ], [ '0 %', 0 ] ], { selected: quote.vat_rate.to_i },
+                         { class: 'form-select', style: 'min-width:90px;', data: { quote_form_target: 'shippingVat', action: 'change->quote-form#applyShipping' } } %></td>
+        <td class="num"><span data-quote-form-target="shippingTotal">—</span></td>
+        <td></td>
+      </tr>
+    </tfoot>
   </table>
   <template data-quote-form-target="template">
     <%= f.fields_for :quote_lines, QuoteLine.new, child_index: 'NEW_RECORD' do |lf| %>
@@ -76,7 +89,7 @@
 
   <p>
     <%= f.submit 'Guardar presupuesto', class: 'btn btn-primary' %>
-    <button type="submit" formaction="<%= preview_admin_quotes_path %>" formmethod="post" formtarget="_blank"
+    <button type="submit" name="preview" value="1" formtarget="_blank"
             data-turbo="false" class="btn btn-outline">👁 Previsualizar PDF</button>
     <%= link_to 'Cancelar', admin_quotes_path, class: 'btn btn-outline' %>
   </p>

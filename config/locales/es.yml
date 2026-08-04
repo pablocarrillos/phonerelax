@@ -25,6 +25,8 @@ es:
       product:
         name: Nombre
         price: Precio
+      quote:
+        delivery_terms: Plazo de entrega
       user:
         email_address: Email
         password: Contraseña

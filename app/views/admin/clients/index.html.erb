@@ -12,7 +12,7 @@
           <td><%= client.tax_id.presence || '—' %></td>
           <td style="white-space:pre-line; font-size:14px;"><%= client.address.presence || '—' %></td>
           <td style="font-size:14px;"><%= client.email.present? ? mail_to(client.email) : '' %><% if client.phone.present? %><br><%= client.phone %><% end %></td>
-          <td class="num"><%= client.quotes.count %></td>
+          <td class="num"><%= link_to client.quotes.count, admin_quotes_path(client_id: client.id), title: "Ver los presupuestos de #{client.name}" %></td>
           <td style="text-align:right; white-space:nowrap;">
             <%= link_to 'Editar', edit_admin_client_path(client), class: 'btn btn-outline' %>
             <%= button_to '🗑', admin_client_path(client), method: :delete, class: 'btn btn-danger',

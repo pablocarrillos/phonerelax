@@ -7,19 +7,57 @@ import { Controller } from "@hotwired/stimulus"
 // transporte incluidos.
 export default class extends Controller {
   static targets = ["line", "linesBody", "template", "shipping", "shippingVat", "shippingWarning",
-    "shippingCountry", "globalDiscount", "totalNet", "totalVat", "totalGross"]
+    "shippingCountry", "shippingTotal", "globalDiscount", "totalNet", "totalVat", "totalGross"]
 
   static values = { products: Object, rates: Object }
 
   connect() {
     this.visibleLines().forEach((row) => this.refreshWarning(row))
     this.refreshShippingWarning()
+    this.renumberPositions()
     this.recalc()
+  }
+
+  // --- reordenado por arrastre (desde el asa ⠿) ---
+
+  armDrag(event) {
+    event.target.closest("tr").draggable = true
+  }
+
+  dragStart(event) {
+    this.draggedRow = event.currentTarget
+    event.dataTransfer.effectAllowed = "move"
+  }
+
+  dragOver(event) {
+    event.preventDefault()
+    const row = event.currentTarget
+    if (!this.draggedRow || row === this.draggedRow) return
+
+    const rect = row.getBoundingClientRect()
+    const before = event.clientY < rect.top + rect.height / 2
+    row.parentNode.insertBefore(this.draggedRow, before ? row : row.nextSibling)
+  }
+
+  dragEnd(event) {
+    event.currentTarget.draggable = false
+    this.draggedRow = null
+    this.renumberPositions()
+    this.recalc()
+  }
+
+  // Guarda en cada fila su posición según el orden actual del formulario.
+  renumberPositions() {
+    this.visibleLines().forEach((row, index) => {
+      const position = row.querySelector("[data-role=position]")
+      if (position) position.value = index + 1
+    })
   }
 
   addLine() {
     const html = this.templateTarget.innerHTML.replaceAll("NEW_RECORD", Date.now().toString())
     this.linesBodyTarget.insertAdjacentHTML("beforeend", html)
+    this.renumberPositions()
     this.recalc()
   }
 
@@ -48,15 +86,12 @@ export default class extends Controller {
     } else {
       row.remove()
     }
+    this.renumberPositions()
     this.applyShipping()
   }
 
   productChanged(event) {
-    const row = event.target.closest("tr")
-    const description = row.querySelector("[data-role=description]")
-    const product = this.productData(row)
-    if (product && description && !description.value) description.value = product.name
-    this.applyTierPrice(row)
+    this.applyTierPrice(event.target.closest("tr"))
     this.applyShipping()
   }
 
@@ -86,6 +121,9 @@ export default class extends Controller {
     let net = linesTotal * globalFactor
     let vat = linesVat * globalFactor
     const shipping = parseFloat(this.shippingTarget?.value)
+    if (this.hasShippingTotalTarget) {
+      this.shippingTotalTarget.textContent = isNaN(shipping) ? "—" : this.euros(shipping)
+    }
     if (!isNaN(shipping)) {
       net += shipping
       vat += (shipping * (parseFloat(this.shippingVatTarget?.value) || 0)) / 100

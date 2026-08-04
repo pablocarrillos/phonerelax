@@ -31,7 +31,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "el presupuesto aplica el escalado según unidades y calcula los totales" do
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "29.75", vat_rate: "21",
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "29.75", vat_rate: "21",
       quote_lines_attributes: {
         "0" => { product_id: products(:funda).id, quantity: 180, description: "", unit_price: "" },
         "1" => { product_id: "", description: "", quantity: "", unit_price: "" }
@@ -53,7 +53,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "los campos autocompletados se pueden fijar a mano" do
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 180,
                                          description: "Bolsa SignalBlocking con tarjetero",
                                          unit_price: "11.97" } }
@@ -88,7 +88,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "la previsualización muestra el PDF del formulario sin guardar nada" do
     assert_no_difference "Quote.count" do
-      post preview_admin_quotes_path, params: { quote: {
+      post admin_quotes_path, params: { preview: "1", quote: {
         client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "29.75",
         quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 180 } }
       } }
@@ -100,15 +100,27 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Total Oferta"
   end
 
+  test "la previsualización de un presupuesto existente usa su número real" do
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "septiembre", shipping_cost: "0",
+      quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
+    } }
+    quote = Quote.last
+    patch admin_quote_path(quote), params: { preview: "1", quote: { client_id: @client.id, issued_on: "2026-08-04" } }
+    assert_response :success
+    assert_includes response.body, quote.number
+    assert_not_includes response.body, "BORRADOR"
+  end
+
   test "la previsualización sin cliente avisa en lugar de fallar" do
-    post preview_admin_quotes_path, params: { quote: { issued_on: "2026-08-04" } }
+    post admin_quotes_path, params: { preview: "1", quote: { issued_on: "2026-08-04" } }
     assert_response :unprocessable_entity
     assert_includes response.body, "Elige un cliente"
   end
 
   test "descuento por línea y descuento global se aplican a los totales" do
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0", vat_rate: "21", discount_percent: "5",
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0", vat_rate: "21", discount_percent: "5",
       quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 100, unit_price: "10", vat_rate: "21", discount_percent: "10" } }
     } }
     quote = Quote.last
@@ -121,7 +133,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "el documento solo muestra los descuentos cuando se usan" do
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { description: "Sin descuento", quantity: 1, unit_price: "10" } }
     } }
     get print_admin_quote_path(Quote.last)
@@ -137,7 +149,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "las líneas marcadas con _destroy se eliminan al guardar" do
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { description: "Uno", quantity: 1, unit_price: "10" },
                                 "1" => { description: "Dos", quantity: 2, unit_price: "5" } }
     } }
@@ -164,15 +176,63 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_equal BigDecimal("26.03"), quote.computed_shipping # (11,50 + 20) / 1,21
 
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "21.45", shipping_country: "Francia",
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "21.45", shipping_country: "Francia",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 10 } }
     } }
     assert_equal "Francia", Quote.last.shipping_country
   end
 
+  test "las líneas se ordenan por su posición en todo el documento" do
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
+      quote_lines_attributes: { "0" => { description: "Primera", quantity: 1, unit_price: "10", position: 1 },
+                                "1" => { description: "Segunda", quantity: 1, unit_price: "5", position: 2 } }
+    } }
+    quote = Quote.last
+    assert_equal [ "Primera", "Segunda" ], quote.quote_lines.pluck(:description)
+
+    lines = quote.quote_lines.to_a
+    patch admin_quote_path(quote), params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04",
+      quote_lines_attributes: { "0" => { id: lines[0].id, position: 2 }, "1" => { id: lines[1].id, position: 1 } }
+    } }
+    assert_equal [ "Segunda", "Primera" ], quote.reload.quote_lines.pluck(:description)
+    get print_admin_quote_path(quote)
+    assert response.body.index("Segunda") < response.body.index("Primera"), "el PDF respeta el orden"
+  end
+
+  test "la descripción interna sale en el listado y se puede filtrar por cliente" do
+    otro = Client.create!(name: "Otro Centro")
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "septiembre", shipping_cost: "0",
+      internal_description: "180 uds. curso 26/27",
+      quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
+    } }
+    post admin_quotes_path, params: { quote: {
+      client_id: otro.id, issued_on: "2026-08-04", delivery_terms: "septiembre", shipping_cost: "0",
+      quote_lines_attributes: { "0" => { description: "Imanes", quantity: 1, unit_price: "40" } }
+    } }
+
+    get admin_quotes_path
+    assert_includes response.body, "180 uds. curso 26/27"
+
+    get admin_quotes_path(client_id: @client.id)
+    assert_includes response.body, "Mostrando solo los presupuestos de"
+    assert_includes response.body, @client.name
+    assert_select "tbody tr", 1
+  end
+
+  test "un presupuesto sin líneas no se puede crear" do
+    assert_no_difference "Quote.count" do
+      post admin_quotes_path, params: { quote: { client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "29.75" } }
+    end
+    assert_response :unprocessable_entity
+    assert_includes response.body, "al menos una línea"
+  end
+
   test "duplicar un presupuesto crea uno nuevo con número y fechas nuevos" do
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-07-01", valid_until: "2026-07-08", shipping_cost: "29.75",
+      client_id: @client.id, issued_on: "2026-07-01", valid_until: "2026-07-08", shipping_cost: "29.75", delivery_terms: "julio 2026",
       remarks: "Observación heredada",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 180 } }
     } }
@@ -190,7 +250,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "sin cuenta elegida se imprime la histórica de CAJAMAR" do
     post admin_quotes_path, params: { quote: {
-      client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
+      client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 1 } }
     } }
     get print_admin_quote_path(Quote.last)
@@ -235,5 +295,19 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
                                          province: "Madrid", country: "España" } }
     order = Order.last
     assert_equal BigDecimal("12.1"), order.order_lines.sole.unit_price
+  end
+
+  test "el plazo de entrega es obligatorio y las condiciones por defecto son 50/50" do
+    assert_no_difference "Quote.count" do
+      post admin_quotes_path, params: { quote: {
+        client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
+        quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
+      } }
+    end
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Plazo de entrega"
+
+    get new_admin_quote_path
+    assert_includes response.body, "50% IVA incluido para confirmar y 50% a la entrega."
   end
 end
