@@ -30,6 +30,17 @@ class PackTest < ActiveSupport::TestCase
     assert_equal pack.pack_unit_price, pack.display_price
   end
 
+  test "el precio del pack aplica el escalado al TOTAL de unidades pedidas" do
+    # tramo extra de la funda: a partir de 100 uds, aún más barata
+    @funda.price_tiers.create!(min_units: 100, unit_price: BigDecimal("1.50"))
+    pack = build_pack(@funda => 25) # 25 fundas por pack
+    one = pack.price_for_quantity(1)  # 25 uds → tramo de 10 (2,00 sin IVA)
+    four = pack.price_for_quantity(4) # 4 packs = 100 uds → tramo de 100 (1,50 sin IVA)
+    assert four < one, "4 packs (100 uds) deben salir más baratos por pack que 1 pack (25 uds)"
+    unit100 = (BigDecimal("1.50") * BigDecimal("1.21")).round(2)
+    assert_equal (unit100 * 100 / 4).round(2), four # 100 uds al tramo de 100, repartido por pack
+  end
+
   test "el desglose muestra el ahorro por componente" do
     pack = build_pack(@funda => 10)
     r = pack.pack_breakdown.first

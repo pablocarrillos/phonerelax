@@ -93,11 +93,12 @@ class Product < ApplicationRecord
     pack
   end
 
-  # PVP (IVA incluido) para una cantidad: para un pack, el precio del pack (suma
-  # de sus componentes a su escalado); si no, aplica el escalado del producto o
-  # el precio normal de la tienda.
+  # PVP (IVA incluido) de UNA unidad para una cantidad: para un pack, el precio
+  # por pack aplicando a cada componente el escalado que corresponde al TOTAL de
+  # unidades pedidas (unidades por pack × nº de packs); si no, el escalado propio
+  # del producto o el precio normal de la tienda.
   def price_for_quantity(quantity)
-    return pack_unit_price if pack?
+    return pack_price_for(quantity) if pack?
 
     tier = price_tiers.where(min_units: ..quantity).reorder(min_units: :desc).first
     return price unless tier
@@ -105,10 +106,21 @@ class Product < ApplicationRecord
     (tier.unit_price * (1 + (vat_percentage.to_d / 100))).round(2)
   end
 
-  # Precio (IVA incl.) de una unidad del pack: cada componente valorado a su
-  # escalado por la cantidad incluida en el pack.
+  # Precio (IVA incl.) de un pack cuando se piden `pack_qty` packs: cada
+  # componente valorado al escalado del total de unidades (p. ej. 4 packs de 25
+  # bolsas → escalado de 100 bolsas), repartido por pack.
+  def pack_price_for(pack_qty)
+    qty = [ pack_qty.to_i, 1 ].max
+    total = pack_items.sum do |item|
+      units = item.quantity * qty
+      item.component.price_for_quantity(units) * units
+    end
+    (total / qty).round(2)
+  end
+
+  # Precio (IVA incl.) de un pack suelto (1 unidad), para mostrar y el desglose.
   def pack_unit_price
-    pack_items.sum { |item| item.component.price_for_quantity(item.quantity) * item.quantity }
+    pack_price_for(1)
   end
 
   # Precio a mostrar en la tienda: calculado para packs, el guardado para el resto.
