@@ -510,14 +510,23 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 /* --- Prueba social: centros que ya confían en PhoneRelax --- */
 .trusted-by { text-align: center; }
 .trusted-title { text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); margin: 0 0 14px; }
-.trusted-logos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 20px; }
-.trusted-logos li { font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; }
-/* Logos de centros en tonos grises; recuperan el color al pasar el ratón.
-   El tope de anchura evita que los logos apaisados rompan la línea única. */
+/* Dos filas equilibradas de cuatro logos (dos columnas en móvil) */
+.trusted-logos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: center;
+  align-items: center;
+  gap: 26px 48px;
+}
+.trusted-logos li { font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; display: flex; justify-content: center; }
+/* Logos de clientes en tonos grises; recuperan el color al pasar el ratón. */
 .trusted-logo {
-  height: 40px;
+  height: 48px;
   width: auto;
-  max-width: 180px;
+  max-width: 190px;
   object-fit: contain;
   display: block;
   filter: grayscale(1);
@@ -525,6 +534,7 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
   transition: filter 0.2s ease, opacity 0.2s ease;
 }
 .trusted-logo:hover { filter: grayscale(0); opacity: 1; }
+@media (max-width: 760px) { .trusted-logos { grid-template-columns: repeat(2, auto); gap: 20px 32px; } }
 
 /* Insignias con icono de los bloques de ventajas (p. ej. «Por qué elegir PhoneRelax») */
 .benefit-icon {

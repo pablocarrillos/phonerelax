@@ -31,7 +31,7 @@ module ApplicationHelper
   # muestran como texto, así que no dependen de que exista la foto.
   TRUSTED_CLIENTS = [
     "Kensington School", "Colegio Norfolk", "Colegio San Fernando", "Escola Montcau-La Mola",
-    "Colegio Villalkor", "IES Salvador de Madariaga"
+    "Colegio Villalkor", "IES Salvador de Madariaga", "Ayuntamiento de Las Rozas", "Ayuntamiento de Peñíscola"
   ].freeze
 
   def trusted_clients
