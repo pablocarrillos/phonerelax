@@ -3,7 +3,7 @@ class Order < ApplicationRecord
   # validar teléfonos). España va primero, desdoblada en Península y Canarias
   # porque su transporte es distinto.
   EU_COUNTRY_CODES = {
-    "España (Península)" => "ES", "España (Canarias)" => "ES",
+    "España (Península)" => "ES", "España (Baleares)" => "ES", "España (Canarias)" => "ES",
     "Alemania" => "DE", "Austria" => "AT", "Bélgica" => "BE", "Bulgaria" => "BG",
     "Chequia" => "CZ", "Chipre" => "CY", "Croacia" => "HR", "Dinamarca" => "DK",
     "Eslovaquia" => "SK", "Eslovenia" => "SI", "Estonia" => "EE",

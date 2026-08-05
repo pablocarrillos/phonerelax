@@ -79,7 +79,7 @@
       <% else %>
       <%= form_with url: cart_add_path(@product), method: :post, local: true do %>
         <label for="quantity"><%= t('common.quantity') %><% if @product.pack? %> <span class="action-note" style="display:inline;">(<%= t('product.pack_max', n: @product.available_stock) %>)</span><% end %></label>
-        <input type="number" name="quantity" id="quantity" value="1" min="1" <%= "max=\"#{@product.available_stock}\"".html_safe if @product.pack? %> class="qty-input"
+        <input type="number" name="quantity" id="quantity" value="1" min="1" <%= tag.attributes(max: @product.available_stock) if @product.pack? %> class="qty-input"
                <% if @product.pack? %>data-pack-quantity-target="quantity" data-action="input->pack-quantity#change"<% end %>>
         <div style="margin-top: 16px;">
           <button type="submit" class="btn btn-primary"><%= t('common.add_to_cart') %></button>

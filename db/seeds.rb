@@ -390,7 +390,11 @@ puts "Artículo normativa: es/pt/en OK (posts: #{Post.count})"
 # tienda — Península 5,95 €, Canarias y resto de la UE 13,95 € — editable desde el admin.
 Order::EU_COUNTRIES.each do |country|
   ShippingRate.find_or_create_by!(country: country) do |rate|
-    rate.base_cost = country == "España (Península)" ? BigDecimal("5.95") : BigDecimal("13.95")
+    rate.base_cost = case country
+    when "España (Península)" then BigDecimal("5.95")
+    when "España (Baleares)" then BigDecimal("9.95")
+    else BigDecimal("13.95")
+    end
   end
 end
 puts "Tarifas de envío: #{ShippingRate.count} países"
