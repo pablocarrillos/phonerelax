@@ -90,6 +90,7 @@ Rails.application.routes.draw do
     resources :clients, except: :show
     resources :samples, except: :show do
       patch :mark_returned, on: :member # recogida/devuelta hoy
+      patch :toggle_sold, on: :member   # marca/desmarca que hubo venta
     end
     resources :quotes do
       get :print, on: :member # versión imprimible (PDF con el diálogo del navegador)

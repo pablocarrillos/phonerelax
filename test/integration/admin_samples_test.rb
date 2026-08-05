@@ -47,4 +47,23 @@ class AdminSamplesTest < ActionDispatch::IntegrationTest
     sample.sample_lines.create!(product: products(:funda), quantity: 4)
     assert_equal BigDecimal("12"), sample.cost(Purchase.average_landed_costs)
   end
+
+  test "marcar y desmarcar que una muestra acabó en venta (aunque no devuelta)" do
+    sample = Sample.create!(organization: "Ayto. Test", sent_on: Date.current)
+    assert_not sample.sold?
+    patch toggle_sold_admin_sample_path(sample)
+    assert sample.reload.sold?, "se marca la venta aunque no esté devuelta"
+    assert_nil sample.returned_on
+    patch toggle_sold_admin_sample_path(sample)
+    assert_not sample.reload.sold?
+  end
+
+  test "el filtro «con venta» muestra solo las muestras vendidas" do
+    Sample.create!(organization: "ZZ Vendida", sent_on: Date.current, sold: true)
+    Sample.create!(organization: "ZZ Sin venta", sent_on: Date.current, sold: false)
+    get admin_samples_path(filter: "sold")
+    assert_response :success
+    assert_includes response.body, "ZZ Vendida"
+    assert_not_includes response.body, "ZZ Sin venta"
+  end
 end

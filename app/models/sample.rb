@@ -13,6 +13,7 @@ class Sample < ApplicationRecord
   scope :recent_first, -> { order(sent_on: :desc, id: :desc) }
   scope :pending, -> { where(returned_on: nil) }
   scope :returned, -> { where.not(returned_on: nil) }
+  scope :sold, -> { where(sold: true) }
 
   def returned?
     returned_on.present?

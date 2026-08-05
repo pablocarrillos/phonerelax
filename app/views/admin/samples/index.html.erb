@@ -11,6 +11,10 @@
     <div style="color:var(--muted); font-size:13px;">Devueltas</div>
   </div>
   <div style="<%= card %>">
+    <div style="font-size:24px; font-weight:700; color:#b45309;">💰 <%= @sold_count %></div>
+    <div style="color:var(--muted); font-size:13px;">Con venta</div>
+  </div>
+  <div style="<%= card %>">
     <div style="font-size:24px; font-weight:700;"><%= number_to_currency(@total_cost, unit: '€', format: '%n %u') %></div>
     <div style="color:var(--muted); font-size:13px;">Coste total de todas las muestras</div>
   </div>
@@ -22,6 +26,7 @@
   <%= link_to "Todas (#{@pending_count + @returned_count})", admin_samples_path(sort: @sort, dir: @dir), class: ('active' unless @filter) %>
   <%= link_to "Fuera · sin devolver (#{@pending_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'pending'), class: ('active' if @filter == 'pending') %>
   <%= link_to "Devueltas (#{@returned_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'returned'), class: ('active' if @filter == 'returned') %>
+  <%= link_to "Con venta (#{@sold_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'sold'), class: ('active' if @filter == 'sold') %>
 </div>
 
 <% if @samples.any? %>
@@ -54,6 +59,7 @@
             <% else %>
               <span class="badge pendiente">fuera</span>
             <% end %>
+            <% if sample.sold? %><br><span class="badge venta">💰 Venta</span><% end %>
           </td>
           <td style="font-size:13px;">
             <%= sample.sample_lines.map { |line| "#{line.quantity} × #{line.product.name.truncate(28)}" }.join('<br>').html_safe.presence || '—' %>
@@ -64,6 +70,8 @@
               <%= button_to '✓ Devuelta', mark_returned_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
                             form: { style: 'display:inline-block', data: { turbo_confirm: "¿Marcar la muestra de #{sample.organization} como devuelta hoy?" } } %>
             <% end %>
+            <%= button_to (sample.sold? ? '💰 Quitar venta' : '💰 Venta'), toggle_sold_admin_sample_path(sample), method: :patch,
+                          class: 'btn btn-outline', form: { style: 'display:inline-block' } %>
             <%= link_to 'Editar', edit_admin_sample_path(sample), class: 'btn btn-outline' %>
             <%= button_to '🗑', admin_sample_path(sample), method: :delete, class: 'btn btn-danger',
                           form: { style: 'display:inline-block', data: { turbo_confirm: "¿Borrar la muestra de #{sample.organization}?" } } %>
