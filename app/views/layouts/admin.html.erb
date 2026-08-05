@@ -15,17 +15,34 @@
   <body>
     <header class="admin-header">
       <div class="admin-header-inner">
-        <div>
-          <strong class="brand" style="margin-right: 24px;">PHONERELAX · ADMIN</strong>
-          <%= link_to admin_orders_path, class: ('active' if controller_name == 'orders') do %>Pedidos<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %><% end %>
-          <%= link_to 'Productos', admin_products_path, class: ('active' if controller_name == 'products') %>
-          <%= link_to 'Compras', admin_purchases_path, class: ('active' if %w[purchases suppliers].include?(controller_name)) %>
-          <%= link_to 'Transporte', admin_shipping_path, class: ('active' if controller_name == 'shipping') %>
-          <%= link_to 'Presupuestos', admin_quotes_path, class: ('active' if %w[quotes clients].include?(controller_name)) %>
-          <%= link_to 'Muestras', admin_samples_path, class: ('active' if controller_name == 'samples') %>
-          <%= link_to 'Estadísticas', admin_stats_path, class: ('active' if controller_name == 'stats') %>
-          <%= link_to 'Administradores', admin_users_path, class: ('active' if controller_name == 'users') %>
-          <%= link_to 'Ver tienda', root_path %>
+        <div style="display: flex; align-items: center; flex-wrap: wrap;">
+          <%= link_to root_path, class: 'brand', style: 'margin-right: 24px;', title: 'Ir a la tienda' do %><span>PHONE</span><span>RELAX</span><% end %>
+          <% ventas_active = %w[orders stats].include?(controller_name) %>
+          <details class="admin-dropdown" data-controller="dropdown-hover" data-action="mouseenter->dropdown-hover#open mouseleave->dropdown-hover#close">
+            <summary class="<%= 'active' if ventas_active %>">Ventas<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %></summary>
+            <div class="admin-menu">
+              <%= link_to admin_orders_path, class: ('active' if controller_name == 'orders') do %>Pedidos<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %><% end %>
+              <%= link_to 'Estadísticas', admin_stats_path, class: ('active' if controller_name == 'stats') %>
+            </div>
+          </details>
+          <% tienda_active = %w[products purchases suppliers shipping].include?(controller_name) %>
+          <details class="admin-dropdown" data-controller="dropdown-hover" data-action="mouseenter->dropdown-hover#open mouseleave->dropdown-hover#close">
+            <summary class="<%= 'active' if tienda_active %>">Tienda</summary>
+            <div class="admin-menu">
+              <%= link_to 'Productos', admin_products_path, class: ('active' if controller_name == 'products') %>
+              <%= link_to 'Compras', admin_purchases_path, class: ('active' if %w[purchases suppliers].include?(controller_name)) %>
+              <%= link_to 'Transporte', admin_shipping_path, class: ('active' if controller_name == 'shipping') %>
+            </div>
+          </details>
+          <% comercial_active = %w[quotes clients samples].include?(controller_name) %>
+          <details class="admin-dropdown" data-controller="dropdown-hover" data-action="mouseenter->dropdown-hover#open mouseleave->dropdown-hover#close">
+            <summary class="<%= 'active' if comercial_active %>">Comercial</summary>
+            <div class="admin-menu">
+              <%= link_to 'Presupuestos', admin_quotes_path, class: ('active' if %w[quotes clients].include?(controller_name)) %>
+              <%= link_to 'Muestras', admin_samples_path, class: ('active' if controller_name == 'samples') %>
+            </div>
+          </details>
+          <%= link_to 'Admins', admin_users_path, class: ('active' if controller_name == 'users') %>
         </div>
         <div class="admin-header-user">
         <span><%= Current.user&.name.presence || Current.user&.email_address %></span>
