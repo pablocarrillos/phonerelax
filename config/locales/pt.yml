@@ -65,6 +65,7 @@ pt:
     subtotal: Subtotal
     total: Total
     vat_included: "IVA (%{rate}%) incluído"
+    vat_rate: "IVA (%{rate}%)"
     whatsapp_aria: Escreva-nos pelo WhatsApp
     update: Atualizar
     remove: Remover
@@ -127,6 +128,7 @@ pt:
     base: Base tributável
     vat: IVA
     total_vat: Total (IVA incluído)
+    total_exempt: Total (sem IVA)
     shipping_note: O preço do transporte será calculado depois de indicar a morada de destino.
     your_data: Os seus dados
     customer_name: Nome completo
@@ -168,11 +170,15 @@ pt:
       pendiente: pendente
       pagado: pago
       reembolsado: reembolsado
+  vat_exempt:
+    export: "Operação isenta de IVA: envio para as Canárias (exportação). Eventuais impostos de importação (IGIC/alfândega) ficam a cargo do destinatário."
+    intra_eu: "Operação isenta de IVA: entrega intracomunitária a empresa com NIF-IVA validado no VIES (art. 25 da lei espanhola do IVA)."
   pay:
     title: Reveja e pague a sua encomenda
     order_shipping: "Encomenda %{number} · envio para %{destination}"
     shipping: Transporte
     total_to_pay: Total a pagar (IVA incluído)
+    total_exempt: Total a pagar (sem IVA)
     stripe_note: "Ao carregar em «Pagar» será encaminhado para a plataforma segura da Stripe."
     pay_button: Pagar
   contact:

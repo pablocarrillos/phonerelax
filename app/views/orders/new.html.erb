@@ -1,7 +1,11 @@
 <% content_for :title, "#{t('checkout.title')} · PhoneRelax" %>
 <% content_for :robots, 'noindex, follow' %>
-<div class="container section" style="max-width: 760px;">
+<div class="container section" style="max-width: 760px;"
+     data-controller="invoice" data-invoice-vies-url-value="<%= vies_check_path %>">
   <h1><%= t('checkout.title') %></h1>
+  <%# Cada importe del resumen lleva su variante con IVA (gross) y sin IVA (net):
+      el JS muestra una u otra según el destino y el resultado de VIES. %>
+  <% net_total = @lines.sum { |product, quantity| product.net_price_for_quantity(quantity) * quantity } %>
 
   <table class="table">
     <tbody>
@@ -13,15 +17,33 @@
               <span><%= product.display_name %> × <%= quantity %></span>
             </div>
           </td>
-          <td class="num"><%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %></td>
+          <td class="num" data-invoice-target="amount"
+              data-gross="<%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %>"
+              data-net="<%= number_to_currency(product.net_price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %>"><%= number_to_currency(product.price_for_quantity(quantity) * quantity, unit: '€', format: '%n %u') %></td>
         </tr>
       <% end %>
       <% vat_total = @lines.sum { |product, quantity| p = product.price_for_quantity(quantity); (p - p / (1 + product.vat_percentage / 100)) * quantity } %>
-      <tr><td><%= t('checkout.base') %></td><td class="num"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td></tr>
-      <tr><td><%= t('checkout.vat') %></td><td class="num"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
-      <tr class="total-row"><td><%= t('checkout.total_vat') %></td><td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td></tr>
+      <tr><td><%= t('checkout.base') %></td>
+          <td class="num" data-invoice-target="amount"
+              data-gross="<%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %>"
+              data-net="<%= number_to_currency(net_total, unit: '€', format: '%n %u') %>"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <% vat_rates = @lines.map { |product, _| product.vat_percentage }.uniq %>
+      <% vat_label = vat_rates.one? ? t('common.vat_rate', rate: vat_rates.first.to_s.sub(/\.0+\z/, '')) : t('checkout.vat') %>
+      <tr><td data-invoice-target="amount" data-gross="<%= vat_label %>" data-net="<%= t('common.vat_rate', rate: 0) %>"><%= vat_label %></td>
+          <td class="num" data-invoice-target="amount"
+              data-gross="<%= number_to_currency(vat_total, unit: '€', format: '%n %u') %>"
+              data-net="<%= number_to_currency(0, unit: '€', format: '%n %u') %>"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <tr class="total-row">
+        <td data-invoice-target="totalLabel"
+            data-gross="<%= t('checkout.total_vat') %>" data-net="<%= t('checkout.total_exempt') %>"><%= t('checkout.total_vat') %></td>
+        <td class="num" data-invoice-target="amount"
+            data-gross="<%= number_to_currency(@total, unit: '€', format: '%n %u') %>"
+            data-net="<%= number_to_currency(net_total, unit: '€', format: '%n %u') %>"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>
+      </tr>
     </tbody>
   </table>
+  <p class="shipping-note" data-invoice-target="exemptNote" hidden
+     data-export="<%= t('vat_exempt.export') %>" data-intra="<%= t('vat_exempt.intra_eu') %>"></p>
   <p class="shipping-note"><%= t('checkout.shipping_note') %></p>
 
   <h2 style="margin-top: 30px;"><%= t('checkout.your_data') %></h2>
@@ -38,10 +60,10 @@
       <div><%= f.label :city, t('checkout.city') %><%= f.text_field :city, required: true %></div>
       <div><%= f.label :postal_code, t('checkout.postal_code') %><%= f.text_field :postal_code, required: true %></div>
       <div><%= f.label :province, t('checkout.province') %><%= f.text_field :province, required: true %></div>
-      <div><%= f.label :country, t('checkout.country') %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España (Península)' }, { class: 'form-select' } %></div>
+      <div><%= f.label :country, t('checkout.country') %><%= f.select :country, Order::EU_COUNTRIES, { selected: @order.country || 'España (Península)' }, { class: 'form-select', data: { invoice_target: 'country', action: 'change->invoice#refresh' } } %></div>
     </div>
 
-    <div class="invoice-block" data-controller="invoice" data-invoice-vies-url-value="<%= vies_check_path %>">
+    <div class="invoice-block">
       <label class="invoice-check">
         <%= f.check_box :needs_invoice, data: { invoice_target: 'checkbox', action: 'change->invoice#toggle' } %>
         <span><%= t('checkout.needs_invoice') %></span>

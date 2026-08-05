@@ -65,6 +65,7 @@ en:
     subtotal: Subtotal
     total: Total
     vat_included: "VAT (%{rate}%) included"
+    vat_rate: "VAT (%{rate}%)"
     whatsapp_aria: Message us on WhatsApp
     update: Update
     remove: Remove
@@ -127,6 +128,7 @@ en:
     base: Net amount
     vat: VAT
     total_vat: Total (VAT included)
+    total_exempt: Total (VAT not charged)
     shipping_note: Shipping cost will be calculated once you enter the delivery address.
     your_data: Your details
     customer_name: Full name
@@ -168,11 +170,15 @@ en:
       pendiente: pending
       pagado: paid
       reembolsado: refunded
+  vat_exempt:
+    export: "VAT-exempt sale: shipment to the Canary Islands (export). Any import taxes (IGIC/customs), if due, are borne by the recipient."
+    intra_eu: "VAT-exempt sale: intra-EU supply to a business with a VIES-validated VAT number (art. 25 of the Spanish VAT Act)."
   pay:
     title: Review and pay for your order
     order_shipping: "Order %{number} · shipping to %{destination}"
     shipping: Shipping
     total_to_pay: Total to pay (VAT included)
+    total_exempt: Total to pay (VAT not charged)
     stripe_note: "When you click «Pay» we'll take you to Stripe's secure checkout."
     pay_button: Pay
   contact:

@@ -37,6 +37,18 @@
             </td>
           </tr>
         <% end %>
+        <% vat_total = @lines.sum { |product, quantity| p = product.price_for_quantity(quantity); (p - p / (1 + product.vat_percentage / 100)) * quantity } %>
+        <% vat_rates = @lines.map { |product, _| product.vat_percentage }.uniq %>
+        <tr>
+          <td colspan="3"><%= t('checkout.base') %></td>
+          <td class="num"><%= number_to_currency(@total - vat_total, unit: '€', format: '%n %u') %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="3"><%= vat_rates.one? ? t('common.vat_rate', rate: vat_rates.first.to_s.sub(/\.0+\z/, '')) : t('checkout.vat') %></td>
+          <td class="num"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td>
+          <td></td>
+        </tr>
         <tr class="total-row">
           <td colspan="3"><%= t('checkout.total_vat') %></td>
           <td class="num"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>

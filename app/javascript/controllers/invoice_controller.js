@@ -1,13 +1,19 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Bloque de factura del checkout: muestra/oculta los datos fiscales según la
-// casilla "Necesito factura", permite copiar la dirección de envío y comprueba
-// en vivo el NIF-IVA europeo contra VIES.
+// casilla "Necesito factura", permite copiar la dirección de envío, comprueba
+// en vivo el NIF-IVA europeo contra VIES y alterna el resumen entre precios
+// con IVA y sin IVA cuando la venta queda exenta (envío a Canarias o entrega
+// intracomunitaria B2B con VIES válido). El resultado real lo fija el servidor
+// en Order#apply_vat_exemption!; esto es su espejo visual.
 export default class extends Controller {
-  static targets = ["checkbox", "fields", "taxId", "viesStatus"]
+  static targets = ["checkbox", "fields", "taxId", "viesStatus", "country", "amount", "totalLabel", "exemptNote"]
   static values = { viesUrl: String }
 
-  connect() { this.toggle() }
+  connect() {
+    this.viesValid = null
+    this.toggle()
+  }
 
   // Enseña u oculta los datos fiscales y marca sus campos como obligatorios solo
   // cuando se pide factura.
@@ -16,6 +22,7 @@ export default class extends Controller {
     this.fieldsTarget.hidden = !on
     this.fieldsTarget.querySelectorAll("[data-required]").forEach((el) => { el.required = on })
     if (!on) this.clearVies()
+    this.refresh()
   }
 
   // Copia la dirección de envío en los campos fiscales al marcar la casilla.
@@ -31,7 +38,9 @@ export default class extends Controller {
   }
 
   clearVies() {
+    this.viesValid = null
     if (this.hasViesStatusTarget) { this.viesStatusTarget.textContent = ""; this.viesStatusTarget.className = "vies-status" }
+    this.refresh()
   }
 
   // Comprueba el NIF-IVA en VIES. Solo para identificadores europeos (empiezan
@@ -50,16 +59,47 @@ export default class extends Controller {
       if (data.valid === true) {
         this.viesStatusTarget.textContent = (ds.ok || "OK") + (data.name ? ` · ${data.name}` : "")
         this.viesStatusTarget.className = "vies-status ok"
+        this.viesValid = true
       } else if (data.valid === false) {
         this.viesStatusTarget.textContent = ds.ko || "NIF-IVA no válido"
         this.viesStatusTarget.className = "vies-status ko"
+        this.viesValid = false
       } else {
         this.viesStatusTarget.textContent = ds.unavailable || ""
         this.viesStatusTarget.className = "vies-status"
+        this.viesValid = null
       }
     } catch {
       this.viesStatusTarget.textContent = ds.unavailable || ""
       this.viesStatusTarget.className = "vies-status"
+      this.viesValid = null
+    }
+    this.refresh()
+  }
+
+  // "export", "intra" o null: espejo de Order#apply_vat_exemption! (Canarias
+  // exporta para cualquier cliente; intracomunitaria solo B2B con NIF-IVA de
+  // otro país UE validado en VIES y envío fuera de España).
+  exemption() {
+    const country = this.hasCountryTarget ? this.countryTarget.value : ""
+    if (country === "España (Canarias)") return "export"
+
+    const vat = this.hasTaxIdTarget ? (this.taxIdTarget.value || "").trim().toUpperCase() : ""
+    const foreignVat = /^[A-Z]{2}/.test(vat) && !vat.startsWith("ES")
+    if (this.checkboxTarget.checked && this.viesValid === true && foreignVat && !country.startsWith("España")) return "intra"
+
+    return null
+  }
+
+  // Pinta el resumen con la variante con o sin IVA y la nota de exención.
+  refresh() {
+    const mode = this.exemption()
+    const key = mode ? "net" : "gross"
+    this.amountTargets.forEach((el) => { el.textContent = el.dataset[key] })
+    if (this.hasTotalLabelTarget) this.totalLabelTarget.textContent = this.totalLabelTarget.dataset[key]
+    if (this.hasExemptNoteTarget) {
+      this.exemptNoteTarget.hidden = !mode
+      if (mode) this.exemptNoteTarget.textContent = mode === "export" ? this.exemptNoteTarget.dataset.export : this.exemptNoteTarget.dataset.intra
     }
   }
 }

@@ -125,7 +125,8 @@
         </td>
       </tr>
       <tr><th>Dirección fiscal</th><td><%= [@order.tax_address, @order.tax_postal_code, @order.tax_city, @order.tax_province, @order.tax_country].map(&:presence).compact.join(' · ').presence || '—' %></td></tr>
-      <tr><th>IVA</th><td><%= @order.vat_exempt? ? "Exento (#{@order.vat_exempt_reason})" : 'Con IVA' %></td></tr>
+      <tr><th>IVA</th><td><%= { "export" => "Exento — exportación a Canarias (conserva el justificante de transporte)",
+                                "intra_eu" => "Exento — entrega intracomunitaria (VIES válido; se declara en el modelo 349)" }[@order.vat_exempt_reason] || 'Con IVA' %></td></tr>
     </tbody>
   </table>
 <% end %>

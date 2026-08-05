@@ -44,9 +44,15 @@
       <% if @order.shipping_cost.positive? %>
         <tr><td><%= t('order.shipping') %></td><td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td></tr>
       <% end %>
+      <% breakdown = @order.vat_breakdown %>
+      <tr><td><%= t('checkout.base') %></td><td class="num"><%= number_to_currency(breakdown[:base], unit: '€', format: '%n %u') %></td></tr>
+      <tr><td><%= breakdown[:rate] ? t('common.vat_rate', rate: breakdown[:rate]) : t('checkout.vat') %></td><td class="num"><%= number_to_currency(breakdown[:vat], unit: '€', format: '%n %u') %></td></tr>
       <tr class="total-row"><td><%= t('common.total') %></td><td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td></tr>
     </tbody>
   </table>
 
+  <% if @order.vat_exempt? %>
+    <p style="color: var(--muted); font-size: 14px;"><%= t("vat_exempt.#{@order.vat_exempt_reason}") %></p>
+  <% end %>
   <p style="color: var(--muted); font-size: 14px;"><%= t('order.save_note') %></p>
 </div>

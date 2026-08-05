@@ -20,13 +20,15 @@ class Order < ApplicationRecord
   STALE_UNPAID_DAYS = 3
 
   # --- Exención de IVA (facturación) ---
-  # Interruptores. Actívalos SOLO cuando estés dada de alta en los registros
-  # correspondientes; mientras estén en false TODA venta lleva IVA (no se cambia
-  # ningún precio) y solo se capturan y validan los datos fiscales.
-  #   EXPORT   → exportación a Canarias/Ceuta/Melilla (requiere justificar la salida).
-  #   INTRA_EU → entrega intracomunitaria B2B (requiere alta en el ROI y modelo 349).
-  EXPORT_VAT_EXEMPTION_ENABLED = false
-  INTRA_EU_VAT_EXEMPTION_ENABLED = false
+  # Interruptores, activos desde 08-2026 (empresa dada de alta en el ROI).
+  #   EXPORT   → envío a Canarias: exportación exenta para CUALQUIER cliente
+  #              (particular o empresa); hay que conservar el justificante de
+  #              transporte de cada envío. El IGIC/DUA lo paga el destinatario.
+  #   INTRA_EU → entrega intracomunitaria: solo B2B con NIF-IVA de otro país UE
+  #              validado en VIES y mercancía enviada fuera de España (se declara
+  #              en el modelo 349). Un particular de la UE paga IVA español.
+  EXPORT_VAT_EXEMPTION_ENABLED = true
+  INTRA_EU_VAT_EXEMPTION_ENABLED = true
 
   # Destinos que son exportación a efectos de IVA (pagan IGIC/IPSI en destino).
   EXPORT_COUNTRIES = [ "España (Canarias)" ].freeze
@@ -85,22 +87,27 @@ class Order < ApplicationRecord
   end
 
   # Precio del transporte: base del país de destino (configurable en el admin)
-  # más el coste por unidad propio de cada producto enviado.
+  # más el coste por unidad propio de cada producto enviado. Las tarifas se
+  # guardan con IVA incluido; en una venta exenta se cobra el neto.
   def compute_shipping
     base = ShippingRate.base_for(country)
-    base + order_lines.sum { |line| line.product.shipping_unit_cost * line.quantity }
+    gross = base + order_lines.sum { |line| line.product.shipping_unit_cost * line.quantity }
+    vat_exempt? ? (gross / SHIPPING_VAT_FACTOR).round(2) : gross
   end
+  SHIPPING_VAT_FACTOR = BigDecimal("1.21")
 
-  # ¿NIF-IVA intracomunitario de otro país de la UE, verificado en VIES?
+  # ¿Entrega intracomunitaria exenta? Empresa con NIF-IVA de otro país de la UE
+  # verificado en VIES Y mercancía enviada fuera de España (si el envío se queda
+  # en España la entrega no es intracomunitaria y lleva IVA).
   def intra_eu_business?
     needs_invoice && tax_id.present? && TaxId.eu_vat?(tax_id) &&
-      TaxId.split_eu_vat(tax_id).first != "ES" && vies_valid == true
+      TaxId.split_eu_vat(tax_id).first != "ES" && vies_valid == true &&
+      EU_COUNTRY_CODES.merge(LEGACY_COUNTRY_CODES)[country] != "ES"
   end
 
-  # Fija el tratamiento de IVA del pedido. Con los interruptores en false el
-  # resultado es siempre "con IVA" (no se altera ningún precio); la lógica queda
-  # lista para activarse al estar de alta en ROI/OSS. Se llama antes de montar
-  # las líneas, para que su precio unitario sea con o sin IVA según corresponda.
+  # Fija el tratamiento de IVA del pedido según el destino y los datos fiscales.
+  # Se llama antes de montar las líneas, para que su precio unitario se congele
+  # con o sin IVA según corresponda.
   def apply_vat_exemption!
     self.vat_exempt, self.vat_exempt_reason =
       if EXPORT_VAT_EXEMPTION_ENABLED && EXPORT_COUNTRIES.include?(country)
@@ -110,6 +117,23 @@ class Order < ApplicationRecord
       else
         [ false, nil ]
       end
+  end
+
+  # Desglose del IVA del pedido completo (líneas + transporte) para mostrarlo en
+  # el proceso de compra: base imponible, cuota de IVA y tipo aplicado. `rate` es
+  # el tipo como texto ("21", "0" si la venta es exenta) o nil si conviven varios
+  # tipos distintos (hoy no ocurre: todo el catálogo va al 21%).
+  def vat_breakdown
+    return { base: total.to_d, vat: BigDecimal("0"), rate: "0" } if vat_exempt?
+
+    vat = order_lines.sum do |line|
+      subtotal = line.unit_price * line.quantity
+      subtotal - subtotal / (1 + line.product.vat_percentage.to_d / 100)
+    end
+    vat += shipping_cost.to_d - shipping_cost.to_d / SHIPPING_VAT_FACTOR if shipping_cost.present?
+    rates = order_lines.map { |line| line.product.vat_percentage.to_d }.uniq
+    { base: total.to_d - vat.round(2), vat: vat.round(2),
+      rate: rates.one? ? rates.first.to_s.sub(/\.0+\z/, "") : nil }
   end
 
   def next_status

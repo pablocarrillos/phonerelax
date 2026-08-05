@@ -22,6 +22,22 @@ class OrderInvoiceTest < ActionDispatch::IntegrationTest
       country: "España (Península)" }
   end
 
+  # Datos fiscales de una empresa alemana con NIF-IVA de formato correcto.
+  def german_tax_data
+    { needs_invoice: "1", tax_name: "Test GmbH", tax_id: "DE123456789",
+      tax_address: "Unter den Linden 1", tax_city: "Berlín", tax_postal_code: "10115",
+      tax_province: "Berlín", tax_country: "Alemania" }
+  end
+
+  # Sustituye la consulta a VIES por una respuesta fija durante el bloque.
+  def with_vies(result)
+    original = Vies.method(:check)
+    Vies.define_singleton_method(:check) { |_vat| result }
+    yield
+  ensure
+    Vies.define_singleton_method(:check, original)
+  end
+
   test "pedido con factura y CIF válido guarda los datos fiscales y mantiene el IVA" do
     post cart_add_path(product_id: @funda), params: { quantity: 1 }
     assert_difference "Order.count", 1 do
@@ -34,7 +50,54 @@ class OrderInvoiceTest < ActionDispatch::IntegrationTest
     assert order.needs_invoice
     assert_equal "ACME SL", order.tax_name
     assert_equal "A58818501", order.tax_id
-    assert_not order.vat_exempt, "con los interruptores en false la venta lleva IVA"
+    assert_not order.vat_exempt, "una venta nacional B2B lleva IVA"
+  end
+
+  test "envío a Canarias queda exento de IVA aunque sea un particular" do
+    post cart_add_path(product_id: @funda), params: { quantity: 1 }
+    post orders_path, params: { order: base_data.merge(country: "España (Canarias)") }
+
+    order = Order.last
+    assert order.vat_exempt
+    assert_equal "export", order.vat_exempt_reason
+    assert_equal @funda.net_price_for_quantity(1), order.order_lines.first.unit_price
+    gross = ShippingRate.base_for("España (Canarias)") + @funda.shipping_unit_cost
+    assert_equal (gross / Order::SHIPPING_VAT_FACTOR).round(2), order.shipping_cost
+  end
+
+  test "empresa de otro país UE con VIES válido y envío fuera de España compra sin IVA" do
+    with_vies(ok: true, valid: true, name: "TEST GMBH") do
+      post cart_add_path(product_id: @funda), params: { quantity: 1 }
+      post orders_path, params: { order: base_data.merge(german_tax_data)
+                                                  .merge(country: "Alemania", phone: "+4915123456789") }
+    end
+
+    order = Order.last
+    assert_equal true, order.vies_valid
+    assert order.vat_exempt
+    assert_equal "intra_eu", order.vat_exempt_reason
+    assert_equal @funda.net_price_for_quantity(1), order.order_lines.first.unit_price
+  end
+
+  test "empresa de otro país UE con envío dentro de España paga IVA (no es intracomunitaria)" do
+    with_vies(ok: true, valid: true, name: "TEST GMBH") do
+      post cart_add_path(product_id: @funda), params: { quantity: 1 }
+      post orders_path, params: { order: base_data.merge(german_tax_data) }
+    end
+
+    order = Order.last
+    assert_equal true, order.vies_valid
+    assert_not order.vat_exempt, "si la mercancía no sale de España la entrega lleva IVA"
+    assert_equal @funda.price_for_quantity(1), order.order_lines.first.unit_price
+  end
+
+  test "un particular de otro país UE sin factura paga IVA español" do
+    post cart_add_path(product_id: @funda), params: { quantity: 1 }
+    post orders_path, params: { order: base_data.merge(country: "Francia", phone: "+33612345678") }
+
+    order = Order.last
+    assert_not order.vat_exempt
+    assert_equal @funda.price_for_quantity(1), order.order_lines.first.unit_price
   end
 
   test "pedido con factura y NIF inválido vuelve al formulario" do

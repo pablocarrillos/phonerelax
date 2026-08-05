@@ -16,13 +16,25 @@
         <td><%= t('pay.shipping') %></td>
         <td class="num"><%= number_to_currency(@order.shipping_cost, unit: '€', format: '%n %u') %></td>
       </tr>
+      <% breakdown = @order.vat_breakdown %>
+      <tr>
+        <td><%= t('checkout.base') %></td>
+        <td class="num"><%= number_to_currency(breakdown[:base], unit: '€', format: '%n %u') %></td>
+      </tr>
+      <tr>
+        <td><%= breakdown[:rate] ? t('common.vat_rate', rate: breakdown[:rate]) : t('checkout.vat') %></td>
+        <td class="num"><%= number_to_currency(breakdown[:vat], unit: '€', format: '%n %u') %></td>
+      </tr>
       <tr class="total-row">
-        <td><%= t('pay.total_to_pay') %></td>
+        <td><%= t(@order.vat_exempt? ? 'pay.total_exempt' : 'pay.total_to_pay') %></td>
         <td class="num"><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></td>
       </tr>
     </tbody>
   </table>
 
+  <% if @order.vat_exempt? %>
+    <p class="shipping-note"><%= t("vat_exempt.#{@order.vat_exempt_reason}") %></p>
+  <% end %>
   <p style="color: var(--muted); font-size: 14px; margin-top: 14px;"><%= t('pay.stripe_note') %></p>
   <%= button_to t('pay.pay_button'), order_payments_path(@order.number), class: 'btn btn-magenta btn-block', style: 'font-size: 17px;', form: { data: { turbo: false } } %>
 </div>

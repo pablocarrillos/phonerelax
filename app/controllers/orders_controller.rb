@@ -38,7 +38,7 @@ class OrdersController < ApplicationController
     if @order.needs_invoice && @order.tax_id.present? && TaxId.eu_vat?(@order.tax_id)
       @order.vies_valid = Vies.check(@order.tax_id)[:valid]
     end
-    @order.apply_vat_exemption! # fija vat_exempt (hoy siempre false salvo interruptor)
+    @order.apply_vat_exemption! # fija vat_exempt según destino y datos fiscales
 
     lines.each do |product, quantity|
       # El precio unitario se congela con el escalado por cantidad aplicado; sin
@@ -50,7 +50,9 @@ class OrdersController < ApplicationController
 
     unless @order.save
       @lines = lines
-      @total = @order.total
+      # El resumen del formulario siempre parte de los precios con IVA; si la
+      # venta resulta exenta es el JS quien muestra la variante sin IVA.
+      @total = lines.sum { |product, quantity| product.price_for_quantity(quantity) * quantity }
       return render :new, status: :unprocessable_entity
     end
 
