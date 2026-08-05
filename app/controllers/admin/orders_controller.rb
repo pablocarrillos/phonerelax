@@ -19,7 +19,9 @@ module Admin
             stale_unpaid: Order.stale_unpaid.count,
             revenue: Order.pago_pagado.sum(:total)
           }
-          @pagy, @orders = pagy(orders)
+          # Tamaño de página a elegir (25/50/100; 25 por defecto).
+          @per = params[:per].to_i.then { |n| [ 25, 50, 100 ].include?(n) ? n : 25 }
+          @pagy, @orders = pagy(orders, limit: @per)
         end
         format.csv do
           send_data orders_to_csv(orders), type: "text/csv; charset=utf-8",
