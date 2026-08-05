@@ -680,12 +680,20 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .trusted-logos--bottom .trusted-logo { max-height: 50px; }
 .trusted-logo:hover { filter: grayscale(0); opacity: 1; }
 @media (max-width: 760px) {
-  .trusted-logos-wrap.has-featured { grid-template-columns: 1fr; gap: 20px; align-items: center; justify-items: center; }
+  .trusted-logos-wrap.has-featured { grid-template-columns: 1fr; gap: 26px; align-items: center; justify-items: center; }
   .trusted-logos--top,
-  .trusted-logos--bottom { grid-template-columns: repeat(2, 1fr); gap: 22px 28px; }
-  .trusted-logos--top { margin-bottom: 22px; }
+  .trusted-logos--bottom { grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
+  .trusted-logos--top { margin-bottom: 28px; }
+  /* Con 3 logos en 2 columnas el último quedaría huérfano a la izquierda:
+     que ocupe las dos columnas, centrado. */
+  .trusted-logos--top li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  /* Un poco de aire lateral y logos algo más contenidos para que los anchos
+     (Montcau-LaMola, Villalkor) no se rocen entre columnas. */
+  .trusted-logos li { padding: 0 6px; }
+  .trusted-logo { max-height: 46px; }
+  .trusted-logos--bottom .trusted-logo { max-height: 40px; }
   .trusted-featured { position: static; }
-  .trusted-logo--featured { position: static; inset: auto; width: auto; height: auto; max-height: 130px; }
+  .trusted-logo--featured { position: static; inset: auto; width: auto; height: auto; max-height: 110px; }
 }
 
 /* Insignias con icono de los bloques de ventajas (p. ej. «Por qué elegir PhoneRelax») */
