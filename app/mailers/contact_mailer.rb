@@ -1,6 +1,6 @@
 # Reenvía los mensajes del formulario público de contacto al buzón de la tienda.
 class ContactMailer < ApplicationMailer
-  RECIPIENT = ENV.fetch("CONTACT_EMAIL", "phonerelaxstore@gmail.com")
+  RECIPIENT = ENV.fetch("CONTACT_EMAIL", "info@phonerelax.com")
 
   # `attrs`: hash con name, email, phone y message (el mensaje no se persiste,
   # así que viaja como atributos planos serializables por ActiveJob).

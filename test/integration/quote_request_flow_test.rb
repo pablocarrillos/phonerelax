@@ -36,7 +36,7 @@ class QuoteRequestFlowTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to quote_path
     mail = ActionMailer::Base.deliveries.last
-    assert_equal [ "phonerelaxstore@gmail.com" ], mail.to
+    assert_equal [ "info@phonerelax.com" ], mail.to
     assert_equal [ "ana@ies.es" ], mail.reply_to
     assert_includes mail.subject, "IES Sant Jordi"
     assert_includes mail.body.decoded, "Presupuesto para 4 aulas"

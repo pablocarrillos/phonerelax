@@ -56,7 +56,7 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     mail = ActionMailer::Base.deliveries.find { |m| m.to == [ order.email ] }
     assert mail, "el cliente recibe su confirmación"
     assert_includes mail.subject, order.number
-    shop_mail = ActionMailer::Base.deliveries.find { |m| m.to == [ "phonerelaxstore@gmail.com" ] }
+    shop_mail = ActionMailer::Base.deliveries.find { |m| m.to == [ "info@phonerelax.com" ] }
     assert shop_mail, "la tienda recibe el aviso de venta"
     assert_includes shop_mail.body.decoded, order.address
 

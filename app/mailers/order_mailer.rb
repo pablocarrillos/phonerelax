@@ -1,7 +1,7 @@
 # Correos de aviso al cliente sobre su pedido. Se envían en el idioma en que el
 # cliente completó la compra (order.locale), no en el idioma del que los dispara.
 class OrderMailer < ApplicationMailer
-  SHOP_RECIPIENT = ENV.fetch("CONTACT_EMAIL", "phonerelaxstore@gmail.com")
+  SHOP_RECIPIENT = ENV.fetch("CONTACT_EMAIL", "info@phonerelax.com")
 
   # Aviso interno a la tienda (en español): pedido cobrado, con los artículos
   # y los datos de envío del cliente.
