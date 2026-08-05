@@ -51,7 +51,7 @@ Rails.application.routes.draw do
   end
 
   # «Quiénes somos» se fusionó con Contacto; redirección para enlaces antiguos.
-  scope "(:locale)", locale: /pt|en|fr/ do
+  scope "(:locale)", locale: /pt|en|fr|de/ do
     get "pages/quienes-somos", to: redirect { |p, _req| p[:locale] ? "/#{p[:locale]}/pages/contact" : "/pages/contact" }
   end
 

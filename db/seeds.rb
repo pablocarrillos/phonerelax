@@ -386,6 +386,10 @@ normativa.assign_attributes(
   slug_fr: 'reglementation-telephone-portable-ecole-france',
   title_fr: "Réglementation sur l'usage du téléphone portable à l'école en France",
   excerpt_fr: "La France interdit le téléphone portable à l'école et au collège depuis 2018, et la « pause numérique » se généralise depuis la rentrée 2025. Nous vous expliquons ce que dit la loi, les exceptions prévues et comment l'appliquer au quotidien.",
+  # La versión alemana habla de la normativa de Alemania (no de la española).
+  slug_de: 'handyregeln-schulen-deutschland',
+  title_de: 'Regeln zur Handynutzung an Schulen in Deutschland',
+  excerpt_de: 'In Deutschland ist Bildung Ländersache: Ein bundesweites Handyverbot gibt es nicht, aber seit dem Schuljahr 2025/26 haben mehrere Bundesländer verbindliche Verbote eingeführt. Wir erklären, wer was regelt und wie sich die Regeln im Schulalltag umsetzen lassen.',
   body: <<~HTML_ES,
     <p>El uso del móvil en clase se ha convertido en uno de los grandes debates de la comunidad educativa en España. En los últimos años, la mayoría de las administraciones educativas han pasado de la recomendación a la <strong>restricción</strong>, y muchos centros buscan la mejor forma de aplicarla en el día a día.</p>
     <h2>¿Quién regula el uso del móvil en los colegios?</h2>
@@ -457,7 +461,7 @@ normativa.assign_attributes(
     <h2>Before you decide</h2>
     <p>The specific rules depend on each autonomous community and can change from one school year to the next, so it's worth checking your region's and reflecting it in your school's regulations. If you're looking for a practical way to comply, <a href="/en/schools">PhoneRelax for schools</a> helps you create distraction-free classrooms. Need to equip several classrooms? <a href="/en/quote">Request a quote</a>.</p>
   HTML_EN
-  body_fr: <<~HTML_FR
+  body_fr: <<~HTML_FR,
     <p>La France a été pionnière en Europe : le téléphone portable est <strong>interdit à l'école et au collège depuis 2018</strong>, et depuis la rentrée 2025 la « pause numérique » généralise la mise à l'écart physique des téléphones dans les collèges. Voici ce que dit la réglementation et comment l'appliquer au quotidien.</p>
     <h2>Ce que dit la loi</h2>
     <p>La <strong>loi du 3 août 2018</strong> (article L511-5 du code de l'éducation) interdit l'utilisation du téléphone portable par les élèves dans les <strong>écoles maternelles, les écoles élémentaires et les collèges</strong>, pendant toute activité d'enseignement et dans l'ensemble de l'enceinte scolaire. Le règlement intérieur peut prévoir des exceptions, notamment pour des usages pédagogiques encadrés, et des aménagements existent pour les élèves présentant un handicap ou un besoin de santé.</p>
@@ -477,6 +481,30 @@ normativa.assign_attributes(
     <h2>Avant de décider</h2>
     <p>La réglementation évolue d'une rentrée à l'autre — la généralisation de la « pause numérique » en est la preuve — il convient donc de suivre les nouveautés et de les refléter dans le règlement intérieur de l'établissement. Si vous cherchez un moyen pratique de les appliquer, <a href="/fr/ecoles">PhoneRelax pour les établissements scolaires</a> vous aide à créer des classes sans distractions. Besoin d'équiper plusieurs classes ? <a href="/fr/devis">Demandez un devis</a>.</p>
   HTML_FR
+  body_de: <<~HTML_DE
+    <p>Die Handynutzung im Unterricht ist auch in Deutschland eines der großen Bildungsthemen. In den letzten Jahren sind viele Bundesländer von Empfehlungen zu <strong>verbindlichen Regeln</strong> übergegangen, und viele Schulen suchen nach dem besten Weg, sie im Alltag umzusetzen.</p>
+    <h2>Wer regelt die Handynutzung an Schulen?</h2>
+    <p>In Deutschland ist Bildung <strong>Ländersache</strong>. Es gibt also kein bundesweites Gesetz, das Handys an allen Schulen gleich regelt: Jedes Bundesland setzt seinen eigenen Rahmen, und innerhalb dieses Rahmens konkretisiert jede Schule die Regeln in ihrer Haus- bzw. Schulordnung.</p>
+    <h2>Der Trend: von der Empfehlung zum Verbot</h2>
+    <p>Die Richtung ist klar: Immer mehr Bundesländer schränken die private Handynutzung an Schulen ein. Seit dem Schuljahr 2025/26 gilt in <strong>Hessen</strong> ein generelles Verbot der privaten Nutzung auf dem gesamten Schulgelände — den ganzen Schultag, inklusive Pausen („handyfreie Schutzzonen“). <strong>Bayern</strong> regelt die Handynutzung bereits seit 2006 gesetzlich und weitet das Verbot aus; auch <strong>Bremen, Sachsen, Schleswig-Holstein und Thüringen</strong> haben verbindliche gesetzliche Verbote. <strong>Baden-Württemberg und Nordrhein-Westfalen</strong> verpflichten ihre Schulen, über die Schulkonferenz verbindliche Regeln zu beschließen; in den übrigen Ländern entscheiden die Schulen selbst.</p>
+    <h2>Grundschule und weiterführende Schulen: unterschiedliche Regeln</h2>
+    <p>Auch wenn jedes Bundesland seine Besonderheiten hat, ist das häufigste Muster:</p>
+    <ul>
+      <li><strong>Grundschule:</strong> generelles Verbot der privaten Handynutzung während des gesamten Schultags, einschließlich der Pausen.</li>
+      <li><strong>Weiterführende Schulen:</strong> Verbot als Regel, mit möglichen <strong>Ausnahmen für die unterrichtliche Nutzung</strong>, wenn die Lehrkraft es anordnet und beaufsichtigt.</li>
+    </ul>
+    <h2>Die Herausforderung ist nicht die Regel, sondern ihre Umsetzung</h2>
+    <p>Die Regel zu beschließen ist der einfache Teil; die Herausforderung ist, sie durchzusetzen, ohne die Lehrkräfte zu Aufsehern zu machen. Die üblichen Lösungen — Handy ausschalten, im Ranzen lassen oder in eine Kiste legen — werfen Fragen auf: Wer haftet, wenn ein Handy beschädigt wird oder verschwindet? Wie verhindert man die heimliche Nutzung?</p>
+    <h2>Die PhoneRelax-Lösung</h2>
+    <p>Mit den magnetischen <strong>PhoneRelax</strong>-Taschen verwahrt jeder Schüler sein eigenes Handy in einer Tasche, die versiegelt wird und sich nur am Magneten der Schule öffnen lässt. Das bedeutet:</p>
+    <ul>
+      <li><strong>Der Schüler verwahrt sein Handy selbst</strong>: Die Schule haftet nicht für etwaige Schäden — und niemand muss Geräte einsammeln.</li>
+      <li>Die <strong>SignalBlocking</strong>-Version lässt das Handy ohne Empfang und WLAN und verhindert Benachrichtigungen oder heimliche Nutzung — besonders nützlich bei Prüfungen.</li>
+      <li>Ein <strong>einheitliches, einfaches System</strong> für die ganze Schule, das sich jeden Tag leicht anwenden lässt.</li>
+    </ul>
+    <h2>Bevor Sie entscheiden</h2>
+    <p>Die Regeln entwickeln sich von Schuljahr zu Schuljahr weiter — die neuen Ländergesetze sind der Beweis. Es lohnt sich, die Entwicklungen zu verfolgen und sie in der Schulordnung abzubilden. Wenn Sie einen praktischen Weg zur Umsetzung suchen: <a href="/de/schulen">PhoneRelax für Schulen</a> hilft Ihnen, ablenkungsfreie Klassenzimmer zu schaffen. Sie möchten mehrere Klassen ausstatten? <a href="/de/angebot">Fordern Sie ein Angebot an</a>.</p>
+  HTML_DE
 )
 normativa.save!
 puts "Artículo normativa: es/pt/en OK (posts: #{Post.count})"
@@ -593,3 +621,77 @@ if Sample.none?
   end
   puts "Muestras importadas del excel: #{Sample.count}"
 end
+
+# --- Traducciones al alemán (de). Idempotente: vacío = se muestra el español. ---
+product_translations_de = {
+  'funda-phonerelax-version-sin-cobertura-movil' => {
+    name_de: 'PhoneRelax SignalBlocking-Tasche (blockiert das Mobilfunksignal)',
+    description_de: <<~HTML
+      <p>PhoneRelax ist eine magnetische Handytasche, die verhindert, dass sich Schüler oder Nutzer in Schulen, bei Konzerten oder privaten Veranstaltungen vom Handy ablenken lassen. Die Anwendung ist ganz einfach: Handy hineinlegen und den Verschluss schließen, damit es versiegelt bleibt. Zum Entnehmen halten Sie den Magnetverschluss der PhoneRelax-Tasche an einen unserer speziellen Öffnungsmagnete und nehmen das Handy heraus.</p>
+      <p><strong>Der große Vorteil dieser Version mit Signalblockierung: Der Nutzer wird nicht durch Benachrichtigungen, Klingeltöne oder Vibrationen gestört, falls er vergessen hat, das Handy stummzuschalten oder auszuschalten, bevor er es in die PhoneRelax-Tasche legt — und auch die Unruhe durch ständige App-Benachrichtigungen entfällt.</strong></p>
+      <p><strong>Technische Daten:</strong></p>
+      <p><strong>Produktmaße:</strong> 12 cm Breite x 26 cm Höhe x 4,5 cm Tiefe<br><strong>Material:</strong> 30 % Neopren, 40 % Polyester, 20 % Aluminium und 10 % Kunststoff.<br><strong>Kompatible Handys:</strong> jedes Smartphone mit einem Display bis 6,8 Zoll.<br><strong>Farbe:</strong> schwarz<br><strong>Gewicht:</strong> 115 g</p>
+    HTML
+  },
+  'iman-phonerelax' => {
+    name_de: 'PhoneRelax-Magnet',
+    description_de: <<~HTML
+      <p>Er öffnet die PhoneRelax-Taschen, indem man einfach den abgerundeten Teil des Taschenverschlusses an die Mitte des Magneten hält.</p>
+      <p>Der Magnet hat vier Löcher, um ihn auf jeder Oberfläche zu befestigen — so geht er nicht verloren und verrutscht nicht beim Öffnen der PhoneRelax-Taschen.</p>
+    HTML
+  },
+  'funda-phonerelax' => {
+    name_de: 'PhoneRelax-Tasche',
+    description_de: <<~HTML
+      <p>PhoneRelax ist eine magnetische Handytasche, die verhindert, dass sich Schüler oder Nutzer in Schulen, bei Konzerten oder privaten Veranstaltungen vom Handy ablenken lassen. Die Anwendung ist ganz einfach: Handy hineinlegen und den Verschluss schließen, damit es versiegelt bleibt. Zum Entnehmen halten Sie den Magnetverschluss der PhoneRelax-Tasche an einen unserer speziellen Öffnungsmagnete und nehmen das Handy heraus.</p>
+      <p><strong>Technische Daten:</strong></p>
+      <p><strong>Produktmaße:</strong> 12 cm Breite x 24 cm Höhe x 4,5 cm Tiefe<br><strong>Material:</strong> 40 % Neopren, 50 % Polyester und 10 % Kunststoff.<br><strong>Kompatible Handys:</strong> jedes Smartphone mit einem Display bis 6,8 Zoll.<br><strong>Farbe:</strong> schwarz<br><strong>Gewicht:</strong> 82 g</p>
+    HTML
+  }
+}
+product_translations_de.each { |handle, attrs| Product.find_by(shopify_handle: handle)&.update!(attrs) }
+
+post_translations_de = {
+  'cuales-son-las-principales-ventajas-de-prohibir-el-uso-de-telefonos-moviles-ninos-y-adolescentes-en-las-aulas' => {
+    title_de: 'Die Vorteile einer geregelten Handynutzung im Klassenzimmer',
+    excerpt_de: 'Die Handynutzung an Schulen mit den PhoneRelax-Taschen zu regeln hat mehrere klare Vorteile — allen voran die Förderung der Konzentration. Ohne die Ablenkung durch das Handy sind Schülerinnen und Schüler im Unterricht deutlich aufmerksamer',
+    body_de: <<~HTML
+      <p>Die Handynutzung an Schulen für Kinder und Jugendliche mit den PhoneRelax-Taschen zu regeln hat mehrere klare Vorteile — allen voran die <strong>Förderung der Konzentration</strong>. Ohne die Ablenkung durch das Handy sind die Schülerinnen und Schüler im Unterricht aufmerksamer, was ihre Leistungen verbessern kann. Weniger Ablenkung bedeutet mehr Konzentration: Ohne die ständige Versuchung, aufs Handy zu schauen, können sich die Schüler besser auf Aufgaben und Aktivitäten konzentrieren und ihre Aufmerksamkeitsspanne verbessern.</p>
+      <p>Ein weiterer Vorteil ist die <strong>bessere soziale Interaktion</strong>: Wird die Handynutzung begrenzt, sprechen die Schüler mehr von Angesicht zu Angesicht miteinander — das stärkt ihre sozialen Kompetenzen und die Teamfähigkeit.</p>
+      <p>Nachweislich wird auch <strong>Cybermobbing reduziert</strong>: Die eingeschränkte Nutzung elektronischer Geräte kann Fälle von Online-Mobbing und den Zugang zu unangemessenen Inhalten verringern und so zu einem sichereren Schulumfeld beitragen.</p>
+      <p>In der Pause bleibt <strong>mehr Zeit für Bewegung</strong>: Ohne die ständige Gerätenutzung haben die Schüler mehr Zeit für körperliche Aktivitäten — gut für Gesundheit und Wohlbefinden.</p>
+      <p>Ein weiterer Vorteil der begrenzten Handynutzung an Schulen ist die <strong>Entwicklung von Problemlösekompetenzen</strong>: Wer sich weniger auf die Technik verlässt, lernt, Probleme kreativer und mit vielfältigeren Mitteln zu lösen.</p>
+      <p>Bei allen Vorteilen ist auch wichtig, wie das Verbot mobiler Geräte umgesetzt wird — in manchen Fällen können sie unter Aufsicht der Lehrkräfte nützliche Lernwerkzeuge für bestimmte Fächer oder Aufgaben sein.</p>
+    HTML
+  },
+  'ventajas-de-evitar-el-uso-de-moviles-en-conciertos' => {
+    title_de: 'Konzerte ohne Handys oder „Phone-Free Events“',
+    excerpt_de: 'PhoneRelax-Taschen bei Konzerten einzusetzen hat mehrere große Vorteile — zum Beispiel ein intensiveres Erlebnis: Das Publikum kann die Musik, die Atmosphäre und die Verbindung zum Künstler und zu den anderen Besuchern voll genießen.',
+    body_de: <<~HTML
+      <p>PhoneRelax-Taschen einzusetzen, um die Handynutzung bei Konzerten zu verhindern, hat mehrere große Vorteile — zum Beispiel ein <strong>intensiveres Erlebnis</strong>: Das Publikum kann die Musik, die Atmosphäre und die Verbindung zum Künstler und zu den anderen Besuchern voll genießen.</p>
+      <p>Solche Veranstaltungen sind bereits als „Phone-Free Events“ oder „handyfreie Erlebnisse“ bekannt.</p>
+      <p>Einer der wichtigsten Vorteile ist der <strong>Respekt vor dem Künstler</strong>: Die Handynutzung kann sowohl das Publikum als auch den Künstler ablenken. Auf das Handy zu verzichten zeigt Respekt vor der Arbeit des Musikers und lässt alle die Show ohne Unterbrechungen genießen.</p>
+      <p>Bekannt ist der Fall der Sängerin Adele, die einen Besucher ihres Konzerts bat, mit dem Filmen aufzuhören und die Show live zu genießen.</p>
+      <p>Wer nicht auf den Bildschirm starrt, verbessert außerdem die <strong>zwischenmenschliche Verbindung</strong>: Man kommt eher mit den Menschen um sich herum ins Gespräch, knüpft echte Kontakte und teilt besondere Momente mit anderen Fans.</p>
+      <p>Ein weiterer zentraler Punkt ist die <strong>bessere Klangqualität und Sicht auf den Künstler</strong>: Wer das Handy zum Filmen oder Fotografieren hochhält, verdeckt oft die Sicht anderer und mindert die Klangqualität — vor allem aber den direkten Blick auf den Künstler oder das Event.</p>
+      <p>Und nicht zuletzt: <strong>echtere Erinnerungen schaffen</strong>. Statt das ganze Konzert auf dem Handybildschirm festzuhalten, ist es besser, den Moment zu genießen und die Erinnerungen im Kopf zu bewahren — so entstehen lebendigere, authentischere Erinnerungen, die lange bleiben.</p>
+      <p>Auch wenn es verständlich ist, einige Momente des Konzerts festhalten zu wollen: Die Handynutzung zu begrenzen kann das Erlebnis deutlich bereichern — für einen selbst und für alle anderen Besucher.</p>
+      <p><img alt="" src="/images/blog/phonerelax-para-eventos-cuerpo.jpg" style="display: block; margin-left: auto; margin-right: auto;"></p>
+    HTML
+  },
+  'y-que-podemos-hacer-para-evitar-que-los-alumnos-usen-los-telefonos-en-las-aulas' => {
+    title_de: 'Wie man die Handynutzung an weiterführenden Schulen verhindert',
+    excerpt_de: 'Die PhoneRelax-Taschen mit Magnetverschluss, bei denen die Schüler ihre Handys selbst verwahren, ohne in den festgelegten Bereichen darauf zugreifen zu können, sind ein wirksames Mittel, um die Nutzung elektronischer Geräte im Schulumfeld zu regeln. Die Vorteile sind eindeutig',
+    body_de: <<~HTML
+      <p>Die PhoneRelax-Taschen mit Magnetverschluss, bei denen die Schüler ihre Handys selbst verwahren, ohne in den festgelegten Bereichen darauf zugreifen zu können, sind ein wirksames Mittel, um die Nutzung elektronischer Geräte im Schulumfeld zu regeln. Die Vorteile sind eindeutig:</p>
+      <p><strong>Sicherheit und Kontrolle:</strong> Der Magnetverschluss verhindert den Zugriff auf das Handy, solange es verwahrt ist — mehr Sicherheit und Kontrolle über das Gerät während der Schulzeit.</p>
+      <p><strong>Weniger Ablenkung:</strong> Ist das Handy nicht leicht zugänglich, sinken Versuchung und Ablenkungsrisiko im Unterricht — die Schüler können sich besser aufs Lernen konzentrieren. Es gibt sogar eine Version der PhoneRelax-Tasche, die das Signal blockiert: Selbst wenn ein Schüler vergisst, sein Handy stummzuschalten, kommen weder Anrufe noch App-Benachrichtigungen durch.</p>
+      <p><strong>Einheitlichkeit und einfache Verwaltung:</strong> Wenn alle Schüler PhoneRelax-Taschen benutzen, wird die Handhabung für Lehrkräfte und Schulpersonal einfacher — ein einheitliches, klares System für alle.</p>
+      <p><strong>Die Schüler verwahren ihre Handys selbst in ihren PhoneRelax-Taschen:</strong> Wer den Schülern die Verantwortung für das eigene Handy überträgt, vermeidet jedes Problem mit möglichen Geräteschäden — und entlastet Lehrkräfte und Schulpersonal von dieser Verantwortung.</p>
+      <p>Einige Punkte sollten dennoch bedacht werden:</p>
+      <p><strong>Besondere Bedürfnisse:</strong> Manche Schüler müssen wegen medizinischer oder familiärer Notfälle auf ihr Handy zugreifen können. Für solche Situationen sollte es immer eine gewisse Flexibilität geben.</p>
+    HTML
+  }
+}
+post_translations_de.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
+puts "Traducciones DE: #{Product.where.not(name_de: [ nil, '' ]).count} productos, #{Post.where.not(title_de: [ nil, '' ]).count} artículos"

@@ -16,7 +16,7 @@ class CartsController < ApplicationController
     if wanted > product.available_stock
       redirect_to cart_path, alert: "Solo quedan #{product.available_stock} unidades de #{product.name}; hemos ajustado la cantidad."
     else
-      redirect_to cart_path, notice: "#{product.name} añadido al carrito."
+      redirect_to cart_path, notice: t("flash.added_to_cart", name: product.display_name)
     end
   end
 

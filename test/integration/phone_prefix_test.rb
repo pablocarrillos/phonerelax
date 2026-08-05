@@ -47,6 +47,14 @@ class PhonePrefixTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "la tienda funciona en alemán" do
+    get "/de"
+    assert_response :success
+    assert_includes response.body, "In den Warenkorb"
+    get "/de/warenkorb"
+    assert_response :success
+  end
+
   test "la tienda funciona en francés" do
     get "/fr"
     assert_response :success

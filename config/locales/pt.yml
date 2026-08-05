@@ -234,6 +234,7 @@ pt:
     meta_description: "Blog da PhoneRelax: conselhos e ideias sobre o uso responsável do telemóvel em salas de aula, escolas e eventos, e como reduzir as distrações."
   flash:
     cart_empty: O carrinho está vazio.
+    added_to_cart: "%{name} adicionado ao carrinho."
     out_of_stock: "Não há stock suficiente de: %{names}. Ajuste as quantidades."
     zero_quantity: "Indique uma quantidade maior que 0 para: %{names}."
     dtf_min: "A personalização DTF requer pelo menos %{min} unidades na encomenda (tem %{count})."

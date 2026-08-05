@@ -44,7 +44,7 @@ class Order < ApplicationRecord
     "RO" => "+40", "SE" => "+46", "SI" => "+386", "SK" => "+421"
   }.freeze
   # País del prefijo precargado según el idioma en que se navega.
-  LOCALE_PHONE_COUNTRY = { "es" => "ES", "pt" => "PT", "en" => "GB", "fr" => "FR" }.freeze
+  LOCALE_PHONE_COUNTRY = { "es" => "ES", "pt" => "PT", "en" => "GB", "fr" => "FR", "de" => "DE" }.freeze
 
   # Plantillas de URL de seguimiento por transportista (se detecta por el nombre).
   CARRIER_TRACKING_URLS = {

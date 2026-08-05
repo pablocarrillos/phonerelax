@@ -239,6 +239,7 @@ en:
     meta_description: "PhoneRelax blog: tips and ideas on responsible phone use in classrooms, schools and events, and how to reduce distractions."
   flash:
     cart_empty: Your cart is empty.
+    added_to_cart: "%{name} added to the cart."
     out_of_stock: "Not enough stock of: %{names}. Please adjust the quantities."
     zero_quantity: "Enter a quantity greater than 0 for: %{names}."
     dtf_min: "DTF personalization requires at least %{min} units in the order (you have %{count})."

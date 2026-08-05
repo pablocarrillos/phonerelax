@@ -1,0 +1,373 @@
+de:
+  # Segmentos de URL traducidos (route_translator). Lo que no aparece, se deja igual.
+  routes:
+    politica-privacidad: datenschutz
+    presupuesto: angebot
+    colegios: schulen
+    eventos: veranstaltungen
+    empresas: unternehmen
+    oposiciones: pruefungen
+    carrito: warenkorb
+    anadir: hinzufuegen
+    cantidad: menge
+    quitar: entfernen
+    pedido: bestellung
+    nuevo: neu
+    pagar: bezahlen
+    pago-ok: zahlung-ok
+    pago-cancelado: zahlung-abgebrochen
+    como-funciona: wie-es-funktioniert
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      long: "%-d. %B %Y"
+    month_names: [~, Januar, Februar, März, April, Mai, Juni, Juli, August, September, Oktober, November, Dezember]
+    day_names: [Sonntag, Montag, Dienstag, Mittwoch, Donnerstag, Freitag, Samstag]
+    abbr_day_names: [So, Mo, Di, Mi, Do, Fr, Sa]
+    abbr_month_names: [~, Jan, Feb, Mär, Apr, Mai, Jun, Jul, Aug, Sep, Okt, Nov, Dez]
+  time:
+    formats:
+      short: "%d.%m.%Y %H:%M"
+      long: "%-d. %B %Y um %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Name
+        email: E-Mail
+        phone: Telefon
+        address: Adresse
+        city: Stadt
+        postal_code: Postleitzahl
+        province: Provinz
+        country: Land
+      product:
+        name: Name
+        price: Preis
+      quote:
+        delivery_terms: Lieferfrist
+      user:
+        email_address: E-Mail
+        password: Passwort
+        password_confirmation: Passwortbestätigung
+    errors:
+      messages:
+        blank: darf nicht leer sein
+        invalid: ist ungültig
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      confirmation: stimmt nicht überein
+
+  nav:
+    home: Startseite
+    how_it_works: "Wie funktioniert es?"
+    products: Produkte
+    bulk: Großbestellungen
+    blog: Blog
+    contact: Kontakt
+    cart: Warenkorb
+    admin: Admin
+    privacy: Datenschutzerklärung
+  footer:
+    tagline: PhoneRelax — Räume ohne Handys.
+    admin: Verwaltung
+  common:
+    add_to_cart: In den Warenkorb
+    sold_out: Ausverkauft
+    back: Zurück
+    our_products: Unsere Produkte
+    view_products: Produkte ansehen
+    keep_shopping: Weiter einkaufen
+    checkout: Zur Kasse
+    product: Produkt
+    price: Preis
+    quantity: Menge
+    subtotal: Zwischensumme
+    total: Gesamt
+    vat_included: "inkl. MwSt. (%{rate}%)"
+    vat_rate: "MwSt. (%{rate}%)"
+    vat_included_short: inkl. MwSt.
+    whatsapp_aria: Schreiben Sie uns auf WhatsApp
+    update: Aktualisieren
+    remove: Entfernen
+    prev: Zurück
+    next: Weiter
+    slide: "Folie %{n}"
+    play_video: Video abspielen
+    image_n: "Bild %{n}"
+    main_nav: Hauptnavigation
+    breadcrumb: Brotkrumennavigation
+    language: Sprache
+    country: Spanien
+    trusted_by: "Diese Kunden vertrauen bereits auf PhoneRelax"
+    site_title: "PhoneRelax - Magnetische Handytasche für Klassenzimmer und Veranstaltungen."
+    site_description: "PhoneRelax: magnetische Taschen zum Aufbewahren des Handys und Blockieren des Signals in Klassenzimmern, bei Veranstaltungen und in ablenkungsfreien Räumen. Lieferung in die ganze EU."
+  home:
+    slide1: Mehr Konzentration und Austausch im Klassenzimmer
+    slide2: "Verhindern Sie die Handynutzung <br>in unbeaufsichtigten Bereichen"
+    slide3: "Jeder Nutzer verwahrt <br>sein eigenes Handy"
+    slide4: "Genießen Sie den Moment <br>ohne Ablenkungen"
+    how_title: "Wie funktioniert es?"
+    step1_title: "1 · Handy in die Tasche legen"
+    step1_body: "Legen Sie das Handy in die PhoneRelax-Tasche. Ab diesem Moment bleibt es je nach Taschentyp mit oder ohne Empfang."
+    step2_title: "2 · PhoneRelax-Tasche verschließen"
+    step2_body: "Drücken Sie den Knopf des Verschlusses und das Handy bleibt versiegelt in der Tasche. Der Besitzer behält sein Handy jederzeit bei sich."
+    step3_title: "3 · PhoneRelax-Tasche öffnen"
+    step3_body: "Um das Handy zu entnehmen, halten Sie den Verschluss einfach an einen der speziellen PhoneRelax-Öffnungsmagnete und nehmen das Handy heraus."
+    schools_title: PhoneRelax für Schulen
+    products_title: Produkte
+    events_title: PhoneRelax für Veranstaltungen
+    blog_title: Unser Blog
+    bulk_cta_title: "Eine Schule, ein Unternehmen oder eine Veranstaltung?"
+    bulk_cta_body: "Mengenrabatte und Personalisierung mit Ihrem Logo für Großbestellungen."
+    bulk_cta_button: "Angebot anfordern"
+    meta_description: "Magnetische PhoneRelax-Taschen zum Aufbewahren des Handys und Blockieren des Signals in Klassenzimmern, Schulen, bei Veranstaltungen und in ablenkungsfreien Räumen. Einfach zu benutzen, Lieferung in die ganze EU."
+  steps:
+    title: "Nur drei Schritte:"
+    step1_title: "1 · Handy in die Tasche legen"
+    step1_body: "Legen Sie das Handy in die PhoneRelax-Tasche. Ab diesem Moment bleibt es je nach PhoneRelax-Taschentyp mit oder ohne Empfang."
+    step2_title: "2 · PhoneRelax-Tasche verschließen"
+    step2_body: "Drücken Sie den Knopf des Verschlusses der PhoneRelax-Tasche und das Handy bleibt versiegelt in der Tasche. Der Besitzer behält sein Handy jederzeit bei sich."
+    step3_title: "3 · PhoneRelax-Tasche öffnen"
+    step3_body: "Um das Handy aus der PhoneRelax-Tasche zu nehmen, halten Sie den Verschluss einfach an einen der speziellen PhoneRelax-Öffnungsmagnete und entnehmen das Handy."
+    step1_alt: Handy in die Tasche legen
+    step2_alt: PhoneRelax-Tasche verschließen
+    step3_alt: PhoneRelax-Tasche öffnen
+  product:
+    unavailable: Dieses Produkt ist derzeit nicht verfügbar.
+    pack_includes: Das enthält dieses Set
+    pack_normal: Einzelpreis
+    pack_in_pack: Im Set
+    pack_saving: Ersparnis
+    pack_max: "max. %{n}"
+    pack_saving_total: "Sie sparen %{amount}, wenn Sie das Set statt der einzelnen Produkte kaufen."
+  cart:
+    title: Ihr Warenkorb
+    empty: Der Warenkorb ist leer.
+  checkout:
+    title: Zur Kasse
+    base: Nettobetrag
+    vat: MwSt.
+    total_vat: Gesamt (inkl. MwSt.)
+    total_exempt: Gesamt (ohne MwSt.)
+    shipping_note: Die Versandkosten werden nach Eingabe der Lieferadresse berechnet.
+    your_data: Ihre Daten
+    customer_name: Vor- und Nachname
+    email: E-Mail
+    phone: Telefon
+    phone_prefix: Ländervorwahl
+    address: Lieferadresse
+    city: Stadt
+    postal_code: Postleitzahl
+    province: Provinz / Region
+    country: Land
+    submit: Versandkosten berechnen
+    needs_invoice: Ich benötige eine Rechnung
+    invoice_note: Geben Sie Ihre Steuerdaten ein. Wenn Sie ein Unternehmen aus einem anderen EU-Land sind, geben Sie Ihre USt-IdNr. an, damit wir sie in VIES prüfen können.
+    tax_name: Name oder Firmenname
+    tax_id: NIF / Steuernummer oder USt-IdNr.
+    tax_same_as_shipping: Lieferadresse als Rechnungsadresse verwenden
+    tax_address: Rechnungsadresse
+    tax_city: Stadt
+    tax_postal_code: Postleitzahl
+    tax_province: Provinz / Region
+    tax_country: Land
+    vies_checking: Prüfung in VIES…
+    vies_ok: "✓ USt-IdNr. in VIES gültig"
+    vies_ko: "✗ USt-IdNr. in VIES nicht gültig"
+    vies_unavailable: Prüfung derzeit nicht möglich; wir prüfen sie bei der Bearbeitung der Bestellung.
+  order:
+    title: "Bestellung %{number}"
+    thanks_title: "Vielen Dank für Ihren Einkauf, %{name}!"
+    thanks_text: "Ihre Zahlung ist eingegangen. Wir haben die Bestätigung an %{email} gesendet und benachrichtigen Sie, sobald Ihre Bestellung unterwegs ist."
+    payment: "Zahlung:"
+    status: "Status:"
+    shipping: Versand
+    save_note: Speichern Sie diese Seite, um den Status Ihrer Bestellung zu verfolgen.
+    statuses:
+      creado: Erstellt
+      enviado: Versandt
+      recibido: Zugestellt
+    payment_statuses:
+      pendiente: ausstehend
+      pagado: bezahlt
+      reembolsado: erstattet
+  vat_exempt:
+    export: "Mehrwertsteuerfreier Verkauf: Versand auf die Kanarischen Inseln (Ausfuhr). Etwaige Einfuhrabgaben (IGIC/Zoll) trägt der Empfänger."
+    intra_eu: "Mehrwertsteuerfreier Verkauf: innergemeinschaftliche Lieferung an ein Unternehmen mit in VIES geprüfter USt-IdNr. (Art. 25 des spanischen MwSt.-Gesetzes)."
+  pay:
+    title: Bestellung prüfen und bezahlen
+    order_shipping: "Bestellung %{number} · Lieferung nach %{destination}"
+    shipping: Versand
+    total_to_pay: Zu zahlender Betrag (inkl. MwSt.)
+    total_exempt: Zu zahlender Betrag (ohne MwSt.)
+    stripe_note: "Mit einem Klick auf „Bezahlen“ werden Sie zum sicheren Zahlungsdienst von Stripe weitergeleitet."
+    pay_button: Bezahlen
+  contact:
+    title: Kontakt
+    about: "PhoneRelax hat seinen Sitz in Alicante (Spanien) und wurde gegründet, um die Probleme rund um die Handynutzung in Schulen, bei Konzerten und privaten Veranstaltungen zu lösen."
+    map_title: "Karte: C/ Carrasqueta 13, Petrer"
+    intro_html: "Schreiben Sie uns und wir antworten Ihnen so schnell wie möglich:"
+    form_title: Kontaktformular
+    name: Name
+    email: "E-Mail-Adresse *"
+    phone: Telefonnummer
+    message: Nachricht
+    submit: Senden
+    meta_description: "Fragen oder ein Angebot für Ihre Schule oder Veranstaltung? Kontaktieren Sie PhoneRelax und wir helfen Ihnen, die passende Lösung zu finden."
+  how_it_works:
+    title: "Wie funktioniert es?"
+    p1: "Ganz einfach: Legen Sie das Handy in die PhoneRelax-Tasche und drücken Sie den Knopf des Verschlusses, damit das Handy versiegelt in der Tasche bleibt."
+    p2: "Der größte Vorteil: Der Besitzer des Handys verwahrt sein Gerät selbst in der PhoneRelax-Tasche, bis es wieder benutzt werden darf."
+    p3: "Um das Handy freizugeben, halten Sie den Verschluss der PhoneRelax-Tasche einfach an unseren speziellen PhoneRelax-Magneten, öffnen die Tasche und entnehmen das Handy."
+    p4: "Es gibt zwei Varianten der PhoneRelax-Tasche: eine Version mit Tasche und Siegelverschluss und eine SignalBlocking-Version, die zusätzlich Mobilfunk- und WLAN-Signal blockiert; das Handy bleibt ohne Empfang und stört weder durch Anrufe noch durch Benachrichtigungen."
+    video_alt: PhoneRelax-Video
+    faq_title: Häufige Fragen
+    meta_description: "So funktioniert PhoneRelax: Handy in die Magnettasche legen, verschließen und zum vereinbarten Zeitpunkt wieder entnehmen. Ein einfacher Weg zu ablenkungsfreien Klassenzimmern und Veranstaltungen."
+    faq:
+      q1: "Wie funktioniert die PhoneRelax-Tasche?"
+      a1: "Sie legen das Handy in die Tasche und drücken den Knopf des Verschlusses, damit es versiegelt bleibt. Zum Öffnen halten Sie den Verschluss an den speziellen PhoneRelax-Magneten und die Tasche öffnet sich."
+      q2: "Wer verwahrt das Handy?"
+      a2: "Der Besitzer selbst: Er behält es in seiner PhoneRelax-Tasche, bis es wieder benutzt werden darf."
+      q3: "Blockiert PhoneRelax Empfang und WLAN?"
+      a3: "Die SignalBlocking-Version ja: Sie blockiert Mobilfunk- und WLAN-Signal, das Handy bleibt ohne Empfang und stört weder durch Anrufe noch durch Benachrichtigungen. Die Basisversion versiegelt nur die Tasche."
+      q4: "Kann man die Tasche ohne den Magneten öffnen?"
+      a4: "Nein. Der Verschluss der PhoneRelax-Tasche öffnet sich nur, wenn man ihn an den speziellen PhoneRelax-Magneten hält."
+      q5: "Wo wird PhoneRelax eingesetzt?"
+      a5: "In Klassenzimmern und Schulen sowie bei Veranstaltungen und in Räumen, in denen Handynutzung und Ablenkungen vermieden werden sollen."
+  blog:
+    title: Blog
+    read_article: "Artikel lesen →"
+    meta_description: "Der PhoneRelax-Blog: Tipps und Ideen zum verantwortungsvollen Umgang mit dem Handy in Klassenzimmern, Schulen und bei Veranstaltungen — und wie man Ablenkungen reduziert."
+  flash:
+    cart_empty: Der Warenkorb ist leer.
+    added_to_cart: "%{name} wurde in den Warenkorb gelegt."
+    out_of_stock: "Nicht genügend Bestand für: %{names}. Bitte passen Sie die Mengen an."
+    zero_quantity: "Bitte geben Sie eine Menge größer als 0 an für: %{names}."
+    dtf_min: "Die DTF-Personalisierung erfordert mindestens %{min} Einheiten in der Bestellung (Sie haben %{count})."
+    dtf_mismatch: "Die Anzahl der DTF-Personalisierungen (%{dtf}) muss der Anzahl der Taschen (%{fundas}) entsprechen. Bitte passen Sie die Mengen an."
+    payment_cancelled: Zahlung abgebrochen. Sie können es jederzeit erneut versuchen.
+    verify_failed: Die Übermittlung konnte nicht überprüft werden. Bitte versuchen Sie es erneut.
+    message_sent: Nachricht gesendet. Wir antworten Ihnen so schnell wie möglich.
+    quote_sent: Anfrage gesendet. Wir senden Ihnen Ihr Angebot so schnell wie möglich.
+    payment_start_failed: "Die Zahlung konnte nicht gestartet werden: %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Zahlung für Ihre Bestellung %{number} eingegangen"
+      title: "Vielen Dank für Ihren Einkauf, %{name}!"
+      body_html: "Wir haben die Zahlung für Ihre Bestellung <strong>%{number}</strong> erhalten. Wir bereiten sie vor und benachrichtigen Sie, sobald sie unterwegs ist."
+      track: Meine Bestellung verfolgen
+    shipped:
+      subject: "PhoneRelax · Ihre Bestellung %{number} ist unterwegs"
+      title: "Ihre Bestellung ist unterwegs 📦"
+      body_html: "Hallo %{name}, Ihre Bestellung <strong>%{number}</strong> ist unterwegs an:"
+      track: Meine Bestellung verfolgen
+      tracking_label: Sendungsnummer
+    payment_reminder:
+      subject: "PhoneRelax · Ihre Bestellung %{number} wartet auf die Zahlung"
+      title: "Ihre Bestellung wartet auf Sie"
+      body_html: "Hallo %{name}, Ihre Bestellung <strong>%{number}</strong> ist vorbereitet, aber noch nicht bezahlt. Sie können die Zahlung jederzeit abschließen:"
+      pay: Zahlung abschließen
+      no_action: "Wenn Sie die Bestellung nicht mehr wünschen, müssen Sie nichts weiter tun."
+    refunded:
+      subject: "PhoneRelax · Erstattung für Ihre Bestellung %{number}"
+      title: "Wir haben eine Erstattung veranlasst"
+      body_html: "Hallo %{name}, wir haben Ihnen <strong>%{amount}</strong> für Ihre Bestellung <strong>%{number}</strong> erstattet."
+      full_note: "Mit dieser Erstattung ist Ihre Bestellung vollständig erstattet."
+      partial_note: "Der Rest Ihrer Bestellung bleibt unverändert."
+      card_note: "Der Betrag wird der Karte gutgeschrieben, mit der Sie bezahlt haben; je nach Bank kann es 5–10 Werktage dauern, bis er angezeigt wird."
+      track: "Meine Bestellung ansehen"
+    summary:
+      shipping: Versand
+      total: Gesamt (inkl. MwSt.)
+  quote:
+    meta_title: "Angebot für Schulen, Unternehmen und Veranstaltungen"
+    meta_description: "Großbestellungen von PhoneRelax-Taschen mit Mengenrabatten und Personalisierung mit Ihrem Logo. Fordern Sie ein Angebot für Ihre Schule, Ihr Unternehmen oder Ihre Veranstaltung an."
+    title: "Großbestellungen für Schulen, Unternehmen und Veranstaltungen"
+    subtitle: "Mengenrabatte, Personalisierung mit Ihrem Logo und Rechnung. Sagen Sie uns, was Sie brauchen, und wir erstellen Ihnen ein maßgeschneidertes Angebot."
+    benefits_title: "Warum PhoneRelax"
+    b1_title: "Mengenrabatte"
+    b1_body: "Je mehr Taschen, desto besser der Preis. Ideal, um ganze Klassen, Teams oder komplette Veranstaltungen auszustatten."
+    b2_title: "Personalisierung mit Ihrem Logo"
+    b2_body: "Wir personalisieren die Taschen mit dem Logo, den Farben oder dem Design Ihrer Schule, Ihres Unternehmens oder Ihrer Veranstaltung."
+    b3_title: "Direktkauf, ohne Wartezeit"
+    b3_body: "Kleine Bestellungen kaufen Sie sofort im Shop; für große Mengen erstellen wir Ihnen ein Angebot innerhalb von 24–48 Stunden."
+    b4_title: "Version mit Signalblockierung"
+    b4_body: "Die SignalBlocking-Version lässt das Handy ohne Empfang und WLAN: keine störenden Anrufe oder Benachrichtigungen."
+    sectors_title: "Lösungen nach Branche"
+    sector_colegio: "Schulen: Klassenzimmer ohne Ablenkungen und Prüfungen ohne Betrug."
+    sector_empresa: "Unternehmen: Besprechungen, Werksbesichtigungen und vertrauliche Bereiche."
+    sector_evento: "Veranstaltungen und Konzerte: Erlebnisse ohne Handys und ohne Spoiler."
+    sector_academia: "Bildungszentren und Universitäten: Prüfungen und Auswahlverfahren."
+    customization_title: "Personalisierung mit Ihrer Marke"
+    customization_body: "Wir versehen die Taschen mit Ihrem Logo und Ihren Farben. Beschreiben Sie Ihr Projekt im Formular und wir zeigen Ihnen Beispiele und Optionen."
+    customization_alt: "Personalisierte PhoneRelax-Tasche für %{name}"
+    form_title: "Fordern Sie Ihr Angebot an"
+    form_intro: "Antwort innerhalb von 24–48 Stunden (werktags)."
+    f_name: "Vor- und Nachname"
+    f_organization: "Schule / Unternehmen / Organisation"
+    f_email: "E-Mail"
+    f_phone: "Telefon"
+    f_sector: "Art der Organisation"
+    f_units: "Ungefähre Stückzahl"
+    f_message: "Sagen Sie uns, was Sie brauchen"
+    submit: "Angebot anfordern"
+    sectors:
+      colegio: "Schule / Gymnasium"
+      empresa: "Unternehmen"
+      evento: "Veranstaltung / Konzert"
+      academia: "Bildungszentrum / Universität"
+      otro: "Sonstiges"
+  sectors:
+    cta_buy: "Produkte ansehen"
+    cta_quote: "Angebot anfordern"
+    cta_title: "Bereit loszulegen?"
+    cta_body: "Direktkauf für kleine Bestellungen oder Angebot für Ihre Organisation."
+    colegios:
+      meta_title: "PhoneRelax für Schulen"
+      meta_description: "Klassenzimmer ohne Ablenkungen und Prüfungen ohne Betrug: Jeder Schüler verwahrt sein Handy in einer magnetischen PhoneRelax-Tasche. Mengenrabatte für Schulen."
+      title: "PhoneRelax für Schulen"
+      subtitle: "Klassenzimmer ohne Ablenkungen und Prüfungen ohne Betrug — jeder Schüler verwahrt sein eigenes Handy."
+      intro: "Immer mehr Länder beschränken die Handynutzung im Unterricht — in Deutschland haben mehrere Bundesländer verbindliche Verbote eingeführt. Mit PhoneRelax verwahrt jeder Schüler sein Handy in einer Magnettasche, die sich nur mit dem Magneten der Schule öffnen lässt: kein Einsammeln der Handys und keine Verantwortung für die Lehrkräfte."
+      b1_title: "Mehr Konzentration"
+      b1_body: "Ohne die Versuchung, aufs Handy zu schauen, sind die Schüler aufmerksamer und beteiligen sich mehr am Unterricht."
+      b2_title: "Prüfungen ohne Betrug"
+      b2_body: "Die SignalBlocking-Version lässt das Handy ohne Empfang und WLAN und verhindert Abschreiben oder Benachrichtigungen während der Prüfungen."
+      b3_title: "Keine Verantwortung für die Lehrkraft"
+      b3_body: "Jeder Schüler verwahrt sein eigenes Handy in seiner Tasche; die Schule haftet nicht für etwaige Schäden."
+    eventos:
+      meta_title: "PhoneRelax für Veranstaltungen und Konzerte"
+      meta_description: "Handyfreie Erlebnisse bei Konzerten und Veranstaltungen: keine Aufnahmen, keine Spoiler, schnelle Ausgabe und Rücknahme. Fordern Sie ein Angebot für Ihre Veranstaltung an."
+      title: "PhoneRelax für Veranstaltungen und Konzerte"
+      subtitle: "Handyfreie Erlebnisse: keine Aufnahmen, keine Spoiler und ein Publikum, das den Moment genießt."
+      intro: "Handyfreie Veranstaltungen („phone-free events“) liegen im Trend. Mit PhoneRelax verwahren die Teilnehmer ihr Handy in einer versiegelten Tasche, die sie am Ausgang öffnen: Sie genießen die Show und respektieren den Künstler."
+      b1_title: "Ein intensiveres Erlebnis"
+      b1_body: "Ohne Bildschirme erlebt das Publikum den Moment und verbindet sich mit dem Künstler und den anderen Teilnehmern."
+      b2_title: "Keine Leaks, keine Spoiler"
+      b2_body: "Ideal für Previews, Shows und Präsentationen, bei denen nichts aufgenommen oder verbreitet werden soll."
+      b3_title: "Schnelle Ausgabe und Rücknahme"
+      b3_body: "Ein einfaches System: Ausgabe am Eingang, Öffnung mit dem Magneten am Ausgang — ohne Warteschlangen und Komplikationen."
+    empresas:
+      meta_title: "PhoneRelax für Unternehmen"
+      meta_description: "Besprechungen, Werksbesichtigungen und vertrauliche Bereiche ohne Handys und Kameras. Magnetische PhoneRelax-Taschen mit Angebot für Unternehmen."
+      title: "PhoneRelax für Unternehmen"
+      subtitle: "Besprechungen, Werksbesichtigungen und vertrauliche Bereiche ohne Handys und Kameras."
+      intro: "Schützen Sie Vertraulichkeit und Konzentration in Ihrem Unternehmen. Besucher und Mitarbeiter verwahren ihr Handy in einer versiegelten Tasche in den Bereichen, in denen es nicht benutzt werden darf."
+      b1_title: "Vertraulichkeit"
+      b1_body: "Verhindern Sie Fotos und Aufnahmen in sensiblen Bereichen, Laboren, Produktionslinien oder strategischen Besprechungen."
+      b2_title: "Produktivere Besprechungen"
+      b2_body: "Ohne Unterbrechungen und Ablenkungen sind Besprechungen kürzer und effektiver."
+      b3_title: "Einfach einzuführen"
+      b3_body: "Keine Schließfächer, keine Infrastruktur: wiederverwendbare Taschen und ein Öffnungsmagnet pro Bereich."
+    oposiciones:
+      meta_title: "PhoneRelax für Prüfungen und Auswahlverfahren"
+      meta_description: "Prüfungen und Auswahlverfahren ohne Betrug: Die Handys bleiben versiegelt und ohne Empfang in einer magnetischen PhoneRelax-Tasche. Angebot für Bildungszentren und Prüfungskommissionen."
+      title: "PhoneRelax für Prüfungen und Auswahlverfahren"
+      subtitle: "Prüfungen ohne Betrug: Die Handys bleiben während der Prüfung versiegelt und ohne Empfang."
+      intro: "Bei Prüfungen und Auswahlverfahren ist das Handy der häufigste Betrugsweg. Mit der SignalBlocking-Version von PhoneRelax bleibt das Handy bis zum Ende der Prüfung versiegelt und ohne Signal."
+      b1_title: "Kein Empfang, kein Betrug"
+      b1_body: "Die SignalBlocking-Version blockiert Mobilfunk- und WLAN-Signal: keine Antworten oder Benachrichtigungen von außen."
+      b2_title: "Der Prüfling verwahrt sein Handy selbst"
+      b2_body: "Jeder verwahrt sein Handy in seiner eigenen Tasche: schnelle Ausgabe und kein Hantieren mit fremden Geräten."
+      b3_title: "Einfache Handhabung für die Prüfungskommission"
+      b3_body: "Ausgabe beim Einlass und Öffnung mit dem Magneten am Ausgang; ein einheitliches, klares System für alle."
