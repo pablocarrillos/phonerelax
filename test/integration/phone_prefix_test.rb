@@ -51,7 +51,7 @@ class PhonePrefixTest < ActionDispatch::IntegrationTest
     get "/fr"
     assert_response :success
     assert_includes response.body, "Ajouter au panier"
-    get "/fr/pedido/nuevo"
+    get "/fr/commande/nouvelle"
     assert_response :redirect # carrito vacío: redirige al carrito
   end
 end

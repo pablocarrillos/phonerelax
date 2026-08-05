@@ -5,7 +5,7 @@ class ApplicationMailer < ActionMailer::Base
   # Añade el prefijo de idioma a las URLs de los correos según el idioma activo
   # (el español, idioma por defecto, va sin prefijo). Conserva el host de la config.
   def default_url_options
-    loc = I18n.locale == I18n.default_locale ? nil : I18n.locale
-    (self.class.default_url_options || {}).merge(locale: loc)
+    base = self.class.default_url_options || {}
+    I18n.locale == I18n.default_locale ? base : base.merge(locale: I18n.locale.to_s)
   end
 end

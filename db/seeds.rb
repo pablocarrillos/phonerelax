@@ -430,7 +430,7 @@ normativa.assign_attributes(
       <li>É um sistema <strong>uniforme e simples</strong> para toda a escola, fácil de aplicar todos os dias.</li>
     </ul>
     <h2>Antes de decidir</h2>
-    <p>A regulamentação está a evoluir de ano para ano — o alargamento ao 9.º ano é a prova disso — por isso convém acompanhar as novidades e refletir as regras no regulamento interno da escola. Se procura uma forma prática de as cumprir, a <a href="/pt/colegios">PhoneRelax para escolas</a> ajuda a criar salas de aula sem distrações. Precisa de equipar várias salas? <a href="/pt/presupuesto">Peça orçamento</a>.</p>
+    <p>A regulamentação está a evoluir de ano para ano — o alargamento ao 9.º ano é a prova disso — por isso convém acompanhar as novidades e refletir as regras no regulamento interno da escola. Se procura uma forma prática de as cumprir, a <a href="/pt/escolas">PhoneRelax para escolas</a> ajuda a criar salas de aula sem distrações. Precisa de equipar várias salas? <a href="/pt/orcamento">Peça orçamento</a>.</p>
   HTML_PT
   body_en: <<~HTML_EN,
     <p>Mobile phone use in class has become one of the biggest debates in Spain's education community. In recent years, most education authorities have moved from recommendation to <strong>restriction</strong>, and many schools are looking for the best way to apply it day to day.</p>
@@ -455,7 +455,7 @@ normativa.assign_attributes(
       <li>It's a <strong>uniform, simple</strong> system for the whole school, easy to apply every day.</li>
     </ul>
     <h2>Before you decide</h2>
-    <p>The specific rules depend on each autonomous community and can change from one school year to the next, so it's worth checking your region's and reflecting it in your school's regulations. If you're looking for a practical way to comply, <a href="/en/colegios">PhoneRelax for schools</a> helps you create distraction-free classrooms. Need to equip several classrooms? <a href="/en/presupuesto">Request a quote</a>.</p>
+    <p>The specific rules depend on each autonomous community and can change from one school year to the next, so it's worth checking your region's and reflecting it in your school's regulations. If you're looking for a practical way to comply, <a href="/en/schools">PhoneRelax for schools</a> helps you create distraction-free classrooms. Need to equip several classrooms? <a href="/en/quote">Request a quote</a>.</p>
   HTML_EN
   body_fr: <<~HTML_FR
     <p>La France a été pionnière en Europe : le téléphone portable est <strong>interdit à l'école et au collège depuis 2018</strong>, et depuis la rentrée 2025 la « pause numérique » généralise la mise à l'écart physique des téléphones dans les collèges. Voici ce que dit la réglementation et comment l'appliquer au quotidien.</p>
@@ -475,7 +475,7 @@ normativa.assign_attributes(
       <li>C'est un système <strong>uniforme et simple</strong> pour tout l'établissement, facile à appliquer chaque jour.</li>
     </ul>
     <h2>Avant de décider</h2>
-    <p>La réglementation évolue d'une rentrée à l'autre — la généralisation de la « pause numérique » en est la preuve — il convient donc de suivre les nouveautés et de les refléter dans le règlement intérieur de l'établissement. Si vous cherchez un moyen pratique de les appliquer, <a href="/fr/colegios">PhoneRelax pour les établissements scolaires</a> vous aide à créer des classes sans distractions. Besoin d'équiper plusieurs classes ? <a href="/fr/presupuesto">Demandez un devis</a>.</p>
+    <p>La réglementation évolue d'une rentrée à l'autre — la généralisation de la « pause numérique » en est la preuve — il convient donc de suivre les nouveautés et de les refléter dans le règlement intérieur de l'établissement. Si vous cherchez un moyen pratique de les appliquer, <a href="/fr/ecoles">PhoneRelax pour les établissements scolaires</a> vous aide à créer des classes sans distractions. Besoin d'équiper plusieurs classes ? <a href="/fr/devis">Demandez un devis</a>.</p>
   HTML_FR
 )
 normativa.save!

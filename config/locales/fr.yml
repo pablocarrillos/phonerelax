@@ -1,4 +1,22 @@
 fr:
+  # Segmentos de URL traducidos (route_translator). Lo que no aparece, se deja igual.
+  routes:
+    politica-privacidad: politique-de-confidentialite
+    presupuesto: devis
+    colegios: ecoles
+    eventos: evenements
+    empresas: entreprises
+    oposiciones: concours
+    carrito: panier
+    anadir: ajouter
+    cantidad: quantite
+    quitar: retirer
+    pedido: commande
+    nuevo: nouvelle
+    pagar: payer
+    pago-ok: paiement-ok
+    pago-cancelado: paiement-annule
+    como-funciona: comment-ca-marche
   date:
     formats:
       default: "%d/%m/%Y"
@@ -68,6 +86,7 @@ fr:
     total: Total
     vat_included: "TVA (%{rate}%) incluse"
     vat_rate: "TVA (%{rate}%)"
+    vat_included_short: TVA incluse
     whatsapp_aria: Écrivez-nous sur WhatsApp
     update: Mettre à jour
     remove: Retirer

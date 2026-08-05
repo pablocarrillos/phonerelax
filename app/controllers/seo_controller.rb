@@ -25,9 +25,10 @@ class SeoController < ApplicationController
   end
   helper_method :canonical_base
 
-  # Prefijo de idioma en la ruta (el español, por defecto, va sin prefijo).
-  def locale_prefix(locale)
-    locale == I18n.default_locale ? "" : "/#{locale}"
+  # Ruta de una página en un idioma dado, con sus segmentos traducidos
+  # (route_translator resuelve el helper según el idioma activo).
+  def path_in_locale(locale, &block)
+    I18n.with_locale(locale, &block)
   end
 
   # Una entrada del sitemap: URLs absolutas de la página en cada idioma.
@@ -39,24 +40,23 @@ class SeoController < ApplicationController
 
   def sitemap_entries
     entries = []
-    entries << sitemap_entry(priority: "1.0", changefreq: "weekly") { |l| locale_prefix(l).presence || "/" }
+    entries << sitemap_entry(priority: "1.0", changefreq: "weekly") { |l| path_in_locale(l) { root_path } }
 
-    { "/pages/como-funciona" => "0.7", "/presupuesto" => "0.8",
-      "/colegios" => "0.8", "/eventos" => "0.8", "/empresas" => "0.8", "/oposiciones" => "0.8",
-      "/blogs/news" => "0.7",
-      "/pages/contact" => "0.5", "/politica-privacidad" => "0.3" }.each do |path, pr|
-      entries << sitemap_entry(priority: pr, changefreq: "monthly") { |l| "#{locale_prefix(l)}#{path}" }
+    { como_funciona: "0.7", quote: "0.8",
+      sector_colegios: "0.8", sector_eventos: "0.8", sector_empresas: "0.8", sector_oposiciones: "0.8",
+      blog: "0.7", contacto: "0.5", privacidad: "0.3" }.each do |helper, pr|
+      entries << sitemap_entry(priority: pr, changefreq: "monthly") { |l| path_in_locale(l) { public_send("#{helper}_path") } }
     end
 
     Product.where(active: true).order(:position).each do |product|
       entries << sitemap_entry(lastmod: product.updated_at.to_date.iso8601, priority: "0.9", changefreq: "weekly") do |l|
-        "#{locale_prefix(l)}/products/#{product.to_param}"
+        path_in_locale(l) { product_page_path(product) }
       end
     end
 
     Post.order(created_at: :desc).each do |post|
       entries << sitemap_entry(lastmod: post.updated_at.to_date.iso8601, priority: "0.6", changefreq: "monthly") do |l|
-        "#{locale_prefix(l)}/blogs/news/#{post.slug_for(l)}"
+        path_in_locale(l) { blog_post_path(slug: post.slug_for(l)) }
       end
     end
 

@@ -1,4 +1,22 @@
 en:
+  # Segmentos de URL traducidos (route_translator). Lo que no aparece, se deja igual.
+  routes:
+    politica-privacidad: privacy-policy
+    presupuesto: quote
+    colegios: schools
+    eventos: events
+    empresas: companies
+    oposiciones: exams
+    carrito: cart
+    anadir: add
+    cantidad: quantity
+    quitar: remove
+    pedido: order
+    nuevo: new
+    pagar: pay
+    pago-ok: payment-ok
+    pago-cancelado: payment-cancelled
+    como-funciona: how-it-works
   date:
     formats:
       default: "%d/%m/%Y"
@@ -66,6 +84,7 @@ en:
     total: Total
     vat_included: "VAT (%{rate}%) included"
     vat_rate: "VAT (%{rate}%)"
+    vat_included_short: VAT included
     whatsapp_aria: Message us on WhatsApp
     update: Update
     remove: Remove

@@ -68,6 +68,7 @@ es:
     total: Total
     vat_included: "IVA (%{rate}%) incluido"
     vat_rate: "IVA (%{rate}%)"
+    vat_included_short: IVA incluido
     whatsapp_aria: Escríbenos por WhatsApp
     update: Actualizar
     remove: Quitar

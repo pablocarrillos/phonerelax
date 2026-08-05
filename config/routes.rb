@@ -5,19 +5,20 @@ Rails.application.routes.draw do
   # Comprobación en vivo de un NIF-IVA europeo contra VIES (JSON, desde el checkout).
   get "comprobar-vies", to: "vies#check", as: :vies_check
 
-  # Rutas públicas bilingües: español sin prefijo, portugués bajo /pt
-  # (el idioma por defecto no lleva prefijo; ver default_url_options).
-  scope "(:locale)", locale: /pt|en|fr/ do
+  # Rutas públicas multilingües CON los segmentos traducidos por idioma
+  # (route_translator): el español va sin prefijo (/carrito) y el resto con
+  # prefijo y ruta en su idioma (/fr/panier, /en/cart, /pt/carrinho). Las
+  # traducciones de cada segmento viven en la clave routes: de cada locale.
+  localized do
     root "shop#home"
     # URLs canónicas con la misma estructura que la tienda Shopify anterior
-    # (/products, /pages/..., /blogs/news) para no perder SEO al migrar.
+    # (/products, /pages/..., /blogs/news) para no perder SEO al migrar; esos
+    # segmentos no se traducen a propósito.
     get "products/:id", to: "shop#product", as: :product_page
     # Precio y desglose de un pack para una cantidad dada (JSON, recálculo en vivo).
     get "products/:id/pack-precio", to: "shop#pack_price", as: :pack_price
 
     get "pages/como-funciona", to: "pages#como_funciona", as: :como_funciona
-    # «Quiénes somos» se fusionó con Contacto; redirección para enlaces antiguos
-    get "pages/quienes-somos", to: redirect { |p, _req| p[:locale] ? "/#{p[:locale]}/pages/contact" : "/pages/contact" }
     get "politica-privacidad", to: "pages#privacidad", as: :privacidad
     get "pages/contact", to: "contacts#new", as: :contacto
     post "pages/contact", to: "contacts#create", as: :contact_messages
@@ -47,6 +48,11 @@ Rails.application.routes.draw do
     get "pedido/:number/pago-ok", to: "orders#success", as: :order_success
     get "pedido/:number/pago-cancelado", to: "orders#cancel", as: :order_cancel
     get "pedido/:number", to: "orders#show", as: :order_status
+  end
+
+  # «Quiénes somos» se fusionó con Contacto; redirección para enlaces antiguos.
+  scope "(:locale)", locale: /pt|en|fr/ do
+    get "pages/quienes-somos", to: redirect { |p, _req| p[:locale] ? "/#{p[:locale]}/pages/contact" : "/pages/contact" }
   end
 
   # Redirecciones 301 de las URLs de la preview (español) a las canónicas Shopify.

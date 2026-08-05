@@ -96,13 +96,14 @@ module ApplicationHelper
   # nil si no se puede regenerar la ruta (p. ej. acciones sin GET).
   def locale_path(locale)
     # Si la página define rutas equivalentes por idioma (p. ej. un post del blog con
-    # slug propio en cada idioma), se usan esas; si no, se regenera la ruta actual.
+    # slug propio en cada idioma), se usan esas; si no, se regenera la ruta actual
+    # con los MISMOS parámetros pero la variante traducida del idioma pedido
+    # (cada ruta pública existe una vez por idioma vía route_translator).
     if @localized_paths && (path = @localized_paths[locale.to_sym])
       return path
     end
 
-    loc = (locale.to_sym == I18n.default_locale ? nil : locale)
-    url_for(locale: loc, only_path: true)
+    url_for(request.path_parameters.merge(locale: locale.to_s, only_path: true))
   rescue StandardError
     nil
   end

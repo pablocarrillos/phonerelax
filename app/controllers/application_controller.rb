@@ -17,10 +17,12 @@ class ApplicationController < ActionController::Base
     I18n.with_locale(locale, &action)
   end
 
-  # Hace que los path/url helpers añadan el prefijo /pt automáticamente cuando el
-  # idioma activo no es el por defecto (el español va sin prefijo).
+  # Hace que los path/url helpers usen la variante traducida del idioma activo
+  # (con route_translator cada ruta pública existe una vez por idioma; el
+  # español va sin prefijo). Para el idioma por defecto no se pasa nada, así
+  # las rutas no localizadas (admin, sesión…) no arrastran ?locale.
   def default_url_options
-    { locale: I18n.locale == I18n.default_locale ? nil : I18n.locale }
+    I18n.locale == I18n.default_locale ? {} : { locale: I18n.locale.to_s }
   end
 
   # Carrito en sesión: { "product_id" => cantidad }
