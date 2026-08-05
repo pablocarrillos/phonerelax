@@ -3,10 +3,16 @@ import { Controller } from "@hotwired/stimulus"
 // Escalado de un producto: sin IVA, con IVA y descuento sincronizados.
 // El descuento es respecto al precio sin IVA del PRIMER tramo, así que al
 // editar el tramo base se recalculan los descuentos de todas las filas.
-// Solo el precio sin IVA viaja en el formulario.
+// Solo el precio sin IVA viaja en el formulario. «Añadir tramo» clona la
+// fila plantilla con un índice único para poder crear tantos como se quiera.
 export default class extends Controller {
-  static targets = ["row"]
+  static targets = ["row", "tbody", "template"]
   static values = { rate: Number }
+
+  addRow() {
+    const html = this.templateTarget.innerHTML.replaceAll("NEW_RECORD", Date.now())
+    this.tbodyTarget.insertAdjacentHTML("beforeend", html)
+  }
 
   fromNet(event) {
     const row = event.target.closest("tr")

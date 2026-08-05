@@ -1,9 +1,13 @@
-<%= form_with model: [:admin, product], local: true do |f| %>
+<%= form_with model: [:admin, product], local: true, data: { controller: 'pack-form' } do |f| %>
   <% if product.errors.any? %>
     <div class="errors"><ul><% product.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>
   <div class="form-grid" style="max-width: 860px;">
-    <div><%= f.label :price, 'Precio (€, IVA incluido)' %><%= f.number_field :price, step: 0.01 %></div>
+    <div>
+      <%= f.label :price, 'Precio (€, IVA incluido)' %>
+      <%= f.number_field :price, step: 0.01, data: { pack_form_target: 'price' } %>
+      <p class="action-note" style="margin-top:4px;" data-pack-form-target="priceNote" hidden>Automático: se calcula con los precios de los componentes del pack.</p>
+    </div>
     <div>
       <%= f.label :stock, 'Stock (unidades restantes)' %>
       <% if product.pack? %>
@@ -16,7 +20,7 @@
     <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
     <div class="full"><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
     <div class="full"><label><%= f.check_box :auto_carousel %> Mostrar la galería como carrusel automático (sin miniaturas, cambia sola cada 3&nbsp;s)</label></div>
-    <div class="full"><label><%= f.check_box :pack %> Es un pack (su precio y su stock se calculan a partir de los componentes de abajo; se ignoran el precio, el escalado y el stock propios de este producto)</label></div>
+    <div class="full"><label><%= f.check_box :pack, data: { pack_form_target: 'pack', action: 'change->pack-form#refresh' } %> Es un pack (su precio y su stock se calculan a partir de los componentes de abajo; se ignoran el precio, el escalado y el stock propios de este producto)</label></div>
 
     <div class="full">
       <%= f.label :cover_image, 'Imagen de portada' %>
@@ -79,12 +83,13 @@
       </div>
     </div>
   </div>
-  <div style="max-width: 860px; margin-top: 26px;">
+  <div style="max-width: 860px; margin-top: 26px;" data-controller="price-tiers"
+       data-price-tiers-rate-value="<%= product.vat_percentage || 21 %>" data-pack-form-target="tiers">
     <h2>Escalado de precios por cantidad</h2>
     <p class="action-note" style="margin-top:0;">Precio unitario a partir de cada tramo de unidades. Se aplica en la <strong>tienda</strong> (carrito y pedidos) y en los <strong>presupuestos</strong>. Los tres valores están sincronizados: al editar uno se recalculan los otros (descuento respecto al primer tramo). Sin tramos, se usa siempre el precio normal.</p>
-    <table class="table" style="max-width:620px;" data-controller="price-tiers" data-price-tiers-rate-value="<%= product.vat_percentage || 21 %>">
+    <table class="table" style="max-width:620px;">
       <thead><tr><th>Desde (uds.)</th><th class="num">€/ud. sin IVA</th><th class="num">€/ud. con IVA</th><th class="num">Dto. %</th><th>Quitar</th></tr></thead>
-      <tbody>
+      <tbody data-price-tiers-target="tbody">
         <% factor = 1 + ((product.vat_percentage || 21).to_d / 100) %>
         <% base_price = product.price_tiers.reject(&:new_record?).min_by(&:min_units)&.unit_price %>
         <%= f.fields_for :price_tiers do |tf| %>
@@ -112,6 +117,25 @@
         <% end %>
       </tbody>
     </table>
+    <template data-price-tiers-target="template">
+      <%= f.fields_for :price_tiers, PriceTier.new, child_index: 'NEW_RECORD' do |tf| %>
+        <tr data-price-tiers-target="row">
+          <td><%= tf.number_field :min_units, min: 1, class: "input-compact", style: 'width:100px;', placeholder: 'nuevo tramo' %></td>
+          <td class="num"><%= tf.number_field :unit_price, step: 0.0001, min: 0, class: "input-compact", style: 'width:110px; text-align:right;',
+                                              placeholder: 'sin IVA', data: { role: 'net', action: 'input->price-tiers#fromNet' } %></td>
+          <td class="num">
+            <input type="number" step="0.01" min="0" class="input-compact" style="width:100px; text-align:right;"
+                   placeholder="con IVA" data-role="gross" data-action="input->price-tiers#fromGross">
+          </td>
+          <td class="num">
+            <input type="number" step="0.1" class="input-compact" style="width:80px; text-align:right;"
+                   placeholder="dto. %" data-role="discount" data-action="input->price-tiers#fromDiscount">
+          </td>
+          <td></td>
+        </tr>
+      <% end %>
+    </template>
+    <p style="margin-top:10px;"><button type="button" class="btn btn-outline" data-action="price-tiers#addRow">+ Añadir tramo</button></p>
   </div>
 
   <div style="max-width: 860px; margin-top: 26px;">

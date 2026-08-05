@@ -16,6 +16,12 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     assert_select ".lang-tabs .tab-button", 4
     assert_select ".lang-tabs .tab-panel", 4
     assert_select "input[name='product[position]']", 0 # la posición ya no se edita a mano
+    # Escalado: plantilla y botón para añadir tramos nuevos sin límite.
+    assert_select "template[data-price-tiers-target='template']"
+    assert_select "button[data-action='price-tiers#addRow']"
+    # Pack: el formulario reacciona al check (precio bloqueado y escalado oculto).
+    assert_select "form[data-controller='pack-form']"
+    assert_select "input[data-pack-form-target='price']"
   end
 
   test "la lista permite reordenar arrastrando y guarda el nuevo orden" do
