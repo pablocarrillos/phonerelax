@@ -9,8 +9,8 @@
 <div class="container section">
   <%= render_breadcrumbs(breadcrumb_items) %>
   <h1><%= t("sectors.#{s}.title") %></h1>
-  <p class="lead" style="max-width:760px;"><%= t("sectors.#{s}.subtitle") %></p>
-  <p style="max-width:760px;"><%= t("sectors.#{s}.intro") %></p>
+  <p class="lead"><%= t("sectors.#{s}.subtitle") %></p>
+  <p><%= t("sectors.#{s}.intro") %></p>
   <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
     <%= link_to t('sectors.cta_buy'), root_path(anchor: 'productos'), class: 'btn btn-primary' %>
     <%= link_to t('sectors.cta_quote'), quote_path, class: 'btn btn-magenta' %>
