@@ -140,6 +140,11 @@ a { color: var(--navy); }
 .card img { width: 100%; height: 260px; object-fit: contain; background: #fff; border-radius: 10px; }
 .card h3 { margin: 14px 0 4px; font-size: 18px; }
 .card .price { font-weight: 700; margin-bottom: 12px; }
+/* En las tarjetas de producto el precio va siempre a la misma altura, pegado
+   encima del botón de añadir al carrito, con la nota de IVA en pequeño. */
+.card.product-card .price { margin-top: auto; margin-bottom: 10px; }
+.card.product-card .actions { margin-top: 0; }
+.price-vat { font-size: 12px; color: var(--muted); font-weight: 400; white-space: nowrap; }
 .card p.step { color: var(--muted); font-size: 14.5px; }
 .card .actions { margin-top: auto; }
 
@@ -244,6 +249,9 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
 }
 .action-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
 .field-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+/* En celdas de tabla (pie de las líneas de compra) debe seguir siendo celda,
+   alineada con su columna numérica. */
+td.field-label { display: table-cell; text-align: right; }
 .action-note { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
 
 /* Campo numérico compacto del admin (tarifas, tramos, cantidades…):
