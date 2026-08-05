@@ -301,9 +301,10 @@ normativa.assign_attributes(
   published_on: '2026-07-15',
   title: 'Normativa sobre el uso del móvil en las aulas en España',
   excerpt: 'El uso del móvil en las aulas está cada vez más restringido en España, pero la normativa depende de cada comunidad autónoma. Te contamos quién regula, las diferencias entre Primaria y Secundaria, y cómo aplicar la norma en el día a día del centro.',
-  slug_pt: 'regras-telemovel-salas-de-aula-espanha',
-  title_pt: 'Regras sobre o uso do telemóvel nas salas de aula em Espanha',
-  excerpt_pt: 'O uso do telemóvel nas salas de aula está cada vez mais restringido em Espanha, mas a regulamentação depende de cada comunidade autónoma. Explicamos quem regula, as diferenças entre o Primário e o Secundário e como aplicar a regra no dia a dia da escola.',
+  # La versión portuguesa habla de la normativa de Portugal (no de la española).
+  slug_pt: 'regras-telemovel-escolas-portugal',
+  title_pt: 'Regras sobre o uso do telemóvel nas escolas em Portugal',
+  excerpt_pt: 'Portugal proíbe por lei o uso do smartphone na escola até ao 6.º ano e vai alargar a restrição até ao 9.º ano em 2027. Explicamos o que diz o Decreto-Lei n.º 95/2025, as exceções previstas e como aplicar a regra no dia a dia da escola.',
   slug_en: 'mobile-phone-rules-classrooms-spain',
   title_en: 'Mobile phone rules in classrooms in Spain',
   excerpt_en: 'Mobile phone use in classrooms is increasingly restricted in Spain, but the rules depend on each autonomous community. We explain who regulates it, the differences between primary and secondary, and how to apply the rule day to day.',
@@ -333,18 +334,14 @@ normativa.assign_attributes(
     <p>La normativa concreta depende de cada comunidad autónoma y puede cambiar de un curso a otro, así que conviene consultar la de tu región y reflejarla en el reglamento del centro. Si buscas una forma práctica de cumplirla, <a href="/colegios">PhoneRelax para colegios</a> te ayuda a crear aulas sin distracciones. ¿Necesitas equipar varias aulas? <a href="/presupuesto">Pide presupuesto</a>.</p>
   HTML_ES
   body_pt: <<~HTML_PT,
-    <p>O uso do telemóvel na aula tornou-se um dos grandes debates da comunidade educativa em Espanha. Nos últimos anos, a maioria das administrações educativas passou da recomendação à <strong>restrição</strong>, e muitas escolas procuram a melhor forma de a aplicar no dia a dia.</p>
-    <h2>Quem regula o uso do telemóvel nas escolas?</h2>
-    <p>Em Espanha, a educação é uma <strong>competência transferida para as comunidades autónomas</strong>. Ou seja, não existe uma única lei estatal que proíba o telemóvel em todas as escolas da mesma forma: cada comunidade estabelece a sua própria regulamentação e, dentro desse enquadramento, cada escola concretiza as regras no seu regulamento interno.</p>
-    <p>O <strong>Conselho Escolar do Estado</strong> pronunciou-se a favor de limitar o uso de dispositivos nas aulas, e esse consenso foi-se transferindo para a maioria das comunidades.</p>
-    <h2>A tendência: da recomendação à proibição</h2>
-    <p>A direção é clara: cada vez mais comunidades restringem ou proíbem o telemóvel nas escolas. A Galiza foi das primeiras a limitá-lo nas salas de aula e, nos últimos anos letivos, juntou-se a maior parte do território, com regras que vão da proibição total ao uso exclusivamente pedagógico e supervisionado.</p>
-    <h2>Primário e Secundário: regras diferentes</h2>
-    <p>Embora cada comunidade tenha as suas particularidades, o padrão mais habitual é:</p>
-    <ul>
-      <li><strong>Pré-escolar e Primário:</strong> proibição geral do uso do telemóvel durante todo o dia, incluindo os intervalos.</li>
-      <li><strong>Secundário:</strong> proibição como regra, com possíveis <strong>exceções para uso pedagógico</strong> quando indicado pelo professor e sempre sob a sua supervisão.</li>
-    </ul>
+    <p>O uso do telemóvel na sala de aula deixou de ser apenas um debate para passar a ser <strong>lei</strong> em Portugal. Desde o ano letivo de 2025/26, os alunos mais novos não podem usar o smartphone na escola, e a restrição vai alargar-se nos próximos anos. Explicamos o que diz a norma e como aplicá-la no dia a dia.</p>
+    <h2>O que diz a lei portuguesa?</h2>
+    <p>O <strong>Decreto-Lei n.º 95/2025, de 14 de agosto</strong>, proíbe a utilização de smartphones e de outros dispositivos com acesso à internet pelos alunos do <strong>1.º e 2.º ciclos do ensino básico (até ao 6.º ano)</strong> em todas as escolas — públicas, privadas e cooperativas — durante todo o horário escolar, incluindo os intervalos e os períodos não letivos.</p>
+    <p>Há exceções pontuais, mediante autorização: necessidades pedagógicas, razões de saúde devidamente comprovadas ou tradução. Os telemóveis básicos sem acesso à internet continuam a ser permitidos para contactar a família em caso de necessidade.</p>
+    <h2>A proibição alarga-se até ao 9.º ano em 2027</h2>
+    <p>Os resultados foram considerados um sucesso: nas escolas que aplicaram a restrição, a socialização aumentou 36% e a disciplina melhorou 13%, segundo os estudos divulgados. Com base nisso, o Governo aprovou alargar a proibição ao <strong>3.º ciclo (7.º ao 9.º ano)</strong> a partir de <strong>1 de janeiro de 2027</strong>, com o primeiro período do ano letivo 2026/27 como fase de adaptação.</p>
+    <h2>E no ensino secundário?</h2>
+    <p>No secundário não existe, para já, uma proibição nacional: <strong>cada escola define as suas regras no regulamento interno</strong>. Muitas optam por restringir o uso na sala de aula e nos momentos de avaliação, e as escolas frequentadas simultaneamente por alunos do 3.º ciclo e do secundário terão de harmonizar as regras entre os dois níveis.</p>
     <h2>O desafio não é a regra, é aplicá-la</h2>
     <p>Aprovar a regra é a parte fácil; o desafio está em cumpri-la sem transformar o professor em vigilante. As soluções mais comuns — desligar o telemóvel, deixá-lo na mochila ou colocá-lo numa caixa da sala — geram dúvidas: quem se responsabiliza se um telemóvel se danifica ou desaparece? Como se evita que o aluno o consulte às escondidas?</p>
     <h2>Como a PhoneRelax resolve isto</h2>
@@ -355,7 +352,7 @@ normativa.assign_attributes(
       <li>É um sistema <strong>uniforme e simples</strong> para toda a escola, fácil de aplicar todos os dias.</li>
     </ul>
     <h2>Antes de decidir</h2>
-    <p>A regulamentação concreta depende de cada comunidade autónoma e pode mudar de um ano letivo para outro, por isso convém consultar a da sua região e refleti-la no regulamento da escola. Se procura uma forma prática de a cumprir, a <a href="/pt/colegios">PhoneRelax para escolas</a> ajuda a criar salas de aula sem distrações. Precisa de equipar várias salas? <a href="/pt/presupuesto">Peça orçamento</a>.</p>
+    <p>A regulamentação está a evoluir de ano para ano — o alargamento ao 9.º ano é a prova disso — por isso convém acompanhar as novidades e refletir as regras no regulamento interno da escola. Se procura uma forma prática de as cumprir, a <a href="/pt/colegios">PhoneRelax para escolas</a> ajuda a criar salas de aula sem distrações. Precisa de equipar várias salas? <a href="/pt/presupuesto">Peça orçamento</a>.</p>
   HTML_PT
   body_en: <<~HTML_EN
     <p>Mobile phone use in class has become one of the biggest debates in Spain's education community. In recent years, most education authorities have moved from recommendation to <strong>restriction</strong>, and many schools are looking for the best way to apply it day to day.</p>
