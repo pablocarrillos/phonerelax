@@ -214,6 +214,7 @@ en:
   flash:
     cart_empty: Your cart is empty.
     out_of_stock: "Not enough stock of: %{names}. Please adjust the quantities."
+    zero_quantity: "Enter a quantity greater than 0 for: %{names}."
     payment_cancelled: Payment cancelled. You can try again whenever you like.
     verify_failed: We couldn't verify the submission. Please try again.
     message_sent: Message sent. We'll get back to you as soon as possible.

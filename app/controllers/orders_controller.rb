@@ -6,7 +6,13 @@ class OrdersController < ApplicationController
   # Formulario de datos del cliente con el resumen del carrito.
   def new
     @lines = cart_lines
-    redirect_to cart_path, alert: t("flash.cart_empty") if @lines.empty?
+    return redirect_to cart_path, alert: t("flash.cart_empty") if @lines.empty?
+
+    zero = @lines.select { |_product, quantity| quantity < 1 }
+    if zero.any?
+      return redirect_to cart_path, alert: t("flash.zero_quantity", names: zero.map { |p, _| p.name }.join(", "))
+    end
+
     @total = @lines.sum { |product, quantity| product.price_for_quantity(quantity) * quantity }
     @order = Order.new
   end
@@ -15,6 +21,13 @@ class OrdersController < ApplicationController
   def create
     lines = cart_lines
     return redirect_to(cart_path, alert: t("flash.cart_empty")) if lines.empty?
+
+    # No se permite tramitar con cantidad 0 en ninguna referencia.
+    zero = lines.select { |_product, quantity| quantity < 1 }
+    if zero.any?
+      names = zero.map { |product, _| product.name }.join(", ")
+      return redirect_to(cart_path, alert: t("flash.zero_quantity", names: names))
+    end
 
     # Última comprobación de stock antes de cobrar.
     without_stock = lines.select { |product, quantity| quantity > product.available_stock }
