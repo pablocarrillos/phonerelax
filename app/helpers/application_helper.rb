@@ -18,6 +18,7 @@ module ApplicationHelper
     { file: "colegio-san-fernando.jpg", name: "Colegio San Fernando" },
     { file: "montcau-la-mola.jpg",      name: "Escola Montcau-La Mola" },
     { file: "salvador-de-madariaga.jpg", name: "IES Salvador de Madariaga" },
+    { file: "colegio-villalkor.jpg",    name: "Colegio Villalkor" },
     { file: "phonerelax-basica.jpg",    name: "PhoneRelax" }
   ].freeze
 

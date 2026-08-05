@@ -415,6 +415,10 @@ dtf = Product.find_or_create_by!(name: "Personalización DTF funda") do |p|
   p.stock = 0
   p.position = 91
 end
+# La ficha del producto DTF muestra la muestra real de Villalkor en su galería.
+if dtf.product_images.none?
+  dtf.product_images.create!(url: "/images/personalizacion/colegio-villalkor.jpg", position: 1)
+end
 if dtf.description.blank?
   dtf.update!(
     description: "<p>Personalización DTF de la funda con tu logo o marca. <strong>Cantidad mínima: 25 unidades.</strong> Añade al carrito tantas unidades de personalización como bolsas PhoneRelax lleve tu pedido (SignalBlocking o no SignalBlocking).</p>",
