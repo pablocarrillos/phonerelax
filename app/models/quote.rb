@@ -7,7 +7,8 @@ class Quote < ApplicationRecord
     tax_id: "B02631976",
     address_lines: [ "Calle Carrasqueta Nº14", "P.I. Salinetas", "03610 Petrer (Alicante)" ],
     phone: "965371962",
-    email: "phonerelaxstore@gmail.com",
+    email: "phonerelaxstore@gmail.com", # comprobantes de transferencia
+    footer_email: "info@phonerelax.com", # correo público del pie del PDF
     web: "www.phonerelax.com"
   }.freeze
 
