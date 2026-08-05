@@ -33,6 +33,19 @@ class Order < ApplicationRecord
   # Destinos que son exportación a efectos de IVA (pagan IGIC/IPSI en destino).
   EXPORT_COUNTRIES = [ "España (Canarias)" ].freeze
 
+  # Prefijos telefónicos por país (ISO) para el selector del checkout: primero
+  # los países de los idiomas de la web y después el resto de la UE.
+  PHONE_PREFIXES = {
+    "ES" => "+34", "PT" => "+351", "FR" => "+33", "GB" => "+44",
+    "AT" => "+43", "BE" => "+32", "BG" => "+359", "CY" => "+357", "CZ" => "+420",
+    "DE" => "+49", "DK" => "+45", "EE" => "+372", "FI" => "+358", "GR" => "+30",
+    "HR" => "+385", "HU" => "+36", "IE" => "+353", "IT" => "+39", "LT" => "+370",
+    "LU" => "+352", "LV" => "+371", "MT" => "+356", "NL" => "+31", "PL" => "+48",
+    "RO" => "+40", "SE" => "+46", "SI" => "+386", "SK" => "+421"
+  }.freeze
+  # País del prefijo precargado según el idioma en que se navega.
+  LOCALE_PHONE_COUNTRY = { "es" => "ES", "pt" => "PT", "en" => "GB", "fr" => "FR" }.freeze
+
   # Plantillas de URL de seguimiento por transportista (se detecta por el nombre).
   CARRIER_TRACKING_URLS = {
     "correos" => "https://www.correos.es/es/es/herramientas/localizador/envios/detalle?tracking-number=%s",
@@ -134,6 +147,22 @@ class Order < ApplicationRecord
     rates = order_lines.map { |line| line.product.vat_percentage.to_d }.uniq
     { base: total.to_d - vat.round(2), vat: vat.round(2),
       rate: rates.one? ? rates.first.to_s.sub(/\.0+\z/, "") : nil }
+  end
+
+  # ISO del prefijo del teléfono si ya está en formato internacional (para
+  # repintar el selector del checkout). Prueba primero los prefijos más largos
+  # para no confundir p. ej. +351 (PT) con +34 (ES).
+  def phone_prefix_iso
+    return nil unless phone.to_s.start_with?("+")
+
+    PHONE_PREFIXES.sort_by { |_iso, prefix| -prefix.length }
+                  .find { |_iso, prefix| phone.start_with?(prefix) }&.first
+  end
+
+  # Parte local del teléfono (sin el prefijo reconocido), para el campo de texto.
+  def phone_without_prefix
+    prefix = PHONE_PREFIXES[phone_prefix_iso]
+    prefix ? phone.delete_prefix(prefix) : phone
   end
 
   def next_status
@@ -258,9 +287,16 @@ class Order < ApplicationRecord
     errors.add(:tax_id, "no es un NIF/CIF/NIE ni un NIF-IVA europeo válido") unless TaxId.valid?(tax_id)
   end
 
-  # El teléfono, si se indica, debe ser válido para el país de envío (ni cortos ni largos).
+  # El teléfono debe ser válido: con prefijo internacional («+») vale el de
+  # cualquier país (el cliente puede vivir en un país distinto al de envío);
+  # sin prefijo, debe ser un número válido del país de envío.
   def phone_matches_country
     return if phone.blank?
+
+    if phone.start_with?("+")
+      errors.add(:phone, "no parece un número de teléfono válido") unless Phonelib.valid?(phone)
+      return
+    end
 
     code = EU_COUNTRY_CODES[country] || LEGACY_COUNTRY_CODES[country]
     return if Phonelib.valid_for_country?(phone, code)

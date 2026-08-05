@@ -32,6 +32,7 @@ class OrdersController < ApplicationController
 
     @order = Order.new(order_params)
     @order.locale = I18n.locale # idioma en que el cliente completó la compra
+    apply_phone_prefix(@order)
 
     # Si pide factura con un NIF-IVA europeo, lo comprobamos en VIES en el
     # servidor (no nos fiamos del navegador) y guardamos el resultado.
@@ -110,6 +111,18 @@ class OrdersController < ApplicationController
     params.require(:order).permit(:customer_name, :email, :phone, :address, :city, :postal_code, :province, :country,
                                   :needs_invoice, :tax_name, :tax_id, :tax_address, :tax_city, :tax_postal_code,
                                   :tax_province, :tax_country)
+  end
+
+  # Compone el teléfono internacional con el prefijo elegido en el selector.
+  # Si el cliente ya escribió el número con «+» o «00», se respeta tal cual.
+  def apply_phone_prefix(order)
+    iso = params.dig(:order, :phone_prefix).to_s
+    raw = order.phone.to_s.strip
+    return unless Order::PHONE_PREFIXES.key?(iso)
+    return if raw.blank? || raw.start_with?("+") || raw.start_with?("00")
+
+    parsed = Phonelib.parse(raw, iso)
+    order.phone = parsed.valid? ? parsed.e164 : "#{Order::PHONE_PREFIXES[iso]}#{raw.gsub(/\D/, '')}"
   end
 
   def cart_lines

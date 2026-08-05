@@ -55,7 +55,18 @@
     <div class="form-grid">
       <div><%= f.label :customer_name, t('checkout.customer_name') %><%= f.text_field :customer_name, required: true %></div>
       <div><%= f.label :email, t('checkout.email') %><%= f.email_field :email, required: true %></div>
-      <div><%= f.label :phone, t('checkout.phone') %><%= f.telephone_field :phone, required: true %></div>
+      <div>
+        <%= f.label :phone, t('checkout.phone') %>
+        <div class="phone-row">
+          <% selected_iso = @order.phone_prefix_iso || Order::LOCALE_PHONE_COUNTRY[I18n.locale.to_s] || 'ES' %>
+          <select name="order[phone_prefix]" class="form-select phone-prefix" aria-label="<%= t('checkout.phone_prefix') %>">
+            <% Order::PHONE_PREFIXES.each do |iso, prefix| %>
+              <option value="<%= iso %>" <%= 'selected' if iso == selected_iso %>><%= country_flag(iso) %> <%= prefix %></option>
+            <% end %>
+          </select>
+          <%= f.telephone_field :phone, required: true, value: @order.phone_without_prefix %>
+        </div>
+      </div>
       <div class="full"><%= f.label :address, t('checkout.address') %><%= f.text_field :address, required: true %></div>
       <div><%= f.label :city, t('checkout.city') %><%= f.text_field :city, required: true %></div>
       <div><%= f.label :postal_code, t('checkout.postal_code') %><%= f.text_field :postal_code, required: true %></div>
