@@ -71,6 +71,7 @@ Rails.application.routes.draw do
       get :packing_slip, on: :member # albarán imprimible
     end
     resources :products, except: :show do
+      patch :reorder, on: :collection # nuevo orden de ids tras arrastrar en la lista
       resources :product_images, only: [ :create, :destroy ] do
         patch :move, on: :member
       end

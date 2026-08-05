@@ -1,18 +1,24 @@
 <h1>Productos</h1>
 <p><%= link_to 'Nuevo producto', new_admin_product_path, class: 'btn btn-primary' %></p>
+<p class="action-note" style="margin-top:0;">Arrastra las filas por el asa ⠿ para cambiar el orden de los productos en la tienda; se guarda automáticamente.</p>
 <table class="table">
-  <thead><tr><th class="num">Posición</th><th>Nombre</th><th class="num">Precio</th><th class="num">Stock</th><th>Activo</th><th></th></tr></thead>
-  <tbody>
+  <thead><tr><th style="width:80px;">Orden</th><th>Nombre</th><th class="num">Precio</th><th class="num">Stock</th><th>Activo</th><th></th></tr></thead>
+  <tbody data-controller="reorder" data-reorder-url-value="<%= reorder_admin_products_path %>">
     <% @products.each do |product| %>
-      <tr>
-        <td class="num"><%= product.position %></td>
+      <tr data-reorder-target="row" data-id="<%= product.id %>"
+          data-action="dragstart->reorder#dragStart dragover->reorder#dragOver dragend->reorder#dragEnd">
+        <td>
+          <span class="drag-handle" title="Arrastra para reordenar"
+                data-action="mousedown->reorder#armDrag touchstart->reorder#armDrag">⠿</span>
+          <span data-role="position" style="color: var(--muted);"><%= product.position %></span>
+        </td>
         <td><%= product.name %></td>
         <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
         <td class="num"><% if product.out_of_stock? %><span class="badge pendiente">0</span><% else %><%= product.available_stock %><%= ' packs'.html_safe if product.pack? %><% end %></td>
         <td><%= product.active? ? 'Sí' : 'No' %></td>
         <td>
           <%= link_to 'Editar', edit_admin_product_path(product), class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>
-          <%= button_to 'Borrar', admin_product_path(product), method: :delete, form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar este producto?' } }, class: 'btn-danger-link' %>
+          <%= button_to 'Borrar', admin_product_path(product), method: :delete, form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar este producto?' } }, class: 'btn btn-danger', style: 'padding: 5px 12px; font-size: 13px;' %>
         </td>
       </tr>
     <% end %>

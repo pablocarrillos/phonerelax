@@ -229,6 +229,9 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
   border-radius: var(--radius);
 }
 .order-actions .order-badges { margin: 12px 0; }
+/* Cabecera del cuadro de acciones: badges a la izquierda y «Borrar pedido» a la derecha. */
+.order-actions-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.order-actions-header .order-badges { margin: 6px 0; }
 .action-section { padding: 12px 0 2px; border-top: 1px solid var(--border); }
 .action-title {
   display: block;
@@ -264,6 +267,9 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
 
 /* Asa para reordenar líneas del presupuesto arrastrando */
 .drag-handle { cursor: grab; color: var(--muted); user-select: none; font-size: 18px; width: 26px; text-align: center; }
+tr.dragging { opacity: 0.55; background: var(--card-bg); }
+/* Si el guardado del nuevo orden falla, se marca la tabla en rojo. */
+.reorder-error { outline: 2px solid #b3261e; }
 tr[draggable="true"] { opacity: 0.6; }
 
 /* Avisos bajo un campo (p. ej. precio que no coincide con el escalado) */

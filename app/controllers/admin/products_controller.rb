@@ -6,6 +6,18 @@ module Admin
       @products = Product.ordered
     end
 
+    # Nuevo orden tras arrastrar en la lista: recibe los ids ordenados y
+    # reasigna las posiciones 1..n en una transacción.
+    def reorder
+      ids = Array(params[:ids]).map(&:to_i)
+      return head :unprocessable_entity if ids.empty?
+
+      Product.transaction do
+        ids.each_with_index { |id, index| Product.where(id: id).update_all(position: index + 1) }
+      end
+      head :ok
+    end
+
     def new
       @product = Product.new(active: true)
       build_blank_rows
@@ -55,7 +67,7 @@ module Admin
     end
 
     def product_params
-      params.require(:product).permit(:name, :description, :name_pt, :description_pt, :name_en, :description_en, :name_fr, :description_fr, :price, :cover_image, :active, :position, :stock, :vat_percentage, :auto_carousel, :pack,
+      params.require(:product).permit(:name, :description, :name_pt, :description_pt, :name_en, :description_en, :name_fr, :description_fr, :price, :cover_image, :active, :stock, :vat_percentage, :auto_carousel, :pack,
                                       price_tiers_attributes: [ :id, :min_units, :unit_price, :_destroy ],
                                       pack_items_attributes: [ :id, :component_id, :quantity, :position, :_destroy ])
     end

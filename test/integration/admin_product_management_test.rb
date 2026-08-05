@@ -15,6 +15,25 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     assert_select "input[name='product[image_url]']", 0 # la ruta ya no se enseña
     assert_select ".lang-tabs .tab-button", 4
     assert_select ".lang-tabs .tab-panel", 4
+    assert_select "input[name='product[position]']", 0 # la posición ya no se edita a mano
+  end
+
+  test "la lista permite reordenar arrastrando y guarda el nuevo orden" do
+    get admin_products_path
+    assert_select "tbody[data-controller='reorder']"
+    assert_select ".drag-handle", Product.count
+
+    funda = products(:funda)
+    iman = products(:iman)
+    patch reorder_admin_products_path, params: { ids: [ iman.id, funda.id ] }, as: :json
+    assert_response :success
+    assert_equal 1, iman.reload.position
+    assert_equal 2, funda.reload.position
+  end
+
+  test "reordenar sin ids no cambia nada" do
+    patch reorder_admin_products_path, params: { ids: [] }, as: :json
+    assert_response :unprocessable_entity
   end
 
   test "subir una portada nueva la adjunta y pasa a usarse en la tienda" do

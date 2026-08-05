@@ -22,6 +22,9 @@ class Product < ApplicationRecord
   # El precio de un pack se calcula con el escalado de sus componentes; se
   # guarda en `price` como caché para el admin y los datos estructurados.
   before_validation :sync_pack_price
+  # La posición ya no se edita a mano: los productos nuevos entran al final y
+  # el orden se cambia arrastrando en la lista del admin.
+  before_create { self.position = (Product.maximum(:position) || 0) + 1 if position.to_i.zero? }
 
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:position, :name) }

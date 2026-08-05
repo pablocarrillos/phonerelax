@@ -4,7 +4,6 @@
   <% end %>
   <div class="form-grid" style="max-width: 860px;">
     <div><%= f.label :price, 'Precio (€, IVA incluido)' %><%= f.number_field :price, step: 0.01 %></div>
-    <div><%= f.label :position, 'Posición' %><%= f.number_field :position %></div>
     <div>
       <%= f.label :stock, 'Stock (unidades restantes)' %>
       <% if product.pack? %>
