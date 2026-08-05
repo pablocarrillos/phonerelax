@@ -13,8 +13,8 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[type=file][name='product[cover_image]']"
     assert_select "input[name='product[image_url]']", 0 # la ruta ya no se enseña
-    assert_select ".lang-tabs .tab-button", 3
-    assert_select ".lang-tabs .tab-panel", 3
+    assert_select ".lang-tabs .tab-button", 4
+    assert_select ".lang-tabs .tab-panel", 4
   end
 
   test "subir una portada nueva la adjunta y pasa a usarse en la tienda" do

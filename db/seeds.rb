@@ -294,10 +294,84 @@ post_translations_en = {
 post_translations_en.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
 puts "Traducciones EN: #{Product.where.not(name_en: [ nil, '' ]).count} productos, #{Post.where.not(title_en: [ nil, '' ]).count} artículos"
 
+# --- Traducciones al francés (fr). Idempotente: vacío = se muestra el español. ---
+product_translations_fr = {
+  'funda-phonerelax-version-sin-cobertura-movil' => {
+    name_fr: 'Pochette PhoneRelax SignalBlocking (bloque le réseau mobile)',
+    description_fr: <<~HTML
+      <p>PhoneRelax est une pochette magnétique pour téléphones portables conçue pour éviter que les élèves ou les utilisateurs ne se laissent distraire par leur téléphone dans les écoles, les concerts ou les événements privés. Son fonctionnement est très simple : placez le téléphone à l'intérieur et fermez son verrou pour qu'il reste scellé dedans. Pour récupérer le téléphone, il suffit d'approcher le verrou magnétique de la pochette PhoneRelax de l'un de nos aimants spéciaux d'ouverture et de le retirer.</p>
+      <p><strong>Le principal avantage de cette version qui bloque le réseau mobile est que l'utilisateur ne sera pas distrait par des notifications, des sonneries ou des vibrations s'il a oublié de mettre son téléphone en silencieux ou de l'éteindre avant de le placer dans la pochette PhoneRelax ; il évite ainsi l'anxiété et la distraction générées par les notifications constantes des différentes applications.</strong></p>
+      <p><strong>Caractéristiques techniques :</strong></p>
+      <p><strong>Dimensions du produit :</strong> 12 cm de largeur x 26 cm de hauteur x 4,5 cm de profondeur<br><strong>Matériau :</strong> 30 % néoprène, 40 % polyester, 20 % aluminium et 10 % plastique.<br><strong>Téléphones compatibles :</strong> tout smartphone avec un écran jusqu'à 6,8 pouces.<br><strong>Couleur :</strong> noir<br><strong>Poids :</strong> 115 g</p>
+    HTML
+  },
+  'iman-phonerelax' => {
+    name_fr: 'Aimant PhoneRelax',
+    description_fr: <<~HTML
+      <p>Il permet l'ouverture des pochettes PhoneRelax en approchant simplement la partie arrondie du verrou de la pochette du centre de l'aimant.</p>
+      <p>L'aimant dispose de quatre trous conçus pour le fixer sur n'importe quelle surface, évitant ainsi qu'il ne se perde ou ne bouge pendant l'ouverture des pochettes PhoneRelax.</p>
+    HTML
+  },
+  'funda-phonerelax' => {
+    name_fr: 'Pochette PhoneRelax',
+    description_fr: <<~HTML
+      <p>PhoneRelax est une pochette magnétique pour téléphones portables conçue pour éviter que les élèves ou les utilisateurs ne se laissent distraire par leur téléphone dans les écoles, les concerts ou les événements privés. Son fonctionnement est très simple : placez le téléphone à l'intérieur et fermez son verrou pour qu'il reste scellé dedans. Pour récupérer le téléphone, il suffit d'approcher le verrou magnétique de la pochette PhoneRelax de l'un de nos aimants spéciaux d'ouverture et de le retirer.</p>
+      <p><strong>Caractéristiques techniques :</strong></p>
+      <p><strong>Dimensions du produit :</strong> 12 cm de largeur x 24 cm de hauteur x 4,5 cm de profondeur<br><strong>Matériau :</strong> 40 % néoprène, 50 % polyester et 10 % plastique.<br><strong>Téléphones compatibles :</strong> tout smartphone avec un écran jusqu'à 6,8 pouces.<br><strong>Couleur :</strong> noir<br><strong>Poids :</strong> 82 g</p>
+    HTML
+  }
+}
+product_translations_fr.each { |handle, attrs| Product.find_by(shopify_handle: handle)&.update!(attrs) }
+
+post_translations_fr = {
+  'cuales-son-las-principales-ventajas-de-prohibir-el-uso-de-telefonos-moviles-ninos-y-adolescentes-en-las-aulas' => {
+    title_fr: "Les avantages d'encadrer l'usage du téléphone en classe",
+    excerpt_fr: "Encadrer l'usage des téléphones portables à l'école pour les enfants et les adolescents grâce aux pochettes PhoneRelax présente plusieurs avantages évidents, à commencer par le renforcement de la concentration scolaire. Sans les distractions du téléphone, les élèves ont tendance à être plus attentifs",
+    body_fr: <<~HTML
+      <p>Encadrer l'usage des téléphones portables à l'école pour les enfants et les adolescents grâce aux pochettes PhoneRelax présente plusieurs avantages évidents, à commencer par le <strong>renforcement de la concentration scolaire</strong>. Sans les distractions du téléphone, les élèves ont tendance à être plus attentifs en classe, ce qui peut améliorer leurs résultats. C'est un fait : moins de distractions signifie une plus grande concentration et, sans la tentation constante de consulter le téléphone, les élèves peuvent se concentrer davantage sur les travaux et les activités scolaires, ce qui améliore leur capacité d'attention.</p>
+      <p>Un autre avantage est l'<strong>amélioration des interactions sociales</strong> : en limitant l'usage des téléphones, on favorise les échanges en face à face entre les élèves, renforçant leurs compétences sociales et leur capacité à travailler en équipe.</p>
+      <p>Il a également été démontré que cela <strong>réduit le cyberharcèlement</strong>, car restreindre l'usage des appareils électroniques peut diminuer les cas de harcèlement en ligne et l'accès à des contenus inappropriés, contribuant à créer un environnement scolaire plus sûr.</p>
+      <p>Dans la cour, cela se traduit par <strong>plus de temps d'activité physique</strong> : sans l'usage constant des appareils, les élèves ont plus de temps pour les activités physiques, ce qui est bénéfique pour leur santé et leur bien-être.</p>
+      <p>Un avantage de la limitation de l'usage des téléphones dans les écoles et les collèges est le <strong>développement des capacités de résolution de problèmes</strong> : en dépendant moins de la technologie, les élèves peuvent apprendre à résoudre les problèmes de manière plus créative et avec des ressources plus variées.</p>
+      <p>Malgré ces avantages, il est aussi important de réfléchir à la manière de mettre en œuvre l'interdiction des appareils mobiles, car dans certains cas ils peuvent être des outils utiles pour l'apprentissage qui, sous la supervision des enseignants, peuvent aider dans certaines matières ou activités.</p>
+    HTML
+  },
+  'ventajas-de-evitar-el-uso-de-moviles-en-conciertos' => {
+    title_fr: 'Des concerts sans téléphones ou « Phone-Free Events »',
+    excerpt_fr: "L'utilisation des pochettes PhoneRelax pour éviter l'usage des téléphones pendant les concerts présente plusieurs avantages significatifs, comme une expérience plus immersive : les spectateurs peuvent profiter pleinement de la musique, de l'ambiance et de la connexion avec l'artiste et les autres spectateurs.",
+    body_fr: <<~HTML
+      <p>L'utilisation des pochettes PhoneRelax pour éviter l'usage des téléphones pendant les concerts présente plusieurs avantages significatifs, comme une <strong>expérience plus immersive</strong> : les spectateurs peuvent profiter pleinement de la musique, de l'ambiance et de la connexion avec l'artiste et les autres spectateurs.</p>
+      <p>Ce type d'événements est déjà connu sous le nom de « phone free events » ou « expériences sans téléphones ».</p>
+      <p>L'un des principaux avantages est le <strong>respect de l'artiste</strong> : utiliser son téléphone peut distraire aussi bien le public que l'artiste. Éviter l'usage des téléphones témoigne du respect pour le travail du musicien et permet à tous de profiter pleinement du spectacle sans interruptions.</p>
+      <p>On connaît le cas de la chanteuse Adele demandant à un spectateur de son concert d'arrêter de filmer et de profiter du spectacle en direct.</p>
+      <p>Par ailleurs, en n'étant pas absorbés par les écrans, les spectateurs <strong>améliorent leurs liens interpersonnels</strong> : ils sont plus susceptibles d'interagir avec les personnes qui les entourent, favorisant des connexions humaines réelles et le partage de moments significatifs avec d'autres fans.</p>
+      <p>Un autre point fondamental est l'<strong>amélioration de la qualité du son et de la vue sur l'artiste</strong> : lever son téléphone pour filmer ou prendre des photos bloque souvent la vue des autres et peut réduire la qualité du son, mais surtout la vision directe de l'artiste ou de l'événement.</p>
+      <p>Et enfin, mais non des moindres, <strong>créer des souvenirs plus authentiques</strong> : plutôt que de capturer tout le concert sur l'écran du téléphone, mieux vaut profiter du moment et garder les souvenirs en mémoire pour créer des souvenirs plus vivants et authentiques qui durent dans le temps.</p>
+      <p>Même s'il est compréhensible de vouloir immortaliser quelques moments du concert, limiter l'usage du téléphone peut enrichir considérablement l'expérience, pour soi-même comme pour les autres spectateurs.</p>
+      <p><img alt="" src="/images/blog/phonerelax-para-eventos-cuerpo.jpg" style="display: block; margin-left: auto; margin-right: auto;"></p>
+    HTML
+  },
+  'y-que-podemos-hacer-para-evitar-que-los-alumnos-usen-los-telefonos-en-las-aulas' => {
+    title_fr: "Comment éviter l'usage des téléphones au collège et au lycée",
+    excerpt_fr: "Les pochettes à verrou magnétique PhoneRelax, conçues pour que les élèves rangent eux-mêmes leur téléphone sans pouvoir y accéder dans les zones désignées, peuvent être un outil efficace pour encadrer l'usage des appareils électroniques en milieu scolaire. Ces pochettes offrent des avantages très clairs",
+    body_fr: <<~HTML
+      <p>Les pochettes à verrou magnétique PhoneRelax, conçues pour que les élèves rangent eux-mêmes leur téléphone sans pouvoir y accéder dans les zones désignées, peuvent être un outil efficace pour encadrer l'usage des appareils électroniques en milieu scolaire. Ces pochettes offrent des avantages très clairs :</p>
+      <p><strong>Sécurité et contrôle :</strong> grâce aux verrous magnétiques qui empêchent d'accéder au téléphone tant qu'il est rangé, on garantit un meilleur niveau de sécurité et de contrôle sur l'appareil pendant le temps scolaire.</p>
+      <p><strong>Prévention des distractions :</strong> en ne pouvant pas accéder facilement aux téléphones, on réduit la tentation et le risque de distractions en classe, ce qui peut améliorer la concentration des élèves sur les apprentissages. Nous proposons même une version de la pochette PhoneRelax qui laisse le téléphone sans réseau, évitant qu'il ne reçoive des appels ou des notifications même si l'élève a oublié de le mettre en silencieux.</p>
+      <p><strong>Uniformité et facilité de gestion :</strong> si tous les élèves utilisent les pochettes PhoneRelax, la gestion devient plus simple pour les enseignants et le personnel, avec un système uniforme et clair pour tous.</p>
+      <p><strong>La garde des téléphones par les élèves eux-mêmes dans leurs pochettes PhoneRelax :</strong> en confiant aux élèves la responsabilité de ranger leur propre téléphone dans les pochettes PhoneRelax, on évite tout problème lié à d'éventuels dommages aux appareils, libérant de cette responsabilité les enseignants et le personnel scolaire.</p>
+      <p>Il est cependant important de prendre en compte certains aspects :</p>
+      <p><strong>Besoins spécifiques :</strong> certains élèves peuvent avoir des besoins particuliers d'accès à leur téléphone en raison d'urgences médicales ou familiales. Une certaine flexibilité doit toujours exister pour répondre à ces situations.</p>
+    HTML
+  }
+}
+post_translations_fr.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
+puts "Traducciones FR: #{Product.where.not(name_fr: [ nil, '' ]).count} productos, #{Post.where.not(title_fr: [ nil, '' ]).count} artículos"
+
 # --- Artículo de blog: normativa del móvil en las aulas en España (es/pt/en). Idempotente. ---
 normativa = Post.find_or_initialize_by(slug: 'normativa-movil-aulas-espana')
 normativa.assign_attributes(
-  image_url: '/images/blog/alumnos-con-telefono.jpg',
+  image_url: '/images/blog/normativa-movil-aulas.jpg',
   published_on: '2026-07-15',
   title: 'Normativa sobre el uso del móvil en las aulas en España',
   excerpt: 'El uso del móvil en las aulas está cada vez más restringido en España, pero la normativa depende de cada comunidad autónoma. Te contamos quién regula, las diferencias entre Primaria y Secundaria, y cómo aplicar la norma en el día a día del centro.',
@@ -308,6 +382,10 @@ normativa.assign_attributes(
   slug_en: 'mobile-phone-rules-classrooms-spain',
   title_en: 'Mobile phone rules in classrooms in Spain',
   excerpt_en: 'Mobile phone use in classrooms is increasingly restricted in Spain, but the rules depend on each autonomous community. We explain who regulates it, the differences between primary and secondary, and how to apply the rule day to day.',
+  # La versión francesa habla de la normativa de Francia (no de la española).
+  slug_fr: 'reglementation-telephone-portable-ecole-france',
+  title_fr: "Réglementation sur l'usage du téléphone portable à l'école en France",
+  excerpt_fr: "La France interdit le téléphone portable à l'école et au collège depuis 2018, et la « pause numérique » se généralise depuis la rentrée 2025. Nous vous expliquons ce que dit la loi, les exceptions prévues et comment l'appliquer au quotidien.",
   body: <<~HTML_ES,
     <p>El uso del móvil en clase se ha convertido en uno de los grandes debates de la comunidad educativa en España. En los últimos años, la mayoría de las administraciones educativas han pasado de la recomendación a la <strong>restricción</strong>, y muchos centros buscan la mejor forma de aplicarla en el día a día.</p>
     <h2>¿Quién regula el uso del móvil en los colegios?</h2>
@@ -354,7 +432,7 @@ normativa.assign_attributes(
     <h2>Antes de decidir</h2>
     <p>A regulamentação está a evoluir de ano para ano — o alargamento ao 9.º ano é a prova disso — por isso convém acompanhar as novidades e refletir as regras no regulamento interno da escola. Se procura uma forma prática de as cumprir, a <a href="/pt/colegios">PhoneRelax para escolas</a> ajuda a criar salas de aula sem distrações. Precisa de equipar várias salas? <a href="/pt/presupuesto">Peça orçamento</a>.</p>
   HTML_PT
-  body_en: <<~HTML_EN
+  body_en: <<~HTML_EN,
     <p>Mobile phone use in class has become one of the biggest debates in Spain's education community. In recent years, most education authorities have moved from recommendation to <strong>restriction</strong>, and many schools are looking for the best way to apply it day to day.</p>
     <h2>Who regulates phone use in schools?</h2>
     <p>In Spain, education is a <strong>power devolved to the autonomous communities</strong>. This means there is no single national law banning phones in every school in the same way: each community sets its own rules and, within that framework, each school spells out the details in its internal regulations.</p>
@@ -379,6 +457,26 @@ normativa.assign_attributes(
     <h2>Before you decide</h2>
     <p>The specific rules depend on each autonomous community and can change from one school year to the next, so it's worth checking your region's and reflecting it in your school's regulations. If you're looking for a practical way to comply, <a href="/en/colegios">PhoneRelax for schools</a> helps you create distraction-free classrooms. Need to equip several classrooms? <a href="/en/presupuesto">Request a quote</a>.</p>
   HTML_EN
+  body_fr: <<~HTML_FR
+    <p>La France a été pionnière en Europe : le téléphone portable est <strong>interdit à l'école et au collège depuis 2018</strong>, et depuis la rentrée 2025 la « pause numérique » généralise la mise à l'écart physique des téléphones dans les collèges. Voici ce que dit la réglementation et comment l'appliquer au quotidien.</p>
+    <h2>Ce que dit la loi</h2>
+    <p>La <strong>loi du 3 août 2018</strong> (article L511-5 du code de l'éducation) interdit l'utilisation du téléphone portable par les élèves dans les <strong>écoles maternelles, les écoles élémentaires et les collèges</strong>, pendant toute activité d'enseignement et dans l'ensemble de l'enceinte scolaire. Le règlement intérieur peut prévoir des exceptions, notamment pour des usages pédagogiques encadrés, et des aménagements existent pour les élèves présentant un handicap ou un besoin de santé.</p>
+    <h2>La « pause numérique » généralisée au collège</h2>
+    <p>Après une expérimentation menée en 2024-2025 auprès de plus de 32 000 collégiens — avec des effets positifs sur le climat scolaire, la concentration et le bien-être, et une baisse des signalements de cyberharcèlement —, la <strong>circulaire du 10 juillet 2025</strong> généralise le dispositif « Portable en pause » à l'ensemble des collèges publics dès l'année 2025-2026 : le téléphone doit être <strong>physiquement mis à l'écart pendant toute la journée</strong>, et chaque collège choisit la modalité (casiers, boîtes, pochettes…) en concertation avec la communauté éducative.</p>
+    <h2>Et au lycée ?</h2>
+    <p>Au lycée, il n'existe pas d'interdiction nationale : le <strong>règlement intérieur</strong> peut interdire l'utilisation du téléphone dans tout ou partie de l'enceinte de l'établissement. De nombreux lycées la restreignent en classe et pendant les examens.</p>
+    <h2>Le défi n'est pas la règle, c'est de l'appliquer</h2>
+    <p>Adopter la règle est la partie facile ; le défi est de la faire respecter sans transformer les enseignants en surveillants. Les solutions habituelles — éteindre le téléphone, le laisser dans le sac ou le déposer dans une boîte — soulèvent des questions : qui est responsable si un téléphone est endommagé ou disparaît ? Comment éviter qu'un élève le consulte en cachette ?</p>
+    <h2>La réponse PhoneRelax</h2>
+    <p>Avec les pochettes magnétiques <strong>PhoneRelax</strong>, chaque élève range son propre téléphone dans une pochette qui se scelle et ne s'ouvre qu'en l'approchant de l'aimant de l'établissement. Ainsi :</p>
+    <ul>
+      <li>C'est <strong>l'élève lui-même qui garde son téléphone</strong> : l'établissement n'est pas responsable d'éventuels dommages — une modalité parfaitement compatible avec la « pause numérique ».</li>
+      <li>La version <strong>SignalBlocking</strong> laisse le téléphone sans réseau ni wifi, évitant les notifications ou l'usage en cachette, particulièrement utile pendant les examens.</li>
+      <li>C'est un système <strong>uniforme et simple</strong> pour tout l'établissement, facile à appliquer chaque jour.</li>
+    </ul>
+    <h2>Avant de décider</h2>
+    <p>La réglementation évolue d'une rentrée à l'autre — la généralisation de la « pause numérique » en est la preuve — il convient donc de suivre les nouveautés et de les refléter dans le règlement intérieur de l'établissement. Si vous cherchez un moyen pratique de les appliquer, <a href="/fr/colegios">PhoneRelax pour les établissements scolaires</a> vous aide à créer des classes sans distractions. Besoin d'équiper plusieurs classes ? <a href="/fr/presupuesto">Demandez un devis</a>.</p>
+  HTML_FR
 )
 normativa.save!
 puts "Artículo normativa: es/pt/en OK (posts: #{Post.count})"

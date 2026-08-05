@@ -1,0 +1,345 @@
+fr:
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%d %B %Y"
+    month_names: [~, janvier, février, mars, avril, mai, juin, juillet, août, septembre, octobre, novembre, décembre]
+    day_names: [dimanche, lundi, mardi, mercredi, jeudi, vendredi, samedi]
+    abbr_day_names: [dim, lun, mar, mer, jeu, ven, sam]
+    abbr_month_names: [~, janv, févr, mars, avr, mai, juin, juil, août, sept, oct, nov, déc]
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%d %B %Y à %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Nom
+        email: Email
+        phone: Téléphone
+        address: Adresse
+        city: Ville
+        postal_code: Code postal
+        province: Province
+        country: Pays
+      product:
+        name: Nom
+        price: Prix
+      quote:
+        delivery_terms: Délai de livraison
+      user:
+        email_address: Email
+        password: Mot de passe
+        password_confirmation: Confirmation du mot de passe
+    errors:
+      messages:
+        blank: ne peut pas être vide
+        invalid: n'est pas valide
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      confirmation: ne correspond pas
+
+  nav:
+    home: Accueil
+    how_it_works: "Comment ça marche ?"
+    products: Produits
+    bulk: Grandes commandes
+    blog: Blog
+    contact: Contact
+    cart: Panier
+    admin: Admin
+    privacy: Politique de confidentialité
+  footer:
+    tagline: PhoneRelax — des espaces sans téléphones.
+    admin: Panneau de gestion
+  common:
+    add_to_cart: Ajouter au panier
+    sold_out: Épuisé
+    back: Retour
+    our_products: Nos produits
+    view_products: Voir les produits
+    keep_shopping: Continuer mes achats
+    checkout: Passer la commande
+    product: Produit
+    price: Prix
+    quantity: Quantité
+    subtotal: Sous-total
+    total: Total
+    vat_included: "TVA (%{rate}%) incluse"
+    vat_rate: "TVA (%{rate}%)"
+    whatsapp_aria: Écrivez-nous sur WhatsApp
+    update: Mettre à jour
+    remove: Retirer
+    prev: Précédent
+    next: Suivant
+    slide: "Diapositive %{n}"
+    play_video: Lire la vidéo
+    image_n: "Image %{n}"
+    main_nav: Navigation principale
+    breadcrumb: Fil d'Ariane
+    language: Langue
+    country: Espagne
+    trusted_by: "Ils font déjà confiance à PhoneRelax"
+    site_title: "PhoneRelax - Pochette magnétique pour ranger les téléphones en classe et lors d'événements."
+    site_description: "PhoneRelax : pochettes magnétiques pour ranger le téléphone et bloquer son signal en classe, lors d'événements et dans les espaces sans distractions. Livraison dans toute l'UE."
+  home:
+    slide1: Améliore la concentration et les échanges en classe
+    slide2: "Évitez l'usage du téléphone <br>dans les zones sans surveillance"
+    slide3: "Chaque utilisateur garde <br>son propre téléphone"
+    slide4: "Profitez du moment <br>sans distractions"
+    how_title: "Comment ça marche ?"
+    step1_title: "1 · Placez le téléphone dans la pochette"
+    step1_body: "Placez le téléphone à l'intérieur de la pochette PhoneRelax. À partir de ce moment, il conservera ou non son réseau selon le type de pochette utilisé."
+    step2_title: "2 · Fermez la pochette PhoneRelax"
+    step2_body: "Appuyez sur le bouton du verrou et le téléphone restera scellé à l'intérieur. C'est le propriétaire du téléphone qui le garde à tout moment."
+    step3_title: "3 · Ouvrez la pochette PhoneRelax"
+    step3_body: "Pour récupérer le téléphone, il suffit d'approcher le verrou de l'un des aimants spéciaux d'ouverture PhoneRelax et de sortir le téléphone."
+    schools_title: PhoneRelax pour les établissements scolaires
+    products_title: Produits
+    events_title: PhoneRelax pour les événements
+    blog_title: Notre blog
+    bulk_cta_title: "Une école, une entreprise ou un événement ?"
+    bulk_cta_body: "Remises sur volume et personnalisation avec votre logo pour les grandes commandes."
+    bulk_cta_button: "Demander un devis"
+    meta_description: "Pochettes magnétiques PhoneRelax pour ranger le téléphone et bloquer son signal en classe, dans les établissements scolaires, les événements et les espaces sans distractions. Faciles à utiliser, livraison dans toute l'UE."
+  steps:
+    title: "En trois étapes seulement :"
+    step1_title: "1 · Placez le téléphone dans la pochette"
+    step1_body: "Placez le téléphone à l'intérieur de la pochette PhoneRelax. À partir de ce moment, il conservera ou non son réseau selon le type de pochette PhoneRelax utilisé."
+    step2_title: "2 · Fermez la pochette PhoneRelax"
+    step2_body: "Appuyez sur le bouton du verrou de la pochette PhoneRelax et le téléphone restera scellé à l'intérieur. C'est le propriétaire du téléphone qui le garde à tout moment."
+    step3_title: "3 · Ouvrez la pochette PhoneRelax"
+    step3_body: "Pour sortir le téléphone de la pochette PhoneRelax, il suffit d'approcher son verrou de l'un des aimants spéciaux d'ouverture PhoneRelax et de retirer le téléphone."
+    step1_alt: Placez le téléphone dans la pochette
+    step2_alt: Fermez la pochette PhoneRelax
+    step3_alt: Ouvrez la pochette PhoneRelax
+  product:
+    unavailable: Ce produit n'est pas disponible pour le moment.
+    pack_includes: Ce que contient ce pack
+    pack_normal: Prix à l'unité
+    pack_in_pack: Dans le pack
+    pack_saving: Économie
+    pack_max: "max. %{n}"
+    pack_saving_total: "Vous économisez %{amount} en achetant le pack plutôt que les produits séparément."
+  cart:
+    title: Votre panier
+    empty: Le panier est vide.
+  checkout:
+    title: Passer la commande
+    base: Montant HT
+    vat: TVA
+    total_vat: Total (TVA incluse)
+    total_exempt: Total (hors TVA)
+    shipping_note: Les frais de transport seront calculés après la saisie de l'adresse de livraison.
+    your_data: Vos coordonnées
+    customer_name: Nom et prénom
+    email: Email
+    phone: Téléphone
+    phone_prefix: Indicatif du pays
+    address: Adresse de livraison
+    city: Ville
+    postal_code: Code postal
+    province: Province / Région
+    country: Pays
+    submit: Calculer les frais de transport
+    needs_invoice: J'ai besoin d'une facture
+    invoice_note: Saisissez vos informations fiscales. Si vous êtes une entreprise d'un autre pays de l'UE, indiquez votre numéro de TVA pour le vérifier dans VIES.
+    tax_name: Nom ou raison sociale
+    tax_id: NIF / SIREN ou numéro de TVA intracommunautaire
+    tax_same_as_shipping: Utiliser l'adresse de livraison comme adresse de facturation
+    tax_address: Adresse de facturation
+    tax_city: Ville
+    tax_postal_code: Code postal
+    tax_province: Province / Région
+    tax_country: Pays
+    vies_checking: Vérification dans VIES…
+    vies_ok: "✓ Numéro de TVA valide dans VIES"
+    vies_ko: "✗ Numéro de TVA non valide dans VIES"
+    vies_unavailable: Vérification impossible pour le moment ; nous la ferons lors du traitement de la commande.
+  order:
+    title: "Commande %{number}"
+    thanks_title: "Merci pour votre achat, %{name} !"
+    thanks_text: "Votre paiement a bien été reçu. Nous vous avons envoyé la confirmation à %{email} et nous vous préviendrons dès que votre commande sera expédiée."
+    payment: "Paiement :"
+    status: "Statut :"
+    shipping: Transport
+    save_note: Conservez cette page pour suivre l'état de votre commande.
+    statuses:
+      creado: Créée
+      enviado: Expédiée
+      recibido: Reçue
+    payment_statuses:
+      pendiente: en attente
+      pagado: payée
+      reembolsado: remboursée
+  vat_exempt:
+    export: "Vente exonérée de TVA : envoi aux îles Canaries (exportation). Les taxes à l'importation (IGIC/douane), le cas échéant, sont à la charge du destinataire."
+    intra_eu: "Vente exonérée de TVA : livraison intracommunautaire à une entreprise dont le numéro de TVA a été validé dans VIES (art. 25 de la loi espagnole sur la TVA)."
+  pay:
+    title: Vérifiez et payez votre commande
+    order_shipping: "Commande %{number} · livraison à %{destination}"
+    shipping: Transport
+    total_to_pay: Total à payer (TVA incluse)
+    total_exempt: Total à payer (hors TVA)
+    stripe_note: "En cliquant sur « Payer », vous serez redirigé vers la passerelle sécurisée de Stripe."
+    pay_button: Payer
+  contact:
+    title: Contact
+    about: "PhoneRelax est basée à Alicante (Espagne) et est née pour répondre aux problèmes liés à l'usage des téléphones portables dans les écoles, les collèges et lycées, les concerts et les événements privés."
+    map_title: "Carte : C/ Carrasqueta 13, Petrer"
+    intro_html: "Écrivez-nous et nous vous répondrons dans les plus brefs délais :"
+    form_title: Formulaire de contact
+    name: Nom
+    email: "Adresse email *"
+    phone: Numéro de téléphone
+    message: Message
+    submit: Envoyer
+    meta_description: "Des questions ou besoin d'un devis pour votre établissement ou événement ? Contactez PhoneRelax et nous vous aiderons à choisir la solution qu'il vous faut."
+  how_it_works:
+    title: "Comment ça marche ?"
+    p1: "C'est très simple : il suffit de placer le téléphone dans la pochette PhoneRelax et d'appuyer sur le bouton de son verrou pour que le téléphone reste scellé à l'intérieur."
+    p2: "Le principal avantage est que c'est le propriétaire du téléphone lui-même qui garde son appareil dans la pochette PhoneRelax jusqu'au moment de le réutiliser."
+    p3: "Pour libérer le téléphone, il suffit d'approcher le verrou de la pochette PhoneRelax de notre aimant spécial PhoneRelax afin de l'ouvrir et de sortir le téléphone."
+    p4: "Nous proposons deux types de pochettes PhoneRelax : une version avec la pochette et son verrou de scellage, et une version SignalBlocking qui bloque en plus le signal mobile et le wifi ; le téléphone reste alors sans réseau et ne dérange ni par les appels entrants ni par les notifications."
+    video_alt: Vidéo PhoneRelax
+    faq_title: Questions fréquentes
+    meta_description: "Comment fonctionne PhoneRelax : rangez le téléphone dans la pochette magnétique, fermez-la et récupérez-le le moment venu. Un moyen simple de créer des espaces sans distractions en classe et lors d'événements."
+    faq:
+      q1: "Comment fonctionne la pochette PhoneRelax ?"
+      a1: "Vous placez le téléphone dans la pochette et appuyez sur le bouton de son verrou pour qu'il reste scellé à l'intérieur. Pour le libérer, approchez le verrou de l'aimant spécial PhoneRelax et la pochette s'ouvre."
+      q2: "Qui garde le téléphone ?"
+      a2: "Le propriétaire du téléphone lui-même : il le conserve dans sa pochette PhoneRelax jusqu'au moment de le réutiliser."
+      q3: "PhoneRelax bloque-t-il le réseau et le wifi ?"
+      a3: "La version SignalBlocking, oui : elle bloque le signal mobile et le wifi, le téléphone reste donc sans réseau et ne dérange ni par les appels ni par les notifications. La version basique se contente de sceller la pochette."
+      q4: "Peut-on ouvrir la pochette sans l'aimant ?"
+      a4: "Non. Le verrou de la pochette PhoneRelax ne s'ouvre qu'en l'approchant de l'aimant spécial PhoneRelax."
+      q5: "Où utilise-t-on PhoneRelax ?"
+      a5: "Dans les salles de classe et les établissements scolaires, ainsi que lors d'événements et dans les espaces où l'on souhaite éviter l'usage du téléphone et les distractions."
+  blog:
+    title: Blog
+    read_article: "Lire l'article →"
+    meta_description: "Le blog de PhoneRelax : conseils et idées sur l'usage responsable du téléphone en classe, dans les établissements scolaires et lors d'événements, et comment réduire les distractions."
+  flash:
+    cart_empty: Le panier est vide.
+    out_of_stock: "Stock insuffisant pour : %{names}. Ajustez les quantités."
+    zero_quantity: "Indiquez une quantité supérieure à 0 pour : %{names}."
+    dtf_min: "La personnalisation DTF nécessite au moins %{min} unités dans la commande (vous en avez %{count})."
+    dtf_mismatch: "Le nombre de personnalisations DTF (%{dtf}) doit correspondre au nombre de pochettes (%{fundas}). Ajustez les quantités."
+    payment_cancelled: Paiement annulé. Vous pouvez réessayer quand vous voulez.
+    verify_failed: Impossible de vérifier l'envoi. Veuillez réessayer.
+    message_sent: Message envoyé. Nous vous répondrons dans les plus brefs délais.
+    quote_sent: Demande envoyée. Nous vous enverrons votre devis dans les plus brefs délais.
+    payment_start_failed: "Impossible de démarrer le paiement : %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Paiement reçu pour votre commande %{number}"
+      title: "Merci pour votre achat, %{name} !"
+      body_html: "Nous avons bien reçu le paiement de votre commande <strong>%{number}</strong>. Nous la préparons et nous vous préviendrons dès son expédition."
+      track: Suivre ma commande
+    shipped:
+      subject: "PhoneRelax · Votre commande %{number} est en route"
+      title: "Votre commande est en route 📦"
+      body_html: "Bonjour %{name}, votre commande <strong>%{number}</strong> est partie vers :"
+      track: Suivre ma commande
+      tracking_label: Nº de suivi
+    payment_reminder:
+      subject: "PhoneRelax · Votre commande %{number} est en attente de paiement"
+      title: "Votre commande vous attend"
+      body_html: "Bonjour %{name}, votre commande <strong>%{number}</strong> est prête mais en attente de paiement. Vous pouvez la finaliser quand vous voulez :"
+      pay: Finaliser le paiement
+      no_action: "Si vous n'en voulez plus, vous n'avez rien à faire."
+    summary:
+      shipping: Transport
+      total: Total (TVA incluse)
+  quote:
+    meta_title: "Devis pour écoles, entreprises et événements"
+    meta_description: "Grandes commandes de pochettes PhoneRelax avec remises sur volume et personnalisation avec votre logo. Demandez un devis pour votre école, votre entreprise ou votre événement."
+    title: "Grandes commandes pour écoles, entreprises et événements"
+    subtitle: "Remises sur volume, personnalisation avec votre logo et facture. Dites-nous ce qu'il vous faut et nous vous préparons un devis sur mesure."
+    benefits_title: "Pourquoi choisir PhoneRelax"
+    b1_title: "Remises sur volume"
+    b1_body: "Plus il y a de pochettes, meilleur est le prix. Idéal pour équiper des classes entières, des équipes ou des événements complets."
+    b2_title: "Personnalisation avec votre logo"
+    b2_body: "Nous personnalisons les pochettes avec le logo, les couleurs ou le design de votre école, entreprise ou événement."
+    b3_title: "Achat direct, sans attente"
+    b3_body: "Pour les petites commandes, achetez immédiatement en boutique ; pour les grandes quantités, devis sous 24-48 h."
+    b4_title: "Version qui bloque le signal"
+    b4_body: "La version SignalBlocking laisse le téléphone sans réseau ni wifi : zéro appel ou notification gênante."
+    sectors_title: "Des solutions par secteur"
+    sector_colegio: "Écoles, collèges et lycées : des classes sans distractions et des examens sans fraude."
+    sector_empresa: "Entreprises : réunions, visites d'usine et zones confidentielles."
+    sector_evento: "Événements et concerts : des expériences sans téléphones et sans spoilers."
+    sector_academia: "Centres de formation et universités : examens et concours."
+    customization_title: "Personnalisation à votre marque"
+    customization_body: "Nous ajoutons votre logo et vos couleurs aux pochettes. Décrivez votre projet dans le formulaire et nous vous montrerons des exemples et des options."
+    customization_alt: "Pochette PhoneRelax personnalisée pour %{name}"
+    form_title: "Demandez votre devis"
+    form_intro: "Réponse sous 24-48 h ouvrées."
+    f_name: "Nom et prénom"
+    f_organization: "École / entreprise / organisation"
+    f_email: "Email"
+    f_phone: "Téléphone"
+    f_sector: "Type d'organisation"
+    f_units: "Nombre d'unités approximatif"
+    f_message: "Dites-nous ce qu'il vous faut"
+    submit: "Demander un devis"
+    sectors:
+      colegio: "École / collège / lycée"
+      empresa: "Entreprise"
+      evento: "Événement / concert"
+      academia: "Centre de formation / université"
+      otro: "Autre"
+  sectors:
+    cta_buy: "Voir les produits"
+    cta_quote: "Demander un devis"
+    cta_title: "Prêt à commencer ?"
+    cta_body: "Achat direct pour les petites commandes ou devis pour votre organisation."
+    colegios:
+      meta_title: "PhoneRelax pour les écoles, collèges et lycées"
+      meta_description: "Des classes sans distractions et des examens sans fraude : chaque élève range son téléphone dans une pochette magnétique PhoneRelax. Remises sur volume pour les établissements scolaires."
+      title: "PhoneRelax pour les écoles, collèges et lycées"
+      subtitle: "Des classes sans distractions et des examens sans fraude, chaque élève gardant son propre téléphone."
+      intro: "De plus en plus de pays limitent l'usage du téléphone en classe — en France, le dispositif « portable en pause » se généralise dans les collèges. Avec PhoneRelax, chaque élève range son téléphone dans une pochette magnétique qui ne s'ouvre qu'avec l'aimant de l'établissement : pas de collecte des téléphones ni de responsabilité pour les enseignants."
+      b1_title: "Plus de concentration"
+      b1_body: "Sans la tentation de regarder le téléphone, les élèves sont plus attentifs et participent davantage en classe."
+      b2_title: "Des examens sans fraude"
+      b2_body: "La version SignalBlocking laisse le téléphone sans réseau ni wifi, empêchant de copier ou de recevoir des notifications pendant les épreuves."
+      b3_title: "Aucune responsabilité pour l'enseignant"
+      b3_body: "Chaque élève garde son propre téléphone dans sa pochette ; l'établissement n'est pas responsable d'éventuels dommages."
+    eventos:
+      meta_title: "PhoneRelax pour les événements et les concerts"
+      meta_description: "Des expériences sans téléphones dans les concerts et les événements : pas d'enregistrements ni de spoilers, distribution et récupération rapides. Demandez un devis pour votre événement."
+      title: "PhoneRelax pour les événements et les concerts"
+      subtitle: "Des expériences sans téléphones : pas d'enregistrements, pas de spoilers et un public connecté à l'instant présent."
+      intro: "Les événements sans téléphones (« phone-free events ») sont en plein essor. Avec PhoneRelax, les participants rangent leur téléphone dans une pochette scellée qu'ils ouvrent à la sortie : ils profitent du spectacle et respectent l'artiste."
+      b1_title: "Une expérience plus immersive"
+      b1_body: "Sans écrans, le public vit le moment et se connecte à l'artiste et aux autres participants."
+      b2_title: "Ni fuites ni spoilers"
+      b2_body: "Idéal pour les avant-premières, les spectacles et les présentations où rien ne doit être enregistré ni divulgué."
+      b3_title: "Distribution et récupération rapides"
+      b3_body: "Un système simple de remise et d'ouverture avec aimant à la sortie, sans files d'attente ni complications."
+    empresas:
+      meta_title: "PhoneRelax pour les entreprises"
+      meta_description: "Réunions, visites d'usine et zones confidentielles sans téléphones ni caméras. Pochettes magnétiques PhoneRelax avec devis pour les entreprises."
+      title: "PhoneRelax pour les entreprises"
+      subtitle: "Réunions, visites d'usine et zones confidentielles sans téléphones ni caméras."
+      intro: "Protégez la confidentialité et la concentration dans votre entreprise. Visiteurs et employés rangent leur téléphone dans une pochette scellée dans les zones où il ne doit pas être utilisé."
+      b1_title: "Confidentialité"
+      b1_body: "Évitez les photos et les enregistrements dans les zones sensibles, les laboratoires, les lignes de production ou les réunions stratégiques."
+      b2_title: "Des réunions plus productives"
+      b2_body: "Sans interruptions ni distractions, les réunions sont plus courtes et plus efficaces."
+      b3_title: "Facile à mettre en place"
+      b3_body: "Ni coffres-forts ni infrastructure : des pochettes réutilisables et un aimant d'ouverture par zone."
+    oposiciones:
+      meta_title: "PhoneRelax pour les examens et les concours"
+      meta_description: "Des examens et des concours sans fraude : les téléphones restent scellés et sans réseau dans une pochette magnétique PhoneRelax. Devis pour les centres de formation et les jurys."
+      title: "PhoneRelax pour les examens et les concours"
+      subtitle: "Des examens sans fraude : les téléphones restent scellés et sans réseau pendant l'épreuve."
+      intro: "Lors des examens et des concours, le téléphone est la principale voie de fraude. Avec la version SignalBlocking de PhoneRelax, le téléphone reste scellé et sans signal jusqu'à la fin de l'épreuve."
+      b1_title: "Pas de réseau, pas de fraude"
+      b1_body: "La version SignalBlocking bloque le signal mobile et le wifi : impossible de recevoir des réponses ou des notifications."
+      b2_title: "Le candidat garde lui-même son téléphone"
+      b2_body: "Chacun range son téléphone dans sa pochette : distribution rapide et aucune manipulation d'appareils d'autrui."
+      b3_title: "Une gestion simple pour le jury"
+      b3_body: "Distribution à l'entrée et ouverture avec aimant à la sortie ; un système uniforme et clair pour tous."

@@ -73,6 +73,23 @@ module ApplicationHelper
     "#{canonical_base}#{request.path}"
   end
 
+  # Bandera y nombre nativo de cada idioma, para el selector con dropdown.
+  LOCALE_FLAGS = { "es" => "🇪🇸", "pt" => "🇵🇹", "en" => "🇬🇧", "fr" => "🇫🇷" }.freeze
+  LOCALE_NAMES = { "es" => "Español", "pt" => "Português", "en" => "English", "fr" => "Français" }.freeze
+
+  def locale_flag(locale)
+    LOCALE_FLAGS[locale.to_s] || "🏳️"
+  end
+
+  def locale_name(locale)
+    LOCALE_NAMES[locale.to_s] || locale.to_s.upcase
+  end
+
+  # Bandera emoji de un código de país ISO (ES → 🇪🇸), vía indicadores regionales.
+  def country_flag(iso)
+    iso.to_s.upcase.chars.map { |c| c.ord + 127397 }.pack("U*")
+  end
+
   # Ruta (relativa al host) de la página actual en el idioma dado. Se usa en el
   # SELECTOR DE IDIOMA para que la navegación se quede en el mismo host — así en
   # local no salta a producción. El idioma por defecto va sin prefijo. Devuelve

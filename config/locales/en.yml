@@ -134,6 +134,7 @@ en:
     customer_name: Full name
     email: Email
     phone: Phone
+    phone_prefix: Country code
     address: Shipping address
     city: City
     postal_code: Postal code

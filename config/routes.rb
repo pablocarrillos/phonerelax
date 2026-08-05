@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   # Rutas públicas bilingües: español sin prefijo, portugués bajo /pt
   # (el idioma por defecto no lleva prefijo; ver default_url_options).
-  scope "(:locale)", locale: /pt|en/ do
+  scope "(:locale)", locale: /pt|en|fr/ do
     root "shop#home"
     # URLs canónicas con la misma estructura que la tienda Shopify anterior
     # (/products, /pages/..., /blogs/news) para no perder SEO al migrar.

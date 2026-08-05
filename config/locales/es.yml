@@ -136,6 +136,7 @@ es:
     customer_name: Nombre y apellidos
     email: Email
     phone: Teléfono
+    phone_prefix: Prefijo del país
     address: Dirección de envío
     city: Ciudad
     postal_code: Código postal

@@ -32,7 +32,7 @@ module Phonerelax
       end
     end
 
-    config.i18n.available_locales = [ :es, :pt, :en ]
+    config.i18n.available_locales = [ :es, :pt, :en, :fr ]
     config.i18n.default_locale = :es
     # El portugués cae al español mientras se completan las traducciones.
     config.i18n.fallbacks = [ :es ]

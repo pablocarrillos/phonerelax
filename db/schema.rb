@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_05_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_05_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -133,22 +133,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_120000) do
   create_table "posts", force: :cascade do |t|
     t.text "body"
     t.text "body_en"
+    t.text "body_fr"
     t.text "body_pt"
     t.datetime "created_at", null: false
     t.text "excerpt"
     t.text "excerpt_en"
+    t.text "excerpt_fr"
     t.text "excerpt_pt"
     t.string "image_url"
     t.date "published_on"
     t.string "slug", null: false
     t.string "slug_en"
+    t.string "slug_fr"
     t.string "slug_pt"
     t.string "title", null: false
     t.string "title_en"
+    t.string "title_fr"
     t.string "title_pt"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_posts_on_slug", unique: true
     t.index ["slug_en"], name: "index_posts_on_slug_en", unique: true
+    t.index ["slug_fr"], name: "index_posts_on_slug_fr", unique: true
     t.index ["slug_pt"], name: "index_posts_on_slug_pt", unique: true
   end
 
@@ -177,10 +182,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_120000) do
     t.datetime "created_at", null: false
     t.text "description"
     t.text "description_en"
+    t.text "description_fr"
     t.text "description_pt"
     t.string "image_url"
     t.string "name", null: false
     t.string "name_en"
+    t.string "name_fr"
     t.string "name_pt"
     t.boolean "pack", default: false, null: false
     t.integer "position", default: 0, null: false
