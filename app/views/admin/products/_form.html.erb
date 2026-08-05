@@ -10,12 +10,9 @@
     </div>
     <div>
       <%= f.label :stock, 'Stock (unidades restantes)' %>
-      <% if product.pack? %>
-        <input type="text" value="<%= product.available_stock %> packs" disabled class="input-compact" style="width:100%; background:#f2f3f7;">
-        <p class="action-note" style="margin-top:4px;">Automático: máximo de packs que permite el stock de los componentes.</p>
-      <% else %>
-        <%= f.number_field :stock, min: 0 %>
-      <% end %>
+      <%= f.number_field :stock, min: 0, value: (product.pack? ? product.available_stock : product.stock),
+                         data: { pack_form_target: 'stock' } %>
+      <p class="action-note" style="margin-top:4px;" data-pack-form-target="stockNote" hidden>Automático: máximo de packs que permite el stock restante de los componentes.</p>
     </div>
     <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
     <div class="full"><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>

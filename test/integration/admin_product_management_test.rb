@@ -22,6 +22,7 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     # Pack: el formulario reacciona al check (precio bloqueado y escalado oculto).
     assert_select "form[data-controller='pack-form']"
     assert_select "input[data-pack-form-target='price']"
+    assert_select "input[data-pack-form-target='stock']"
   end
 
   test "la lista permite reordenar arrastrando y guarda el nuevo orden" do
