@@ -268,6 +268,14 @@ fr:
       body_html: "Bonjour %{name}, votre commande <strong>%{number}</strong> est prête mais en attente de paiement. Vous pouvez la finaliser quand vous voulez :"
       pay: Finaliser le paiement
       no_action: "Si vous n'en voulez plus, vous n'avez rien à faire."
+    refunded:
+      subject: "PhoneRelax · Remboursement sur votre commande %{number}"
+      title: "Nous avons effectué un remboursement"
+      body_html: "Bonjour %{name}, nous vous avons remboursé <strong>%{amount}</strong> sur votre commande <strong>%{number}</strong>."
+      full_note: "Avec ce remboursement, votre commande est intégralement remboursée."
+      partial_note: "Le reste de votre commande n'est pas affecté."
+      card_note: "Le montant sera recrédité sur la carte utilisée pour le paiement ; selon votre banque, cela peut prendre 5 à 10 jours ouvrés."
+      track: "Voir ma commande"
     summary:
       shipping: Transport
       total: Total (TVA incluse)

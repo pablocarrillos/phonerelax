@@ -1,0 +1,16 @@
+<h1 style="font-size:20px; margin:0 0 12px;"><%= t('order_mailer.refunded.title') %></h1>
+<p><%= t('order_mailer.refunded.body_html',
+         name: @order.customer_name,
+         amount: number_to_currency(@amount, unit: '€', format: '%n %u'),
+         number: @order.number) %></p>
+<% if @order.pago_reembolsado? %>
+  <p><%= t('order_mailer.refunded.full_note') %></p>
+<% else %>
+  <p><%= t('order_mailer.refunded.partial_note') %></p>
+<% end %>
+<% unless @order.paid_manually? %>
+  <p style="color:#666; font-size:14px;"><%= t('order_mailer.refunded.card_note') %></p>
+<% end %>
+<p style="text-align:center; margin:22px 0;">
+  <a href="<%= order_status_url(@order.number) %>" style="background:#0E1B4D; color:#fff; text-decoration:none; padding:12px 26px; border-radius:8px; display:inline-block;"><%= t('order_mailer.refunded.track') %></a>
+</p>

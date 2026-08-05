@@ -261,6 +261,14 @@ pt:
       body_html: "Olá %{name}: tem a encomenda <strong>%{number}</strong> preparada mas pendente de pagamento. Pode concluí-la quando quiser:"
       pay: Concluir o pagamento
       no_action: "Se já não a quiser, não precisa de fazer nada."
+    refunded:
+      subject: "PhoneRelax · Reembolso na tua encomenda %{number}"
+      title: "Efetuámos um reembolso"
+      body_html: "Olá %{name}: reembolsámos <strong>%{amount}</strong> da tua encomenda <strong>%{number}</strong>."
+      full_note: "Com este reembolso, a encomenda fica devolvida na totalidade."
+      partial_note: "O resto da encomenda não é afetado."
+      card_note: "O valor será devolvido ao cartão com que pagaste; consoante o banco, pode demorar 5 a 10 dias úteis a aparecer."
+      track: "Ver a minha encomenda"
     summary:
       shipping: Transporte
       total: Total (IVA incluído)

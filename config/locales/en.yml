@@ -266,6 +266,14 @@ en:
       body_html: "Hi %{name}: your order <strong>%{number}</strong> is ready but pending payment. You can complete it whenever you like:"
       pay: Complete payment
       no_action: "If you no longer want it, you don't need to do anything."
+    refunded:
+      subject: "PhoneRelax · Refund for your order %{number}"
+      title: "We have issued a refund"
+      body_html: "Hello %{name}: we have refunded <strong>%{amount}</strong> for your order <strong>%{number}</strong>."
+      full_note: "With this refund, your order has been fully refunded."
+      partial_note: "The rest of your order is not affected."
+      card_note: "The amount will be returned to the card you paid with; depending on your bank it may take 5–10 working days to appear."
+      track: "View my order"
     summary:
       shipping: Shipping
       total: Total (VAT included)

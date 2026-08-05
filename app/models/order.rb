@@ -247,6 +247,7 @@ class Order < ApplicationRecord
       save!
       order_events.create!(event: pago_reembolsado? ? "reembolsado" : "reembolso parcial (#{format('%.2f', amount)} €)")
     end
+    OrderMailer.refunded(self, amount).deliver_later
   end
 
   # Avanza el estado logístico dejando rastro en el histórico. Al pasar a "enviado"

@@ -3,6 +3,28 @@ require "test_helper"
 class OrderMailerTest < ActionMailer::TestCase
   setup { ActionMailer::Base.default_url_options = { host: "phonerelax.com" } }
 
+  test "refunded: correo en el idioma de la compra con importe y número de pedido" do
+    order = orders(:uno)
+    order.update!(locale: "fr", payment_status: :pagado, total: 25)
+    mail = OrderMailer.refunded(order, BigDecimal("10.50"))
+
+    assert_equal [ order.email ], mail.to
+    assert_match "Remboursement", mail.subject
+    assert_match order.number, mail.subject
+    body = mail.body.decoded
+    assert_match "10.50", body # importe reembolsado
+    assert_match order.number, body
+    assert_match "pas affect", body # reembolso parcial
+  end
+
+  test "refund! encola el correo de reembolso al cliente" do
+    order = orders(:uno)
+    order.update!(locale: "es", payment_status: :pagado, total: 25, paid_manually: true)
+    assert_enqueued_emails 1 do
+      order.refund!(5)
+    end
+  end
+
   test "paid: pedido en español -> correo en español y enlace sin prefijo" do
     order = orders(:uno)
     order.update!(locale: "es")

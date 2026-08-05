@@ -27,6 +27,15 @@ class OrderMailer < ApplicationMailer
     end
   end
 
+  # Aviso al cliente de un reembolso (total o parcial) sobre su pedido.
+  def refunded(order, amount)
+    @order = order
+    @amount = amount
+    with_order_locale do
+      mail(to: @order.email, subject: t("order_mailer.refunded.subject", number: @order.number))
+    end
+  end
+
   # Recordatorio manual para pedidos que se quedaron sin pagar.
   def payment_reminder(order)
     @order = order
