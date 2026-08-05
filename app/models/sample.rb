@@ -1,6 +1,8 @@
 # Muestra de producto enviada a un posible cliente (colegio, ayuntamiento…),
 # con su fecha de envío y de recogida/devolución.
 class Sample < ApplicationRecord
+  # Presupuesto al que va asociada la muestra (opcional).
+  belongs_to :quote, optional: true
   has_many :sample_lines, dependent: :destroy, inverse_of: :sample
 
   accepts_nested_attributes_for :sample_lines, allow_destroy: true,

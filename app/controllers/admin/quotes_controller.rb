@@ -1,6 +1,6 @@
 module Admin
   class QuotesController < BaseController
-    before_action :set_quote, only: [ :show, :edit, :update, :destroy, :print, :duplicate ]
+    before_action :set_quote, only: [ :show, :edit, :update, :destroy, :print, :duplicate, :set_status ]
 
     def index
       @quotes = Quote.includes(:client, :quote_lines).recent_first
@@ -59,6 +59,17 @@ module Admin
     def destroy
       @quote.destroy!
       redirect_to admin_quotes_path, notice: "Presupuesto borrado."
+    end
+
+    # Marca el estado comercial del presupuesto (abierto / aprobado / en pausa / perdido).
+    def set_status
+      status = params[:status].to_s
+      if Quote.statuses.key?(status)
+        @quote.update!(status: status)
+        redirect_back fallback_location: admin_quote_path(@quote), notice: "Presupuesto #{@quote.number} marcado como «#{@quote.status_label}»."
+      else
+        redirect_back fallback_location: admin_quote_path(@quote), alert: "Estado no válido."
+      end
     end
 
     # Crea un presupuesto nuevo partiendo de este: mismas líneas y condiciones,

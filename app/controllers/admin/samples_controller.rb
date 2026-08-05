@@ -12,7 +12,7 @@ module Admin
       @filter = %w[pending returned].include?(params[:filter]) ? params[:filter] : nil
       order = @sort == "organization" ? "LOWER(organization) #{@dir}" : "#{@sort} #{@dir} NULLS LAST"
 
-      all = Sample.includes(sample_lines: :product).order(Arel.sql("#{order}, id desc"))
+      all = Sample.includes(:quote, sample_lines: :product).order(Arel.sql("#{order}, id desc"))
       @landed_costs = Purchase.average_landed_costs
       # Resumen sobre TODAS las muestras (no depende del filtro de la tabla).
       @pending_count = all.count { |s| !s.returned? }
@@ -77,7 +77,7 @@ module Admin
     end
 
     def sample_params
-      params.require(:sample).permit(:organization, :contact_name, :email, :sent_on, :returned_on, :notes,
+      params.require(:sample).permit(:organization, :contact_name, :email, :sent_on, :returned_on, :notes, :quote_id,
                                      sample_lines_attributes: [ :id, :product_id, :quantity, :_destroy ])
     end
   end

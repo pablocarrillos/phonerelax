@@ -25,6 +25,17 @@ class Quote < ApplicationRecord
 
   belongs_to :client
   has_many :quote_lines, -> { order(:position, :id) }, dependent: :destroy, inverse_of: :quote
+  # Muestras enviadas vinculadas a este presupuesto (al borrarlo se desvinculan).
+  has_many :samples, dependent: :nullify
+
+  # Estado del seguimiento comercial del presupuesto.
+  enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3 }
+
+  STATUS_LABELS = { "abierto" => "Abierto", "aprobado" => "Aprobado", "en_pausa" => "En pausa", "perdido" => "Perdido" }.freeze
+
+  def status_label
+    STATUS_LABELS[status] || status
+  end
 
   # Solo se descartan filas NUEVAS vacías; las existentes (con id) siempre se procesan.
   accepts_nested_attributes_for :quote_lines, allow_destroy: true,

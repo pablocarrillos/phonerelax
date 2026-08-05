@@ -310,4 +310,27 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     get new_admin_quote_path
     assert_includes response.body, "50% IVA incluido para confirmar y 50% a la entrega."
   end
+
+  def a_quote
+    Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                  quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
+  end
+
+  test "marcar el estado del presupuesto (aprobado / en pausa / perdido)" do
+    quote = a_quote
+    assert quote.abierto?, "por defecto abierto"
+    patch set_status_admin_quote_path(quote), params: { status: "aprobado" }
+    assert quote.reload.aprobado?
+    patch set_status_admin_quote_path(quote), params: { status: "en_pausa" }
+    assert quote.reload.en_pausa?
+    patch set_status_admin_quote_path(quote), params: { status: "invento" } # inválido: no cambia
+    assert quote.reload.en_pausa?
+  end
+
+  test "vincular una muestra enviada a un presupuesto" do
+    quote = a_quote
+    post admin_samples_path, params: { sample: { organization: "Colegio X", sent_on: "2026-08-05", quote_id: quote.id } }
+    assert_equal quote, Sample.last.quote
+    assert_equal 1, quote.reload.samples.count
+  end
 end

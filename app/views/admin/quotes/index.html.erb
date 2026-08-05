@@ -10,13 +10,14 @@
 
 <% if @quotes.any? %>
   <table class="table">
-    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Descripción (interna)</th><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
+    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
     <tbody>
       <% @quotes.each do |quote| %>
         <tr>
           <td><%= link_to quote.number, admin_quote_path(quote) %></td>
           <td><%= l quote.issued_on, format: '%d/%m/%Y' %></td>
           <td><%= quote.client.name %></td>
+          <td><span class="badge <%= quote.status %>"><%= quote.status_label %></span></td>
           <td style="color:var(--muted); font-size:14px;"><%= quote.internal_description.presence || '—' %></td>
           <td class="num"><%= number_to_currency(quote.subtotal, unit: '€', format: '%n %u') %></td>
           <td class="num"><strong><%= number_to_currency(quote.total, unit: '€', format: '%n %u') %></strong></td>

@@ -3,10 +3,20 @@
 
 <div class="order-actions">
   <p class="order-badges">
-    <strong>Cliente:</strong> <%= @quote.client.name %>
+    <strong>Estado:</strong> <span class="badge <%= @quote.status %>"><%= @quote.status_label %></span>
+    &nbsp;&nbsp;<strong>Cliente:</strong> <%= @quote.client.name %>
     &nbsp;&nbsp;<strong>Fecha:</strong> <%= l @quote.issued_on, format: '%d/%m/%Y' %>
     <% if @quote.valid_until %>&nbsp;&nbsp;<strong>Válido hasta:</strong> <%= l @quote.valid_until, format: '%d/%m/%Y' %><% end %>
   </p>
+  <div class="action-section">
+    <span class="action-title">Estado del presupuesto</span>
+    <div class="action-row">
+      <% { 'aprobado' => '✅ Aprobado', 'en_pausa' => '⏸ En pausa', 'perdido' => '✖ Perdido', 'abierto' => '↺ Reabrir' }.each do |st, label| %>
+        <% next if @quote.status == st %>
+        <%= button_to label, set_status_admin_quote_path(@quote, status: st), method: :patch, class: 'btn btn-outline', form: { style: 'display:inline-block' } %>
+      <% end %>
+    </div>
+  </div>
   <div class="action-section">
     <div class="action-row">
       <%= link_to '🖨 Imprimir / PDF', print_admin_quote_path(@quote), target: '_blank', rel: 'noopener', class: 'btn btn-primary' %>
@@ -18,6 +28,11 @@
     </div>
   </div>
 </div>
+
+<% if @quote.samples.any? %>
+  <p class="action-note" style="max-width:900px;">🧪 <strong>Muestras vinculadas (<%= @quote.samples.size %>):</strong>
+    <%= safe_join(@quote.samples.recent_first.map { |s| link_to("#{s.organization} · #{s.sent_on ? l(s.sent_on, format: '%d/%m/%Y') : 's/f'}", edit_admin_sample_path(s)) }, ' · ') %></p>
+<% end %>
 
 <% with_discounts = @quote.line_discounts? %>
 <% span = with_discounts ? 5 : 4 %>

@@ -94,6 +94,7 @@ Rails.application.routes.draw do
     resources :quotes do
       get :print, on: :member # versión imprimible (PDF con el diálogo del navegador)
       post :duplicate, on: :member # nuevo presupuesto partiendo de este
+      patch :set_status, on: :member # marcar aprobado / en pausa / perdido / abierto
     end
     resources :suppliers, except: :show
     resources :purchases do

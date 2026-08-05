@@ -6,7 +6,10 @@
     <div><%= f.label :organization, 'Centro / cliente *' %><%= f.text_field :organization %></div>
     <div><%= f.label :contact_name, 'Persona de contacto' %><%= f.text_field :contact_name %></div>
     <div><%= f.label :email, 'Email' %><%= f.text_field :email %></div>
-    <div></div>
+    <div>
+      <%= f.label :quote_id, 'Presupuesto vinculado (opcional)' %>
+      <%= f.select :quote_id, Quote.includes(:client).recent_first.map { |q| ["#{q.number} · #{q.client.name}", q.id] }, { include_blank: 'Sin vincular' }, { class: 'form-select' } %>
+    </div>
     <div><%= f.label :sent_on, 'Fecha de envío' %><%= f.date_field :sent_on %></div>
     <div><%= f.label :returned_on, 'Fecha de recogida (vacío = sigue fuera)' %><%= f.date_field :returned_on %></div>
     <div class="full"><%= f.label :notes, 'Comentarios' %><%= f.text_area :notes, rows: 2 %></div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_05_172036) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_06_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -276,6 +276,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_172036) do
     t.text "remarks"
     t.decimal "shipping_cost", precision: 10, scale: 2, default: "0.0", null: false
     t.string "shipping_country", default: "España (Península)", null: false
+    t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.date "valid_until"
     t.decimal "vat_rate", precision: 5, scale: 2, default: "21.0", null: false
@@ -299,9 +300,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_172036) do
     t.string "email"
     t.text "notes"
     t.string "organization", null: false
+    t.bigint "quote_id"
     t.date "returned_on"
     t.date "sent_on"
     t.datetime "updated_at", null: false
+    t.index ["quote_id"], name: "index_samples_on_quote_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -360,5 +363,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_172036) do
   add_foreign_key "quotes", "clients"
   add_foreign_key "sample_lines", "products"
   add_foreign_key "sample_lines", "samples"
+  add_foreign_key "samples", "quotes"
   add_foreign_key "sessions", "users"
 end

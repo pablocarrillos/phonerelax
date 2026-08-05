@@ -43,6 +43,7 @@
         <tr>
           <td>
             <strong><%= sample.organization %></strong>
+            <% if sample.quote %><br><span style="font-size:12px;">📄 <%= link_to sample.quote.number, admin_quote_path(sample.quote) %></span><% end %>
             <% if sample.notes.present? %><br><span style="color:var(--muted); font-size:12px;"><%= truncate(sample.notes, length: 70) %></span><% end %>
           </td>
           <td style="font-size:14px;"><%= sample.contact_name.presence || '—' %><% if sample.email.present? %><br><%= mail_to sample.email, sample.email, style: 'font-size:12px;' %><% end %></td>
