@@ -2,10 +2,17 @@ module Admin
   class SamplesController < BaseController
     before_action :set_sample, only: [ :edit, :update, :destroy, :mark_returned ]
 
+    # Columnas por las que se puede ordenar la tabla (whitelist para evitar
+    # inyección: el nombre de columna solo puede ser uno de estos).
+    SORT_COLUMNS = %w[organization sent_on returned_on].freeze
+
     def index
-      @samples = Sample.includes(sample_lines: :product).recent_first
+      @sort = SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : "sent_on"
+      @dir = params[:dir] == "asc" ? "asc" : "desc"
+      order = @sort == "organization" ? "LOWER(organization) #{@dir}" : "#{@sort} #{@dir} NULLS LAST"
+      @samples = Sample.includes(sample_lines: :product).order(Arel.sql("#{order}, id desc"))
       @landed_costs = Purchase.average_landed_costs
-      @pending_cost = @samples.select { |s| !s.returned? }.sum { |s| s.cost(@landed_costs) }
+      @pending_cost = @samples.reject(&:returned?).sum { |s| s.cost(@landed_costs) }
       @total_cost = @samples.sum { |s| s.cost(@landed_costs) }
     end
 

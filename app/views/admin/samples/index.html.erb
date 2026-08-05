@@ -19,8 +19,19 @@
 <p><%= link_to '+ Nueva muestra', new_admin_sample_path, class: 'btn btn-primary' %></p>
 
 <% if @samples.any? %>
+  <% sort_th = ->(label, col) do
+       next_dir = (@sort == col && @dir == "asc") ? "desc" : "asc"
+       arrow = @sort == col ? (@dir == "asc" ? " ▲" : " ▼") : ""
+       link_to "#{label}#{arrow}".html_safe, admin_samples_path(sort: col, dir: next_dir), class: "sort-link"
+     end %>
   <table class="table">
-    <thead><tr><th>Centro / cliente</th><th>Contacto</th><th>Enviada</th><th>Recogida</th><th>Productos</th><th class="num">Coste</th><th></th></tr></thead>
+    <thead><tr>
+      <th><%= sort_th.('Centro / cliente', 'organization') %></th>
+      <th>Contacto</th>
+      <th><%= sort_th.('Enviada', 'sent_on') %></th>
+      <th><%= sort_th.('Recogida', 'returned_on') %></th>
+      <th>Productos</th><th class="num">Coste</th><th></th>
+    </tr></thead>
     <tbody>
       <% @samples.each do |sample| %>
         <tr>
