@@ -1,4 +1,6 @@
-<%= form_with model: [:admin, purchase], local: true, data: { controller: 'purchase-form' } do |f| %>
+<%= form_with model: [:admin, purchase], local: true,
+              data: { controller: 'purchase-form',
+                      purchase_form_rate_value: (purchase.exchange_rate if purchase.usd?) } do |f| %>
   <% if purchase.errors.any? %>
     <div class="errors"><ul><% purchase.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>
@@ -9,6 +11,10 @@
       <%= f.collection_select :supplier_id, Supplier.ordered, :id, :name, { include_blank: true }, { class: 'form-select', required: true } %>
     </div>
     <div><%= f.label :ordered_on, 'Fecha de compra *' %><%= f.date_field :ordered_on, required: true %></div>
+    <div>
+      <%= f.label :expected_on, 'Fecha de entrega (prevista)' %>
+      <%= f.date_field :expected_on %>
+    </div>
     <div><%= f.label :reference, 'Referencia (nº de factura, pedido…)' %><%= f.text_field :reference %></div>
     <div>
       <%= f.label :currency, 'Moneda' %>

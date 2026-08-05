@@ -14,13 +14,14 @@
           <td><%= purchase.supplier.name %></td>
           <td><%= purchase.reference.presence || '—' %></td>
           <td class="num"><%= purchase.purchase_lines.sum(&:quantity) %> uds.</td>
-          <td class="num"><%= number_to_currency(purchase.total_cost, unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= purchase_amount(purchase, purchase.total_cost) %></td>
           <td><%= purchase.invoice.attached? ? link_to('📄 PDF', rails_blob_path(purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener') : '—' %></td>
           <td>
             <% if purchase.received? %>
               <span class="badge recibido">recibida <%= l(purchase.received_on, format: '%d/%m') %></span>
             <% else %>
               <span class="badge pendiente">pendiente</span>
+              <% if purchase.expected_on.present? %><br><span class="action-note" style="white-space:nowrap;">entrega <%= l(purchase.expected_on, format: '%d/%m') %></span><% end %>
             <% end %>
           </td>
         </tr>

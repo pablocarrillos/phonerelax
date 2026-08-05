@@ -2,9 +2,11 @@ import { Controller } from "@hotwired/stimulus"
 
 // Formulario de compra: calcula en vivo el total de cada línea (unidades ×
 // coste + transporte + aduanas + otros) y los totales por concepto y de la
-// factura, en la moneda seleccionada. La conversión a euros se fija al guardar.
+// factura, en la moneda seleccionada. Si la compra es en dólares y ya tiene
+// tipo de cambio fijado, cada total muestra también su equivalente en euros.
 export default class extends Controller {
   static targets = ["currency", "line", "totalShipping", "totalCustoms", "totalOther", "totalInvoice"]
+  static values = { rate: Number }
 
   connect() { this.recalc() }
 
@@ -28,18 +30,26 @@ export default class extends Controller {
       const total = qty * unit + ship + cust + other
 
       const cell = row.querySelector("[data-line-total]")
-      if (cell) cell.textContent = hasProduct && filled ? this.fmt(total, sym) : "—"
+      if (cell) { if (hasProduct && filled) { this.render(cell, total, sym) } else { cell.textContent = "—" } }
 
       if (hasProduct) { tShip += ship; tCust += cust; tOther += other; tInv += total }
     })
 
-    if (this.hasTotalShippingTarget) this.totalShippingTarget.textContent = this.fmt(tShip, sym)
-    if (this.hasTotalCustomsTarget) this.totalCustomsTarget.textContent = this.fmt(tCust, sym)
-    if (this.hasTotalOtherTarget) this.totalOtherTarget.textContent = this.fmt(tOther, sym)
-    if (this.hasTotalInvoiceTarget) this.totalInvoiceTarget.textContent = this.fmt(tInv, sym)
+    if (this.hasTotalShippingTarget) this.render(this.totalShippingTarget, tShip, sym)
+    if (this.hasTotalCustomsTarget) this.render(this.totalCustomsTarget, tCust, sym)
+    if (this.hasTotalOtherTarget) this.render(this.totalOtherTarget, tOther, sym)
+    if (this.hasTotalInvoiceTarget) this.render(this.totalInvoiceTarget, tInv, sym)
   }
 
-  fmt(n, sym) {
-    return `${n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${sym}`
+  // Pinta el importe en la moneda de la compra y, en dólares con tipo de cambio
+  // conocido, también en euros. NBSP + nowrap: el símbolo nunca salta de línea.
+  render(cell, n, sym) {
+    let html = `<span style="white-space:nowrap">${this.num(n)} ${sym}</span>`
+    if (sym === "$" && this.rateValue > 0) html += ` <span class="dual-eur">(${this.num(n * this.rateValue)} €)</span>`
+    cell.innerHTML = html
+  }
+
+  num(n) {
+    return n.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
   }
 }

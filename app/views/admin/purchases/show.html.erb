@@ -8,6 +8,7 @@
     <% else %>
       <span class="badge pendiente">pendiente de recibir</span>
     <% end %>
+    <% if @purchase.expected_on.present? && !@purchase.received? %>&nbsp;&nbsp;<strong>Entrega prevista:</strong> <%= l @purchase.expected_on, format: '%d/%m/%Y' %><% end %>
     <% if @purchase.reference.present? %>&nbsp;&nbsp;<strong>Ref.:</strong> <%= @purchase.reference %><% end %>
     <% if @purchase.invoice.attached? %>&nbsp;&nbsp;<%= link_to '📄 Ver factura', rails_blob_path(@purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener' %><% end %>
   </p>
@@ -47,7 +48,7 @@
         <td class="num"><%= number_to_currency(line.shipping_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.customs_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.other_costs, unit: sym, format: '%n %u') %></td>
-        <td class="num"><strong><%= number_to_currency(line.total, unit: sym, format: '%n %u') %></strong></td>
+        <td class="num"><strong><%= purchase_amount(@purchase, line.total) %></strong></td>
         <td class="num"><strong><%= number_to_currency(@purchase.landed_unit_cost(line), unit: '€', format: '%n %u') %></strong></td>
       </tr>
     <% end %>
@@ -63,10 +64,10 @@
     </tr>
     <tr class="total-row">
       <td colspan="3"></td>
-      <td class="num"><%= number_to_currency(@purchase.total_shipping, unit: sym, format: '%n %u') %></td>
-      <td class="num"><%= number_to_currency(@purchase.total_customs, unit: sym, format: '%n %u') %></td>
-      <td class="num"><%= number_to_currency(@purchase.total_other, unit: sym, format: '%n %u') %></td>
-      <td class="num"><strong><%= number_to_currency(@purchase.total_cost, unit: sym, format: '%n %u') %></strong></td>
+      <td class="num"><%= purchase_amount(@purchase, @purchase.total_shipping) %></td>
+      <td class="num"><%= purchase_amount(@purchase, @purchase.total_customs) %></td>
+      <td class="num"><%= purchase_amount(@purchase, @purchase.total_other) %></td>
+      <td class="num"><strong><%= purchase_amount(@purchase, @purchase.total_cost) %></strong></td>
       <td></td>
     </tr>
     <% if @purchase.usd? %>

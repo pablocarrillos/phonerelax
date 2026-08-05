@@ -270,6 +270,9 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
 tr.dragging { opacity: 0.55; background: var(--card-bg); }
 /* Si el guardado del nuevo orden falla, se marca la tabla en rojo. */
 .reorder-error { outline: 2px solid #b3261e; }
+
+/* Equivalente en euros de un importe en dólares (compras). */
+.dual-eur { color: var(--muted); font-weight: 400; font-size: 0.92em; white-space: nowrap; }
 tr[draggable="true"] { opacity: 0.6; }
 
 /* Avisos bajo un campo (p. ej. precio que no coincide con el escalado) */

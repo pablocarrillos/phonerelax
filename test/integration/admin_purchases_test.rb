@@ -45,6 +45,30 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     assert_equal BigDecimal("4.4"), purchase.landed_unit_cost(iman_line)  # (200 + 20) / 50
   end
 
+  test "compra en dólares: fecha de entrega, tipo de cambio y totales en las dos monedas" do
+    original = ExchangeRate.method(:usd_to_eur)
+    ExchangeRate.define_singleton_method(:usd_to_eur) { |_date| BigDecimal("0.9") }
+
+    post admin_purchases_path, params: { purchase: {
+      supplier_id: @supplier.id, ordered_on: "2026-08-01", currency: "USD",
+      invoice_date: "2026-08-01", expected_on: "2026-09-15",
+      purchase_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 100, unit_cost: "2.00" } }
+    } }
+    purchase = Purchase.last
+    assert_equal Date.new(2026, 9, 15), purchase.expected_on
+    assert_equal BigDecimal("0.9"), purchase.exchange_rate
+
+    get admin_purchase_path(purchase)
+    assert_response :success
+    assert_includes response.body, "dual-eur" # equivalente en euros junto a cada total en dólares
+    assert_includes response.body, "Entrega prevista"
+
+    get admin_purchases_path
+    assert_includes response.body, "entrega" # fecha prevista visible en la lista
+  ensure
+    ExchangeRate.define_singleton_method(:usd_to_eur, original)
+  end
+
   test "recibir una compra suma stock y deshacerla lo resta" do
     purchase = purchase_with_line(quantity: 25)
     stock_was = products(:funda).stock

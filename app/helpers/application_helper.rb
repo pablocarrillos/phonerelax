@@ -61,7 +61,7 @@ module ApplicationHelper
   # "https://phonerelax.com"); si no, se usa el dominio que sirve la petición.
   # Código idioma-región para hreflang/inLanguage (es-ES, pt-PT).
   def locale_region
-    { es: "es-ES", pt: "pt-PT", en: "en" }[I18n.locale] || "es-ES"
+    { es: "es-ES", pt: "pt-PT", en: "en", fr: "fr" }[I18n.locale] || "es-ES"
   end
 
   # Dominio canónico del sitio (sin www). Se puede sobreescribir con CANONICAL_HOST.
@@ -197,5 +197,16 @@ module ApplicationHelper
         end)
       end
     end
+  end
+  # Importe de una compra en su moneda y, si es en dólares con tipo de cambio
+  # fijado, también su equivalente en euros. Sin saltos de línea entre número
+  # y símbolo (NBSP + nowrap).
+  def purchase_amount(purchase, amount)
+    sym = purchase.usd? ? "$" : "€"
+    parts = [ tag.span(number_to_currency(amount, unit: sym, format: "%n %u"), style: "white-space:nowrap") ]
+    if purchase.usd? && purchase.exchange_rate.present?
+      parts << tag.span("(#{number_to_currency(amount * purchase.eur_rate, unit: "€", format: "%n %u")})", class: "dual-eur")
+    end
+    safe_join(parts, " ")
   end
 end
