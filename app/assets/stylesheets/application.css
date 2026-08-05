@@ -620,6 +620,9 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .lang-dropdown[open] summary, .lang-dropdown summary:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 .lang-menu { position: absolute; right: 0; top: calc(100% + 6px); margin: 0; padding: 6px; list-style: none; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(14, 27, 77, 0.18); min-width: 150px; z-index: 1002; }
 .lang-option { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px; color: var(--navy); text-decoration: none; white-space: nowrap; }
+/* El desplegable vive dentro de .site-nav (enlaces en blanco). Forzamos el
+   color del texto para que se lea sobre el fondo blanco del menú. */
+.lang-menu a.lang-option { color: var(--navy); }
 a.lang-option:hover { background: var(--card-bg); text-decoration: none; }
 .lang-option.current { font-weight: 700; opacity: 0.6; cursor: default; }
 
@@ -813,7 +816,7 @@ a.lang-option:hover { background: var(--card-bg); text-decoration: none; }
   /* En el panel de navegación móvil (fondo navy) el menú se despliega en línea. */
   .lang-dropdown { padding-top: 12px; font-size: 15px; }
   .lang-menu { position: static; background: transparent; border: none; box-shadow: none; padding: 4px 0 0; min-width: 0; }
-  .lang-option { color: rgba(255, 255, 255, 0.85); }
+  .lang-menu a.lang-option, .lang-option { color: rgba(255, 255, 255, 0.85); }
   a.lang-option:hover { background: rgba(255, 255, 255, 0.12); }
   .lang-option.current { color: #fff; opacity: 1; }
 }
