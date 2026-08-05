@@ -217,6 +217,8 @@ es:
     cart_empty: El carrito está vacío.
     out_of_stock: "No hay stock suficiente de: %{names}. Ajusta las cantidades."
     zero_quantity: "Indica una cantidad mayor que 0 para: %{names}."
+    dtf_min: "La personalización DTF requiere al menos %{min} unidades en el pedido (tienes %{count})."
+    dtf_mismatch: "El número de personalizaciones DTF (%{dtf}) debe coincidir con el de fundas (%{fundas}). Ajusta las cantidades."
     payment_cancelled: Pago cancelado. Puedes intentarlo de nuevo cuando quieras.
     verify_failed: No se pudo verificar el envío. Inténtalo de nuevo.
     message_sent: Mensaje enviado. Te responderemos lo antes posible.

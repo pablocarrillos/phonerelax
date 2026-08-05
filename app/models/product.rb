@@ -97,6 +97,36 @@ class Product < ApplicationRecord
     pack
   end
 
+  # --- Identificación de productos para la regla de personalización del checkout ---
+  # (Si se renombran estos productos, ajústalo aquí.)
+  DTF_MIN_UNITS = 25
+
+  # ¿Es la "Personalización DTF funda"?
+  def dtf_personalization?
+    name.to_s.downcase.include?("dtf")
+  end
+
+  # ¿Es una funda (Funda PhoneRelax o Funda PhoneRelax SignalBlocking)?
+  def funda?
+    name.to_s.downcase.start_with?("funda")
+  end
+
+  # Unidades de personalización DTF que aporta 1 unidad de este producto: él
+  # mismo si es DTF, o las de sus componentes si es un pack.
+  def dtf_units
+    return pack_items.sum { |i| i.component&.dtf_personalization? ? i.quantity : 0 } if pack?
+
+    dtf_personalization? ? 1 : 0
+  end
+
+  # Unidades de funda que aporta 1 unidad de este producto (él mismo o las de
+  # sus componentes si es un pack).
+  def funda_units
+    return pack_items.sum { |i| i.component&.funda? ? i.quantity : 0 } if pack?
+
+    funda? ? 1 : 0
+  end
+
   # PVP (IVA incluido) de UNA unidad para una cantidad: para un pack, el precio
   # por pack aplicando a cada componente el escalado que corresponde al TOTAL de
   # unidades pedidas (unidades por pack × nº de packs); si no, el escalado propio

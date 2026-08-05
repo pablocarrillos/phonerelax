@@ -7,10 +7,8 @@ class OrdersController < ApplicationController
   def new
     @lines = cart_lines
     return redirect_to cart_path, alert: t("flash.cart_empty") if @lines.empty?
-
-    zero = @lines.select { |_product, quantity| quantity < 1 }
-    if zero.any?
-      return redirect_to cart_path, alert: t("flash.zero_quantity", names: zero.map { |p, _| p.name }.join(", "))
+    if (blocker = checkout_blocker(@lines))
+      return redirect_to cart_path, alert: blocker
     end
 
     @total = @lines.sum { |product, quantity| product.price_for_quantity(quantity) * quantity }
@@ -21,12 +19,8 @@ class OrdersController < ApplicationController
   def create
     lines = cart_lines
     return redirect_to(cart_path, alert: t("flash.cart_empty")) if lines.empty?
-
-    # No se permite tramitar con cantidad 0 en ninguna referencia.
-    zero = lines.select { |_product, quantity| quantity < 1 }
-    if zero.any?
-      names = zero.map { |product, _| product.name }.join(", ")
-      return redirect_to(cart_path, alert: t("flash.zero_quantity", names: names))
+    if (blocker = checkout_blocker(lines))
+      return redirect_to(cart_path, alert: blocker)
     end
 
     # Última comprobación de stock antes de cobrar.
@@ -119,5 +113,30 @@ class OrdersController < ApplicationController
   def cart_lines
     products = Product.active.where(id: cart.keys).index_by { |p| p.id.to_s }
     cart.filter_map { |id, quantity| [ products[id], quantity ] if products[id] }
+  end
+
+  # Motivo por el que NO se puede tramitar el carrito (o nil si todo correcto):
+  # cantidad 0 en alguna referencia, o la regla de personalización DTF.
+  def checkout_blocker(lines)
+    zero = lines.select { |_product, quantity| quantity < 1 }
+    return t("flash.zero_quantity", names: zero.map { |p, _| p.name }.join(", ")) if zero.any?
+
+    dtf_personalization_error(lines)
+  end
+
+  # Si el carrito lleva personalización DTF suelta, el total de DTF (sueltos + los
+  # incluidos en packs) debe ser al menos DTF_MIN_UNITS e igual al total de fundas
+  # (sueltas + en packs). Devuelve el aviso o nil.
+  def dtf_personalization_error(lines)
+    loose_dtf = lines.sum { |product, qty| (!product.pack? && product.dtf_personalization?) ? qty : 0 }
+    return nil if loose_dtf.zero?
+
+    total_dtf = lines.sum { |product, qty| product.dtf_units * qty }
+    total_fundas = lines.sum { |product, qty| product.funda_units * qty }
+
+    return t("flash.dtf_min", min: Product::DTF_MIN_UNITS, count: total_dtf) if total_dtf < Product::DTF_MIN_UNITS
+    return t("flash.dtf_mismatch", dtf: total_dtf, fundas: total_fundas) if total_dtf != total_fundas
+
+    nil
   end
 end
