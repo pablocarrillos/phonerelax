@@ -3,11 +3,11 @@
 <% card = 'flex:1; min-width:180px; padding:14px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius);' %>
 <div style="display:flex; gap:12px; flex-wrap:wrap; margin: 12px 0 18px;">
   <div style="<%= card %>">
-    <div style="font-size:24px; font-weight:700; color:#e67e22;"><%= @samples.count { |s| !s.returned? } %></div>
+    <div style="font-size:24px; font-weight:700; color:#e67e22;"><%= @pending_count %></div>
     <div style="color:var(--muted); font-size:13px;">Fuera (sin devolver) · <%= number_to_currency(@pending_cost, unit: '€', format: '%n %u') %></div>
   </div>
   <div style="<%= card %>">
-    <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= @samples.count(&:returned?) %></div>
+    <div style="font-size:24px; font-weight:700; color:#2e7d32;"><%= @returned_count %></div>
     <div style="color:var(--muted); font-size:13px;">Devueltas</div>
   </div>
   <div style="<%= card %>">
@@ -18,11 +18,17 @@
 
 <p><%= link_to '+ Nueva muestra', new_admin_sample_path, class: 'btn btn-primary' %></p>
 
+<div class="filter-tabs">
+  <%= link_to "Todas (#{@pending_count + @returned_count})", admin_samples_path(sort: @sort, dir: @dir), class: ('active' unless @filter) %>
+  <%= link_to "Fuera · sin devolver (#{@pending_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'pending'), class: ('active' if @filter == 'pending') %>
+  <%= link_to "Devueltas (#{@returned_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'returned'), class: ('active' if @filter == 'returned') %>
+</div>
+
 <% if @samples.any? %>
   <% sort_th = ->(label, col) do
        next_dir = (@sort == col && @dir == "asc") ? "desc" : "asc"
        arrow = @sort == col ? (@dir == "asc" ? " ▲" : " ▼") : ""
-       link_to "#{label}#{arrow}".html_safe, admin_samples_path(sort: col, dir: next_dir), class: "sort-link"
+       link_to "#{label}#{arrow}".html_safe, admin_samples_path(sort: col, dir: next_dir, filter: @filter), class: "sort-link"
      end %>
   <table class="table">
     <thead><tr>

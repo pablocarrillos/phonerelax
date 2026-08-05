@@ -9,11 +9,22 @@ module Admin
     def index
       @sort = SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : "sent_on"
       @dir = params[:dir] == "asc" ? "asc" : "desc"
+      @filter = %w[pending returned].include?(params[:filter]) ? params[:filter] : nil
       order = @sort == "organization" ? "LOWER(organization) #{@dir}" : "#{@sort} #{@dir} NULLS LAST"
-      @samples = Sample.includes(sample_lines: :product).order(Arel.sql("#{order}, id desc"))
+
+      all = Sample.includes(sample_lines: :product).order(Arel.sql("#{order}, id desc"))
       @landed_costs = Purchase.average_landed_costs
-      @pending_cost = @samples.reject(&:returned?).sum { |s| s.cost(@landed_costs) }
-      @total_cost = @samples.sum { |s| s.cost(@landed_costs) }
+      # Resumen sobre TODAS las muestras (no depende del filtro de la tabla).
+      @pending_count = all.count { |s| !s.returned? }
+      @returned_count = all.count(&:returned?)
+      @pending_cost = all.reject(&:returned?).sum { |s| s.cost(@landed_costs) }
+      @total_cost = all.sum { |s| s.cost(@landed_costs) }
+
+      @samples = case @filter
+                 when "pending" then all.reject(&:returned?)
+                 when "returned" then all.select(&:returned?)
+                 else all
+                 end
     end
 
     def new
