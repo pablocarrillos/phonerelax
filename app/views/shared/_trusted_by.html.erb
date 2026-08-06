@@ -1,25 +1,18 @@
 <div class="container section">
   <div class="trusted-by">
-    <% featured = 'Ayuntamiento de Las Rozas' %>
-    <% featured_logo = trusted_clients.include?(featured) ? trusted_client_logo(featured) : nil %>
-    <% names = featured_logo ? trusted_clients.reject { |n| n == featured } : trusted_clients %>
-    <% top = names.first(3) %>
-    <% bottom = names.drop(3) %>
     <p class="trusted-title"><%= t('common.trusted_by') %></p>
-    <div class="trusted-logos-wrap<%= ' has-featured' if featured_logo %>">
-      <% if featured_logo %>
-        <div class="trusted-featured">
-          <%= image_tag featured_logo, alt: featured, title: featured, class: 'trusted-logo--featured', loading: 'lazy' %>
-        </div>
-      <% end %>
-      <div class="trusted-main">
-        <% { 'top' => top, 'bottom' => bottom }.each do |row_name, row| %>
-          <% next if row.empty? %>
-          <ul class="trusted-logos trusted-logos--<%= row_name %>">
-            <% row.each do |name| %>
+    <%# Carrusel infinito: dos tiras idénticas desplazándose en bucle; cuando la
+        primera sale entera por la izquierda el ciclo reinicia sin salto. La
+        segunda copia es decorativa (aria-hidden). Los laterales se desvanecen
+        con una máscara de degradado (ver .trusted-carousel en el CSS). %>
+    <div class="trusted-carousel">
+      <div class="trusted-track">
+        <% 2.times do |copy| %>
+          <ul class="trusted-strip"<%= ' aria-hidden="true"'.html_safe if copy == 1 %>>
+            <% trusted_clients.each do |name| %>
               <li>
                 <% if (logo = trusted_client_logo(name)) %>
-                  <%= image_tag logo, alt: name, title: name, class: "trusted-logo trusted-logo--#{name.parameterize}", loading: 'lazy' %>
+                  <%= image_tag logo, alt: copy.zero? ? name : '', title: name, class: "trusted-logo trusted-logo--#{name.parameterize}", loading: 'lazy' %>
                 <% else %>
                   <%= name %>
                 <% end %>

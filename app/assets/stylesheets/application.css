@@ -734,52 +734,38 @@ a.lang-option:hover { background: var(--card-bg); text-decoration: none; }
 /* --- Prueba social: centros que ya confían en PhoneRelax --- */
 .trusted-by { text-align: center; }
 .trusted-title { text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); margin: 0 0 14px; }
-/* Las Rozas como logo destacado a la izquierda, con EXACTAMENTE el mismo alto
-   que las dos filas de logos de la derecha (el título va por encima, fuera de
-   la rejilla). El resto de logos se reparten en 3 (arriba) + 4 (abajo). */
-.trusted-logos-wrap.has-featured {
-  display: grid;
-  grid-template-columns: 132px 1fr;
-  align-items: stretch;
-  gap: 0 48px;
+/* Carrusel infinito de logos: la pista lleva dos tiras idénticas y se desplaza
+   exactamente el ancho de una (-50 %), así el bucle reinicia sin salto. Los
+   laterales se desvanecen con una máscara de degradado transparente. */
+.trusted-carousel {
+  overflow: hidden;
   max-width: 1060px;
   margin: 0 auto;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
 }
-/* La imagen va en absoluto: no aporta altura intrínseca, así la fila la marcan
-   solo las dos filas de logos y el destacado se ajusta EXACTO a ese alto. */
-.trusted-featured { position: relative; }
-.trusted-logo--featured {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  filter: grayscale(1);
-  opacity: 0.7;
-  transition: filter 0.2s ease, opacity 0.2s ease;
+.trusted-track {
+  display: flex;
+  width: max-content;
+  animation: trusted-scroll 36s linear infinite;
 }
-.trusted-logo--featured:hover { filter: grayscale(0); opacity: 1; }
-.trusted-main { min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-.trusted-logos {
+.trusted-track:hover { animation-play-state: paused; }
+.trusted-strip {
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  justify-items: center;
+  padding: 0 0 0 64px; /* separa también el final de una tira del comienzo de la otra */
+  display: flex;
   align-items: center;
-  gap: 26px 40px;
+  gap: 0 64px;
 }
-/* Fila superior: 3 logos. Fila inferior: 4 logos (Montcau-LaMola incluido). */
-.trusted-logos--top { grid-template-columns: repeat(3, 1fr); margin-bottom: 26px; }
-.trusted-logos--bottom { grid-template-columns: repeat(4, 1fr); }
-.trusted-logos li { font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; display: flex; justify-content: center; width: 100%; }
+.trusted-strip li { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--navy); font-size: 17px; opacity: 0.85; }
 /* Logos de clientes en tonos grises; recuperan el color al pasar el ratón.
-   max-width:100% evita que un logo ancho (Montcau-LaMola) se salga de su celda;
-   se limita la altura y la anchura mantiene la proporción sin deformar. */
+   Cada logo se ajusta a una caja alta (los verticales, como Las Rozas o
+   Villalkor, lucen a altura completa) con tope de anchura para que los
+   alargados (Norfolk, Montcau) no acaparen la tira. */
 .trusted-logo {
-  max-height: 58px;
-  max-width: 100%;
+  max-height: 120px;
+  max-width: 300px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -788,25 +774,23 @@ a.lang-option:hover { background: var(--card-bg); text-decoration: none; }
   opacity: 0.65;
   transition: filter 0.2s ease, opacity 0.2s ease;
 }
-/* La fila inferior tiene celdas más estrechas: logos algo más bajos para que
-   Villalkor, Madariaga y Peñíscola quepan holgados junto a Montcau-LaMola. */
-.trusted-logos--bottom .trusted-logo { max-height: 50px; }
+/* La tira mantiene la altura de la caja aunque el logo visible sea bajo. */
+.trusted-strip li { min-height: 120px; }
 .trusted-logo:hover { filter: grayscale(0); opacity: 1; }
+@keyframes trusted-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+/* Sin animaciones: tira única estática, centrada y con salto de línea. */
+@media (prefers-reduced-motion: reduce) {
+  .trusted-track { animation: none; width: auto; }
+  .trusted-strip[aria-hidden] { display: none; }
+  .trusted-strip { flex-wrap: wrap; justify-content: center; gap: 22px 40px; padding: 0; }
+}
 @media (max-width: 760px) {
-  .trusted-logos-wrap.has-featured { grid-template-columns: 1fr; gap: 26px; align-items: center; justify-items: center; }
-  .trusted-logos--top,
-  .trusted-logos--bottom { grid-template-columns: repeat(2, 1fr); gap: 28px 24px; }
-  .trusted-logos--top { margin-bottom: 28px; }
-  /* Con 3 logos en 2 columnas el último quedaría huérfano a la izquierda:
-     que ocupe las dos columnas, centrado. */
-  .trusted-logos--top li:last-child:nth-child(odd) { grid-column: 1 / -1; }
-  /* Un poco de aire lateral y logos algo más contenidos para que los anchos
-     (Montcau-LaMola, Villalkor) no se rocen entre columnas. */
-  .trusted-logos li { padding: 0 6px; }
-  .trusted-logo { max-height: 46px; }
-  .trusted-logos--bottom .trusted-logo { max-height: 40px; }
-  .trusted-featured { position: static; }
-  .trusted-logo--featured { position: static; inset: auto; width: auto; height: auto; max-height: 110px; }
+  .trusted-strip { gap: 0 34px; padding-left: 34px; }
+  .trusted-logo { max-height: 80px; max-width: 180px; }
+  .trusted-strip li { min-height: 80px; }
 }
 
 /* Insignias con icono de los bloques de ventajas (p. ej. «Por qué elegir PhoneRelax») */
