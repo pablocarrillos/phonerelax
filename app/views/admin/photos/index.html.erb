@@ -36,7 +36,7 @@
             <% if dims %><%= dims[0] %>×<%= dims[1] %> px · <% end %><%= number_to_human_size(photo.image.blob.byte_size) %></p>
           <div class="photo-card-actions">
             <button type="button" class="btn btn-outline" style="padding: 5px 12px; font-size: 13px;"
-                    data-controller="clipboard" data-clipboard-text-value="<%= public_url %>"
+                    data-controller="clipboard" data-clipboard-text-value="<%= absolute_url(public_url) %>"
                     data-action="clipboard#copy">Copiar URL</button>
             <%= button_to 'Borrar', admin_photo_path(photo), method: :delete, class: 'btn btn-danger',
                           form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar esta foto? Su URL dejará de funcionar.' } },

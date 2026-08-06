@@ -6,7 +6,7 @@ import { Controller } from "@hotwired/stimulus"
 // y los totales (sin IVA, IVA y con IVA) se recalculan en vivo, descuentos y
 // transporte incluidos.
 export default class extends Controller {
-  static targets = ["line", "linesBody", "template", "shipping", "shippingVat", "shippingWarning",
+  static targets = ["line", "linesBody", "template", "shipping", "shippingVat", "shippingWarning", "dtfWarning",
     "shippingCountry", "shippingTotal", "globalDiscount", "totalNet", "totalVat", "totalGross"]
 
   static values = { products: Object, rates: Object }
@@ -131,6 +131,29 @@ export default class extends Controller {
     this.totalNetTarget.textContent = this.euros(net)
     this.totalVatTarget.textContent = this.euros(vat)
     this.totalGrossTarget.textContent = this.euros(net + vat)
+    this.refreshDtfWarning()
+  }
+
+  // Aviso (no bloqueante) si las personalizaciones DTF no coinciden con las
+  // fundas del presupuesto (misma regla que el checkout de la tienda).
+  refreshDtfWarning() {
+    if (!this.hasDtfWarningTarget) return
+
+    let dtf = 0
+    let fundas = 0
+    this.visibleLines().forEach((row) => {
+      const product = this.productData(row)
+      const quantity = this.number(row, "quantity")
+      if (!product || isNaN(quantity)) return
+      dtf += (product.dtf_units || 0) * quantity
+      fundas += (product.funda_units || 0) * quantity
+    })
+    const mismatch = dtf > 0 && dtf !== fundas
+    this.dtfWarningTarget.hidden = !mismatch
+    if (mismatch) {
+      this.dtfWarningTarget.textContent =
+        `Aviso: el presupuesto lleva ${dtf} personalizaciones DTF y ${fundas} fundas; deberían coincidir.`
+    }
   }
 
   // --- utilidades ---

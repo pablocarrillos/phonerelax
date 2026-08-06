@@ -1,7 +1,8 @@
 <% product_data = Product.ordered.includes(:price_tiers).each_with_object({}) do |p, h|
      tiers = p.price_tiers.map { |t| [ t.min_units, t.unit_price.to_f ] }
      tiers = [ [ 1, (p.price / (1 + (p.vat_percentage.to_d / 100))).round(4).to_f ] ] if tiers.empty?
-     h[p.id] = { name: p.name, tiers: tiers, shipping_unit: p.shipping_unit_cost.to_f }
+     h[p.id] = { name: p.name, tiers: tiers, shipping_unit: p.shipping_unit_cost.to_f,
+                 dtf_units: p.dtf_units, funda_units: p.funda_units }
    end %>
 <% shipping_rates = Order::EU_COUNTRIES.index_with { |country| ShippingRate.base_for(country).to_f } %>
 
@@ -65,6 +66,7 @@
       </tr>
     </tfoot>
   </table>
+  <p data-quote-form-target="dtfWarning" hidden class="field-warning" style="margin: 8px 0 0;"></p>
   <template data-quote-form-target="template">
     <%= f.fields_for :quote_lines, QuoteLine.new, child_index: 'NEW_RECORD' do |lf| %>
       <%= render 'line_fields', lf: lf %>
