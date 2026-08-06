@@ -47,6 +47,32 @@ class AdminPhotosTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "la lista incluye las imágenes estáticas del proyecto y el buscador las filtra" do
+    get admin_photos_path
+    assert_includes response.body, "Imágenes del proyecto"
+    assert_includes response.body, "/images/site/paso-1-mete-el-telefono.jpg"
+    assert_includes response.body, "800×1067 px" # dimensiones de paso-1
+
+    get admin_photos_path(q: "paso-2")
+    assert_includes response.body, "/images/site/paso-2-cierra-la-bolsa.jpg"
+    assert_not_includes response.body, "/images/site/paso-1-mete-el-telefono.jpg"
+  end
+
+  test "comentar una imagen del proyecto y encontrarla por el comentario" do
+    patch project_comment_admin_photos_path,
+          params: { path: "/images/site/paso-1-mete-el-telefono.jpg", comment: "meter movil en funda" }
+    assert_equal "meter movil en funda",
+                 ImageComment.find_by(path: "/images/site/paso-1-mete-el-telefono.jpg").comment
+
+    get admin_photos_path(q: "meter movil")
+    assert_includes response.body, "/images/site/paso-1-mete-el-telefono.jpg"
+    assert_not_includes response.body, "/images/site/paso-2-cierra-la-bolsa.jpg"
+
+    # una ruta fuera de /images se rechaza
+    patch project_comment_admin_photos_path, params: { path: "/etc/passwd", comment: "x" }
+    assert_nil ImageComment.find_by(path: "/etc/passwd")
+  end
+
   test "editar el comentario de una foto" do
     photo = Photo.create!(image: fixture_file_upload("cover.png", "image/png"), comment: "antes")
     patch admin_photo_path(photo), params: { photo: { comment: "después" } }

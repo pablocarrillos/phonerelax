@@ -199,6 +199,17 @@ module ApplicationHelper
       end
     end
   end
+  # Dimensiones (ancho x alto) de una imagen subida a Active Storage (servicio
+  # Disk), leyendo solo la cabecera del fichero. nil si no se pueden obtener.
+  def attached_image_dims(attachment)
+    blob = attachment.blob
+    return nil unless blob.service.respond_to?(:path_for, true)
+
+    FastImage.size(blob.service.send(:path_for, blob.key))
+  rescue StandardError
+    nil
+  end
+
   # Importe de una compra en su moneda y, si es en dólares con tipo de cambio
   # fijado, también su equivalente en euros. Sin saltos de línea entre número
   # y símbolo (NBSP + nowrap).

@@ -17,7 +17,7 @@
 <% end %>
 
 <% if @photos.empty? %>
-  <p>No hay fotos<%= " que coincidan con «#{@query}»" if @query.present? %>.</p>
+  <p>No hay fotos subidas<%= " que coincidan con «#{@query}»" if @query.present? %>.</p>
 <% else %>
   <div class="photos-grid">
     <% @photos.each do |photo| %>
@@ -31,7 +31,9 @@
             <input type="text" name="photo[comment]" value="<%= photo.comment %>" placeholder="Sin comentario"
                    class="input-compact" style="width:100%;" title="Edita el comentario y pulsa Intro para guardarlo">
           <% end %>
-          <p class="action-note" style="margin: 6px 0;"><%= photo.image.filename %> · <%= l photo.created_at, format: :short %></p>
+          <% dims = attached_image_dims(photo.image) %>
+          <p class="action-note" style="margin: 6px 0;"><%= photo.image.filename %> · <%= l photo.created_at, format: :short %><br>
+            <% if dims %><%= dims[0] %>×<%= dims[1] %> px · <% end %><%= number_to_human_size(photo.image.blob.byte_size) %></p>
           <div class="photo-card-actions">
             <button type="button" class="btn btn-outline" style="padding: 5px 12px; font-size: 13px;"
                     data-controller="clipboard" data-clipboard-text-value="<%= public_url %>"
@@ -39,6 +41,37 @@
             <%= button_to 'Borrar', admin_photo_path(photo), method: :delete, class: 'btn btn-danger',
                           form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar esta foto? Su URL dejará de funcionar.' } },
                           style: 'padding: 5px 12px; font-size: 13px;' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<h2 style="margin-top: 34px;">Imágenes del proyecto (<%= @project_images.size %>)</h2>
+<p class="action-note" style="margin-top:0;">Las imágenes estáticas de la propia web (<code>/images</code>). No se pueden borrar ni comentar desde aquí, pero puedes copiar su URL pública.</p>
+<% if @project_images.empty? %>
+  <p>Ninguna imagen del proyecto coincide con «<%= @query %>».</p>
+<% else %>
+  <div class="photos-grid">
+    <% @project_images.each do |image| %>
+      <% path = image[:path] %>
+      <div class="photo-card">
+        <a href="<%= path %>" target="_blank" rel="noopener">
+          <img src="<%= path %>" alt="<%= File.basename(path) %>" loading="lazy">
+        </a>
+        <div class="photo-card-body">
+          <%= form_with url: project_comment_admin_photos_path(q: @query.presence), method: :patch, local: true do %>
+            <input type="hidden" name="path" value="<%= path %>">
+            <input type="text" name="comment" value="<%= @image_comments[path]&.comment %>" placeholder="Sin comentario"
+                   class="input-compact" style="width:100%;" title="Edita el comentario y pulsa Intro para guardarlo">
+          <% end %>
+          <p class="action-note" style="margin: 6px 0; word-break: break-all;"><%= path %><br>
+            <% if image[:dims] %><%= image[:dims][0] %>×<%= image[:dims][1] %> px · <% end %><%= number_to_human_size(image[:bytes].to_i) %></p>
+          <div class="photo-card-actions">
+            <button type="button" class="btn btn-outline" style="padding: 5px 12px; font-size: 13px;"
+                    data-controller="clipboard" data-clipboard-text-value="<%= absolute_url(path) %>"
+                    data-action="clipboard#copy">Copiar URL</button>
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_06_140001) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_06_140002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,6 +60,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_140001) do
     t.string "name"
     t.string "phone"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "image_comments", force: :cascade do |t|
+    t.string "comment"
+    t.datetime "created_at", null: false
+    t.string "path", null: false
+    t.datetime "updated_at", null: false
+    t.index ["path"], name: "index_image_comments_on_path", unique: true
   end
 
   create_table "order_events", force: :cascade do |t|

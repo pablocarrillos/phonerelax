@@ -61,6 +61,7 @@ gem "stripe", "~> 19.4"
 
 gem "invisible_captcha", "~> 2.3"
 gem "route_translator" # rutas públicas traducidas por idioma (/fr/panier, /en/cart…)
+gem "fastimage" # dimensiones de imagen leyendo solo la cabecera (herramienta Fotos)
 
 gem "pagy", "~> 9.4"
 

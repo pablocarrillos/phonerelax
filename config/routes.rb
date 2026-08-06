@@ -97,7 +97,9 @@ Rails.application.routes.draw do
       post :duplicate, on: :member # nuevo presupuesto partiendo de este
       patch :set_status, on: :member # marcar aprobado / en pausa / perdido / abierto
     end
-    resources :photos, only: [ :index, :create, :update, :destroy ]
+    resources :photos, only: [ :index, :create, :update, :destroy ] do
+      patch :project_comment, on: :collection # comentario de una imagen estática
+    end
     resources :suppliers, except: :show
     resources :purchases do
       patch :receive, on: :member   # marca recibida y suma stock
