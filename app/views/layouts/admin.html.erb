@@ -16,7 +16,7 @@
     <header class="admin-header">
       <div class="admin-header-inner">
         <div style="display: flex; align-items: center; flex-wrap: wrap;">
-          <%= link_to root_path, class: 'brand', style: 'margin-right: 24px;', title: 'Ir a la tienda' do %><span>PHONE</span><span>RELAX</span><% end %>
+          <%= link_to root_path, class: 'brand', style: 'margin-right: 24px;', title: 'Ir a la tienda' do %><img src="/images/site/phonerelax-logo-white.png" alt="PhoneRelax" class="brand-logo"><% end %>
           <% tienda_active = %w[products purchases suppliers shipping].include?(controller_name) %>
           <div class="admin-dropdown">
             <button type="button" class="admin-drop-label <%= 'active' if tienda_active %>">Tienda</button>
