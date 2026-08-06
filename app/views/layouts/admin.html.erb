@@ -17,14 +17,6 @@
       <div class="admin-header-inner">
         <div style="display: flex; align-items: center; flex-wrap: wrap;">
           <%= link_to root_path, class: 'brand', style: 'margin-right: 24px;', title: 'Ir a la tienda' do %><span>PHONE</span><span>RELAX</span><% end %>
-          <% ventas_active = %w[orders stats].include?(controller_name) %>
-          <div class="admin-dropdown">
-            <button type="button" class="admin-drop-label <%= 'active' if ventas_active %>">Ventas<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %></button>
-            <div class="admin-menu"><div class="admin-menu-box">
-              <%= link_to admin_orders_path, class: ('active' if controller_name == 'orders') do %>Pedidos<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %><% end %>
-              <%= link_to 'Estadísticas', admin_stats_path, class: ('active' if controller_name == 'stats') %>
-            </div></div>
-          </div>
           <% tienda_active = %w[products purchases suppliers shipping].include?(controller_name) %>
           <div class="admin-dropdown">
             <button type="button" class="admin-drop-label <%= 'active' if tienda_active %>">Tienda</button>
@@ -32,6 +24,14 @@
               <%= link_to 'Productos', admin_products_path, class: ('active' if controller_name == 'products') %>
               <%= link_to 'Compras', admin_purchases_path, class: ('active' if %w[purchases suppliers].include?(controller_name)) %>
               <%= link_to 'Transporte', admin_shipping_path, class: ('active' if controller_name == 'shipping') %>
+            </div></div>
+          </div>
+          <% ventas_active = %w[orders stats].include?(controller_name) %>
+          <div class="admin-dropdown">
+            <button type="button" class="admin-drop-label <%= 'active' if ventas_active %>">Ventas<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %></button>
+            <div class="admin-menu"><div class="admin-menu-box">
+              <%= link_to admin_orders_path, class: ('active' if controller_name == 'orders') do %>Pedidos<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %><% end %>
+              <%= link_to 'Estadísticas', admin_stats_path, class: ('active' if controller_name == 'stats') %>
             </div></div>
           </div>
           <% comercial_active = %w[quotes clients samples].include?(controller_name) %>
