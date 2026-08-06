@@ -8,17 +8,29 @@
   <p class="action-note" style="margin-top:0;">Mostrando solo los presupuestos de <strong><%= @client_filter.name %></strong> · <%= link_to 'ver todos', admin_quotes_path %></p>
 <% end %>
 
-<div class="action-row" style="margin: 0 0 16px; display:flex; gap:8px; flex-wrap:wrap;">
-  <% chip = 'padding:5px 14px; font-size:14px;' %>
-  <%= link_to "Todos (#{@status_counts.values.sum})", admin_quotes_path(client_id: @client_filter&.id),
+<% chip = 'padding:5px 14px; font-size:14px;' %>
+<% base = { client_id: @client_filter&.id, from: params[:from].presence, to: params[:to].presence } %>
+<div class="action-row" style="margin: 0 0 12px; display:flex; gap:8px; flex-wrap:wrap;">
+  <%= link_to "Todos (#{@status_counts.values.sum})", admin_quotes_path(base),
               class: "btn #{@status_filter ? 'btn-outline' : 'btn-primary'}", style: chip %>
+  <%= link_to "Vendidos (#{@sold_count})", admin_quotes_path(base.merge(status: 'vendidos')),
+              class: "btn #{@status_filter == 'vendidos' ? 'btn-primary' : 'btn-outline'}", style: chip %>
   <% Quote::STATUS_LABELS.each do |st, label| %>
-    <%= link_to "#{label} (#{@status_counts[st].to_i})", admin_quotes_path(status: st, client_id: @client_filter&.id),
+    <%= link_to "#{label} (#{@status_counts[st].to_i})", admin_quotes_path(base.merge(status: st)),
                 class: "btn #{@status_filter == st ? 'btn-primary' : 'btn-outline'}", style: chip %>
   <% end %>
 </div>
 
-<% show_delivery = @status_filter == "aprobado" %>
+<%= form_with url: admin_quotes_path, method: :get, local: true, style: 'margin: 0 0 16px; display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;' do %>
+  <% if @client_filter %><%= hidden_field_tag :client_id, @client_filter.id %><% end %>
+  <% if @status_filter %><%= hidden_field_tag :status, @status_filter %><% end %>
+  <div><label class="field-label" for="from">Creados desde</label><%= date_field_tag :from, params[:from], id: 'from', class: 'input-compact' %></div>
+  <div><label class="field-label" for="to">hasta</label><%= date_field_tag :to, params[:to], id: 'to', class: 'input-compact' %></div>
+  <button type="submit" class="btn btn-outline" style="<%= chip %>">Filtrar fechas</button>
+  <% if @from || @to %><%= link_to 'Quitar fechas', admin_quotes_path(client_id: @client_filter&.id, status: @status_filter), class: 'btn btn-danger-link', style: 'margin-left:4px;' %><% end %>
+<% end %>
+
+<% show_delivery = %w[aprobado entregado vendidos].include?(@status_filter) %>
 <% if @quotes.any? %>
   <table class="table">
     <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><% if show_delivery %><th>Plazo de entrega</th><% end %><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
@@ -43,7 +55,7 @@
     <% if @status_filter %>
       <tfoot>
         <tr class="total-row">
-          <td colspan="<%= show_delivery ? 6 : 5 %>"><strong>Total «<%= Quote::STATUS_LABELS[@status_filter] %>» (<%= @quotes.size %>)</strong></td>
+          <td colspan="<%= show_delivery ? 6 : 5 %>"><strong>Total «<%= status_filter_label %>» (<%= @quotes.size %>)</strong></td>
           <td class="num"><strong><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: "%n %u") %></strong></td>
           <td class="num"><strong><%= number_to_currency(@quotes.sum(&:total), unit: '€', format: "%n %u") %></strong></td>
           <td></td>
@@ -53,7 +65,7 @@
   </table>
 
   <% if @status_filter && @line_totals.any? %>
-    <h2 style="margin-top: 30px;">Líneas de venta («<%= Quote::STATUS_LABELS[@status_filter] %>»)</h2>
+    <h2 style="margin-top: 30px;">Líneas de venta («<%= status_filter_label %>»)</h2>
     <p class="action-note" style="margin-top:0;">Todas las líneas de los presupuestos mostrados, agrupadas por producto (sin transporte).</p>
     <table class="table" style="max-width: 640px;">
       <thead><tr><th>Producto</th><th class="num">Unidades</th><th class="num">Total (sin IVA)</th></tr></thead>
@@ -70,9 +82,17 @@
           <td class="num"><strong><%= @line_totals.sum { |row| row[:units] } %></strong></td>
           <td class="num"><strong><%= number_to_currency(@line_totals.sum { |row| row[:total] }, unit: '€', format: "%n %u") %></strong></td>
         </tr>
+<%# Puente: estas líneas + transporte (− descuento) cuadran con el «Total» de arriba. %>
+<% bridge_disc = @quotes.sum(&:discount_amount) %>
+<% bridge_ship = @quotes.sum(&:shipping_cost) %>
+<% if bridge_disc.positive? %>
+  <tr><td colspan="2" style="text-align:right; color:var(--muted); border:0;">− Descuento global</td><td class="num" style="color:var(--muted); border:0;">−<%= number_to_currency(bridge_disc, unit: '€', format: "%n %u") %></td></tr>
+<% end %>
+<tr><td colspan="2" style="text-align:right; color:var(--muted); border:0;">+ Transporte</td><td class="num" style="color:var(--muted); border:0;"><%= number_to_currency(bridge_ship, unit: '€', format: "%n %u") %></td></tr>
+<tr class="total-row"><td colspan="2" style="text-align:right;"><strong>= Total «<%= status_filter_label %>» (sin IVA)</strong></td><td class="num"><strong><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: "%n %u") %></strong></td></tr>
       </tbody>
     </table>
   <% end %>
 <% else %>
-  <p class="action-note">Todavía no hay presupuestos<%= " en «#{Quote::STATUS_LABELS[@status_filter]}»" if @status_filter %>.</p>
+  <p class="action-note">Todavía no hay presupuestos<%= " en «#{status_filter_label}»" if @status_filter %>.</p>
 <% end %>

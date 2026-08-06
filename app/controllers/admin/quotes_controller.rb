@@ -3,15 +3,39 @@ module Admin
     before_action :set_quote, only: [ :show, :edit, :update, :destroy, :print, :duplicate,
                                       :set_status, :set_payment, :upload_files, :purge_file ]
 
+    # "Vendidos" = presupuestos aprobados o ya entregados.
+    SOLD_STATUSES = %w[aprobado entregado].freeze
+
     def index
       @quotes = Quote.includes(:client, quote_lines: :product).recent_first
       @client_filter = Client.find_by(id: params[:client_id])
       @quotes = @quotes.where(client: @client_filter) if @client_filter
-      # Contadores por estado (del subconjunto del cliente, si hay filtro).
+
+      # Rango de fechas por fecha de creación (ambos extremos opcionales).
+      @from = Date.parse(params[:from]) rescue nil
+      @to = Date.parse(params[:to]) rescue nil
+      @quotes = @quotes.where(created_at: @from.beginning_of_day..) if @from
+      @quotes = @quotes.where(created_at: ..@to.end_of_day) if @to
+
+      # Contadores por estado (del subconjunto de cliente y fechas, si los hay).
       @status_counts = @quotes.except(:includes, :order).group(:status).count
-      @status_filter = params[:status].presence_in(Quote.statuses.keys)
-      @quotes = @quotes.where(status: @status_filter) if @status_filter
+      @sold_count = SOLD_STATUSES.sum { |s| @status_counts[s].to_i }
+
+      @status_filter = params[:status].presence
+      if @status_filter == "vendidos"
+        @quotes = @quotes.where(status: SOLD_STATUSES)
+      elsif Quote.statuses.key?(@status_filter)
+        @quotes = @quotes.where(status: @status_filter)
+      else
+        @status_filter = nil
+      end
       @line_totals = line_totals if @status_filter
+    end
+
+    # Etiqueta del filtro actual (estado o el pseudo-estado "Vendidos").
+    helper_method :status_filter_label
+    def status_filter_label
+      @status_filter == "vendidos" ? "Vendidos" : Quote::STATUS_LABELS[@status_filter]
     end
 
     def show; end
