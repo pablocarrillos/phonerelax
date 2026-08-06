@@ -22,11 +22,11 @@ module Admin
       @total_cost = all.sum { |s| s.cost(@landed_costs) }
 
       @samples = case @filter
-                 when "pending" then all.reject(&:returned?)
-                 when "returned" then all.select(&:returned?)
-                 when "sold" then all.select(&:sold?)
-                 else all
-                 end
+      when "pending" then all.reject(&:returned?)
+      when "returned" then all.select(&:returned?)
+      when "sold" then all.select(&:sold?)
+      else all
+      end
     end
 
     def new

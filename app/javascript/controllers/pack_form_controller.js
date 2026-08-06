@@ -6,7 +6,7 @@ import { Controller } from "@hotwired/stimulus"
 // real lo hace el servidor (Product#sync_pack_price y #available_stock); esto
 // solo refleja el estado en el formulario.
 export default class extends Controller {
-  static targets = ["pack", "price", "priceNote", "stock", "stockNote", "tiers"]
+  static targets = ["pack", "price", "priceNote", "stock", "stockNote", "tiers", "components"]
 
   connect() { this.refresh() }
 
@@ -17,5 +17,6 @@ export default class extends Controller {
     if (this.hasStockTarget) this.stockTarget.disabled = on
     if (this.hasStockNoteTarget) this.stockNoteTarget.hidden = !on
     if (this.hasTiersTarget) this.tiersTarget.hidden = on
+    if (this.hasComponentsTarget) this.componentsTarget.hidden = !on
   }
 }

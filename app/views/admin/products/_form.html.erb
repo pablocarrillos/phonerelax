@@ -1,4 +1,4 @@
-<%= form_with model: [:admin, product], local: true, data: { controller: 'pack-form' } do |f| %>
+<%= form_with model: [:admin, product], local: true, id: 'product-form', data: { controller: 'pack-form' } do |f| %>
   <% if product.errors.any? %>
     <div class="errors"><ul><% product.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>
@@ -146,7 +146,7 @@
     <p style="margin-top:10px;"><button type="button" class="btn btn-outline" data-action="price-tiers#addRow">+ Añadir tramo</button></p>
   </div>
 
-  <div style="max-width: 860px; margin-top: 26px;">
+  <div style="max-width: 860px; margin-top: 26px;" data-pack-form-target="components">
     <h2>Componentes del pack</h2>
     <p class="action-note" style="margin-top:0;">Solo aplica si marcas «Es un pack». Elige los productos y cuántas unidades incluye el pack. El precio se calcula con el <strong>escalado de cada componente</strong> para esa cantidad, y el stock disponible del pack depende del stock de sus componentes.</p>
     <table class="table" style="max-width:620px;">
@@ -163,7 +163,6 @@
     </table>
   </div>
 
-  <p><%= f.submit 'Guardar producto', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %></p>
 <% end %>
 
 <% if product.persisted? %>
@@ -189,3 +188,10 @@
 <% else %>
   <p class="help-block" style="color: var(--muted);">Guarda el producto para poder gestionar su galería de imágenes.</p>
 <% end %>
+
+<%# Botones al final de la página; siguen enviando el formulario de arriba
+    gracias al atributo HTML form="product-form". %>
+<p style="margin-top: 26px;">
+  <%= button_tag 'Guardar producto', type: 'submit', form: 'product-form', class: 'btn btn-primary' %>
+  <%= link_to 'Cancelar', admin_products_path, class: 'btn btn-outline' %>
+</p>

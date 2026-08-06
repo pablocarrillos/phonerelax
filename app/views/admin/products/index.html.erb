@@ -16,9 +16,12 @@
         <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
         <td class="num"><% if product.out_of_stock? %><span class="badge pendiente">0</span><% else %><%= product.available_stock %><%= ' packs'.html_safe if product.pack? %><% end %></td>
         <td><%= product.active? ? 'Sí' : 'No' %></td>
-        <td>
-          <%= link_to 'Editar', edit_admin_product_path(product), class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>
-          <%= button_to 'Borrar', admin_product_path(product), method: :delete, form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar este producto?' } }, class: 'btn btn-danger', style: 'padding: 5px 12px; font-size: 13px;' %>
+        <td style="white-space:nowrap;">
+          <div style="display:inline-flex; align-items:center; gap:8px;">
+            <%= link_to 'Ver', product_page_path(product), target: '_blank', rel: 'noopener', class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;', title: 'Abrir la página de venta en la tienda' %>
+            <%= link_to 'Editar', edit_admin_product_path(product), class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>
+            <%= button_to 'Borrar', admin_product_path(product), method: :delete, form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar este producto?' } }, class: 'btn btn-danger', style: 'padding: 5px 12px; font-size: 13px;' %>
+          </div>
         </td>
       </tr>
     <% end %>

@@ -169,6 +169,11 @@ a { color: var(--navy); }
 .btn-block { display: block; width: 100%; }
 
 /* Producto */
+/* Botonera de compra: «Añadir al carrito» grande y protagonista, «Volver»
+   discreto pero con la misma altura (los alinea el flex). */
+.buy-actions { margin-top: 16px; display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap; }
+.buy-actions .buy-btn { font-size: 18px; font-weight: 700; padding: 14px 44px; flex: 1 1 auto; max-width: 420px; }
+.buy-actions .btn-outline { display: inline-flex; align-items: center; }
 .product-page { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 36px; }
 .product-page img { width: 100%; border-radius: var(--radius); background: var(--card-bg); object-fit: contain; max-height: 480px; }
 .product-page .price { font-size: 26px; font-weight: 700; }
