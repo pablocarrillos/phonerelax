@@ -25,6 +25,7 @@
       </div>
       <p class="action-note" style="margin-top:4px;">Debe ser un cliente existente. <%= link_to '+ crear cliente nuevo', new_admin_client_path, target: '_blank', rel: 'noopener' %></p>
     </div>
+    <div><%= f.label :number, 'Oferta Nº' %><%= f.text_field :number, placeholder: 'se genera solo si lo dejas vacío' %></div>
     <div><%= f.label :issued_on, 'Fecha *' %><%= f.date_field :issued_on, required: true %></div>
     <div><%= f.label :internal_description, 'Descripción (para uso interno)' %><%= f.text_field :internal_description, placeholder: 'p. ej. 180 uds. curso 26/27' %></div>
     <div><%= f.label :valid_until, 'Válido hasta' %><%= f.date_field :valid_until %></div>

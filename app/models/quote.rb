@@ -101,6 +101,11 @@ class Quote < ApplicationRecord
 
   validates :issued_on, presence: true
   validates :delivery_terms, presence: true
+  # El nº de oferta se puede editar: único siempre y obligatorio al editar (en
+  # los nuevos, si se deja vacío se genera automáticamente).
+  before_validation { self.number = number.strip.presence if number }
+  validates :number, uniqueness: true, allow_blank: true
+  validates :number, presence: true, on: :update
   validates :shipping_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :discount_percent, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validate :must_have_lines

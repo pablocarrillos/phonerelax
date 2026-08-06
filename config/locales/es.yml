@@ -27,6 +27,7 @@ es:
         price: Precio
       quote:
         client: Cliente
+        number: Oferta Nº
         delivery_terms: Plazo de entrega
       user:
         email_address: Email
@@ -37,6 +38,7 @@ es:
         blank: no puede estar en blanco
         invalid: no es válido
         required: debe existir
+        taken: ya está en uso
   errors:
     format: "%{attribute} %{message}"
     messages:
