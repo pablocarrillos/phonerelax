@@ -43,12 +43,12 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
     line = quote.quote_lines.sole
     assert_equal products(:funda).name, line.description # descripción autocompletada
-    assert_equal BigDecimal("11.1198"), line.unit_price  # tramo de 100+
-    assert_equal BigDecimal("2001.56"), line.total       # 180 × 11,1198 redondeado
+    assert_equal BigDecimal("11.12"), line.unit_price    # tramo de 100+ (escalado a 2 decimales)
+    assert_equal BigDecimal("2001.6"), line.total        # 180 × 11,12
 
-    assert_equal BigDecimal("2031.31"), quote.subtotal   # + transporte 29,75
-    assert_equal BigDecimal("426.5751"), quote.vat_amount
-    assert_equal BigDecimal("2457.8851"), quote.total
+    assert_equal BigDecimal("2031.35"), quote.subtotal   # + transporte 29,75
+    assert_equal BigDecimal("426.5835"), quote.vat_amount
+    assert_equal BigDecimal("2457.9335"), quote.total
   end
 
   test "los campos autocompletados se pueden fijar a mano" do
@@ -64,7 +64,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "sin escalado, el precio cae al PVP sin IVA" do
-    assert_equal BigDecimal("49.5041"), PriceTier.price_for(products(:iman), 3).round(4) # 59,90 / 1,21
+    assert_equal BigDecimal("49.5"), PriceTier.price_for(products(:iman), 3) # 59,90 / 1,21 a 2 decimales
   end
 
   test "la versión imprimible muestra el formato oficial con cuenta y observaciones" do
@@ -269,7 +269,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     } }
     assert_redirected_to admin_products_path
     assert_equal BigDecimal("11"), tier.reload.unit_price
-    assert_equal BigDecimal("9.8843"), PriceTier.price_for(products(:funda), 600)
+    assert_equal BigDecimal("9.88"), PriceTier.price_for(products(:funda), 600)
 
     patch admin_product_path(products(:funda)), params: { product: {
       name: products(:funda).name, price: products(:funda).price,
@@ -329,8 +329,8 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     patch set_status_admin_quote_path(quote), params: { status: "entregado" }
     assert quote.reload.entregado?
     assert quote.confirmed?
-    patch upload_files_admin_quote_path(quote), params: { quote: { school_logo: fixture_file_upload("cover.png", "image/png") } }
-    assert quote.reload.school_logo.attached?, "entregado admite ficheros"
+    patch upload_files_admin_quote_path(quote), params: { quote: { signed_quote: fixture_file_upload("factura.pdf", "application/pdf") } }
+    assert quote.reload.signed_quote.attached?, "entregado admite ficheros (p. ej. el presupuesto firmado)"
 
     patch set_status_admin_quote_path(quote), params: { status: "en_pausa" }
     assert quote.reload.en_pausa?
@@ -422,7 +422,10 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "los ficheros del pedido solo se pueden subir con el presupuesto aprobado" do
-    quote = a_quote
+    # Con línea de Personalización DTF, para que el fichero «Logo» esté disponible.
+    dtf = Product.create!(name: "Personalización DTF test", price: 5, stock: 0, vat_percentage: 21)
+    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                          quote_lines_attributes: { "0" => { product_id: dtf.id, quantity: 1 } })
     patch upload_files_admin_quote_path(quote), params: { quote: { school_logo: fixture_file_upload("cover.png", "image/png") } }
     assert_not quote.reload.school_logo.attached?, "abierto: no se admite la subida"
 
@@ -474,5 +477,17 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     post admin_samples_path, params: { sample: { organization: "Colegio X", sent_on: "2026-08-05", quote_id: quote.id } }
     assert_equal quote, Sample.last.quote
     assert_equal 1, quote.reload.samples.count
+  end
+
+  test "el fichero «Logo» solo está disponible si el presupuesto contrata Personalización DTF" do
+    dtf = Product.create!(name: "Personalización DTF test", price: 5, stock: 0, vat_percentage: 21)
+    plain = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                          quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: 10 } })
+    assert_not_includes plain.available_files, "school_logo", "sin DTF no aparece el Logo"
+    assert_includes plain.available_files, "signed_quote", "el presupuesto firmado siempre está disponible"
+
+    with_dtf = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                             quote_lines_attributes: { "0" => { product_id: dtf.id, quantity: 1 } })
+    assert_includes with_dtf.available_files, "school_logo", "con DTF sí aparece el Logo"
   end
 end

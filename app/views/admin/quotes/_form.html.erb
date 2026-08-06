@@ -1,6 +1,6 @@
 <% product_data = Product.ordered.includes(:price_tiers).each_with_object({}) do |p, h|
      tiers = p.price_tiers.map { |t| [ t.min_units, t.unit_price.to_f ] }
-     tiers = [ [ 1, (p.price / (1 + (p.vat_percentage.to_d / 100))).round(4).to_f ] ] if tiers.empty?
+     tiers = [ [ 1, (p.price / (1 + (p.vat_percentage.to_d / 100))).round(2).to_f ] ] if tiers.empty?
      h[p.id] = { name: p.name, tiers: tiers, shipping_unit: p.shipping_unit_cost.to_f,
                  dtf_units: p.dtf_units, funda_units: p.funda_units }
    end %>

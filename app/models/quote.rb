@@ -56,7 +56,7 @@ class Quote < ApplicationRecord
 
   # Ficheros del pedido una vez aprobado el presupuesto.
   ATTACHMENTS = {
-    "school_logo" => "Logo del colegio",
+    "school_logo" => "Logo",
     "dtf_file" => "Fichero DTF",
     "approved_sample" => "Imagen de muestra aprobada",
     "signed_quote" => "Presupuesto firmado (PDF)"
@@ -85,8 +85,11 @@ class Quote < ApplicationRecord
 
   # Adjuntos que aplican a este presupuesto: la imagen de muestra aprobada solo
   # con personalización DTF (o si ya está subida, para no dejarla inaccesible).
+  # Los ficheros de personalización (logo, fichero DTF, muestra) solo aparecen si
+  # el presupuesto contrata «Personalización DTF» (o ya tienen algo subido); el
+  # presupuesto firmado se muestra siempre.
   def available_files
-    ATTACHMENTS.keys.select { |name| name != "approved_sample" || dtf_lines? || approved_sample.attached? }
+    ATTACHMENTS.keys.select { |name| name == "signed_quote" || dtf_lines? || order_file(name).attached? }
   end
 
   # Solo se descartan filas NUEVAS vacías; las existentes (con id) siempre se procesan.
