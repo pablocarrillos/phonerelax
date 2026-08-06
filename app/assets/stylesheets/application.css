@@ -128,6 +128,11 @@ a { color: var(--navy); }
 
 /* Tarjetas de producto y de pasos */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+/* Los pasos («¿Cómo funciona?») se quedan siempre en 3 columnas que se
+   estrechan juntas al reducir el ancho (minmax(0,…) permite encoger por debajo
+   del contenido); solo se apilan en móvil. */
+.steps-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 560px) { .steps-grid { grid-template-columns: 1fr; } }
 /* Los productos se muestran de 4 en fila (bajan a 3 y 2 en pantallas menores). */
 .products-grid { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 980px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
