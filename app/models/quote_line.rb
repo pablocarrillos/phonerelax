@@ -4,6 +4,9 @@ class QuoteLine < ApplicationRecord
   belongs_to :quote, inverse_of: :quote_lines
   belongs_to :product, optional: true
 
+  # El precio unitario siempre con dos decimales como máximo.
+  before_validation { self.unit_price = unit_price.round(2) if unit_price }
+
   validates :description, presence: true
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
   validates :unit_price, :vat_rate, numericality: { greater_than_or_equal_to: 0 }

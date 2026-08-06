@@ -232,7 +232,7 @@ export default class extends Controller {
     const expected = this.tierPrice(row)
     if (expected !== null) {
       const price = row.querySelector("[data-role=price]")
-      price.value = expected.toFixed(4)
+      price.value = expected.toFixed(2)
     }
     this.refreshWarning(row)
     this.recalc()
@@ -248,7 +248,8 @@ export default class extends Controller {
     for (const [min, tierPrice] of product.tiers) {
       if (quantity >= min) price = tierPrice
     }
-    return price
+    // El precio unitario siempre con dos decimales como máximo.
+    return price === null ? null : Math.round(price * 100) / 100
   }
 
   refreshWarning(row) {
@@ -257,9 +258,9 @@ export default class extends Controller {
 
     const expected = this.tierPrice(row)
     const price = this.number(row, "price")
-    const differs = expected !== null && !isNaN(price) && Math.abs(price - expected) > 0.0001
+    const differs = expected !== null && !isNaN(price) && Math.abs(price - expected) > 0.005
     warning.hidden = !differs
-    if (differs) warning.textContent = `⚠ No coincide con el escalado (${expected.toFixed(4)} €)`
+    if (differs) warning.textContent = `⚠ No coincide con el escalado (${expected.toFixed(2)} €)`
   }
 
   productData(row) {
