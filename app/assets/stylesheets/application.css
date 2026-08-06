@@ -329,6 +329,32 @@ tr[draggable="true"] { opacity: 0.6; }
 }
 .admin-header a { color: #fff; margin-right: 18px; text-decoration: none; }
 .admin-header .active { text-decoration: underline; text-underline-offset: 6px; }
+/* Inputs de archivo con la estética de la web: el botón nativo se viste como
+   un .btn-outline y el texto del nombre de archivo va en el color atenuado. */
+input[type="file"] { font-size: 14px; color: var(--muted); font-family: inherit; }
+input[type="file"]::file-selector-button {
+  background: transparent;
+  color: var(--navy);
+  border: 1.5px solid var(--navy);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 12px;
+  transition: background 0.15s ease;
+}
+input[type="file"]::file-selector-button:hover { background: rgba(14, 27, 77, 0.06); }
+
+/* Herramienta de fotos del admin: rejilla de tarjetas con URL copiable. */
+.photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+.photo-card { background: var(--card-bg); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+.photo-card > a { display: block; background: #fff; }
+.photo-card img { width: 100%; height: 190px; object-fit: contain; display: block; }
+.photo-card-body { padding: 12px 14px 14px; }
+.photo-card-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+
 /* Miniatura de producto en la lista del admin. */
 .admin-thumb { width: 44px; height: 44px; object-fit: contain; background: #fff; border: 1px solid var(--border); border-radius: 8px; flex-shrink: 0; }
 
@@ -342,23 +368,23 @@ tr[draggable="true"] { opacity: 0.6; }
 .admin-subnav .subnav-link:hover { color: var(--navy); }
 .admin-subnav .subnav-link.active { color: var(--navy); font-weight: 700; border-bottom-color: var(--magenta); }
 
-/* Grupos de la nav del admin como desplegable (details/summary, sin JS). */
+/* Grupos de la nav del admin: desplegable por hover CSS puro. El menú es un
+   hijo contiguo (su padding-top cubre la separación visual), así el hover
+   nunca se pierde entre el rótulo y las opciones. */
 .admin-dropdown { position: relative; display: inline-block; margin-right: 18px; }
-.admin-dropdown summary { list-style: none; cursor: pointer; color: #fff; user-select: none; white-space: nowrap; padding: 8px 2px; }
-.admin-dropdown summary::-webkit-details-marker { display: none; }
-.admin-dropdown summary::after { content: "▾"; margin-left: 4px; font-size: 10px; opacity: 0.7; }
-.admin-dropdown summary.active { text-decoration: underline; text-underline-offset: 6px; }
-/* Puente invisible bajo el rótulo: el puntero puede cruzar hasta el menú sin
-   que el mouseleave lo cierre por el hueco. */
-.admin-dropdown[open]::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 14px; }
-.admin-dropdown .admin-menu {
-  position: absolute; left: 0; top: calc(100% + 8px); z-index: 1002;
+.admin-drop-label { background: none; border: 0; color: #fff; font: inherit; cursor: default; padding: 10px 2px; white-space: nowrap; }
+.admin-drop-label::after { content: "▾"; margin-left: 4px; font-size: 10px; opacity: 0.7; }
+.admin-drop-label.active { text-decoration: underline; text-underline-offset: 6px; }
+.admin-menu { display: none; position: absolute; left: 0; top: 100%; padding-top: 6px; z-index: 1002; }
+.admin-dropdown:hover .admin-menu,
+.admin-dropdown:focus-within .admin-menu { display: block; }
+.admin-menu-box {
   background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(14, 27, 77, 0.18); padding: 6px; min-width: 160px;
+  box-shadow: 0 8px 24px rgba(14, 27, 77, 0.18); padding: 6px; min-width: 170px;
   display: flex; flex-direction: column;
 }
-.admin-header .admin-dropdown .admin-menu a { color: var(--navy); margin: 0; padding: 8px 10px; border-radius: 8px; white-space: nowrap; }
-.admin-header .admin-dropdown .admin-menu a:hover { background: var(--card-bg); }
+.admin-header .admin-menu-box a { color: var(--navy); margin: 0; padding: 9px 12px; border-radius: 8px; white-space: nowrap; }
+.admin-header .admin-menu-box a:hover { background: var(--card-bg); }
 .admin-main { max-width: 1120px; margin: 28px auto; padding: 0 24px; }
 .filter-tabs { margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
 .filter-tabs a {
