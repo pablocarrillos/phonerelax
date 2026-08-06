@@ -87,7 +87,9 @@ Rails.application.routes.draw do
     get "estadisticas", to: "stats#show", as: :stats
     get "transporte", to: "shipping#show", as: :shipping
     patch "transporte", to: "shipping#update"
-    resources :clients, except: :show
+    resources :clients, except: :show do
+      get :search, on: :collection # autocompletado de cliente en presupuestos (JSON)
+    end
     resources :samples, except: :show do
       patch :mark_returned, on: :member # recogida/devuelta hoy
       patch :toggle_sold, on: :member   # marca/desmarca que hubo venta

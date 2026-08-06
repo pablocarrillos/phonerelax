@@ -14,10 +14,16 @@
   <% end %>
 
   <div class="form-grid" style="max-width: 860px;">
-    <div>
+    <div data-controller="client-autocomplete" data-client-autocomplete-url-value="<%= search_admin_clients_path %>">
       <%= f.label :client_id, 'Cliente *' %>
-      <%= f.collection_select :client_id, Client.ordered, :id, :name, { include_blank: true }, { class: 'form-select', required: true } %>
-      <p class="action-note" style="margin-top:4px;"><%= link_to '+ crear cliente nuevo', new_admin_client_path, target: '_blank', rel: 'noopener' %></p>
+      <div style="position:relative;">
+        <%= f.hidden_field :client_id, data: { client_autocomplete_target: 'id' } %>
+        <input type="text" value="<%= quote.client&.name %>" placeholder="Escribe 3 letras del nombre…" autocomplete="off"
+               class="form-select" data-client-autocomplete-target="input"
+               data-action="input->client-autocomplete#onInput keydown->client-autocomplete#onKeydown focus->client-autocomplete#onFocus blur->client-autocomplete#onBlur">
+        <ul class="autocomplete-list" data-client-autocomplete-target="list" hidden></ul>
+      </div>
+      <p class="action-note" style="margin-top:4px;">Debe ser un cliente existente. <%= link_to '+ crear cliente nuevo', new_admin_client_path, target: '_blank', rel: 'noopener' %></p>
     </div>
     <div><%= f.label :issued_on, 'Fecha *' %><%= f.date_field :issued_on, required: true %></div>
     <div><%= f.label :internal_description, 'Descripción (para uso interno)' %><%= f.text_field :internal_description, placeholder: 'p. ej. 180 uds. curso 26/27' %></div>

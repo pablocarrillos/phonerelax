@@ -51,7 +51,7 @@ module Admin
                          valid_until: Date.current + Quote::DEFAULT_VALIDITY_DAYS.days,
                          shipping_cost: Quote::DEFAULT_SHIPPING,
                          payment_terms: Quote::DEFAULT_PAYMENT_TERMS,
-                         bank_account: Quote::BANK_ACCOUNTS.first)
+                         bank_account: Quote::DEFAULT_BANK_ACCOUNT)
       build_blank_lines
     end
 

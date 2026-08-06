@@ -18,6 +18,9 @@ class Quote < ApplicationRecord
     "BBVA ES65 0182 2961 3102 0170 2952"
   ].freeze
 
+  # Cuenta que se propone al crear un presupuesto nuevo (BBVA).
+  DEFAULT_BANK_ACCOUNT = BANK_ACCOUNTS.find { |a| a.include?("BBVA") } || BANK_ACCOUNTS.first
+
   # Transporte por defecto (sin IVA): la tarifa habitual de los presupuestos.
   DEFAULT_SHIPPING = BigDecimal("29.75")
   DEFAULT_PAYMENT_TERMS = "50% IVA incluido para confirmar y 50% a la entrega."

@@ -6,6 +6,14 @@ module Admin
       @clients = Client.ordered
     end
 
+    # Autocompletado del formulario de presupuestos: clientes cuyo nombre
+    # contiene el término (a partir de 3 letras). Devuelve JSON.
+    def search
+      term = params[:q].to_s.strip
+      results = term.length >= 3 ? Client.name_like(term).ordered.limit(10) : Client.none
+      render json: results.map { |c| { id: c.id, name: c.name } }
+    end
+
     def new
       @client = Client.new
     end

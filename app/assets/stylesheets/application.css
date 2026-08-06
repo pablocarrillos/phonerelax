@@ -198,6 +198,12 @@ input[type=number].qty-input { width: 80px; padding: 9px; border: 1px solid var(
 .sort-link { color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap; }
 .sort-link:hover { color: var(--navy); text-decoration: none; }
 
+/* Autocompletado de cliente en el formulario de presupuestos. */
+.autocomplete-list { position: absolute; left: 0; right: 0; top: calc(100% + 2px); z-index: 30; margin: 0; padding: 4px; list-style: none; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(14, 27, 77, 0.15); max-height: 240px; overflow-y: auto; }
+.autocomplete-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.autocomplete-item:hover, .autocomplete-item.active { background: var(--card-bg); }
+.autocomplete-empty { padding: 8px 10px; color: var(--muted); }
+
 /* Formularios */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-grid .full { grid-column: 1 / -1; }

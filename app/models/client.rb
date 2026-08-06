@@ -7,4 +7,6 @@ class Client < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
 
   scope :ordered, -> { order(:name) }
+  # Búsqueda por nombre para el autocompletado del formulario de presupuestos.
+  scope :name_like, ->(term) { where("name ILIKE ?", "%#{sanitize_sql_like(term.to_s.strip)}%") }
 end
