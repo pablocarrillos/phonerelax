@@ -63,7 +63,7 @@ gem "invisible_captcha", "~> 2.3"
 gem "route_translator" # rutas públicas traducidas por idioma (/fr/panier, /en/cart…)
 gem "fastimage" # dimensiones de imagen leyendo solo la cabecera (herramienta Fotos)
 
-gem "pagy", "~> 9.4"
+gem "pagy", "~> 43.6"
 
 gem "phonelib", "~> 0.10.23"
 
