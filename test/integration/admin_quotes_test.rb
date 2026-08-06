@@ -327,6 +327,57 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert quote.reload.en_pausa?
   end
 
+  test "filtrar los presupuestos por estado" do
+    a_quote
+    approved = a_quote
+    approved.update!(status: :aprobado)
+
+    get admin_quotes_path(status: "aprobado")
+    assert_select "tbody tr", 1
+    assert_includes response.body, approved.number
+
+    get admin_quotes_path(status: "invento") # inválido: se ignora y se ven todos
+    assert_select "tbody tr", 2
+    assert_includes response.body, "Aprobado (1)" # contadores de los chips
+    assert_includes response.body, "Abierto (1)"
+  end
+
+  test "marcar el cobro (pagado para confirmar / pagado totalmente)" do
+    quote = a_quote
+    assert quote.sin_pagos?, "por defecto sin pagos"
+    patch set_payment_admin_quote_path(quote), params: { payment_status: "pagado_confirmar" }
+    assert quote.reload.pagado_confirmar?
+    patch set_payment_admin_quote_path(quote), params: { payment_status: "pagado_total" }
+    assert quote.reload.pagado_total?
+    patch set_payment_admin_quote_path(quote), params: { payment_status: "invento" } # inválido: no cambia
+    assert quote.reload.pagado_total?
+  end
+
+  test "los ficheros del pedido solo se pueden subir con el presupuesto aprobado" do
+    quote = a_quote
+    patch upload_files_admin_quote_path(quote), params: { quote: { school_logo: fixture_file_upload("cover.png", "image/png") } }
+    assert_not quote.reload.school_logo.attached?, "abierto: no se admite la subida"
+
+    quote.update!(status: :aprobado)
+    patch upload_files_admin_quote_path(quote), params: { quote: {
+      school_logo: fixture_file_upload("cover.png", "image/png"),
+      signed_quote: fixture_file_upload("factura.pdf", "application/pdf")
+    } }
+    quote.reload
+    assert quote.school_logo.attached?
+    assert quote.signed_quote.attached?
+    assert_not quote.dtf_file.attached?
+
+    get admin_quote_path(quote)
+    assert_includes response.body, "cover.png"
+    assert_includes response.body, "factura.pdf"
+
+    delete purge_file_admin_quote_path(quote, attachment: "school_logo")
+    assert_not quote.reload.school_logo.attached?
+    delete purge_file_admin_quote_path(quote, attachment: "invento") # inválido: no borra nada
+    assert quote.reload.signed_quote.attached?
+  end
+
   test "vincular una muestra enviada a un presupuesto" do
     quote = a_quote
     post admin_samples_path, params: { sample: { organization: "Colegio X", sent_on: "2026-08-05", quote_id: quote.id } }

@@ -4,6 +4,7 @@
 <div class="order-actions">
   <p class="order-badges">
     <strong>Estado:</strong> <span class="badge <%= @quote.status %>"><%= @quote.status_label %></span>
+    <% unless @quote.sin_pagos? %><span class="badge <%= @quote.payment_status %>"><%= @quote.payment_status_label %></span><% end %>
     &nbsp;&nbsp;<strong>Cliente:</strong> <%= @quote.client.name %>
     &nbsp;&nbsp;<strong>Fecha:</strong> <%= l @quote.issued_on, format: '%d/%m/%Y' %>
     <% if @quote.valid_until %>&nbsp;&nbsp;<strong>Válido hasta:</strong> <%= l @quote.valid_until, format: '%d/%m/%Y' %><% end %>
@@ -17,6 +18,17 @@
       <% end %>
     </div>
   </div>
+  <% if @quote.aprobado? %>
+    <div class="action-section">
+      <span class="action-title">Cobro</span>
+      <div class="action-row">
+        <% { 'pagado_confirmar' => '💶 Pagado para confirmar', 'pagado_total' => '💶 Pagado totalmente', 'sin_pagos' => '↺ Sin pagos' }.each do |st, label| %>
+          <% next if @quote.payment_status == st %>
+          <%= button_to label, set_payment_admin_quote_path(@quote, payment_status: st), method: :patch, class: 'btn btn-outline', form: { style: 'display:inline-block' } %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
   <div class="action-section">
     <div class="action-row">
       <%= link_to '🖨 Imprimir / PDF', print_admin_quote_path(@quote), target: '_blank', rel: 'noopener', class: 'btn btn-primary' %>
@@ -28,6 +40,46 @@
     </div>
   </div>
 </div>
+
+<% any_files = Quote::ATTACHMENTS.keys.any? { |name| @quote.public_send(name).attached? } %>
+<% if @quote.aprobado? || any_files %>
+  <h2 style="margin-top: 28px;">Ficheros del pedido</h2>
+  <% unless @quote.aprobado? %>
+    <p class="action-note" style="margin-top:0;">El presupuesto ya no está aprobado: los ficheros se conservan, pero no se pueden subir nuevos.</p>
+  <% end %>
+  <table class="table" style="max-width: 900px;">
+    <thead><tr><th>Fichero</th><th>Actual</th><th style="text-align:right;">Acciones</th></tr></thead>
+    <tbody>
+      <% Quote::ATTACHMENTS.each do |name, label| %>
+        <% attachment = @quote.public_send(name) %>
+        <tr>
+          <td><strong><%= label %></strong></td>
+          <td>
+            <% if attachment.attached? %>
+              <%= link_to attachment.filename, rails_blob_path(attachment, disposition: 'attachment') %>
+              <span class="action-note">(<%= number_to_human_size(attachment.blob.byte_size) %> · <%= l attachment.blob.created_at, format: :short %>)</span>
+            <% else %>
+              <span style="color:var(--muted);">—</span>
+            <% end %>
+          </td>
+          <td style="text-align:right; white-space:nowrap;">
+            <% if @quote.aprobado? %>
+              <%= form_with url: upload_files_admin_quote_path(@quote), method: :patch, multipart: true, html: { style: 'display:inline-block;' } do %>
+                <input type="file" name="quote[<%= name %>]" required style="max-width: 230px;">
+                <button type="submit" class="btn btn-outline" style="padding: 5px 12px; font-size: 13px;"><%= attachment.attached? ? 'Reemplazar' : 'Subir' %></button>
+              <% end %>
+            <% end %>
+            <% if attachment.attached? %>
+              <%= button_to 'Borrar', purge_file_admin_quote_path(@quote, attachment: name), method: :delete, class: 'btn btn-danger',
+                            form: { style: 'display:inline-block;', data: { turbo_confirm: "¿Borrar «#{label}» del presupuesto #{@quote.number}?" } },
+                            style: 'padding: 5px 12px; font-size: 13px;' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
 
 <% if @quote.samples.any? %>
   <p class="action-note" style="max-width:900px;">🧪 <strong>Muestras vinculadas (<%= @quote.samples.size %>):</strong>

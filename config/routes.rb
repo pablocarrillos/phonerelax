@@ -96,6 +96,9 @@ Rails.application.routes.draw do
       get :print, on: :member # versión imprimible (PDF con el diálogo del navegador)
       post :duplicate, on: :member # nuevo presupuesto partiendo de este
       patch :set_status, on: :member # marcar aprobado / en pausa / perdido / abierto
+      patch :set_payment, on: :member # marcar el cobro (para confirmar / total)
+      patch :upload_files, on: :member # subir logo, fichero DTF o presupuesto firmado
+      delete :purge_file, on: :member # borrar uno de esos ficheros
     end
     resources :photos, only: [ :index, :create, :update, :destroy ] do
       patch :project_comment, on: :collection # comentario de una imagen estática

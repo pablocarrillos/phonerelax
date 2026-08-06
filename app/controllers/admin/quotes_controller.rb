@@ -1,11 +1,16 @@
 module Admin
   class QuotesController < BaseController
-    before_action :set_quote, only: [ :show, :edit, :update, :destroy, :print, :duplicate, :set_status ]
+    before_action :set_quote, only: [ :show, :edit, :update, :destroy, :print, :duplicate,
+                                      :set_status, :set_payment, :upload_files, :purge_file ]
 
     def index
       @quotes = Quote.includes(:client, :quote_lines).recent_first
       @client_filter = Client.find_by(id: params[:client_id])
       @quotes = @quotes.where(client: @client_filter) if @client_filter
+      # Contadores por estado (del subconjunto del cliente, si hay filtro).
+      @status_counts = @quotes.except(:includes, :order).group(:status).count
+      @status_filter = params[:status].presence_in(Quote.statuses.keys)
+      @quotes = @quotes.where(status: @status_filter) if @status_filter
     end
 
     def show; end
@@ -70,6 +75,44 @@ module Admin
       else
         redirect_back fallback_location: admin_quote_path(@quote), alert: "Estado no válido."
       end
+    end
+
+    # Marca el estado del cobro (sin pagos / pagado para confirmar / pagado totalmente).
+    def set_payment
+      payment = params[:payment_status].to_s
+      if Quote.payment_statuses.key?(payment)
+        @quote.update!(payment_status: payment)
+        redirect_back fallback_location: admin_quote_path(@quote), notice: "Presupuesto #{@quote.number}: «#{@quote.payment_status_label}»."
+      else
+        redirect_back fallback_location: admin_quote_path(@quote), alert: "Estado de pago no válido."
+      end
+    end
+
+    # Sube los ficheros del pedido (logo del colegio, fichero DTF y presupuesto
+    # firmado). Solo tiene sentido —y solo se permite— con el presupuesto aprobado.
+    def upload_files
+      unless @quote.aprobado?
+        return redirect_to admin_quote_path(@quote), alert: "Los ficheros solo se pueden subir en presupuestos aprobados."
+      end
+
+      saved = Quote::ATTACHMENTS.keys.select do |name|
+        file = params.dig(:quote, name)
+        @quote.public_send(name).attach(file) if file.present?
+      end
+      if saved.any?
+        redirect_to admin_quote_path(@quote), notice: "Guardado: #{saved.map { |name| Quote::ATTACHMENTS[name] }.join(', ')}."
+      else
+        redirect_to admin_quote_path(@quote), alert: "Selecciona algún fichero para subir."
+      end
+    end
+
+    # Borra uno de los ficheros del pedido.
+    def purge_file
+      name = params[:attachment].to_s
+      return redirect_to admin_quote_path(@quote), alert: "Fichero no válido." unless Quote::ATTACHMENTS.key?(name)
+
+      @quote.public_send(name).purge
+      redirect_to admin_quote_path(@quote), notice: "#{Quote::ATTACHMENTS[name]}: borrado."
     end
 
     # Crea un presupuesto nuevo partiendo de este: mismas líneas y condiciones,

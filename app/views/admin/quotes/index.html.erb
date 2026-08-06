@@ -8,6 +8,16 @@
   <p class="action-note" style="margin-top:0;">Mostrando solo los presupuestos de <strong><%= @client_filter.name %></strong> · <%= link_to 'ver todos', admin_quotes_path %></p>
 <% end %>
 
+<div class="action-row" style="margin: 0 0 16px; display:flex; gap:8px; flex-wrap:wrap;">
+  <% chip = 'padding:5px 14px; font-size:14px;' %>
+  <%= link_to "Todos (#{@status_counts.values.sum})", admin_quotes_path(client_id: @client_filter&.id),
+              class: "btn #{@status_filter ? 'btn-outline' : 'btn-primary'}", style: chip %>
+  <% Quote::STATUS_LABELS.each do |st, label| %>
+    <%= link_to "#{label} (#{@status_counts[st].to_i})", admin_quotes_path(status: st, client_id: @client_filter&.id),
+                class: "btn #{@status_filter == st ? 'btn-primary' : 'btn-outline'}", style: chip %>
+  <% end %>
+</div>
+
 <% if @quotes.any? %>
   <table class="table">
     <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
@@ -17,7 +27,10 @@
           <td><%= link_to quote.number, admin_quote_path(quote) %></td>
           <td><%= l quote.issued_on, format: '%d/%m/%Y' %></td>
           <td><%= quote.client.name %></td>
-          <td><span class="badge <%= quote.status %>"><%= quote.status_label %></span></td>
+          <td>
+            <span class="badge <%= quote.status %>"><%= quote.status_label %></span>
+            <% unless quote.sin_pagos? %><br><span class="badge <%= quote.payment_status %>" style="margin-top:4px;"><%= quote.payment_status_label %></span><% end %>
+          </td>
           <td style="color:var(--muted); font-size:14px;"><%= quote.internal_description.presence || '—' %></td>
           <td class="num"><%= number_to_currency(quote.subtotal, unit: '€', format: '%n %u') %></td>
           <td class="num"><strong><%= number_to_currency(quote.total, unit: '€', format: '%n %u') %></strong></td>
@@ -27,5 +40,5 @@
     </tbody>
   </table>
 <% else %>
-  <p class="action-note">Todavía no hay presupuestos.</p>
+  <p class="action-note">Todavía no hay presupuestos<%= " en «#{Quote::STATUS_LABELS[@status_filter]}»" if @status_filter %>.</p>
 <% end %>

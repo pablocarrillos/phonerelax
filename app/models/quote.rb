@@ -37,6 +37,27 @@ class Quote < ApplicationRecord
     STATUS_LABELS[status] || status
   end
 
+  # Seguimiento del cobro (las condiciones habituales son 50 % para confirmar
+  # y 50 % a la entrega).
+  enum :payment_status, { sin_pagos: 0, pagado_confirmar: 1, pagado_total: 2 }
+
+  PAYMENT_LABELS = { "sin_pagos" => "Sin pagos", "pagado_confirmar" => "Pagado para confirmar", "pagado_total" => "Pagado totalmente" }.freeze
+
+  def payment_status_label
+    PAYMENT_LABELS[payment_status] || payment_status
+  end
+
+  # Ficheros del pedido una vez aprobado el presupuesto.
+  ATTACHMENTS = {
+    "school_logo" => "Logo del colegio",
+    "dtf_file" => "Fichero DTF",
+    "signed_quote" => "Presupuesto firmado (PDF)"
+  }.freeze
+
+  has_one_attached :school_logo
+  has_one_attached :dtf_file
+  has_one_attached :signed_quote
+
   # Solo se descartan filas NUEVAS vacías; las existentes (con id) siempre se procesan.
   accepts_nested_attributes_for :quote_lines, allow_destroy: true,
                                               reject_if: ->(attrs) { attrs["id"].blank? && attrs["product_id"].blank? && attrs["description"].blank? }

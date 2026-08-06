@@ -243,6 +243,9 @@ input[type=text], input[type=email], input[type=tel], input[type=number], input[
 .badge.en_pausa { background: #fff3cd; color: #7a5b00; }
 .badge.perdido { background: #fdecec; color: #8c1d18; }
 .badge.venta { background: #fef3c7; color: #92400e; }
+/* Cobro del presupuesto */
+.badge.pagado_confirmar { background: #fef3c7; color: #92400e; }
+.badge.pagado_total { background: #dcfce7; color: #14532d; }
 
 /* Ficha de pedido del admin: acciones agrupadas en secciones */
 .order-actions {
