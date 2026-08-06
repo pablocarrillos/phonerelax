@@ -12,7 +12,14 @@
                 data-action="mousedown->reorder#armDrag touchstart->reorder#armDrag">⠿</span>
           <span data-role="position" style="color: var(--muted);"><%= product.position %></span>
         </td>
-        <td><%= product.name %></td>
+        <td>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <% if product.cover_url.present? %>
+              <img src="<%= product.cover_url %>" alt="" class="admin-thumb">
+            <% end %>
+            <span><%= product.name %></span>
+          </div>
+        </td>
         <td class="num"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></td>
         <td class="num"><% if product.out_of_stock? %><span class="badge pendiente">0</span><% else %><%= product.available_stock %><%= ' packs'.html_safe if product.pack? %><% end %></td>
         <td><%= product.active? ? 'Sí' : 'No' %></td>

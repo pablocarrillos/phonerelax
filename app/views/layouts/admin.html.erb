@@ -51,6 +51,29 @@
       </div>
     </header>
 
+    <%# Sub-barra del grupo activo: navegación directa sin depender del hover. %>
+    <% subnav =
+         if %w[orders stats].include?(controller_name)
+           [ [ "Pedidos", admin_orders_path, controller_name == "orders" ],
+             [ "Estadísticas", admin_stats_path, controller_name == "stats" ] ]
+         elsif %w[products purchases suppliers shipping].include?(controller_name)
+           [ [ "Productos", admin_products_path, controller_name == "products" ],
+             [ "Compras", admin_purchases_path, %w[purchases suppliers].include?(controller_name) ],
+             [ "Transporte", admin_shipping_path, controller_name == "shipping" ] ]
+         elsif %w[quotes clients samples].include?(controller_name)
+           [ [ "Presupuestos", admin_quotes_path, %w[quotes clients].include?(controller_name) ],
+             [ "Muestras", admin_samples_path, controller_name == "samples" ] ]
+         end %>
+    <% if subnav %>
+      <nav class="admin-subnav">
+        <div class="admin-subnav-inner">
+          <% subnav.each do |(label, path, active)| %>
+            <%= link_to label, path, class: "subnav-link #{'active' if active}" %>
+          <% end %>
+        </div>
+      </nav>
+    <% end %>
+
     <main class="admin-main">
       <% flash.each do |kind, message| %>
         <div class="flash <%= kind %>"><%= message %></div>
