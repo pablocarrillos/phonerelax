@@ -41,7 +41,7 @@
   </div>
 </div>
 
-<% any_files = Quote::ATTACHMENTS.keys.any? { |name| @quote.public_send(name).attached? } %>
+<% any_files = Quote::ATTACHMENTS.keys.any? { |name| @quote.order_file(name).attached? } %>
 <% if @quote.aprobado? || any_files %>
   <h2 style="margin-top: 28px;">Ficheros del pedido</h2>
   <% unless @quote.aprobado? %>
@@ -51,7 +51,7 @@
     <thead><tr><th>Fichero</th><th>Actual</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>
       <% Quote::ATTACHMENTS.each do |name, label| %>
-        <% attachment = @quote.public_send(name) %>
+        <% attachment = @quote.order_file(name) %>
         <tr>
           <td><strong><%= label %></strong></td>
           <td>

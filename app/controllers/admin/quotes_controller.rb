@@ -97,7 +97,7 @@ module Admin
 
       saved = Quote::ATTACHMENTS.keys.select do |name|
         file = params.dig(:quote, name)
-        @quote.public_send(name).attach(file) if file.present?
+        @quote.order_file(name).attach(file) if file.present?
       end
       if saved.any?
         redirect_to admin_quote_path(@quote), notice: "Guardado: #{saved.map { |name| Quote::ATTACHMENTS[name] }.join(', ')}."
@@ -111,7 +111,7 @@ module Admin
       name = params[:attachment].to_s
       return redirect_to admin_quote_path(@quote), alert: "Fichero no válido." unless Quote::ATTACHMENTS.key?(name)
 
-      @quote.public_send(name).purge
+      @quote.order_file(name).purge
       redirect_to admin_quote_path(@quote), notice: "#{Quote::ATTACHMENTS[name]}: borrado."
     end
 

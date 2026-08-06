@@ -58,6 +58,16 @@ class Quote < ApplicationRecord
   has_one_attached :dtf_file
   has_one_attached :signed_quote
 
+  # Adjunto por nombre, con despacho explícito (nunca send con datos del usuario).
+  def order_file(name)
+    case name.to_s
+    when "school_logo" then school_logo
+    when "dtf_file" then dtf_file
+    when "signed_quote" then signed_quote
+    else raise ArgumentError, "adjunto desconocido: #{name}"
+    end
+  end
+
   # Solo se descartan filas NUEVAS vacías; las existentes (con id) siempre se procesan.
   accepts_nested_attributes_for :quote_lines, allow_destroy: true,
                                               reject_if: ->(attrs) { attrs["id"].blank? && attrs["product_id"].blank? && attrs["description"].blank? }
