@@ -425,6 +425,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     get admin_quote_path(quote)
     assert_includes response.body, "cover.png"
     assert_includes response.body, "factura.pdf"
+    assert_select "a.btn", { text: "Ver", count: 2 }, "botón Ver para la imagen y el PDF"
 
     delete purge_file_admin_quote_path(quote, attachment: "school_logo")
     assert_not quote.reload.school_logo.attached?

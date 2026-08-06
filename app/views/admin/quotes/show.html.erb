@@ -71,6 +71,12 @@
             <% end %>
           </td>
           <td style="text-align:right; white-space:nowrap;">
+            <% viewable = attachment.attached? &&
+                 (attachment.blob.content_type.to_s.start_with?("image/") || attachment.blob.content_type == "application/pdf") %>
+            <% if viewable %>
+              <%= link_to 'Ver', rails_blob_path(attachment), target: '_blank', rel: 'noopener',
+                          class: 'btn btn-outline', style: 'padding: 5px 12px; font-size: 13px;' %>
+            <% end %>
             <% if @quote.confirmed? %>
               <%= form_with url: upload_files_admin_quote_path(@quote), method: :patch, multipart: true, html: { style: 'display:inline-block;' } do %>
                 <input type="file" name="quote[<%= name %>]" required style="max-width: 230px;"<% if accepts[name] %> accept="<%= accepts[name] %>"<% end %>>
