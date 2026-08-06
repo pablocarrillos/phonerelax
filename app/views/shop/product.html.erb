@@ -23,7 +23,12 @@
   <%= json_ld_tag(breadcrumb_schema(breadcrumb_items)) %>
 <% end %>
 <div class="container">
-  <%= render_breadcrumbs(breadcrumb_items) %>
+  <div class="product-topbar">
+    <%= render_breadcrumbs(breadcrumb_items) %>
+    <% if authenticated? %>
+      <%= link_to '✏️ Editar producto', edit_admin_product_path(@product), class: 'btn btn-outline btn-edit-product' %>
+    <% end %>
+  </div>
   <div class="product-page">
     <div data-controller="gallery">
       <img src="<%= @product.gallery_urls.first %>" alt="<%= @product.display_name %>" data-gallery-target="main">
