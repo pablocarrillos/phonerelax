@@ -5,7 +5,7 @@ class Quote < ApplicationRecord
   COMPANY = {
     legal_name: "Drop Point Systems S.L.U.",
     tax_id: "B02631976",
-    address_lines: [ "Calle Carrasqueta Nº14", "P.I. Salinetas", "03610 Petrer (Alicante)" ],
+    address_lines: [ "C/ Carrasqueta, 14", "Pol. Ind. Salinetas", "Petrer 03610 (Alicante) España" ],
     phone: "965371962",
     email: "info@phonerelax.com", # comprobantes de transferencia
     footer_email: "info@phonerelax.com", # correo público del pie del PDF
