@@ -49,6 +49,28 @@
       </tfoot>
     <% end %>
   </table>
+
+  <% if @status_filter && @line_totals.any? %>
+    <h2 style="margin-top: 30px;">Líneas de venta («<%= Quote::STATUS_LABELS[@status_filter] %>»)</h2>
+    <p class="action-note" style="margin-top:0;">Todas las líneas de los presupuestos mostrados, agrupadas por producto (sin transporte).</p>
+    <table class="table" style="max-width: 640px;">
+      <thead><tr><th>Producto</th><th class="num">Unidades</th><th class="num">Total (sin IVA)</th></tr></thead>
+      <tbody>
+        <% @line_totals.each do |row| %>
+          <tr>
+            <td><%= row[:name] %></td>
+            <td class="num"><%= row[:units] %></td>
+            <td class="num"><%= number_to_currency(row[:total], unit: '€', format: "%n %u") %></td>
+          </tr>
+        <% end %>
+        <tr class="total-row">
+          <td><strong>Total líneas</strong></td>
+          <td class="num"><strong><%= @line_totals.sum { |row| row[:units] } %></strong></td>
+          <td class="num"><strong><%= number_to_currency(@line_totals.sum { |row| row[:total] }, unit: '€', format: "%n %u") %></strong></td>
+        </tr>
+      </tbody>
+    </table>
+  <% end %>
 <% else %>
   <p class="action-note">Todavía no hay presupuestos<%= " en «#{Quote::STATUS_LABELS[@status_filter]}»" if @status_filter %>.</p>
 <% end %>

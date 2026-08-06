@@ -353,8 +353,17 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "20.00" # 2 × 10 € sin IVA
     assert_includes response.body, "24.20" # 2 × 12,10 € con IVA
 
+    # Desglose de las líneas de venta agrupadas: 2 líneas «P» de 1 ud. × 10 €.
+    assert_includes response.body, "Líneas de venta («Aprobado»)"
+    assert_select "table" do
+      assert_select "td", text: "P"
+      assert_select "td", text: "2"
+    end
+    assert_includes response.body, "Total líneas"
+
     get admin_quotes_path
     assert_not_includes response.body, "Total «" # sin filtro no hay fila de totales
+    assert_not_includes response.body, "Líneas de venta («"
   end
 
   test "el transporte fijado a mano se conserva al editar y al duplicar" do
@@ -387,7 +396,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     approved.update!(status: :aprobado)
 
     get admin_quotes_path(status: "aprobado")
-    assert_select "tbody tr", 1
+    assert_select "table:first-of-type tbody tr", 1 # solo la tabla de presupuestos (el desglose de líneas va aparte)
     assert_includes response.body, approved.number
 
     get admin_quotes_path(status: "invento") # inválido: se ignora y se ven todos

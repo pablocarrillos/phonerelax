@@ -4,13 +4,14 @@ module Admin
                                       :set_status, :set_payment, :upload_files, :purge_file ]
 
     def index
-      @quotes = Quote.includes(:client, :quote_lines).recent_first
+      @quotes = Quote.includes(:client, quote_lines: :product).recent_first
       @client_filter = Client.find_by(id: params[:client_id])
       @quotes = @quotes.where(client: @client_filter) if @client_filter
       # Contadores por estado (del subconjunto del cliente, si hay filtro).
       @status_counts = @quotes.except(:includes, :order).group(:status).count
       @status_filter = params[:status].presence_in(Quote.statuses.keys)
       @quotes = @quotes.where(status: @status_filter) if @status_filter
+      @line_totals = line_totals if @status_filter
     end
 
     def show; end
@@ -127,6 +128,15 @@ module Admin
     end
 
     private
+
+    # Totales de todas las líneas de venta de los presupuestos filtrados,
+    # agrupadas por producto (o por descripción si la línea es libre).
+    def line_totals
+      @quotes.flat_map(&:quote_lines)
+             .group_by { |line| line.product&.name || line.description }
+             .map { |name, lines| { name: name, units: lines.sum { |l| l.quantity.to_i }, total: lines.sum(&:total) } }
+             .sort_by { |row| -row[:total] }
+    end
 
     # El documento con lo que hay en el formulario, sin guardar nada.
     def render_preview
