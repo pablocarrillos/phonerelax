@@ -361,9 +361,14 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     end
     assert_includes response.body, "Total líneas"
 
+    # En los aprobados sale también el plazo de entrega de cada presupuesto.
+    assert_includes response.body, "Plazo de entrega"
+    assert_select "td", text: "x" # el delivery_terms de a_quote
+
     get admin_quotes_path
     assert_not_includes response.body, "Total «" # sin filtro no hay fila de totales
     assert_not_includes response.body, "Líneas de venta («"
+    assert_not_includes response.body, "Plazo de entrega" # la columna es solo del filtro «Aprobado»
   end
 
   test "el transporte fijado a mano se conserva al editar y al duplicar" do

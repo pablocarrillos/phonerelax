@@ -19,6 +19,7 @@ module ApplicationHelper
     { file: "montcau-la-mola.jpg",      name: "Escola Montcau-La Mola" },
     { file: "salvador-de-madariaga.jpg", name: "IES Salvador de Madariaga" },
     { file: "colegio-villalkor.jpg",    name: "Colegio Villalkor" },
+    { file: "ayuntamiento-las-rozas.jpg", name: "Ayuntamiento de Las Rozas" },
     { file: "phonerelax-basica.jpg",    name: "PhoneRelax" }
   ].freeze
 

@@ -18,9 +18,10 @@
   <% end %>
 </div>
 
+<% show_delivery = @status_filter == "aprobado" %>
 <% if @quotes.any? %>
   <table class="table">
-    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
+    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><% if show_delivery %><th>Plazo de entrega</th><% end %><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
     <tbody>
       <% @quotes.each do |quote| %>
         <tr>
@@ -32,6 +33,7 @@
             <% unless quote.sin_pagos? %><br><span class="badge <%= quote.payment_status %>" style="margin-top:4px;"><%= quote.payment_status_label %></span><% end %>
           </td>
           <td style="color:var(--muted); font-size:14px;"><%= quote.internal_description.presence || '—' %></td>
+          <% if show_delivery %><td style="font-size:14px;"><%= quote.delivery_terms.presence || '—' %></td><% end %>
           <td class="num"><%= number_to_currency(quote.subtotal, unit: '€', format: '%n %u') %></td>
           <td class="num"><strong><%= number_to_currency(quote.total, unit: '€', format: '%n %u') %></strong></td>
           <td style="text-align:right;"><%= link_to '🖨 PDF', print_admin_quote_path(quote), target: '_blank', rel: 'noopener' %></td>
@@ -41,7 +43,7 @@
     <% if @status_filter %>
       <tfoot>
         <tr class="total-row">
-          <td colspan="5"><strong>Total «<%= Quote::STATUS_LABELS[@status_filter] %>» (<%= @quotes.size %>)</strong></td>
+          <td colspan="<%= show_delivery ? 6 : 5 %>"><strong>Total «<%= Quote::STATUS_LABELS[@status_filter] %>» (<%= @quotes.size %>)</strong></td>
           <td class="num"><strong><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: "%n %u") %></strong></td>
           <td class="num"><strong><%= number_to_currency(@quotes.sum(&:total), unit: '€', format: "%n %u") %></strong></td>
           <td></td>
