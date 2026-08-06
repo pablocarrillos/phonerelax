@@ -91,11 +91,11 @@ module Admin
     # Sube los ficheros del pedido (logo del colegio, fichero DTF y presupuesto
     # firmado). Solo tiene sentido —y solo se permite— con el presupuesto aprobado.
     def upload_files
-      unless @quote.aprobado?
-        return redirect_to admin_quote_path(@quote), alert: "Los ficheros solo se pueden subir en presupuestos aprobados."
+      unless @quote.confirmed?
+        return redirect_to admin_quote_path(@quote), alert: "Los ficheros solo se pueden subir en presupuestos aprobados o entregados."
       end
 
-      saved = Quote::ATTACHMENTS.keys.select do |name|
+      saved = @quote.available_files.select do |name|
         file = params.dig(:quote, name)
         @quote.order_file(name).attach(file) if file.present?
       end
@@ -148,7 +148,7 @@ module Admin
     end
 
     def quote_params
-      params.require(:quote).permit(:client_id, :issued_on, :valid_until, :shipping_cost, :vat_rate,
+      params.require(:quote).permit(:client_id, :issued_on, :valid_until, :shipping_cost, :manual_shipping, :vat_rate,
                                     :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent, :shipping_country, :internal_description,
                                     quote_lines_attributes: [ :id, :product_id, :description, :quantity,
                                                               :unit_price, :vat_rate, :discount_percent, :position, :_destroy ])

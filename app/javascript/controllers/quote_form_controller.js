@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 // transporte incluidos.
 export default class extends Controller {
   static targets = ["line", "linesBody", "template", "shipping", "shippingVat", "shippingWarning", "dtfWarning",
-    "shippingCountry", "shippingTotal", "globalDiscount", "totalNet", "totalVat", "totalGross"]
+    "shippingCountry", "shippingTotal", "globalDiscount", "totalNet", "totalVat", "totalGross", "manualShipping"]
 
   static values = { products: Object, rates: Object }
 
@@ -63,16 +63,41 @@ export default class extends Controller {
 
   // Aplica al campo de transporte el valor calculado con la config de
   // Transporte (base del país + coste/ud. de cada producto), pasado a sin IVA.
+  // Si el transporte está fijado a mano, se respeta y no se toca.
   applyShipping() {
-    const computed = this.computedShipping()
-    if (computed !== null) this.shippingTarget.value = computed.toFixed(2)
+    if (!this.manualShipping()) {
+      const computed = this.computedShipping()
+      if (computed !== null) this.shippingTarget.value = computed.toFixed(2)
+    }
     this.refreshShippingWarning()
     this.recalc()
   }
 
+  // Al editar el transporte a mano queda fijado (deja de recalcularse aunque
+  // cambien las líneas, el país o el IVA); si se vuelve a escribir justo el
+  // valor calculado, se reactiva el recálculo automático.
   shippingEdited() {
+    const computed = this.computedShipping()
+    const value = parseFloat(this.shippingTarget?.value)
+    const fixed = computed === null || isNaN(value) || Math.abs(value - computed) > 0.005
+    this.setManualShipping(fixed)
     this.refreshShippingWarning()
     this.recalc()
+  }
+
+  // Enlace del aviso: vuelve al transporte calculado y reactiva el recálculo.
+  useComputedShipping(event) {
+    event.preventDefault()
+    this.setManualShipping(false)
+    this.applyShipping()
+  }
+
+  manualShipping() {
+    return this.hasManualShippingTarget && this.manualShippingTarget.value === "true"
+  }
+
+  setManualShipping(fixed) {
+    if (this.hasManualShippingTarget) this.manualShippingTarget.value = fixed ? "true" : "false"
   }
 
   // Quita la fila: las guardadas se marcan para borrar (_destroy) y se ocultan;
@@ -181,10 +206,16 @@ export default class extends Controller {
     if (!this.hasShippingWarningTarget) return
 
     const computed = this.computedShipping()
-    const manual = parseFloat(this.shippingTarget?.value)
-    const differs = computed !== null && !isNaN(manual) && Math.abs(manual - computed) > 0.005
+    const value = parseFloat(this.shippingTarget?.value)
+    const differs = computed !== null && !isNaN(value) && Math.abs(value - computed) > 0.005
     this.shippingWarningTarget.hidden = !differs
-    if (differs) this.shippingWarningTarget.textContent = `⚠ No coincide con el transporte calculado (${computed.toFixed(2)} €)`
+    if (differs) {
+      const message = this.manualShipping()
+        ? `⚠ Fijado a mano: no se recalculará (calculado: ${computed.toFixed(2)} €).`
+        : `⚠ No coincide con el transporte calculado (${computed.toFixed(2)} €).`
+      this.shippingWarningTarget.innerHTML =
+        `${message} <a href="#" data-action="quote-form#useComputedShipping">Usar el calculado</a>`
+    }
   }
 
   // Total de la fila (uds. × precio × descuento de línea), o null si está incompleta.

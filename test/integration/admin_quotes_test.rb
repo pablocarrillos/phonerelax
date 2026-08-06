@@ -316,15 +316,69 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
                   quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
   end
 
-  test "marcar el estado del presupuesto (aprobado / en pausa / perdido)" do
+  test "marcar el estado del presupuesto (aprobado / entregado / en pausa / perdido)" do
     quote = a_quote
     assert quote.abierto?, "por defecto abierto"
     patch set_status_admin_quote_path(quote), params: { status: "aprobado" }
     assert quote.reload.aprobado?
+
+    # Aprobado: aparece el botón «Entregado», y entregado sigue siendo pedido
+    # en firme (cobro y ficheros disponibles).
+    get admin_quote_path(quote)
+    assert_includes response.body, "📦 Entregado"
+    patch set_status_admin_quote_path(quote), params: { status: "entregado" }
+    assert quote.reload.entregado?
+    assert quote.confirmed?
+    patch upload_files_admin_quote_path(quote), params: { quote: { school_logo: fixture_file_upload("cover.png", "image/png") } }
+    assert quote.reload.school_logo.attached?, "entregado admite ficheros"
+
     patch set_status_admin_quote_path(quote), params: { status: "en_pausa" }
     assert quote.reload.en_pausa?
+    # Sin aprobar no se ofrece marcar «Entregado».
+    get admin_quote_path(quote)
+    assert_not_includes response.body, "📦 Entregado"
     patch set_status_admin_quote_path(quote), params: { status: "invento" } # inválido: no cambia
     assert quote.reload.en_pausa?
+  end
+
+  test "el filtro por estado suma el total conjunto de los presupuestos" do
+    a_quote # abierto: fuera del filtro
+    q1 = a_quote
+    q2 = a_quote
+    q1.update!(status: :aprobado)
+    q2.update!(status: :aprobado)
+
+    get admin_quotes_path(status: "aprobado")
+    assert_includes response.body, "Total «Aprobado» (2)"
+    assert_includes response.body, "20.00" # 2 × 10 € sin IVA
+    assert_includes response.body, "24.20" # 2 × 12,10 € con IVA
+
+    get admin_quotes_path
+    assert_not_includes response.body, "Total «" # sin filtro no hay fila de totales
+  end
+
+  test "el transporte fijado a mano se conserva al editar y al duplicar" do
+    post admin_quotes_path, params: { quote: {
+      client_id: @client.id, issued_on: "2026-08-06", delivery_terms: "septiembre", vat_rate: "21",
+      shipping_cost: "45.00", manual_shipping: "true",
+      quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
+    } }
+    quote = Quote.last
+    assert quote.manual_shipping?
+    assert_equal BigDecimal("45"), quote.shipping_cost
+
+    # Editar otra cosa no toca ni el transporte ni el marcado.
+    patch admin_quote_path(quote), params: { quote: { client_id: @client.id, issued_on: "2026-08-06", notes: "otra cosa" } }
+    quote.reload
+    assert quote.manual_shipping?
+    assert_equal BigDecimal("45"), quote.shipping_cost
+
+    # El formulario de edición lleva el flag para que el JS lo respete.
+    get edit_admin_quote_path(quote)
+    assert_select "input[name='quote[manual_shipping]'][value=?]", "true"
+
+    post duplicate_admin_quote_path(quote)
+    assert Quote.last.manual_shipping?, "el duplicado hereda el transporte fijado"
   end
 
   test "filtrar los presupuestos por estado" do
@@ -376,6 +430,28 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_not quote.reload.school_logo.attached?
     delete purge_file_admin_quote_path(quote, attachment: "invento") # inválido: no borra nada
     assert quote.reload.signed_quote.attached?
+  end
+
+  test "la imagen de muestra aprobada solo aplica con personalización DTF" do
+    plain = a_quote
+    plain.update!(status: :aprobado)
+    get admin_quote_path(plain)
+    assert_not_includes response.body, "Imagen de muestra aprobada"
+    patch upload_files_admin_quote_path(plain), params: { quote: { approved_sample: fixture_file_upload("cover.png", "image/png") } }
+    assert_not plain.reload.approved_sample.attached?, "sin DTF no se admite la muestra"
+
+    dtf = Product.create!(name: "Personalización DTF funda", price: 3)
+    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, status: :aprobado,
+                          quote_lines_attributes: { "0" => { product_id: dtf.id, description: "DTF", quantity: 10, unit_price: 3 } })
+    assert quote.dtf_lines?
+    get admin_quote_path(quote)
+    assert_includes response.body, "Imagen de muestra aprobada"
+    patch upload_files_admin_quote_path(quote), params: { quote: { approved_sample: fixture_file_upload("cover.png", "image/png") } }
+    assert quote.reload.approved_sample.attached?
+
+    # La miniatura y el enlace de descarga salen en la ficha.
+    get admin_quote_path(quote)
+    assert_includes response.body, "cover.png"
   end
 
   test "vincular una muestra enviada a un presupuesto" do

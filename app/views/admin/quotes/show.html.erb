@@ -12,13 +12,16 @@
   <div class="action-section">
     <span class="action-title">Estado del presupuesto</span>
     <div class="action-row">
-      <% { 'aprobado' => '✅ Aprobado', 'en_pausa' => '⏸ En pausa', 'perdido' => '✖ Perdido', 'abierto' => '↺ Reabrir' }.each do |st, label| %>
+      <% buttons = { 'aprobado' => '✅ Aprobado', 'en_pausa' => '⏸ En pausa', 'perdido' => '✖ Perdido', 'abierto' => '↺ Reabrir' } %>
+      <%# «Entregado» solo tiene sentido tras aprobar el pedido. %>
+      <% buttons = { 'entregado' => '📦 Entregado' }.merge(buttons) if @quote.confirmed? %>
+      <% buttons.each do |st, label| %>
         <% next if @quote.status == st %>
         <%= button_to label, set_status_admin_quote_path(@quote, status: st), method: :patch, class: 'btn btn-outline', form: { style: 'display:inline-block' } %>
       <% end %>
     </div>
   </div>
-  <% if @quote.aprobado? %>
+  <% if @quote.confirmed? %>
     <div class="action-section">
       <span class="action-title">Cobro</span>
       <div class="action-row">
@@ -42,20 +45,25 @@
 </div>
 
 <% any_files = Quote::ATTACHMENTS.keys.any? { |name| @quote.order_file(name).attached? } %>
-<% if @quote.aprobado? || any_files %>
+<% if @quote.confirmed? || any_files %>
   <h2 style="margin-top: 28px;">Ficheros del pedido</h2>
-  <% unless @quote.aprobado? %>
+  <% unless @quote.confirmed? %>
     <p class="action-note" style="margin-top:0;">El presupuesto ya no está aprobado: los ficheros se conservan, pero no se pueden subir nuevos.</p>
   <% end %>
   <table class="table" style="max-width: 900px;">
     <thead><tr><th>Fichero</th><th>Actual</th><th style="text-align:right;">Acciones</th></tr></thead>
     <tbody>
-      <% Quote::ATTACHMENTS.each do |name, label| %>
+      <% accepts = { "approved_sample" => "image/*", "signed_quote" => "application/pdf,.pdf" } %>
+      <% @quote.available_files.each do |name| %>
+        <% label = Quote::ATTACHMENTS[name] %>
         <% attachment = @quote.order_file(name) %>
         <tr>
           <td><strong><%= label %></strong></td>
           <td>
             <% if attachment.attached? %>
+              <% if attachment.blob.content_type.to_s.start_with?("image/") %>
+                <a href="<%= rails_blob_path(attachment) %>" target="_blank" rel="noopener"><img src="<%= rails_blob_path(attachment) %>" alt="<%= label %>" style="height: 42px; border-radius: 4px; vertical-align: middle; margin-right: 6px;"></a>
+              <% end %>
               <%= link_to attachment.filename, rails_blob_path(attachment, disposition: 'attachment') %>
               <span class="action-note">(<%= number_to_human_size(attachment.blob.byte_size) %> · <%= l attachment.blob.created_at, format: :short %>)</span>
             <% else %>
@@ -63,9 +71,9 @@
             <% end %>
           </td>
           <td style="text-align:right; white-space:nowrap;">
-            <% if @quote.aprobado? %>
+            <% if @quote.confirmed? %>
               <%= form_with url: upload_files_admin_quote_path(@quote), method: :patch, multipart: true, html: { style: 'display:inline-block;' } do %>
-                <input type="file" name="quote[<%= name %>]" required style="max-width: 230px;">
+                <input type="file" name="quote[<%= name %>]" required style="max-width: 230px;"<% if accepts[name] %> accept="<%= accepts[name] %>"<% end %>>
                 <button type="submit" class="btn btn-outline" style="padding: 5px 12px; font-size: 13px;"><%= attachment.attached? ? 'Reemplazar' : 'Subir' %></button>
               <% end %>
             <% end %>

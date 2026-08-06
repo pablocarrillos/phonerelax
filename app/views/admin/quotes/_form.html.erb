@@ -45,8 +45,9 @@
     </tbody>
     <tfoot>
       <%# El transporte es siempre la última línea: se recalcula solo con la
-          config de Transporte al cambiar líneas o país, es editable a mano
-          (con aviso) y no se puede quitar. %>
+          config de Transporte al cambiar líneas o país y no se puede quitar.
+          Si se edita a mano queda fijado (manual_shipping) y deja de
+          recalcularse hasta que se pulse «Usar el calculado». %>
       <tr style="background: var(--card-bg);">
         <td></td>
         <td>
@@ -56,6 +57,7 @@
         <td style="text-align:center;">1</td>
         <td>
           <%= f.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:120px;', data: { quote_form_target: 'shipping', action: 'input->quote-form#shippingEdited' } %>
+          <%= f.hidden_field :manual_shipping, data: { quote_form_target: 'manualShipping' } %>
           <span data-quote-form-target="shippingWarning" hidden class="field-warning"></span>
         </td>
         <td style="text-align:center; color:var(--muted);">—</td>

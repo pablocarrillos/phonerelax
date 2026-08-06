@@ -38,6 +38,16 @@
         </tr>
       <% end %>
     </tbody>
+    <% if @status_filter %>
+      <tfoot>
+        <tr class="total-row">
+          <td colspan="5"><strong>Total «<%= Quote::STATUS_LABELS[@status_filter] %>» (<%= @quotes.size %>)</strong></td>
+          <td class="num"><strong><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: "%n %u") %></strong></td>
+          <td class="num"><strong><%= number_to_currency(@quotes.sum(&:total), unit: '€', format: "%n %u") %></strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    <% end %>
   </table>
 <% else %>
   <p class="action-note">Todavía no hay presupuestos<%= " en «#{Quote::STATUS_LABELS[@status_filter]}»" if @status_filter %>.</p>

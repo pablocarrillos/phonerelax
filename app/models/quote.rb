@@ -29,12 +29,19 @@ class Quote < ApplicationRecord
   has_many :samples, dependent: :nullify
 
   # Estado del seguimiento comercial del presupuesto.
-  enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3 }
+  enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3, entregado: 4 }
 
-  STATUS_LABELS = { "abierto" => "Abierto", "aprobado" => "Aprobado", "en_pausa" => "En pausa", "perdido" => "Perdido" }.freeze
+  STATUS_LABELS = { "abierto" => "Abierto", "aprobado" => "Aprobado", "en_pausa" => "En pausa",
+                    "perdido" => "Perdido", "entregado" => "Entregado" }.freeze
 
   def status_label
     STATUS_LABELS[status] || status
+  end
+
+  # ¿El presupuesto se convirtió en pedido? (aprobado o ya entregado):
+  # habilita el cobro y los ficheros del pedido.
+  def confirmed?
+    aprobado? || entregado?
   end
 
   # Seguimiento del cobro (las condiciones habituales son 50 % para confirmar
@@ -51,11 +58,13 @@ class Quote < ApplicationRecord
   ATTACHMENTS = {
     "school_logo" => "Logo del colegio",
     "dtf_file" => "Fichero DTF",
+    "approved_sample" => "Imagen de muestra aprobada",
     "signed_quote" => "Presupuesto firmado (PDF)"
   }.freeze
 
   has_one_attached :school_logo
   has_one_attached :dtf_file
+  has_one_attached :approved_sample
   has_one_attached :signed_quote
 
   # Adjunto por nombre, con despacho explícito (nunca send con datos del usuario).
@@ -63,9 +72,21 @@ class Quote < ApplicationRecord
     case name.to_s
     when "school_logo" then school_logo
     when "dtf_file" then dtf_file
+    when "approved_sample" then approved_sample
     when "signed_quote" then signed_quote
     else raise ArgumentError, "adjunto desconocido: #{name}"
     end
+  end
+
+  # ¿Lleva personalización DTF entre sus líneas?
+  def dtf_lines?
+    quote_lines.any? { |line| line.product && line.product.dtf_units.positive? }
+  end
+
+  # Adjuntos que aplican a este presupuesto: la imagen de muestra aprobada solo
+  # con personalización DTF (o si ya está subida, para no dejarla inaccesible).
+  def available_files
+    ATTACHMENTS.keys.select { |name| name != "approved_sample" || dtf_lines? || approved_sample.attached? }
   end
 
   # Solo se descartan filas NUEVAS vacías; las existentes (con id) siempre se procesan.
