@@ -60,14 +60,17 @@ Rails.application.routes.draw do
     get "pages/quienes-somos", to: redirect { |p, _req| p[:locale] ? "/#{p[:locale]}/pages/contact" : "/pages/contact" }
   end
 
-  # Redirecciones 301 de las URLs de la preview (español) a las canónicas Shopify.
-  get "producto/:id",           to: redirect("/products/%{id}")
-  get "como-funciona",          to: redirect("/pages/como-funciona")
-  get "quienes-somos",          to: redirect("/pages/contact")
-  get "contacto",               to: redirect("/pages/contact")
-  get "blog",                   to: redirect("/blogs/news")
-  get "blog/:slug",             to: redirect("/blogs/news/%{slug}")
-  get "collections/frontpage",  to: redirect("/")
+  # Redirecciones 301 de las URLs de la preview (español) a las canónicas
+  # Shopify. OJO: con nombre legacy_* explícito; sin él, Rails les genera
+  # helpers (blog_path, contacto_path…) que pisan los helpers multilingües
+  # de route_translator y los enlaces de la barra pierden el idioma.
+  get "producto/:id",           to: redirect("/products/%{id}"),        as: :legacy_producto
+  get "como-funciona",          to: redirect("/pages/como-funciona"),   as: :legacy_como_funciona
+  get "quienes-somos",          to: redirect("/pages/contact"),         as: :legacy_quienes_somos
+  get "contacto",               to: redirect("/pages/contact"),         as: :legacy_contacto
+  get "blog",                   to: redirect("/blogs/news"),            as: :legacy_blog
+  get "blog/:slug",             to: redirect("/blogs/news/%{slug}"),    as: :legacy_blog_post
+  get "collections/frontpage",  to: redirect("/"),                      as: :legacy_frontpage
 
   post "stripe/webhook", to: "stripe_webhooks#create"
 
