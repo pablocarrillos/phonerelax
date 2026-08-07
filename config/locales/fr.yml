@@ -69,6 +69,8 @@ fr:
     admin: Admin
     privacy: Politique de confidentialité
   footer:
+    legal_notice: Mentions légales
+    cookies_policy: Politique de cookies
     tagline: PhoneRelax — des espaces sans téléphones.
     admin: Panneau de gestion
   common:

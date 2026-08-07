@@ -55,6 +55,8 @@ es:
     admin: Admin
     privacy: Política de privacidad
   footer:
+    legal_notice: Aviso legal
+    cookies_policy: Política de cookies
     tagline: PhoneRelax — espacios libres de móviles.
     admin: Panel de gestión
   common:

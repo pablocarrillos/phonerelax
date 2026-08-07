@@ -50,6 +50,11 @@ Rails.application.routes.draw do
     get "pedido/:number", to: "orders#show", as: :order_status
   end
 
+  # Páginas legales, solo en castellano (los textos de sus enlaces del footer
+  # sí se traducen): misma URL para todos los idiomas.
+  get "aviso-legal", to: "pages#aviso_legal", as: :aviso_legal
+  get "politica-de-cookies", to: "pages#politica_cookies", as: :politica_cookies
+
   # «Quiénes somos» se fusionó con Contacto; redirección para enlaces antiguos.
   scope "(:locale)", locale: /pt|en|fr|de/ do
     get "pages/quienes-somos", to: redirect { |p, _req| p[:locale] ? "/#{p[:locale]}/pages/contact" : "/pages/contact" }

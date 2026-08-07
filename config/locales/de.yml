@@ -69,6 +69,8 @@ de:
     admin: Admin
     privacy: Datenschutzerklärung
   footer:
+    legal_notice: Impressum
+    cookies_policy: Cookie-Richtlinie
     tagline: PhoneRelax — Räume ohne Handys.
     admin: Verwaltung
   common:

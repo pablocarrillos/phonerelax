@@ -62,6 +62,8 @@ pt:
     admin: Admin
     privacy: Política de privacidade
   footer:
+    legal_notice: Aviso legal
+    cookies_policy: Política de cookies
     tagline: PhoneRelax — espaços livres de telemóveis.
     admin: Painel de gestão
   common:

@@ -101,7 +101,14 @@
         💬 <a href="https://wa.me/34686341700" target="_blank" rel="noopener">WhatsApp (+34) 686 341 700</a> ·
         ✉️ <%= mail_to 'info@phonerelax.com' %>
       </p>
-      <p><%= link_to t('nav.privacy'), privacidad_path %> · <%= link_to t('nav.contact'), contacto_path %> · <%= link_to t('footer.admin'), admin_root_path(locale: nil) %></p>
+      <p>
+        <%= link_to t('footer.legal_notice'), aviso_legal_path(locale: nil) %> ·
+        <%= link_to t('nav.privacy'), privacidad_path %> ·
+        <%= link_to t('footer.cookies_policy'), politica_cookies_path(locale: nil) %> ·
+        <%= link_to t('nav.contact'), contacto_path %> ·
+        <%= link_to t('footer.admin'), admin_root_path(locale: nil) %>
+      </p>
+      <p class="footer-copyright">© <%= Date.current.year %> Drop Point Systems S.L. — Todos los derechos reservados.</p>
     </footer>
   </body>
 </html>

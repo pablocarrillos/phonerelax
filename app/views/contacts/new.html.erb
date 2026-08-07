@@ -11,8 +11,10 @@
       ✉️ <%= mail_to 'info@phonerelax.com' %><br>
       💬 <a href="https://wa.me/34686341700" target="_blank" rel="noopener">WhatsApp: (+34) 686 341 700</a>
     </p>
+    <%# El PIN se centra con las coordenadas exactas de la sede (C/ Carrasqueta, 14):
+        con la dirección en texto el geocoder fallaba y el mapa salía sin marcador. %>
     <iframe class="contact-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-            src="https://maps.google.com/maps?q=C%2F%20Carrasqueta%2014%2C%20Pol.%20Ind.%20Salinetas%2C%2003610%20Petrer%2C%20Alicante&z=16&output=embed"
+            src="https://maps.google.com/maps?q=38.470682,-0.7761013&z=17&output=embed"
             title="<%= t('contact.map_title') %>"></iframe>
   </div>
 

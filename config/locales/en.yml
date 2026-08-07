@@ -67,6 +67,8 @@ en:
     admin: Admin
     privacy: Privacy policy
   footer:
+    legal_notice: Legal notice
+    cookies_policy: Cookie policy
     tagline: PhoneRelax — phone-free spaces.
     admin: Management panel
   common:

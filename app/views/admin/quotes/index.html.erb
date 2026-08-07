@@ -21,13 +21,17 @@
   <% end %>
 </div>
 
-<%= form_with url: admin_quotes_path, method: :get, local: true, style: 'margin: 0 0 16px; display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap;' do %>
+<%# Filtro de fechas en una sola fila: etiquetas al lado de cada campo. %>
+<%= form_with url: admin_quotes_path, method: :get, local: true,
+              html: { style: 'margin: 0 0 18px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;' } do %>
   <% if @client_filter %><%= hidden_field_tag :client_id, @client_filter.id %><% end %>
   <% if @status_filter %><%= hidden_field_tag :status, @status_filter %><% end %>
-  <div><label class="field-label" for="from">Creados desde</label><%= date_field_tag :from, params[:from], id: 'from', class: 'input-compact' %></div>
-  <div><label class="field-label" for="to">hasta</label><%= date_field_tag :to, params[:to], id: 'to', class: 'input-compact' %></div>
+  <label for="from" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">Creados desde</label>
+  <%= date_field_tag :from, params[:from], id: 'from', class: 'input-compact', style: 'margin:0;' %>
+  <label for="to" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">hasta</label>
+  <%= date_field_tag :to, params[:to], id: 'to', class: 'input-compact', style: 'margin:0;' %>
   <button type="submit" class="btn btn-outline" style="<%= chip %>">Filtrar fechas</button>
-  <% if @from || @to %><%= link_to 'Quitar fechas', admin_quotes_path(client_id: @client_filter&.id, status: @status_filter), class: 'btn btn-danger-link', style: 'margin-left:4px;' %><% end %>
+  <% if @from || @to %><%= link_to 'Quitar fechas', admin_quotes_path(client_id: @client_filter&.id, status: @status_filter), class: 'btn btn-danger-link' %><% end %>
 <% end %>
 
 <% show_delivery = %w[aprobado entregado vendidos].include?(@status_filter) %>

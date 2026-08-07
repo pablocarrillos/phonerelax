@@ -8,11 +8,11 @@
 
 <div class="container section">
   <h2><%= t('quote.benefits_title') %></h2>
-  <div class="grid">
+  <div class="grid benefits-grid">
     <% { 'b1' => '💶', 'b2' => '🎨', 'b3' => '⚡', 'b4' => '📵' }.each do |b, icon| %>
-      <div class="card" style="padding:22px;">
-        <div class="benefit-icon" aria-hidden="true"><%= icon %></div>
-        <h3 style="margin-top:0;"><%= t("quote.#{b}_title") %></h3>
+      <div class="card benefit-card">
+        <span class="benefit-bg" aria-hidden="true"><%= icon %></span>
+        <h3><%= t("quote.#{b}_title") %></h3>
         <p class="step"><%= t("quote.#{b}_body") %></p>
       </div>
     <% end %>

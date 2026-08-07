@@ -621,23 +621,24 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .shipping-note { color: var(--muted); font-size: 14px; margin-top: 8px; }
 
 .site-footer .footer-contact { line-height: 1.9; }
+.site-footer .footer-copyright { margin-top: 12px; font-size: 13px; opacity: 0.75; }
 
-/* Datos de contacto con mapa al lado */
+/* Datos de contacto con el mapa en grande debajo, a todo el ancho */
 .contact-details {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 26px;
+  grid-template-columns: 1fr;
+  gap: 22px;
   align-items: start;
 }
 .contact-details p { line-height: 2.1; margin: 0; }
 .contact-map {
   width: 100%;
-  height: 300px;
+  height: 460px;
   border: 0;
   border-radius: var(--radius);
   box-shadow: 0 6px 18px rgba(14, 27, 77, 0.12);
 }
-@media (max-width: 760px) { .contact-details { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .contact-map { height: 340px; } }
 
 /* Búsqueda y paginación del admin de pedidos */
 .orders-search { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -804,18 +805,42 @@ a.lang-option:hover { background: var(--card-bg); text-decoration: none; }
   .trusted-strip li { min-height: 80px; }
 }
 
-/* Insignias con icono de los bloques de ventajas (p. ej. «Por qué elegir PhoneRelax») */
-.benefit-icon {
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  background: rgba(214, 11, 198, 0.10);
-  border-radius: var(--radius);
-  margin-bottom: 12px;
+/* «Por qué elegir PhoneRelax»: 4 columnas con el icono en grande como marca
+   de agua gris sombreada tras el texto, y elevación al pasar el ratón. */
+.benefits-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.benefit-card {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 22px 24px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+/* Filo superior degradado que refuerza el aspecto moderno de la tarjeta. */
+.benefit-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--magenta), #7c3aed);
+}
+.benefit-card h3 { margin: 0 0 10px; position: relative; z-index: 1; }
+.benefit-card p { margin: 0; position: relative; z-index: 1; }
+.benefit-bg {
+  position: absolute;
+  right: -16px;
+  bottom: -26px;
+  font-size: 130px;
+  line-height: 1;
+  filter: grayscale(1);
+  opacity: 0.12;
+  transform: rotate(-8deg);
+  pointer-events: none;
+  user-select: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.benefit-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(16, 24, 64, 0.12); }
+.benefit-card:hover .benefit-bg { transform: rotate(0deg) scale(1.06); opacity: 0.2; }
+@media (max-width: 1000px) { .benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 620px) { .benefits-grid { grid-template-columns: 1fr; } }
 
 /* Página de estado del pedido: agradecimiento tras el pago y líneas con foto */
 .thanks-hero {
