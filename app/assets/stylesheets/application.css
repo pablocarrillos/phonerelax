@@ -646,7 +646,7 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
 .orders-search-select { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14.5px; background: #fff; }
 .pagy-nav-wrap { margin-top: 20px; text-align: center; }
 .pagy-nav-wrap nav { display: inline-flex; gap: 6px; }
-.pagy-nav-wrap a, .pagy-nav-wrap .current, .pagy-nav-wrap .gap {
+.pagy-nav-wrap a {
   display: inline-block;
   padding: 6px 12px;
   border: 1.5px solid var(--border);
@@ -654,8 +654,12 @@ trix-editor.trix-content { background: #fff; border: 1px solid var(--border); bo
   text-decoration: none;
   font-size: 14px;
 }
-.pagy-nav-wrap .current { background: var(--navy); color: #fff; border-color: var(--navy); }
-.pagy-nav-wrap a[aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
+/* Página actual (Pagy 43 la marca con aria-current="page", sin clase .current). */
+.pagy-nav-wrap a[aria-current="page"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+/* Hueco entre bloques de páginas (antes .gap, ahora role="separator"). */
+.pagy-nav-wrap a[role="separator"] { border-color: transparent; pointer-events: none; }
+/* Solo se atenúan «anterior/siguiente» deshabilitados, no la página actual ni el hueco. */
+.pagy-nav-wrap a[aria-disabled="true"]:not([aria-current="page"]):not([role="separator"]) { opacity: 0.4; pointer-events: none; }
 
 .badge.pagado { background: #dcfce7; color: #14532d; }
 

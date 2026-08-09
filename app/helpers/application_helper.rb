@@ -1,6 +1,4 @@
 module ApplicationHelper
-  include Pagy::Frontend
-
   # Descripción por defecto (fallback si falta la clave i18n common.site_description).
   DEFAULT_META_DESCRIPTION =
     "PhoneRelax: bolsas y fundas magnéticas para guardar y bloquear la señal del " \
