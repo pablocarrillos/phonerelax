@@ -30,7 +30,11 @@ gem "bootsnap", require: false
 gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
+# image_processing 2.x ya no declara el backend como dependencia: hay que añadir
+# ruby-vips explícitamente (el procesador de Active Storage es :vips por defecto).
+# Requiere libvips instalado (está en producción y en el CI).
+gem "image_processing", "~> 2.0"
+gem "ruby-vips"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

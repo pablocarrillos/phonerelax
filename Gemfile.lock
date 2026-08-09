@@ -123,9 +123,7 @@ GEM
       activesupport (>= 6.1)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    image_processing (1.14.0)
-      mini_magick (>= 4.9.5, < 6)
-      ruby-vips (>= 2.0.17, < 3)
+    image_processing (2.0.3)
     importmap-rails (2.2.3)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -153,8 +151,6 @@ GEM
       net-smtp
     marcel (1.2.1)
     matrix (0.4.3)
-    mini_magick (5.3.2)
-      logger
     mini_mime (1.1.5)
     minitest (6.0.6)
       drb (~> 2.0)
@@ -369,7 +365,7 @@ DEPENDENCIES
   csv
   debug
   fastimage
-  image_processing (~> 1.2)
+  image_processing (~> 2.0)
   importmap-rails
   invisible_captcha (~> 2.3)
   pagy (~> 43.6)
@@ -381,6 +377,7 @@ DEPENDENCIES
   rollbar (~> 3.8)
   route_translator
   rubocop-rails-omakase
+  ruby-vips
   selenium-webdriver
   stimulus-rails
   stripe (~> 19.4)
