@@ -17,7 +17,8 @@
       <% buttons = { 'entregado' => '📦 Entregado' }.merge(buttons) if @quote.confirmed? %>
       <% buttons.each do |st, label| %>
         <% next if @quote.status == st %>
-        <%= button_to label, set_status_admin_quote_path(@quote, status: st), method: :patch, class: 'btn btn-outline', form: { style: 'display:inline-block' } %>
+        <%= button_to label, set_status_admin_quote_path(@quote, status: st), method: :patch, class: 'btn btn-outline',
+                      form: { style: 'display:inline-block', data: { turbo_confirm: "¿Pasar el presupuesto #{@quote.number} a «#{Quote::STATUS_LABELS[st]}»?" } } %>
       <% end %>
     </div>
   </div>
