@@ -29,6 +29,12 @@ module Admin
       else
         @status_filter = nil
       end
+      # La lista de «Aprobado» muestra el estado DTF de cada presupuesto:
+      # precarga packs y adjunto para no disparar consultas por fila.
+      if @status_filter == "aprobado"
+        @quotes = @quotes.includes(quote_lines: { product: { pack_items: :component } }).with_attached_dtf_file
+      end
+
       @line_totals = line_totals if @status_filter
     end
 

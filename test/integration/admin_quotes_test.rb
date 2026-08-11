@@ -490,4 +490,28 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
                              quote_lines_attributes: { "0" => { product_id: dtf.id, quantity: 1 } })
     assert_includes with_dtf.available_files, "school_logo", "con DTF sí aparece el Logo"
   end
+
+  test "el listado de aprobados señala la personalización DTF y su fichero" do
+    dtf = Product.create!(name: "Personalización DTF test", price: 5, stock: 0, vat_percentage: 21)
+    con_dtf = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                            quote_lines_attributes: { "0" => { product_id: dtf.id, quantity: 25 } })
+    con_dtf.update!(status: :aprobado)
+    sin_dtf = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                            quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } })
+    sin_dtf.update!(status: :aprobado)
+
+    # Con líneas DTF y sin fichero subido: la insignia avisa de que falta.
+    get admin_quotes_path(status: "aprobado")
+    assert_select "th", "DTF"
+    assert_includes response.body, "Sin fichero"
+
+    con_dtf.dtf_file.attach(io: File.open(file_fixture("cover.png")), filename: "logo.png", content_type: "image/png")
+    get admin_quotes_path(status: "aprobado")
+    assert_includes response.body, "Fichero ✓"
+    assert_not_includes response.body, "Sin fichero"
+
+    # Fuera del filtro de aprobados la columna no aparece.
+    get admin_quotes_path
+    assert_select "th", { text: "DTF", count: 0 }
+  end
 end

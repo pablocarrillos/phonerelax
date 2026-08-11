@@ -35,9 +35,10 @@
 <% end %>
 
 <% show_delivery = %w[aprobado entregado vendidos].include?(@status_filter) %>
+<% show_dtf = @status_filter == "aprobado" %>
 <% if @quotes.any? %>
   <table class="table">
-    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><% if show_delivery %><th>Plazo de entrega</th><% end %><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
+    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><% if show_delivery %><th>Plazo de entrega</th><% end %><% if show_dtf %><th>DTF</th><% end %><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
     <tbody>
       <% @quotes.each do |quote| %>
         <tr>
@@ -50,6 +51,18 @@
           </td>
           <td style="color:var(--muted); font-size:14px;"><%= quote.internal_description.presence || '—' %></td>
           <% if show_delivery %><td style="font-size:14px;"><%= quote.delivery_terms.presence || '—' %></td><% end %>
+          <% if show_dtf %>
+            <td>
+              <% if quote.dtf_lines? %>
+                <span class="badge dtf">DTF</span>
+                <br><span class="badge <%= quote.dtf_file.attached? ? 'dtf_fichero_ok' : 'dtf_fichero_falta' %>" style="margin-top:4px;"><%= quote.dtf_file.attached? ? 'Fichero ✓' : 'Sin fichero' %></span>
+              <% elsif quote.dtf_file.attached? %>
+                <span class="badge dtf_fichero_ok" title="Tiene Fichero DTF aunque ninguna línea lleva personalización DTF">Fichero ✓</span>
+              <% else %>
+                <span style="color:var(--muted);">—</span>
+              <% end %>
+            </td>
+          <% end %>
           <td class="num"><%= number_to_currency(quote.subtotal, unit: '€', format: '%n %u') %></td>
           <td class="num"><strong><%= number_to_currency(quote.total, unit: '€', format: '%n %u') %></strong></td>
           <td style="text-align:right;"><%= link_to '🖨 PDF', print_admin_quote_path(quote), target: '_blank', rel: 'noopener' %></td>
@@ -59,7 +72,7 @@
     <% if @status_filter %>
       <tfoot>
         <tr class="total-row">
-          <td colspan="<%= show_delivery ? 6 : 5 %>"><strong>Total «<%= status_filter_label %>» (<%= @quotes.size %>)</strong></td>
+          <td colspan="<%= (show_delivery ? 6 : 5) + (show_dtf ? 1 : 0) %>"><strong>Total «<%= status_filter_label %>» (<%= @quotes.size %>)</strong></td>
           <td class="num"><strong><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: "%n %u") %></strong></td>
           <td class="num"><strong><%= number_to_currency(@quotes.sum(&:total), unit: '€', format: "%n %u") %></strong></td>
           <td></td>
