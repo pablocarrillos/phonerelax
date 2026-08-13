@@ -22,17 +22,27 @@ class AccountingTest < ActionDispatch::IntegrationTest
   end
 
   test "los ajustes nacen con los datos de Drop Point Systems y dos series independientes" do
+    yy = Date.current.strftime("%y")
     assert_equal "Drop Point Systems S.L.U.", @setting.legal_name
     assert_equal "B02631976", @setting.tax_id
-    assert_equal "WEB-0001", @setting.take_number!("web")
-    assert_equal "PRES-0001", @setting.take_number!("quote")
-    assert_equal "WEB-0002", @setting.take_number!("web"), "las series no se pisan"
+    assert_equal "WEB#{yy}-0001", @setting.take_number!("web")
+    assert_equal "PRES#{yy}-0001", @setting.take_number!("quote")
+    assert_equal "WEB#{yy}-0002", @setting.take_number!("web"), "las series no se pisan"
+  end
+
+  test "al cambiar de año la serie lleva el año nuevo y reinicia en 0001" do
+    yy = Date.current.strftime("%y")
+    @setting.update!(web_series_year: Date.current.year - 1, web_next_number: 57)
+
+    assert_equal "WEB#{yy}-0001", @setting.preview_number("web")
+    assert_equal "WEB#{yy}-0001", @setting.take_number!("web")
+    assert_equal "WEB#{yy}-0002", @setting.take_number!("web")
   end
 
   test "la factura de una venta web copia cliente e importes y desglosa el IVA" do
     invoice = Invoice.issue_for_order!(@order)
 
-    assert_equal "WEB-0001", invoice.number
+    assert_equal "WEB#{Date.current.strftime('%y')}-0001", invoice.number
     assert_equal @order.customer_name, invoice.client_name
     assert_equal 24.90, invoice.total.to_f
     assert_equal [ 21.0 ], invoice.iva_breakdown.map { |b| b[:rate].to_f }
@@ -48,7 +58,7 @@ class AccountingTest < ActionDispatch::IntegrationTest
   test "la factura de un presupuesto aprobado usa su serie y sus totales" do
     invoice = Invoice.issue_for_quote!(@quote)
 
-    assert_equal "PRES-0001", invoice.number
+    assert_equal "PRES#{Date.current.strftime('%y')}-0001", invoice.number
     assert_equal "Colegio Test", invoice.client_name
     assert_equal @quote.total.to_f, invoice.total.to_f
     assert_equal invoice, Invoice.issue_for_quote!(@quote), "idempotente"
@@ -62,7 +72,7 @@ class AccountingTest < ActionDispatch::IntegrationTest
     invoice = Invoice.issue_for_quote!(@quote)
     payload = Verifactu::InvoicePayload.build(invoice)
 
-    assert_equal "PRES", payload[:serie]
+    assert_equal "PRES#{Date.current.strftime('%y')}", payload[:serie]
     assert_equal "0001", payload[:numero]
     assert_not payload[:simplificada]
     assert_equal "B00000000", payload[:nif]

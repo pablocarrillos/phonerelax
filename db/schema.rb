@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_12_210000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,6 +65,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_210000) do
     t.string "province"
     t.integer "quote_next_number", default: 1, null: false
     t.string "quote_series", default: "PRES", null: false
+    t.integer "quote_series_year"
     t.string "tax_id", null: false
     t.datetime "updated_at", null: false
     t.boolean "verifactu_enabled", default: false, null: false
@@ -72,6 +73,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_12_210000) do
     t.string "verifactu_token"
     t.integer "web_next_number", default: 1, null: false
     t.string "web_series", default: "WEB", null: false
+    t.integer "web_series_year"
   end
 
   create_table "contact_messages", force: :cascade do |t|

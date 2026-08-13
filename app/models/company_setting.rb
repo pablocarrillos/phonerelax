@@ -12,16 +12,20 @@ class CompanySetting < ApplicationRecord
     first || create!(legal_name: "Drop Point Systems S.L.U.", tax_id: "B02631976")
   end
 
+  # Números tipo WEB26-0001: serie + dos dígitos del año en curso + secuencial.
+  # Al cambiar de año, cada serie reinicia su numeración en 0001.
   def preview_number(kind)
-    format_number(series_for(kind), next_number_for(kind))
+    format_number(series_for(kind), series_year_stale?(kind) ? 1 : next_number_for(kind))
   end
 
   # Consume un número de la serie y lo devuelve (con lock, para no repetirlo).
   def take_number!(kind)
-    column = kind == "quote" ? :quote_next_number : :web_next_number
+    number_column = kind == "quote" ? :quote_next_number : :web_next_number
+    year_column = kind == "quote" ? :quote_series_year : :web_series_year
     with_lock do
-      number = format_number(series_for(kind), self[column])
-      update!(column => self[column] + 1)
+      update!(year_column => Date.current.year, number_column => 1) if self[year_column] != Date.current.year
+      number = format_number(series_for(kind), self[number_column])
+      update!(number_column => self[number_column] + 1)
       number
     end
   end
@@ -55,7 +59,11 @@ class CompanySetting < ApplicationRecord
 
   private
 
+  def series_year_stale?(kind)
+    (kind == "quote" ? quote_series_year : web_series_year) != Date.current.year
+  end
+
   def format_number(series, number)
-    "#{series}-#{format('%04d', number)}"
+    "#{series}#{Date.current.strftime('%y')}-#{format('%04d', number)}"
   end
 end
