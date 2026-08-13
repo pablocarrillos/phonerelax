@@ -96,10 +96,13 @@ class Purchase < ApplicationRecord
   end
 
   # Coste real medio por unidad de cada producto, ponderado por unidades,
-  # contando solo compras recibidas. => { product => { units:, avg_cost: } }
+  # contando TODAS las compras, también las pendientes de recibir: su coste ya
+  # está comprometido, así que cualquier alta o modificación de una compra
+  # mueve el coste real y los márgenes al momento. El stock, en cambio, solo
+  # se suma al recibir. => { product => { units:, avg_cost: } }
   def self.average_landed_costs
     result = {}
-    received.includes(purchase_lines: :product).find_each do |purchase|
+    includes(purchase_lines: :product).find_each do |purchase|
       purchase.purchase_lines.each do |line|
         entry = result[line.product] ||= { units: 0, cost: BigDecimal("0") }
         entry[:units] += line.quantity

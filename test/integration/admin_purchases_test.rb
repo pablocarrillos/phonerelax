@@ -86,17 +86,19 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     assert_equal stock_was, products(:funda).reload.stock
   end
 
-  test "el coste real medio pondera solo las compras recibidas" do
+  test "el coste real medio pondera todas las compras, también las pendientes" do
     purchase_with_line(quantity: 10, unit_cost: "2.00", shipping: "10").receive! # 3,00 €/ud.
-    purchase_with_line(quantity: 30, unit_cost: "1.00", shipping: "0")           # pendiente: no cuenta
+    purchase_with_line(quantity: 30, unit_cost: "1.00", shipping: "0")           # pendiente: también cuenta
     costs = Purchase.average_landed_costs
     assert_equal 1, costs.size
-    assert_equal 10, costs[products(:funda)][:units]
-    assert_equal BigDecimal("3"), costs[products(:funda)][:avg_cost]
+    assert_equal 40, costs[products(:funda)][:units]
+    # (10×3 + 30×1) / 40 = 1,50 €/ud.
+    assert_equal BigDecimal("1.5"), costs[products(:funda)][:avg_cost]
 
     get admin_purchases_path
     assert_response :success
     assert_includes response.body, "Coste real por producto"
+    assert_includes response.body, "pendientes de recibir"
   end
 
   test "una compra recibida no se puede borrar sin deshacer la recepción" do

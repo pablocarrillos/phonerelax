@@ -34,6 +34,7 @@
 
 <% if @landed_costs.any? %>
   <h2 style="margin-top:32px;">Coste real por producto</h2>
+  <p class="action-note" style="margin-top:0;">Media ponderada por unidades de <strong>todas las compras</strong>, incluidas las pendientes de recibir: se recalcula con cada alta o modificación.</p>
   <table class="table" style="max-width: 860px;">
     <thead><tr><th>Producto</th><th class="num">Uds. compradas</th><th class="num">Coste real/ud.</th><th class="num">PVP</th><th class="num">Margen</th></tr></thead>
     <tbody>
