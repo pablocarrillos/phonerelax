@@ -10,7 +10,10 @@
     <% end %>
   </td>
   <td style="text-align:right; white-space:nowrap;">
-    <%= link_to "PDF", preview_admin_accounting_index_path(preview_params), target: "_blank", rel: "noopener", class: "btn btn-outline", style: "padding:3px 10px;" %>
+    <%# sin factura aún: el PDF es un borrador sin numerar; con factura: el PDF real %>
+    <%= link_to (invoice ? "PDF" : "Previsualizar"), preview_admin_accounting_index_path(preview_params),
+          target: "_blank", rel: "noopener", class: "btn btn-outline", style: "padding:3px 10px;",
+          title: (invoice ? "PDF de la factura #{invoice.number}" : "Borrador de cómo quedará la factura (no consume número ni guarda nada)") %>
     <% if invoice.nil? %>
       <%= button_to "Generar", generate_admin_accounting_index_path(generate_params.merge(from: @from, to: @to)), method: :post,
             class: "btn btn-primary", style: "padding:3px 10px;", form: { style: "display:inline-block;" } %>

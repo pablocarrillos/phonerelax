@@ -19,6 +19,7 @@ class InvoicePdf
 
   def render
     doc = Prawn::Document.new(page_size: "A4", margin: 40)
+    draft_watermark(doc)
     header(doc)
     client_box(doc)
     lines_table(doc)
@@ -29,6 +30,16 @@ class InvoicePdf
   end
 
   private
+
+  # Marca de agua diagonal en las previsualizaciones: que un borrador no pueda
+  # confundirse nunca con una factura emitida.
+  def draft_watermark(doc)
+    return unless @data[:provisional]
+
+    doc.transparent(0.08) do
+      doc.draw_text "BORRADOR", at: [ 115, 240 ], size: 90, style: :bold, rotate: 45
+    end
+  end
 
   def header(doc)
     doc.text @setting.legal_name, size: 16, style: :bold
