@@ -31,7 +31,9 @@
     <div>
       <%= f.label :invoice, 'Factura (PDF)' %>
       <%= f.file_field :invoice, accept: 'application/pdf' %>
-      <% if purchase.invoice.attached? %>
+      <%# solo si el adjunto ya está guardado: un blob pendiente (p. ej. al
+          re-renderizar tras un error de validación) no tiene signed_id y revienta %>
+      <% if purchase.invoice.attached? && purchase.invoice.blob&.persisted? %>
         <p class="action-note" style="margin-top:4px;">Ya adjunta: <%= link_to '📄 ver factura', rails_blob_path(purchase.invoice, disposition: 'inline'), target: '_blank', rel: 'noopener' %> (sube otra para sustituirla)</p>
       <% end %>
     </div>

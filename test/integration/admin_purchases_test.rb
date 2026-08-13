@@ -111,6 +111,38 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "los costes extra en blanco cuentan como 0 y la compra se guarda" do
+    assert_difference -> { Purchase.count }, 1 do
+      post admin_purchases_path, params: { purchase: {
+        supplier_id: @supplier.id, ordered_on: "2026-08-13", currency: "USD", reference: "REF-1",
+        purchase_lines_attributes: { "0" => {
+          product_id: products(:funda).id, quantity: "2000", unit_cost: "3.05",
+          shipping_cost: "600", customs_cost: "", other_costs: ""
+        } }
+      } }
+    end
+
+    line = Purchase.recent_first.first.purchase_lines.first
+    assert_equal 0, line.customs_cost
+    assert_equal 0, line.other_costs
+  end
+
+  test "una compra inválida con PDF adjunto re-renderiza el formulario sin 500" do
+    assert_no_difference -> { Purchase.count } do
+      post admin_purchases_path, params: { purchase: {
+        supplier_id: @supplier.id, ordered_on: "", currency: "USD", # sin fecha: inválida
+        invoice: fixture_file_upload("factura.pdf", "application/pdf"),
+        purchase_lines_attributes: { "0" => {
+          product_id: products(:funda).id, quantity: "10", unit_cost: "1.00",
+          shipping_cost: "", customs_cost: "", other_costs: ""
+        } }
+      } }
+    end
+
+    assert_response :unprocessable_entity, "debe volver al formulario con el aviso, no reventar"
+    assert_select "form" # el formulario se pinta aunque el adjunto aún no esté guardado
+  end
+
   private
 
   def purchase_with_line(quantity:, unit_cost: "2.00", shipping: "0")

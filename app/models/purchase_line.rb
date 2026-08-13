@@ -9,6 +9,9 @@ class PurchaseLine < ApplicationRecord
   validates :shipping_cost, :customs_cost, :other_costs,
             numericality: { greater_than_or_equal_to: 0 }
 
+  # Un coste extra dejado en blanco en el formulario significa 0, no un error.
+  before_validation -> { self.shipping_cost ||= 0; self.customs_cost ||= 0; self.other_costs ||= 0 }
+
   # Coste de los productos de la línea, sin extras (en la moneda de la compra).
   def subtotal
     unit_cost * quantity
