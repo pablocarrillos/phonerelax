@@ -375,6 +375,7 @@ DEPENDENCIES
   image_processing (~> 2.0)
   importmap-rails
   invisible_captcha (~> 2.3)
+  matrix
   pagy (~> 43.6)
   pg (~> 1.1)
   phonelib (~> 0.10.23)

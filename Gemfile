@@ -77,4 +77,5 @@ gem "rollbar", "~> 3.8"
 # CSV deja de ser gem por defecto en Ruby 3.4 (export de pedidos del admin)
 gem "csv"
 gem "prawn"
+gem "matrix" # prawn 2.4 la usa y no viene ya con Ruby 3
 gem "prawn-table"
