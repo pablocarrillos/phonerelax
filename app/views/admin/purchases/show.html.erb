@@ -38,7 +38,7 @@
 <% end %>
 <div style="overflow-x:auto;">
 <table class="table" style="min-width: 820px;">
-  <thead><tr><th>Producto</th><th class="num">Uds.</th><th class="num">Coste/ud.</th><th class="num">Transporte</th><th class="num">Aduanas</th><th class="num">Otros</th><th class="num">Total línea</th><th class="num">Coste real/ud. (€)*</th></tr></thead>
+  <thead><tr><th>Producto</th><th class="num">Uds.</th><th class="num">Coste/ud.</th><th class="num">Transporte</th><th class="num">Aduanas</th><th class="num">Otros</th><th>Presupuesto</th><th class="num">Total línea</th><th class="num">Coste real/ud. (€)*</th></tr></thead>
   <tbody>
     <% @purchase.purchase_lines.each do |line| %>
       <tr>
@@ -48,6 +48,14 @@
         <td class="num"><%= number_to_currency(line.shipping_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.customs_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.other_costs, unit: sym, format: '%n %u') %></td>
+        <td>
+          <%# a qué presupuesto de cliente se imputa el coste de la línea %>
+          <% if line.quote %>
+            <%= link_to line.quote.number, admin_quote_path(line.quote), title: line.quote.client.name %>
+          <% else %>
+            <span class="action-note">stock</span>
+          <% end %>
+        </td>
         <td class="num"><strong><%= purchase_amount(@purchase, line.total) %></strong></td>
         <td class="num"><strong><%= number_to_currency(@purchase.landed_unit_cost(line), unit: '€', format: '%n %u') %></strong></td>
       </tr>
@@ -59,6 +67,7 @@
       <td class="field-label">Total transporte</td>
       <td class="field-label">Total aduanas</td>
       <td class="field-label">Total otros</td>
+      <td></td>
       <td class="field-label" style="text-align:right;">Total factura</td>
       <td></td>
     </tr>
@@ -67,12 +76,13 @@
       <td class="num"><%= purchase_amount(@purchase, @purchase.total_shipping) %></td>
       <td class="num"><%= purchase_amount(@purchase, @purchase.total_customs) %></td>
       <td class="num"><%= purchase_amount(@purchase, @purchase.total_other) %></td>
+      <td></td>
       <td class="num"><strong><%= purchase_amount(@purchase, @purchase.total_cost) %></strong></td>
       <td></td>
     </tr>
     <% if @purchase.usd? %>
       <tr class="total-row">
-        <td colspan="6" style="text-align:right;">Total factura en euros</td>
+        <td colspan="7" style="text-align:right;">Total factura en euros</td>
         <td class="num"><strong><%= number_to_currency(@purchase.total_cost_eur, unit: '€', format: '%n %u') %></strong></td>
         <td></td>
       </tr>

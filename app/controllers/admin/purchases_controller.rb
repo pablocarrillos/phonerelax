@@ -12,6 +12,7 @@ module Admin
     def new
       @purchase = Purchase.new(ordered_on: Date.current)
       build_blank_lines
+      load_quotes_for_imputation
     end
 
     def create
@@ -20,12 +21,14 @@ module Admin
         redirect_to admin_purchase_path(@purchase), notice: "Compra registrada."
       else
         build_blank_lines
+        load_quotes_for_imputation
         render :new, status: :unprocessable_entity
       end
     end
 
     def edit
       build_blank_lines
+      load_quotes_for_imputation
     end
 
     def update
@@ -33,6 +36,7 @@ module Admin
         redirect_to admin_purchase_path(@purchase), notice: "Compra actualizada."
       else
         build_blank_lines
+        load_quotes_for_imputation
         render :edit, status: :unprocessable_entity
       end
     end
@@ -73,7 +77,16 @@ module Admin
       params.require(:purchase).permit(:supplier_id, :reference, :ordered_on, :expected_on, :notes, :invoice,
                                        :currency, :invoice_date, :exchange_rate,
                                        purchase_lines_attributes: [ :id, :product_id, :quantity, :unit_cost,
-                                                                    :shipping_cost, :customs_cost, :other_costs, :_destroy ])
+                                                                    :shipping_cost, :customs_cost, :other_costs,
+                                                                    :quote_id, :_destroy ])
+    end
+
+    # Presupuestos elegibles para imputar líneas: los más recientes primero,
+    # incluyendo los ya imputados en esta compra aunque sean antiguos.
+    def load_quotes_for_imputation
+      @quotes_for_imputation = Quote.includes(:client).order(created_at: :desc).limit(100).to_a
+      missing = @purchase.purchase_lines.filter_map(&:quote_id) - @quotes_for_imputation.map(&:id)
+      @quotes_for_imputation |= Quote.includes(:client).where(id: missing).to_a if missing.any?
     end
   end
 end

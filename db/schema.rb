@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_13_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_13_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -291,11 +291,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_120000) do
     t.bigint "product_id", null: false
     t.bigint "purchase_id", null: false
     t.integer "quantity", null: false
+    t.bigint "quote_id"
     t.decimal "shipping_cost", precision: 10, scale: 2, default: "0.0", null: false
     t.decimal "unit_cost", precision: 10, scale: 4, null: false
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_purchase_lines_on_product_id"
     t.index ["purchase_id"], name: "index_purchase_lines_on_purchase_id"
+    t.index ["quote_id"], name: "index_purchase_lines_on_quote_id"
   end
 
   create_table "purchases", force: :cascade do |t|
@@ -441,6 +443,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_120000) do
   add_foreign_key "product_images", "products"
   add_foreign_key "purchase_lines", "products"
   add_foreign_key "purchase_lines", "purchases"
+  add_foreign_key "purchase_lines", "quotes"
   add_foreign_key "purchases", "suppliers"
   add_foreign_key "quote_lines", "products"
   add_foreign_key "quote_lines", "quotes"

@@ -3,6 +3,9 @@
 class PurchaseLine < ApplicationRecord
   belongs_to :purchase, inverse_of: :purchase_lines
   belongs_to :product
+  # presupuesto de cliente al que se imputa el coste de esta línea (opcional:
+  # en blanco es compra para stock general)
+  belongs_to :quote, optional: true
 
   validates :quantity, numericality: { only_integer: true, greater_than: 0 }
   validates :unit_cost, numericality: { greater_than_or_equal_to: 0 }
@@ -31,5 +34,10 @@ class PurchaseLine < ApplicationRecord
   # en la moneda de la compra.
   def landed_unit_cost
     quantity.to_i.zero? ? total : total / quantity
+  end
+
+  # Total de la línea en euros (aplica el tipo de cambio de la compra si es USD).
+  def total_eur
+    total * purchase.eur_rate
   end
 end

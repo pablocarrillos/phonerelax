@@ -43,11 +43,12 @@
   <h2 style="margin-top:24px;">Líneas de la compra</h2>
   <p class="action-note" style="margin-top:0;">Cada línea lleva su producto, unidades, coste por unidad y los costes de transporte, aduanas y otros imputados a esa línea. Introduce todos los importes en la <strong>moneda seleccionada</strong>. Deja el producto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
   <div style="overflow-x:auto;">
-    <table class="table" style="min-width: 860px;">
+    <table class="table" style="min-width: 1060px;">
       <thead>
         <tr>
           <th>Producto</th><th>Unidades</th><th>Coste/ud.</th>
           <th>Transporte</th><th>Aduanas</th><th>Otros costes</th>
+          <th title="Imputa el coste de esta línea a un presupuesto de cliente concreto; en blanco, compra para stock">Presupuesto</th>
           <th class="num">Total línea</th>
           <% if purchase.purchase_lines.any?(&:persisted?) %><th>Quitar</th><% end %>
         </tr>
@@ -61,6 +62,8 @@
             <td><%= lf.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'shipping_cost', action: 'input->purchase-form#recalc' } %></td>
             <td><%= lf.number_field :customs_cost, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'customs_cost', action: 'input->purchase-form#recalc' } %></td>
             <td><%= lf.number_field :other_costs, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'other_costs', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.select :quote_id, @quotes_for_imputation.map { |q| ["#{q.number} · #{q.client.name.truncate(24)}", q.id] },
+                              { include_blank: '— stock —' }, { class: 'form-select', style: 'max-width:210px;' } %></td>
             <td class="num"><strong data-line-total>—</strong></td>
             <% if purchase.purchase_lines.any?(&:persisted?) %>
               <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>
@@ -69,8 +72,8 @@
         <% end %>
       </tbody>
       <tfoot>
-        <tr><td colspan="3"></td><td class="num"><strong data-purchase-form-target="totalShipping">—</strong></td><td class="num"><strong data-purchase-form-target="totalCustoms">—</strong></td><td class="num"><strong data-purchase-form-target="totalOther">—</strong></td><td class="num"><strong data-purchase-form-target="totalInvoice">—</strong></td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
-        <tr><td colspan="3"></td><td class="field-label">Total transporte</td><td class="field-label">Total aduanas</td><td class="field-label">Total otros</td><td class="field-label" style="text-align:right;">Total factura</td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
+        <tr><td colspan="3"></td><td class="num"><strong data-purchase-form-target="totalShipping">—</strong></td><td class="num"><strong data-purchase-form-target="totalCustoms">—</strong></td><td class="num"><strong data-purchase-form-target="totalOther">—</strong></td><td></td><td class="num"><strong data-purchase-form-target="totalInvoice">—</strong></td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
+        <tr><td colspan="3"></td><td class="field-label">Total transporte</td><td class="field-label">Total aduanas</td><td class="field-label">Total otros</td><td></td><td class="field-label" style="text-align:right;">Total factura</td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
       </tfoot>
     </table>
   </div>

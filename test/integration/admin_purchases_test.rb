@@ -111,6 +111,34 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "una línea de compra se imputa a un presupuesto y su coste aparece en él" do
+    client = Client.create!(name: "Colegio Imputado")
+    quote = Quote.create!(client: client, issued_on: Date.current, delivery_terms: "x",
+                          quote_lines_attributes: { "0" => { description: "Fundas con logo", quantity: 100, unit_price: 5, vat_rate: 21 } })
+
+    post admin_purchases_path, params: { purchase: {
+      supplier_id: @supplier.id, ordered_on: "2026-08-13", reference: "IMP-1",
+      purchase_lines_attributes: {
+        "0" => { product_id: products(:funda).id, quantity: 100, unit_cost: "2.00", shipping_cost: "20", quote_id: quote.id },
+        "1" => { product_id: products(:iman).id, quantity: 10, unit_cost: "1.00" } # sin imputar: stock
+      }
+    } }
+    purchase = Purchase.last
+    assert_redirected_to admin_purchase_path(purchase)
+    assert_equal [ quote, nil ], purchase.purchase_lines.order(:id).map(&:quote)
+    assert_equal BigDecimal("220"), quote.imputed_cost_eur # 100×2 + 20 transporte
+
+    # El presupuesto enseña el panel de costes con la compra enlazada.
+    get admin_quote_path(quote)
+    assert_response :success
+    assert_includes response.body, "Costes imputados"
+    assert_includes response.body, "IMP-1"
+
+    # Y la compra enlaza el presupuesto en su línea.
+    get admin_purchase_path(purchase)
+    assert_includes response.body, quote.number
+  end
+
   test "los costes extra en blanco cuentan como 0 y la compra se guarda" do
     assert_difference -> { Purchase.count }, 1 do
       post admin_purchases_path, params: { purchase: {

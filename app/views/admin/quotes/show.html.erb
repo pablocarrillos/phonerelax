@@ -145,3 +145,31 @@
   <h2>Notas internas</h2>
   <p><%= simple_format(@quote.notes) %></p>
 <% end %>
+
+<%# costes de compras a proveedor imputados a este presupuesto (línea a línea) %>
+<% imputed = @quote.purchase_lines.includes(:product, purchase: :supplier).sort_by { |l| l.purchase.ordered_on } %>
+<% if imputed.any? %>
+  <h2>Costes imputados (compras a proveedor)</h2>
+  <div style="overflow-x:auto;">
+  <table class="table" style="min-width: 640px;">
+    <thead><tr><th>Compra</th><th>Proveedor</th><th>Producto</th><th class="num">Uds.</th><th class="num">Coste (€)</th></tr></thead>
+    <tbody>
+      <% imputed.each do |line| %>
+        <tr>
+          <td><%= link_to "#{l(line.purchase.ordered_on, format: '%d/%m/%Y')}#{" · #{line.purchase.reference}" if line.purchase.reference.present?}", admin_purchase_path(line.purchase) %></td>
+          <td><%= line.purchase.supplier.name %></td>
+          <td><%= line.product.name %></td>
+          <td class="num"><%= line.quantity %></td>
+          <td class="num"><%= number_to_currency(line.total_eur, unit: '€', format: '%n %u') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <% cost = @quote.imputed_cost_eur %>
+      <tr class="total-row"><td colspan="4" style="text-align:right;">Coste imputado total</td><td class="num"><strong><%= number_to_currency(cost, unit: '€', format: '%n %u') %></strong></td></tr>
+      <tr><td colspan="4" style="text-align:right;">Margen sobre la base (<%= number_to_currency(@quote.subtotal, unit: '€', format: '%n %u') %> sin IVA)</td>
+          <td class="num"><strong><%= number_to_currency(@quote.subtotal - cost, unit: '€', format: '%n %u') %></strong></td></tr>
+    </tfoot>
+  </table>
+  </div>
+<% end %>

@@ -30,6 +30,8 @@ class Quote < ApplicationRecord
   has_many :quote_lines, -> { order(:position, :id) }, dependent: :destroy, inverse_of: :quote
   # Muestras enviadas vinculadas a este presupuesto (al borrarlo se desvinculan).
   has_many :samples, dependent: :nullify
+  # líneas de compras a proveedor imputadas a este presupuesto (sus costes)
+  has_many :purchase_lines, dependent: :nullify
 
   # Estado del seguimiento comercial del presupuesto.
   enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3, entregado: 4 }
@@ -140,6 +142,11 @@ class Quote < ApplicationRecord
 
   def lines_total
     active_lines.sum(&:total)
+  end
+
+  # Coste total en euros de las compras a proveedor imputadas a este presupuesto.
+  def imputed_cost_eur
+    purchase_lines.includes(:purchase).sum(&:total_eur)
   end
 
   # Descuento global sobre las líneas (el transporte no se descuenta).
