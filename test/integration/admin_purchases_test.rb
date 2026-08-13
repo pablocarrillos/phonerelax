@@ -8,6 +8,15 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     @supplier = Supplier.create!(name: "Fábrica Shenzhen", country: "China")
   end
 
+  test "el botón «Nuevo pedido» del proveedor abre la compra con él ya elegido" do
+    get admin_suppliers_path
+    assert_select "a[href=?]", new_admin_purchase_path(supplier_id: @supplier.id), text: "Nuevo pedido"
+
+    get new_admin_purchase_path(supplier_id: @supplier.id)
+    assert_response :success
+    assert_select "select#purchase_supplier_id option[selected][value='#{@supplier.id}']"
+  end
+
   test "alta y edición de proveedores" do
     post admin_suppliers_path, params: { supplier: { name: "Mayorista UE", email: "ventas@mayorista.eu" } }
     assert_redirected_to admin_suppliers_path

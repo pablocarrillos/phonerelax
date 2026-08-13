@@ -10,7 +10,9 @@ module Admin
     def show; end
 
     def new
-      @purchase = Purchase.new(ordered_on: Date.current)
+      # supplier_id: el botón «Nuevo pedido» de la lista de proveedores llega
+      # con el proveedor ya elegido
+      @purchase = Purchase.new(ordered_on: Date.current, supplier_id: params[:supplier_id].presence)
       build_blank_lines
       load_quotes_for_imputation
     end

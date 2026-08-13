@@ -15,8 +15,9 @@
           <td><%= supplier.country.presence || '—' %></td>
           <td class="num"><%= supplier.purchases.count %></td>
           <td style="text-align:right; white-space:nowrap;">
+            <%= link_to 'Nuevo pedido', new_admin_purchase_path(supplier_id: supplier.id), class: 'btn btn-primary' %>
             <%= link_to 'Editar', edit_admin_supplier_path(supplier), class: 'btn btn-outline' %>
-            <%= button_to 'Borrar', admin_supplier_path(supplier), method: :delete, class: 'btn-danger-link',
+            <%= button_to 'Borrar', admin_supplier_path(supplier), method: :delete, class: 'btn btn-danger',
                           form: { style: 'display:inline-block', data: { turbo_confirm: "¿Borrar el proveedor #{supplier.name}?" } } %>
           </td>
         </tr>
