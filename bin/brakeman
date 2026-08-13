@@ -2,6 +2,6 @@
 require "rubygems"
 require "bundler/setup"
 
-ARGV.unshift("--ensure-latest")
-
+# Sin --ensure-latest: que una release nueva de Brakeman no rompa el CI;
+# se actualiza a mano con `bundle update brakeman` de vez en cuando.
 load Gem.bin_path("brakeman", "brakeman")
