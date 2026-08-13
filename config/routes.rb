@@ -76,6 +76,16 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "orders#index"
+    resources :accounting, only: [ :index ] do
+      collection do
+        get :preview
+        post :generate
+        post :send_email
+        post :generate_and_send_all
+        post :resubmit_verifactu
+      end
+    end
+    resource :company_setting, only: [ :show, :update ]
     resources :orders, only: [ :index, :show, :update, :destroy ] do
       patch :advance, on: :member # creado → enviado → recibido
       patch :revert, on: :member  # deshace un avance de estado

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_06_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_12_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,6 +53,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_160000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "company_settings", force: :cascade do |t|
+    t.string "address"
+    t.string "city"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "legal_name", null: false
+    t.string "phone"
+    t.string "postal_code"
+    t.string "province"
+    t.integer "quote_next_number", default: 1, null: false
+    t.string "quote_series", default: "PRES", null: false
+    t.string "tax_id", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "verifactu_enabled", default: false, null: false
+    t.string "verifactu_environment", default: "test", null: false
+    t.string "verifactu_token"
+    t.integer "web_next_number", default: 1, null: false
+    t.string "web_series", default: "WEB", null: false
+  end
+
   create_table "contact_messages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -68,6 +89,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_160000) do
     t.string "path", null: false
     t.datetime "updated_at", null: false
     t.index ["path"], name: "index_image_comments_on_path", unique: true
+  end
+
+  create_table "invoice_lines", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.bigint "invoice_id", null: false
+    t.integer "position", default: 0, null: false
+    t.decimal "quantity", precision: 8, scale: 2, default: "1.0", null: false
+    t.decimal "total", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "unit_price", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_lines_on_invoice_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.text "client_address"
+    t.string "client_email"
+    t.string "client_name", null: false
+    t.string "client_tax_id"
+    t.datetime "created_at", null: false
+    t.datetime "emailed_at"
+    t.date "issued_on", null: false
+    t.string "kind", null: false
+    t.string "number", null: false
+    t.bigint "order_id"
+    t.bigint "quote_id"
+    t.decimal "subtotal", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "total", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "vat_amount", precision: 10, scale: 2, default: "0.0", null: false
+    t.json "vat_lines", default: [], null: false
+    t.integer "verifactu_attempts", default: 0, null: false
+    t.text "verifactu_error"
+    t.string "verifactu_huella"
+    t.text "verifactu_qr"
+    t.datetime "verifactu_sent_at"
+    t.string "verifactu_status", default: "disabled", null: false
+    t.string "verifactu_url"
+    t.index ["number"], name: "index_invoices_on_number", unique: true
+    t.index ["order_id"], name: "index_invoices_on_order_id", unique: true
+    t.index ["quote_id"], name: "index_invoices_on_quote_id", unique: true
   end
 
   create_table "order_events", force: :cascade do |t|
@@ -365,6 +427,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_160000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "invoice_lines", "invoices"
+  add_foreign_key "invoices", "orders"
+  add_foreign_key "invoices", "quotes"
   add_foreign_key "order_events", "orders"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"

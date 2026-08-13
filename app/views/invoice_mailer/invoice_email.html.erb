@@ -1,0 +1,15 @@
+<p>Hola <%= @invoice.client_name %>,</p>
+
+<p>
+  Adjuntamos la factura <strong><%= @invoice.number %></strong>
+  (<%= number_to_currency(@invoice.total, unit: "€", format: "%n %u") %>, IVA incluido)
+  correspondiente a su <%= @invoice.kind == Invoice::WEB ? "compra en la tienda online" : "pedido" %>.
+</p>
+
+<p>Gracias por confiar en PhoneRelax.</p>
+
+<p>
+  <%= @setting.legal_name %> · CIF <%= @setting.tax_id %><br>
+  <%= @setting.full_address.split("\n").join(" · ") %><br>
+  <%= [ @setting.phone, @setting.email ].compact_blank.join(" · ") %>
+</p>

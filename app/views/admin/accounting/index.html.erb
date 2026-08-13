@@ -1,0 +1,52 @@
+<h1>Contabilidad</h1>
+<p class="action-note" style="margin-top:0;">
+  Facturación del tramo elegido: ventas de la web pagadas (serie <%= CompanySetting.current.web_series %>)
+  y presupuestos aprobados (serie <%= CompanySetting.current.quote_series %>).
+  Previsualiza, genera y envía las facturas en PDF a los clientes.
+</p>
+
+<%= form_with url: admin_accounting_index_path, method: :get, local: true,
+              html: { style: "display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px;" } do %>
+  <label style="margin:0; font-weight:600;">Del</label>
+  <%= date_field_tag :from, @from, class: "input-compact", style: "margin:0;" %>
+  <label style="margin:0; font-weight:600;">al</label>
+  <%= date_field_tag :to, @to, class: "input-compact", style: "margin:0;" %>
+  <button type="submit" class="btn btn-outline" style="padding:5px 14px;">Aplicar</button>
+  <%= button_to "Generar y enviar todo el tramo", generate_and_send_all_admin_accounting_index_path(from: @from, to: @to),
+        method: :post, class: "btn btn-primary", form: { style: "display:inline-block; margin-left:auto;",
+        data: { turbo_confirm: "¿Generar TODAS las facturas del #{l(@from)} al #{l(@to)} y enviarlas por email a los clientes? Lo ya facturado/enviado no se repite." } } %>
+<% end %>
+
+<h2 style="margin-top:22px;">Ventas web pagadas (<%= @orders.size %>)</h2>
+<table class="table">
+  <thead><tr><th>Pedido</th><th>Fecha</th><th>Cliente</th><th class="num">Total</th><th>Factura</th><th></th></tr></thead>
+  <tbody>
+    <% @orders.each do |order| %>
+      <tr>
+        <td><%= link_to order.number, admin_order_path(order) %></td>
+        <td><%= l order.created_at.to_date %></td>
+        <td><%= order.customer_name %> <span class="action-note"><%= order.email %></span></td>
+        <td class="num"><%= number_to_currency(order.total, unit: "€", format: "%n %u") %></td>
+        <%= render "invoice_cells", invoice: @invoices_by_order[order.id], preview_params: { order_id: order.id }, generate_params: { order_id: order.id } %>
+      </tr>
+    <% end %>
+    <% if @orders.empty? %><tr><td colspan="6" class="action-note">Sin ventas web pagadas en el tramo.</td></tr><% end %>
+  </tbody>
+</table>
+
+<h2 style="margin-top:22px;">Presupuestos aprobados (<%= @quotes.size %>)</h2>
+<table class="table">
+  <thead><tr><th>Presupuesto</th><th>Fecha</th><th>Cliente</th><th class="num">Total</th><th>Factura</th><th></th></tr></thead>
+  <tbody>
+    <% @quotes.each do |quote| %>
+      <tr>
+        <td><%= link_to quote.number, admin_quote_path(quote) %></td>
+        <td><%= l quote.issued_on %></td>
+        <td><%= quote.client.name %><% if quote.client.email.present? %> <span class="action-note"><%= quote.client.email %></span><% end %></td>
+        <td class="num"><%= number_to_currency(quote.total, unit: "€", format: "%n %u") %></td>
+        <%= render "invoice_cells", invoice: @invoices_by_quote[quote.id], preview_params: { quote_id: quote.id }, generate_params: { quote_id: quote.id } %>
+      </tr>
+    <% end %>
+    <% if @quotes.empty? %><tr><td colspan="6" class="action-note">Sin presupuestos aprobados en el tramo.</td></tr><% end %>
+  </tbody>
+</table>

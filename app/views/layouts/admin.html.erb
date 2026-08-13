@@ -39,6 +39,7 @@
             <button type="button" class="admin-drop-label <%= 'active' if comercial_active %>">Comercial</button>
             <div class="admin-menu"><div class="admin-menu-box">
               <%= link_to 'Presupuestos', admin_quotes_path, class: ('active' if %w[quotes clients].include?(controller_name)) %>
+              <%= link_to 'Contabilidad', admin_accounting_index_path, class: ('active' if %w[accounting company_settings].include?(controller_name)) %>
               <%= link_to 'Muestras', admin_samples_path, class: ('active' if controller_name == 'samples') %>
             </div></div>
           </div>
@@ -63,6 +64,7 @@
              [ "Transporte", admin_shipping_path, controller_name == "shipping" ] ]
          elsif %w[quotes clients samples].include?(controller_name)
            [ [ "Presupuestos", admin_quotes_path, %w[quotes clients].include?(controller_name) ],
+             [ "Contabilidad", admin_accounting_index_path, %w[accounting company_settings].include?(controller_name) ],
              [ "Muestras", admin_samples_path, controller_name == "samples" ] ]
          end %>
     <% if subnav %>

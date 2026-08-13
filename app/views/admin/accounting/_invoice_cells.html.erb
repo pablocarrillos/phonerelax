@@ -1,0 +1,26 @@
+<%# celdas de estado de factura y acciones (locals: invoice, preview_params, generate_params) %>
+  <td class="text-nowrap" style="white-space:nowrap;">
+    <% if invoice %>
+      <span class="badge pagado"><%= invoice.number %></span>
+      <% if invoice.verifactu_sent? %><span class="badge recibido" title="Huella <%= invoice.verifactu_huella %>">VeriFactu ✓</span>
+      <% elsif invoice.verifactu_pending? %><span class="badge creado">VeriFactu…</span>
+      <% elsif invoice.verifactu_error? %><span class="badge pendiente" title="<%= invoice.verifactu_error %>">VeriFactu ✗</span>
+      <% end %>
+      <% if invoice.emailed_at %><span class="badge enviado" title="<%= l(invoice.emailed_at, format: :short) rescue invoice.emailed_at %>">Enviada</span><% end %>
+    <% end %>
+  </td>
+  <td style="text-align:right; white-space:nowrap;">
+    <%= link_to "PDF", preview_admin_accounting_index_path(preview_params), target: "_blank", rel: "noopener", class: "btn btn-outline", style: "padding:3px 10px;" %>
+    <% if invoice.nil? %>
+      <%= button_to "Generar", generate_admin_accounting_index_path(generate_params.merge(from: @from, to: @to)), method: :post,
+            class: "btn btn-primary", style: "padding:3px 10px;", form: { style: "display:inline-block;" } %>
+    <% elsif invoice.verifactu_error? %>
+      <%= button_to "Reenviar VeriFactu", resubmit_verifactu_admin_accounting_index_path(invoice_id: invoice.id, from: @from, to: @to), method: :post,
+            class: "btn btn-outline", style: "padding:3px 10px;", form: { style: "display:inline-block;" } %>
+    <% end %>
+    <% if invoice && invoice.client_email.present? %>
+      <%= button_to (invoice.emailed_at ? "Reenviar email" : "Enviar email"),
+            send_email_admin_accounting_index_path(invoice_id: invoice.id, from: @from, to: @to), method: :post,
+            class: "btn btn-outline", style: "padding:3px 10px;", form: { style: "display:inline-block;" } %>
+    <% end %>
+  </td>

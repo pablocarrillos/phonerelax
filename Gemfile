@@ -34,7 +34,8 @@ gem "thruster", require: false
 # ruby-vips explícitamente (el procesador de Active Storage es :vips por defecto).
 # Requiere libvips instalado (está en producción y en el CI).
 gem "image_processing", "~> 2.0"
-gem "ruby-vips"
+# En producción hay libvips >= 8.13; este puesto no, así que solo se carga allí.
+gem "ruby-vips", group: :production
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -75,3 +76,5 @@ gem "rollbar", "~> 3.8"
 
 # CSV deja de ser gem por defecto en Ruby 3.4 (export de pedidos del admin)
 gem "csv"
+gem "prawn"
+gem "prawn-table"

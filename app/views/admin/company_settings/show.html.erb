@@ -1,0 +1,57 @@
+<h1>Datos de empresa</h1>
+<p class="action-note" style="margin-top:0;">
+  Emisora de las facturas de Contabilidad, con una serie para las ventas de la
+  web y otra para los presupuestos aprobados.
+</p>
+
+<%= form_with model: @setting, url: admin_company_setting_path, method: :patch, local: true do |f| %>
+  <% if @setting.errors.any? %>
+    <div class="alert alert-danger"><ul style="margin:0;">
+      <% @setting.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+    </ul></div>
+  <% end %>
+
+  <div class="card" style="padding:18px; margin-bottom:16px;">
+    <h2 style="margin-top:0;">Empresa</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;">
+      <label>Nombre fiscal<%= f.text_field :legal_name, class: "input-compact", style: "width:100%;" %></label>
+      <label>CIF<%= f.text_field :tax_id, class: "input-compact", style: "width:100%;" %></label>
+      <label>Teléfono<%= f.text_field :phone, class: "input-compact", style: "width:100%;" %></label>
+      <label>Email<%= f.email_field :email, class: "input-compact", style: "width:100%;" %></label>
+      <label>Dirección<%= f.text_field :address, class: "input-compact", style: "width:100%;" %></label>
+      <label>Código postal<%= f.text_field :postal_code, class: "input-compact", style: "width:100%;" %></label>
+      <label>Ciudad<%= f.text_field :city, class: "input-compact", style: "width:100%;" %></label>
+      <label>Provincia<%= f.text_field :province, class: "input-compact", style: "width:100%;" %></label>
+      <label>País<%= f.text_field :country, class: "input-compact", style: "width:100%;" %></label>
+    </div>
+  </div>
+
+  <div class="card" style="padding:18px; margin-bottom:16px;">
+    <h2 style="margin-top:0;">Series de facturación</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;">
+      <label>Serie ventas web<%= f.text_field :web_series, class: "input-compact", style: "width:100%;" %></label>
+      <label>Siguiente nº web<%= f.number_field :web_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
+      <label>Serie presupuestos<%= f.text_field :quote_series, class: "input-compact", style: "width:100%;" %></label>
+      <label>Siguiente nº presupuestos<%= f.number_field :quote_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
+    </div>
+    <p class="action-note" style="margin-bottom:0;">
+      Próximas: <strong><%= @setting.preview_number("web") %></strong> (web) ·
+      <strong><%= @setting.preview_number("quote") %></strong> (presupuestos)
+    </p>
+  </div>
+
+  <div class="card" style="padding:18px; margin-bottom:16px;">
+    <h2 style="margin-top:0;">VERI*FACTU</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; align-items:end;">
+      <label><%= f.check_box :verifactu_enabled %> Enviar facturas a VeriFactu</label>
+      <label>Entorno<%= f.select :verifactu_environment, [ [ "Pruebas (AEAT test)", "test" ], [ "Producción", "production" ] ], {}, class: "input-compact", style: "width:100%;" %></label>
+      <label>Token TICKETBAIWS<%= f.text_field :verifactu_token, class: "input-compact", style: "width:100%; font-family:monospace;" %></label>
+    </div>
+    <p class="action-note" style="margin-bottom:0;">
+      Misma integración que gestion y agua. El NIF emisor es el CIF de arriba; el
+      QR sale en el PDF de las facturas registradas.
+    </p>
+  </div>
+
+  <%= f.submit "Guardar", class: "btn btn-primary" %>
+<% end %>
