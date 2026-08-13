@@ -150,6 +150,30 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, quote.number
   end
 
+  test "el IVA por línea calcula el total de la línea y el IVA total de la compra" do
+    post admin_purchases_path, params: { purchase: {
+      supplier_id: @supplier.id, ordered_on: "2026-08-14",
+      purchase_lines_attributes: {
+        "0" => { description: "Cajas de envío", quantity: 100, unit_cost: "1.00", vat_rate: "21" },
+        "1" => { product_id: products(:funda).id, quantity: 10, unit_cost: "2.00", vat_rate: "0" }
+      }
+    } }
+    purchase = Purchase.last
+    assert_redirected_to admin_purchase_path(purchase)
+
+    boxes = purchase.purchase_lines.find_by(description: "Cajas de envío")
+    assert_equal BigDecimal("21"), boxes.vat_amount        # 100 × 1,00 × 21 %
+    assert_equal BigDecimal("121"), boxes.total_with_vat
+    assert_equal BigDecimal("21"), purchase.total_vat      # la línea sin IVA no suma
+    assert_equal BigDecimal("141"), purchase.total_with_vat # 120 base + 21 IVA
+    # El coste real sigue siendo sin IVA (es deducible).
+    assert_equal BigDecimal("2"), purchase.landed_unit_cost(purchase.purchase_lines.find_by(product: products(:funda)))
+
+    get admin_purchase_path(purchase)
+    assert_response :success
+    assert_includes response.body, "Total factura (IVA incl.)"
+  end
+
   test "una línea de concepto libre se compra sin producto y no toca stock ni coste real" do
     stock_was = products(:funda).stock
 

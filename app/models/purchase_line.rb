@@ -13,10 +13,11 @@ class PurchaseLine < ApplicationRecord
   validates :unit_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :shipping_cost, :customs_cost, :other_costs,
             numericality: { greater_than_or_equal_to: 0 }
+  validates :vat_rate, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validate :product_or_description
 
   # Un coste extra dejado en blanco en el formulario significa 0, no un error.
-  before_validation -> { self.shipping_cost ||= 0; self.customs_cost ||= 0; self.other_costs ||= 0 }
+  before_validation -> { self.shipping_cost ||= 0; self.customs_cost ||= 0; self.other_costs ||= 0; self.vat_rate ||= 0 }
 
   # Qué se compró: el producto de la tienda o el concepto libre.
   def display_name
@@ -47,6 +48,17 @@ class PurchaseLine < ApplicationRecord
   # Total de la línea en euros (aplica el tipo de cambio de la compra si es USD).
   def total_eur
     total * purchase.eur_rate
+  end
+
+  # IVA soportado de la línea (sobre productos + extras). No entra en el coste
+  # real: es deducible.
+  def vat_amount
+    total * vat_rate / 100
+  end
+
+  # Lo que se paga por la línea: base + IVA (en la moneda de la compra).
+  def total_with_vat
+    total + vat_amount
   end
 
   private

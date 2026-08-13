@@ -80,7 +80,7 @@ module Admin
                                        :currency, :invoice_date, :exchange_rate,
                                        purchase_lines_attributes: [ :id, :product_id, :description, :quantity, :unit_cost,
                                                                     :shipping_cost, :customs_cost, :other_costs,
-                                                                    :quote_id, :_destroy ])
+                                                                    :vat_rate, :quote_id, :_destroy ])
     end
 
     # Presupuestos elegibles para imputar líneas: los más recientes primero,

@@ -62,9 +62,23 @@ class Purchase < ApplicationRecord
     lines_total + extra_costs
   end
 
+  # IVA soportado total de la factura (suma del IVA de cada línea).
+  def total_vat
+    purchase_lines.sum { |line| line.vat_amount }
+  end
+
+  # Total factura, IVA incluido (lo que se paga al proveedor).
+  def total_with_vat
+    total_cost + total_vat
+  end
+
   # Coste total ya convertido a euros (la moneda base del negocio).
   def total_cost_eur
     total_cost * eur_rate
+  end
+
+  def total_with_vat_eur
+    total_with_vat * eur_rate
   end
 
   # Coste real («aterrizado») de una unidad de la línea, EN EUROS: el total de

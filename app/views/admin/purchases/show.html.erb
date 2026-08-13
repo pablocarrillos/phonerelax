@@ -38,7 +38,7 @@
 <% end %>
 <div style="overflow-x:auto;">
 <table class="table" style="min-width: 820px;">
-  <thead><tr><th>Producto</th><th class="num">Uds.</th><th class="num">Coste/ud.</th><th class="num">Transporte</th><th class="num">Aduanas</th><th class="num">Otros</th><th>Presupuesto</th><th class="num">Total línea</th><th class="num">Coste real/ud. (€)*</th></tr></thead>
+  <thead><tr><th>Producto</th><th class="num">Uds.</th><th class="num">Coste/ud.</th><th class="num">Transporte</th><th class="num">Aduanas</th><th class="num">Otros</th><th class="num">IVA</th><th>Presupuesto</th><th class="num">Total línea</th><th class="num">Coste real/ud. (€)*</th></tr></thead>
   <tbody>
     <% @purchase.purchase_lines.each do |line| %>
       <tr>
@@ -48,6 +48,7 @@
         <td class="num"><%= number_to_currency(line.shipping_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.customs_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.other_costs, unit: sym, format: '%n %u') %></td>
+        <td class="num"><%= line.vat_rate.positive? ? "#{purchase_amount(@purchase, line.vat_amount)} (#{line.vat_rate.to_i} %)" : "—" %></td>
         <td>
           <%# a qué presupuesto de cliente se imputa el coste de la línea %>
           <% if line.quote %>
@@ -56,7 +57,7 @@
             <span class="action-note">stock</span>
           <% end %>
         </td>
-        <td class="num"><strong><%= purchase_amount(@purchase, line.total) %></strong></td>
+        <td class="num"><strong><%= purchase_amount(@purchase, line.total_with_vat) %></strong></td>
         <td class="num"><strong><%= number_to_currency(@purchase.landed_unit_cost(line), unit: '€', format: '%n %u') %></strong></td>
       </tr>
     <% end %>
@@ -67,8 +68,9 @@
       <td class="field-label">Total transporte</td>
       <td class="field-label">Total aduanas</td>
       <td class="field-label">Total otros</td>
+      <td class="field-label">Total IVA</td>
       <td></td>
-      <td class="field-label" style="text-align:right;">Total factura</td>
+      <td class="field-label" style="text-align:right;">Total factura (IVA incl.)</td>
       <td></td>
     </tr>
     <tr class="total-row">
@@ -76,21 +78,22 @@
       <td class="num"><%= purchase_amount(@purchase, @purchase.total_shipping) %></td>
       <td class="num"><%= purchase_amount(@purchase, @purchase.total_customs) %></td>
       <td class="num"><%= purchase_amount(@purchase, @purchase.total_other) %></td>
+      <td class="num"><%= purchase_amount(@purchase, @purchase.total_vat) %></td>
       <td></td>
-      <td class="num"><strong><%= purchase_amount(@purchase, @purchase.total_cost) %></strong></td>
+      <td class="num"><strong><%= purchase_amount(@purchase, @purchase.total_with_vat) %></strong></td>
       <td></td>
     </tr>
     <% if @purchase.usd? %>
       <tr class="total-row">
-        <td colspan="7" style="text-align:right;">Total factura en euros</td>
-        <td class="num"><strong><%= number_to_currency(@purchase.total_cost_eur, unit: '€', format: '%n %u') %></strong></td>
+        <td colspan="8" style="text-align:right;">Total factura en euros (IVA incl.)</td>
+        <td class="num"><strong><%= number_to_currency(@purchase.total_with_vat_eur, unit: '€', format: '%n %u') %></strong></td>
         <td></td>
       </tr>
     <% end %>
   </tfoot>
 </table>
 </div>
-<p class="action-note">* Coste real por unidad, en euros: total de la línea (productos más su transporte, aduanas y otros costes) dividido entre las unidades, convertido con el tipo de cambio de la factura.</p>
+<p class="action-note">* Coste real por unidad, en euros: total de la línea (productos más su transporte, aduanas y otros costes, <strong>sin IVA</strong>, que es deducible) dividido entre las unidades, convertido con el tipo de cambio de la factura.</p>
 
 <% if @purchase.notes.present? %>
   <h2>Notas</h2>
