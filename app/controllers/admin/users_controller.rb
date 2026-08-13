@@ -26,7 +26,12 @@ module Admin
       attrs = user_params
       # Si no se escribe contraseña nueva, se conserva la actual.
       attrs = attrs.except(:password, :password_confirmation) if attrs[:password].blank?
+      password_changed = attrs[:password].present?
       if @user.update(attrs)
+        # al cambiar la contraseña caen todas sus sesiones abiertas (menos la
+        # actual si es la propia cuenta): una cookie robada deja de valer
+        keep = (@user == Current.user ? Current.session : nil)
+        @user.sessions.where.not(id: keep&.id).destroy_all if password_changed
         redirect_to admin_users_path, notice: "Administrador actualizado."
       else
         render :edit, status: :unprocessable_entity
