@@ -2,6 +2,12 @@ class OrdersController < ApplicationController
   allow_unauthenticated_access
   # Protección antibots: honeypot + tiempo mínimo de envío.
   invisible_captcha only: [ :create ], on_spam: :spam_detected, on_timestamp_spam: :spam_detected
+  # Límites por IP: frenan la creación masiva de pedidos y el rastreo de números
+  # de pedido ajenos probando URLs. Cada límite lleva su propio contador (name:).
+  rate_limit to: 10, within: 1.hour, only: :create, name: "checkout",
+             with: -> { redirect_to cart_path, alert: t("flash.verify_failed") }
+  rate_limit to: 30, within: 10.minutes, only: [ :show, :pay_page, :pay, :success, :cancel ],
+             name: "lookup", with: -> { head :too_many_requests }
 
   # Formulario de datos del cliente con el resumen del carrito.
   def new

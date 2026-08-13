@@ -33,7 +33,7 @@
   <% sort_th = ->(label, col) do
        next_dir = (@sort == col && @dir == "asc") ? "desc" : "asc"
        arrow = @sort == col ? (@dir == "asc" ? " ▲" : " ▼") : ""
-       link_to "#{label}#{arrow}".html_safe, admin_samples_path(sort: col, dir: next_dir, filter: @filter), class: "sort-link"
+       link_to "#{label}#{arrow}", admin_samples_path(sort: col, dir: next_dir, filter: @filter), class: "sort-link"
      end %>
   <table class="table">
     <thead><tr>
@@ -62,7 +62,8 @@
             <% if sample.sold? %><br><span class="badge venta">💰 Venta</span><% end %>
           </td>
           <td style="font-size:13px;">
-            <%= sample.sample_lines.map { |line| "#{line.quantity} × #{line.product.name.truncate(28)}" }.join('<br>').html_safe.presence || '—' %>
+            <%# safe_join escapa cada nombre de producto (evita XSS almacenado) %>
+            <%= safe_join(sample.sample_lines.map { |line| "#{line.quantity} × #{line.product.name.truncate(28)}" }, tag(:br)).presence || '—' %>
           </td>
           <td class="num"><%= number_to_currency(sample.cost(@landed_costs), unit: '€', format: '%n %u') %></td>
           <td style="text-align:right; white-space:nowrap;">

@@ -305,10 +305,12 @@ class Order < ApplicationRecord
     errors.add(:phone, "no parece un número válido de #{country || 'ese país'}")
   end
 
-  # Número corto legible para el cliente, p. ej. PR-24J7X9.
+  # Número legible para el cliente, p. ej. PR-24J7X9Q2M4. El número da acceso a
+  # la página de estado del pedido, así que lleva entropía suficiente (10
+  # caracteres, ~51 bits) para que no se pueda adivinar probando.
   def assign_number
     self.number ||= loop do
-      candidate = "PR-#{SecureRandom.alphanumeric(6).upcase}"
+      candidate = "PR-#{SecureRandom.alphanumeric(10).upcase}"
       break candidate unless Order.exists?(number: candidate)
     end
   end

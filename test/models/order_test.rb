@@ -8,6 +8,12 @@ class OrderTest < ActiveSupport::TestCase
     order
   end
 
+  test "el número de pedido lleva 10 caracteres de entropía (da acceso a la página de estado)" do
+    order = pending_order
+
+    assert_match(/\APR-[A-Z0-9]{10}\z/, order.number)
+  end
+
   test "mark_paid! manual marca el cobro manual, deja evento y descuenta stock" do
     products(:funda).update!(stock: 5)
     order = pending_order(quantity: 2)
