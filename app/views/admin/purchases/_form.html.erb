@@ -41,7 +41,7 @@
   </div>
 
   <h2 style="margin-top:24px;">Líneas de la compra</h2>
-  <p class="action-note" style="margin-top:0;">Cada línea lleva su producto, unidades, coste por unidad y los costes de transporte, aduanas y otros imputados a esa línea. Introduce todos los importes en la <strong>moneda seleccionada</strong>. Deja el producto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
+  <p class="action-note" style="margin-top:0;">Cada línea lleva su producto <strong>o un concepto libre</strong> (maquinaria, cajas… — sin producto de la tienda: no suma stock ni entra en el coste real), unidades, coste por unidad y los costes de transporte, aduanas y otros imputados a esa línea. Introduce todos los importes en la <strong>moneda seleccionada</strong>. Deja producto y concepto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
   <div style="overflow-x:auto;">
     <table class="table" style="min-width: 1060px;">
       <thead>
@@ -56,7 +56,11 @@
       <tbody>
         <%= f.fields_for :purchase_lines do |lf| %>
           <tr data-purchase-form-target="line">
-            <td><%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select', data: { action: 'change->purchase-form#recalc' } } %></td>
+            <td>
+              <%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select', data: { action: 'change->purchase-form#recalc' } } %>
+              <%# compra que no es un producto de la tienda: maquinaria, cajas… (no suma stock) %>
+              <%= lf.text_field :description, placeholder: 'o concepto libre (maquinaria, cajas…)', style: 'margin-top:4px; font-size:13px;' %>
+            </td>
             <td><%= lf.number_field :quantity, min: 1, style: 'width:90px;', data: { field: 'quantity', action: 'input->purchase-form#recalc' } %></td>
             <td><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:120px;', data: { field: 'unit_cost', action: 'input->purchase-form#recalc' } %></td>
             <td><%= lf.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'shipping_cost', action: 'input->purchase-form#recalc' } %></td>

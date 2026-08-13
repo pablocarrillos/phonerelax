@@ -78,7 +78,7 @@ module Admin
     def purchase_params
       params.require(:purchase).permit(:supplier_id, :reference, :ordered_on, :expected_on, :notes, :invoice,
                                        :currency, :invoice_date, :exchange_rate,
-                                       purchase_lines_attributes: [ :id, :product_id, :quantity, :unit_cost,
+                                       purchase_lines_attributes: [ :id, :product_id, :description, :quantity, :unit_cost,
                                                                     :shipping_cost, :customs_cost, :other_costs,
                                                                     :quote_id, :_destroy ])
     end

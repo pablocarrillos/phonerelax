@@ -150,6 +150,31 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, quote.number
   end
 
+  test "una línea de concepto libre se compra sin producto y no toca stock ni coste real" do
+    stock_was = products(:funda).stock
+
+    post admin_purchases_path, params: { purchase: {
+      supplier_id: @supplier.id, ordered_on: "2026-08-14",
+      purchase_lines_attributes: {
+        "0" => { description: "Máquina de serigrafía", quantity: 1, unit_cost: "1500", shipping_cost: "100" },
+        "1" => { product_id: products(:funda).id, quantity: 10, unit_cost: "2.00" }
+      }
+    } }
+    purchase = Purchase.last
+    assert_redirected_to admin_purchase_path(purchase)
+    assert_equal 2, purchase.purchase_lines.count
+
+    purchase.receive!
+    assert_equal stock_was + 10, products(:funda).reload.stock, "solo la línea de producto suma stock"
+
+    costs = Purchase.average_landed_costs
+    assert_equal [ products(:funda) ], costs.keys, "el concepto libre no entra en el coste real"
+    assert_equal 10, costs[products(:funda)][:units]
+
+    get admin_purchase_path(purchase)
+    assert_includes response.body, "Máquina de serigrafía"
+  end
+
   test "los costes extra en blanco cuentan como 0 y la compra se guarda" do
     assert_difference -> { Purchase.count }, 1 do
       post admin_purchases_path, params: { purchase: {

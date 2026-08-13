@@ -6,8 +6,9 @@ class Purchase < ApplicationRecord
   has_many :purchase_lines, dependent: :destroy, inverse_of: :purchase
   has_one_attached :invoice
 
+  # una fila del formulario cuenta si lleva producto de la tienda o concepto libre
   accepts_nested_attributes_for :purchase_lines, allow_destroy: true,
-                                                 reject_if: ->(attrs) { attrs["product_id"].blank? }
+                                                 reject_if: ->(attrs) { attrs["product_id"].blank? && attrs["description"].blank? }
 
   validates :ordered_on, presence: true
 
@@ -79,7 +80,8 @@ class Purchase < ApplicationRecord
 
     transaction do
       update!(received_on: Date.current)
-      purchase_lines.includes(:product).each { |line| line.product.increment!(:stock, line.quantity) }
+      # los conceptos libres (maquinaria, cajas…) no son productos en stock
+      purchase_lines.includes(:product).each { |line| line.product&.increment!(:stock, line.quantity) }
     end
   end
 
@@ -90,7 +92,7 @@ class Purchase < ApplicationRecord
     transaction do
       update!(received_on: nil)
       purchase_lines.includes(:product).each do |line|
-        line.product.update!(stock: [ line.product.stock - line.quantity, 0 ].max)
+        line.product&.update!(stock: [ line.product.stock - line.quantity, 0 ].max)
       end
     end
   end
@@ -104,6 +106,8 @@ class Purchase < ApplicationRecord
     result = {}
     includes(purchase_lines: :product).find_each do |purchase|
       purchase.purchase_lines.each do |line|
+        next if line.product.nil? # los conceptos libres no tienen coste real por producto
+
         entry = result[line.product] ||= { units: 0, cost: BigDecimal("0") }
         entry[:units] += line.quantity
         entry[:cost] += purchase.landed_unit_cost(line) * line.quantity

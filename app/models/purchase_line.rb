@@ -1,8 +1,10 @@
-# Línea de una compra: unidades de un producto, lo pagado por unidad y los
-# costes de transporte, aduanas y otros imputados a esta línea concreta.
+# Línea de una compra: unidades de un producto de la tienda O un concepto
+# libre (maquinaria, cajas…), lo pagado por unidad y los costes de transporte,
+# aduanas y otros imputados a esta línea concreta. Las líneas de concepto libre
+# no suman stock ni entran en el coste real por producto.
 class PurchaseLine < ApplicationRecord
   belongs_to :purchase, inverse_of: :purchase_lines
-  belongs_to :product
+  belongs_to :product, optional: true
   # presupuesto de cliente al que se imputa el coste de esta línea (opcional:
   # en blanco es compra para stock general)
   belongs_to :quote, optional: true
@@ -11,9 +13,15 @@ class PurchaseLine < ApplicationRecord
   validates :unit_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :shipping_cost, :customs_cost, :other_costs,
             numericality: { greater_than_or_equal_to: 0 }
+  validate :product_or_description
 
   # Un coste extra dejado en blanco en el formulario significa 0, no un error.
   before_validation -> { self.shipping_cost ||= 0; self.customs_cost ||= 0; self.other_costs ||= 0 }
+
+  # Qué se compró: el producto de la tienda o el concepto libre.
+  def display_name
+    product&.name || description
+  end
 
   # Coste de los productos de la línea, sin extras (en la moneda de la compra).
   def subtotal
@@ -39,5 +47,13 @@ class PurchaseLine < ApplicationRecord
   # Total de la línea en euros (aplica el tipo de cambio de la compra si es USD).
   def total_eur
     total * purchase.eur_rate
+  end
+
+  private
+
+  def product_or_description
+    return if product.present? || description.present?
+
+    errors.add(:base, "Cada línea necesita un producto de la tienda o un concepto libre")
   end
 end

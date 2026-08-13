@@ -158,7 +158,7 @@
         <tr>
           <td><%= link_to "#{l(line.purchase.ordered_on, format: '%d/%m/%Y')}#{" · #{line.purchase.reference}" if line.purchase.reference.present?}", admin_purchase_path(line.purchase) %></td>
           <td><%= line.purchase.supplier.name %></td>
-          <td><%= line.product.name %></td>
+          <td><%= line.display_name %></td>
           <td class="num"><%= line.quantity %></td>
           <td class="num"><%= number_to_currency(line.total_eur, unit: '€', format: '%n %u') %></td>
         </tr>
