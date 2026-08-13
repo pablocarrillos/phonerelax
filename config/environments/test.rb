@@ -4,6 +4,8 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # Este puesto no tiene libvips >= 8.13: variantes con ImageMagick en local.
+  config.active_storage.variant_processor = :mini_magick
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.

@@ -1,6 +1,8 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  # Este puesto no tiene libvips >= 8.13: variantes con ImageMagick en local.
+  config.active_storage.variant_processor = :mini_magick
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Make code changes take effect immediately without server restart.
