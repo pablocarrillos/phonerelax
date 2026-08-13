@@ -1,4 +1,7 @@
-<h1>Contabilidad</h1>
+<div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+  <h1 style="margin:0;">Contabilidad</h1>
+  <%= link_to "Datos de empresa", admin_company_setting_path, class: "btn btn-outline", style: "padding:5px 14px;" %>
+</div>
 <p class="action-note" style="margin-top:0;">
   Facturación del tramo elegido: ventas de la web pagadas (serie <%= CompanySetting.current.web_series %>)
   y presupuestos aprobados (serie <%= CompanySetting.current.quote_series %>).
