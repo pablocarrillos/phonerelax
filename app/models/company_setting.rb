@@ -4,6 +4,9 @@
 class CompanySetting < ApplicationRecord
   KINDS = { "web" => :web, "quote" => :quote }.freeze
 
+  # cifrado en BD (ver initializer active_record_encryption)
+  encrypts :verifactu_token
+
   validates :legal_name, :tax_id, :web_series, :quote_series, presence: true
   validates :web_next_number, :quote_next_number,
             numericality: { only_integer: true, greater_than: 0 }
