@@ -7,8 +7,10 @@ class PriceTier < ApplicationRecord
                         uniqueness: { scope: :product_id }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }
 
-  # Los precios del escalado se guardan con dos decimales.
-  before_validation { self.unit_price = unit_price.round(2) if unit_price }
+  # Hasta cuatro decimales: permiten clavar el precio CON IVA en céntimos
+  # exactos (p. ej. 12,3554 × 1,21 = 14,95). En presupuestos y totales el
+  # neto se redondea a dos decimales al usarse.
+  before_validation { self.unit_price = unit_price.round(4) if unit_price }
 
   scope :ordered, -> { order(:min_units) }
 

@@ -43,6 +43,18 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "un neto con 4 decimales clava el precio con IVA en céntimos (12,3554 → 14,95)" do
+    tier = @product.price_tiers.find_by!(min_units: 1)
+
+    patch admin_product_path(@product), params: { product: {
+      name: @product.name,
+      price_tiers_attributes: { "0" => { id: tier.id, min_units: 1, unit_price: "12.3554" } }
+    } }
+
+    assert_equal BigDecimal("12.3554"), tier.reload.unit_price, "el neto no se redondea a 2 decimales"
+    assert_equal BigDecimal("14.95"), @product.reload.price
+  end
+
   test "el precio de tienda sale del tramo base del escalado (el campo precio ya no existe)" do
     tier = @product.price_tiers.find_by!(min_units: 1)
 

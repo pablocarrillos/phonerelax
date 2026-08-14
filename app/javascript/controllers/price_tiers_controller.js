@@ -24,7 +24,8 @@ export default class extends Controller {
   fromGross(event) {
     const row = event.target.closest("tr")
     const gross = this.value(row, "gross")
-    this.set(row, "net", isNaN(gross) ? "" : (gross / this.factor()).toFixed(2))
+    // 4 decimales en el neto: así el precio CON IVA tecleado se clava en céntimos
+    this.set(row, "net", isNaN(gross) ? "" : (gross / this.factor()).toFixed(4))
     this.refreshDiscounts()
   }
 
@@ -35,7 +36,7 @@ export default class extends Controller {
     if (isNaN(pct) || !(base > 0)) return
 
     const net = base * (1 - pct / 100)
-    this.set(row, "net", net.toFixed(2))
+    this.set(row, "net", net.toFixed(4))
     this.set(row, "gross", (net * this.factor()).toFixed(2))
   }
 
