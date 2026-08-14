@@ -43,7 +43,8 @@
   <h2 style="margin-top:24px;">Líneas de la compra</h2>
   <p class="action-note" style="margin-top:0;">Cada línea lleva su producto <strong>o un concepto libre</strong> (maquinaria, cajas… — sin producto de la tienda: no suma stock ni entra en el coste real), unidades, coste por unidad y los costes de transporte, aduanas y otros imputados a esa línea. Introduce todos los importes en la <strong>moneda seleccionada</strong>. Deja producto y concepto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
   <div style="overflow-x:auto;">
-    <table class="table" style="min-width: 1160px;">
+    <%# columnas compactas: la tabla entera debe caber sin scroll en un portátil %>
+    <table class="table" style="min-width: 900px;">
       <thead>
         <tr>
           <th>Producto</th><th>Unidades</th><th>Coste/ud.</th>
@@ -58,21 +59,21 @@
         <%= f.fields_for :purchase_lines do |lf| %>
           <tr data-purchase-form-target="line">
             <td>
-              <%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select', data: { action: 'change->purchase-form#recalc' } } %>
+              <%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select', style: 'max-width:185px;', data: { action: 'change->purchase-form#recalc' } } %>
               <%# compra que no es un producto de la tienda: maquinaria, cajas… (no suma stock) %>
-              <%= lf.text_field :description, placeholder: 'o concepto libre (maquinaria, cajas…)', style: 'margin-top:4px; font-size:13px;' %>
+              <%= lf.text_field :description, placeholder: 'o concepto libre (maquinaria, cajas…)', style: 'margin-top:4px; font-size:13px; max-width:185px;' %>
             </td>
-            <td><%= lf.number_field :quantity, min: 1, style: 'width:90px;', data: { field: 'quantity', action: 'input->purchase-form#recalc' } %></td>
-            <td><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:120px;', data: { field: 'unit_cost', action: 'input->purchase-form#recalc' } %></td>
-            <td><%= lf.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'shipping_cost', action: 'input->purchase-form#recalc' } %></td>
-            <td><%= lf.number_field :customs_cost, step: 0.01, min: 0, style: 'width:105px;', data: { field: 'customs_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :quantity, min: 1, style: 'width:65px;', data: { field: 'quantity', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:85px;', data: { field: 'unit_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:75px;', data: { field: 'shipping_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td><%= lf.number_field :customs_cost, step: 0.01, min: 0, style: 'width:75px;', data: { field: 'customs_cost', action: 'input->purchase-form#recalc' } %></td>
             <td>
               <%= lf.select :vat_rate, [['Sin IVA', 0], ['10 %', 10], ['21 %', 21]], {},
-                            { class: 'form-select', style: 'width:95px;', data: { field: 'vat_rate', action: 'change->purchase-form#recalc' } } %>
+                            { class: 'form-select', style: 'width:85px;', data: { field: 'vat_rate', action: 'change->purchase-form#recalc' } } %>
               <div class="action-note" style="margin-top:2px; text-align:right;" data-line-vat></div>
             </td>
-            <td><%= lf.select :quote_id, @quotes_for_imputation.map { |q| ["#{q.number} · #{q.client.name.truncate(24)}", q.id] },
-                              { include_blank: '— stock —' }, { class: 'form-select', style: 'max-width:210px;' } %></td>
+            <td><%= lf.select :quote_id, @quotes_for_imputation.map { |q| ["#{q.number} · #{q.client.name.truncate(18)}", q.id] },
+                              { include_blank: '— stock —' }, { class: 'form-select', style: 'max-width:140px; font-size:13px;' } %></td>
             <td class="num"><strong data-line-total>—</strong></td>
             <% if purchase.purchase_lines.any?(&:persisted?) %>
               <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>

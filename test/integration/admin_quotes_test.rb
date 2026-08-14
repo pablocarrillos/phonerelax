@@ -7,7 +7,8 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     @client = Client.create!(name: "Colegio San Luis", tax_id: "ESN0011465B",
                              address: "C/ Portugalete, 1\nPOZUELO DE ALARCÓN (MADRID)\nESPAÑA")
     # Escalado de la funda: 12,3554 € base y 11,1198 € a partir de 100 uds.
-    products(:funda).price_tiers.create!(min_units: 1, unit_price: BigDecimal("12.3554"))
+    # el tramo base ya existe por fixture: aquí se le pone el precio de estos tests
+    products(:funda).price_tiers.find_by!(min_units: 1).update!(unit_price: BigDecimal("12.3554"))
     products(:funda).price_tiers.create!(min_units: 100, unit_price: BigDecimal("11.1198"))
     # El test de compra en tienda pasa por el checkout público, con antibots.
     @timestamp_was = InvisibleCaptcha.timestamp_enabled

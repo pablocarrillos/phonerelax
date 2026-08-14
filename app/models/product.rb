@@ -22,6 +22,12 @@ class Product < ApplicationRecord
   # El precio de un pack se calcula con el escalado de sus componentes; se
   # guarda en `price` como caché para el admin y los datos estructurados.
   before_validation :sync_pack_price
+  # El precio de tienda de un producto normal sale del tramo «desde 1 unidad»
+  # del escalado (sin IVA) más su IVA: una única fuente de verdad.
+  before_validation :sync_price_from_tiers
+  # En el formulario del admin el escalado con tramo base es obligatorio (solo
+  # en ese contexto: seeds, consola y tests pueden fijar price directamente).
+  validate :base_tier_required, on: :admin_form
   # La posición ya no se edita a mano: los productos nuevos entran al final y
   # el orden se cambia arrastrando en la lista del admin.
   before_create { self.position = (Product.maximum(:position) || 0) + 1 if position.to_i.zero? }
@@ -222,9 +228,23 @@ class Product < ApplicationRecord
 
   private
 
-  # Guarda en `price` el precio calculado del pack (caché para admin y schema);
-  # los productos normales conservan su precio introducido a mano.
+  # Guarda en `price` el precio calculado del pack (caché para admin y schema).
   def sync_pack_price
     self.price = pack_unit_price if pack?
+  end
+
+  # PVP de la tienda (IVA incluido) derivado del tramo «desde 1 unidad» del escalado.
+  def sync_price_from_tiers
+    return if pack?
+
+    base = price_tiers.reject(&:marked_for_destruction?).find { |tier| tier.min_units == 1 }
+    self.price = (base.unit_price * (1 + (vat_percentage.to_d / 100))).round(2) if base&.unit_price
+  end
+
+  def base_tier_required
+    return if pack?
+    return if price_tiers.reject(&:marked_for_destruction?).any? { |tier| tier.min_units == 1 && tier.unit_price.present? }
+
+    errors.add(:base, "Añade al escalado el tramo «desde 1 unidad»: su precio sin IVA fija el precio de la tienda")
   end
 end

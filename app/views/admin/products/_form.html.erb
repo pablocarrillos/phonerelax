@@ -4,8 +4,10 @@
   <% end %>
   <div class="form-grid" style="max-width: 860px;">
     <div>
-      <%= f.label :price, 'Precio (€, IVA incluido)' %>
-      <%= f.number_field :price, step: 0.01, data: { pack_form_target: 'price' } %>
+      <%# el precio de tienda ya no se teclea aquí: sale del tramo «desde 1 unidad» del escalado %>
+      <span class="field-label">Precio de tienda (€, IVA incluido)</span>
+      <p style="margin:4px 0 0; font-size:20px; font-weight:600;"><%= number_to_currency(product.price, unit: '€', format: '%n %u') if product.price %></p>
+      <% unless product.pack? %><p class="action-note" style="margin-top:4px;">Automático: sale del tramo «desde 1 unidad» del escalado, más el IVA.</p><% end %>
       <p class="action-note" style="margin-top:4px;" data-pack-form-target="priceNote" hidden>Automático: se calcula con los precios de los componentes del pack.</p>
     </div>
     <div>
@@ -94,6 +96,7 @@
   <div style="max-width: 860px; margin-top: 26px;" data-controller="price-tiers"
        data-price-tiers-rate-value="<%= product.vat_percentage || 21 %>" data-pack-form-target="tiers">
     <h2>Escalado de precios por cantidad</h2>
+    <p class="action-note" style="margin-top:0;">El tramo <strong>«desde 1 unidad» es obligatorio</strong>: su precio sin IVA fija el precio de la tienda.</p>
     <p class="action-note" style="margin-top:0;">Precio unitario a partir de cada tramo de unidades. Se aplica en la <strong>tienda</strong> (carrito y pedidos) y en los <strong>presupuestos</strong>. Los tres valores están sincronizados: al editar uno se recalculan los otros (descuento respecto al primer tramo). Sin tramos, se usa siempre el precio normal.</p>
     <table class="table" style="max-width:620px;">
       <thead><tr><th>Desde (uds.)</th><th class="num">€/ud. sin IVA</th><th class="num">€/ud. con IVA</th><th class="num">Dto. %</th><th>Quitar</th></tr></thead>

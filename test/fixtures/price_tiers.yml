@@ -1,0 +1,11 @@
+# Tramo base de cada producto: su precio sin IVA fija el PVP de la tienda
+# (8,22 × 1,21 = 9,95 y 49,50 × 1,21 = 59,90, los precios de products.yml).
+funda_base:
+  product: funda
+  min_units: 1
+  unit_price: 8.22
+
+iman_base:
+  product: iman
+  min_units: 1
+  unit_price: 49.50

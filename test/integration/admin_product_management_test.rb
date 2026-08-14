@@ -19,9 +19,9 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     # Escalado: plantilla y botón para añadir tramos nuevos sin límite.
     assert_select "template[data-price-tiers-target='template']"
     assert_select "button[data-action='price-tiers#addRow']"
-    # Pack: el formulario reacciona al check (precio bloqueado y escalado oculto).
+    # Pack: el formulario reacciona al check (escalado oculto, notas automáticas).
     assert_select "form[data-controller='pack-form']"
-    assert_select "input[data-pack-form-target='price']"
+    assert_select "input[data-pack-form-target='price']", 0 # el precio ya no se teclea: sale del escalado
     assert_select "input[data-pack-form-target='stock']"
   end
 
@@ -41,6 +41,33 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
   test "reordenar sin ids no cambia nada" do
     patch reorder_admin_products_path, params: { ids: [] }, as: :json
     assert_response :unprocessable_entity
+  end
+
+  test "el precio de tienda sale del tramo base del escalado (el campo precio ya no existe)" do
+    tier = @product.price_tiers.find_by!(min_units: 1)
+
+    patch admin_product_path(@product), params: { product: {
+      name: @product.name,
+      price_tiers_attributes: { "0" => { id: tier.id, min_units: 1, unit_price: "10.00" } }
+    } }
+    assert_redirected_to admin_products_path
+    assert_equal BigDecimal("12.1"), @product.reload.price, "10,00 sin IVA × 21 % = 12,10 de PVP"
+
+    get edit_admin_product_path(@product)
+    assert_select "input#product_price", 0, "el campo de precio a mano ya no está"
+  end
+
+  test "sin el tramo «desde 1 unidad» el producto no se guarda desde el admin" do
+    tier = @product.price_tiers.find_by!(min_units: 1)
+
+    patch admin_product_path(@product), params: { product: {
+      name: @product.name,
+      price_tiers_attributes: { "0" => { id: tier.id, _destroy: "1" } }
+    } }
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "desde 1 unidad"
+    assert @product.reload.price_tiers.exists?(min_units: 1), "el tramo base no se borra"
   end
 
   test "subir una portada nueva la adjunta y pasa a usarse en la tienda" do
