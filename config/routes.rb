@@ -56,7 +56,7 @@ Rails.application.routes.draw do
   get "politica-de-cookies", to: "pages#politica_cookies", as: :politica_cookies
 
   # «Quiénes somos» se fusionó con Contacto; redirección para enlaces antiguos.
-  scope "(:locale)", locale: /pt|en|fr|de/ do
+  scope "(:locale)", locale: /pt|en|fr|de|sv/ do
     get "pages/quienes-somos", to: redirect { |p, _req| p[:locale] ? "/#{p[:locale]}/pages/contact" : "/pages/contact" }
   end
 

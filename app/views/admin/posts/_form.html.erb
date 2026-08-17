@@ -45,6 +45,15 @@
     <div><%= f.label :slug_de, 'Slug DE (URL; vacío = automático)' %><%= f.text_field :slug_de %></div>
     <div class="full"><%= f.label :excerpt_de, 'Extracto (DE)' %><%= f.text_area :excerpt_de, rows: 3 %></div>
     <div class="full"><%= f.label :body_de, 'Contenido DE (HTML)' %><%= f.text_area :body_de, rows: 16, style: 'font-family: monospace; font-size: 13px;' %></div>
+
+    <div class="full">
+      <h3 style="margin: 22px 0 4px;">🇸🇪 Sueco (opcional)</h3>
+      <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /sv se mostrará el contenido en español.</p>
+    </div>
+    <div class="full"><%= f.label :title_sv, 'Título (SV)' %><%= f.text_field :title_sv %></div>
+    <div><%= f.label :slug_sv, 'Slug SV (URL; vacío = automático)' %><%= f.text_field :slug_sv %></div>
+    <div class="full"><%= f.label :excerpt_sv, 'Extracto (SV)' %><%= f.text_area :excerpt_sv, rows: 3 %></div>
+    <div class="full"><%= f.label :body_sv, 'Contenido SV (HTML)' %><%= f.text_area :body_sv, rows: 16, style: 'font-family: monospace; font-size: 13px;' %></div>
   </div>
   <p><%= f.submit 'Guardar artículo', class: 'btn btn-primary' %> <%= link_to 'Cancelar', admin_posts_path, class: 'btn btn-outline' %></p>
 <% end %>

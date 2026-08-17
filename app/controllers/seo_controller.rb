@@ -76,9 +76,9 @@ class SeoController < ApplicationController
     out << "PhoneRelax vende bolsas magnéticas donde el propio usuario guarda su móvil y lo sella; se abren acercando la cerradura a un imán especial PhoneRelax. Hay una versión básica (sella la bolsa) y una versión SignalBlocking que además bloquea la señal móvil y el wifi. Pensadas para colegios, institutos, academias y eventos."
     out << ""
     out << "## Idiomas disponibles"
-    out << "Todo el sitio (tienda, blog y proceso de compra) está disponible en cinco idiomas, con URLs traducidas por idioma:"
+    out << "Todo el sitio (tienda, blog y proceso de compra) está disponible en seis idiomas, con URLs traducidas por idioma:"
     I18n.available_locales.each do |loc|
-      name = { es: "Español (por defecto)", pt: "Português", en: "English", fr: "Français", de: "Deutsch" }[loc] || loc.to_s
+      name = { es: "Español (por defecto)", pt: "Português", en: "English", fr: "Français", de: "Deutsch", sv: "Svenska" }[loc] || loc.to_s
       path = loc == I18n.default_locale ? "/" : "/#{loc}"
       out << "- #{name}: #{base}#{path}"
     end

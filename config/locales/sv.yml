@@ -1,0 +1,379 @@
+sv:
+  # Segmentos de URL traducidos (route_translator). Lo que no aparece, se deja igual.
+  routes:
+    politica-privacidad: integritetspolicy
+    presupuesto: offert
+    colegios: skolor
+    eventos: evenemang
+    empresas: foretag
+    oposiciones: prov
+    carrito: varukorg
+    anadir: lagg-till
+    cantidad: antal
+    quitar: ta-bort
+    pedido: bestallning
+    nuevo: ny
+    pagar: betala
+    pago-ok: betalning-ok
+    pago-cancelado: betalning-avbruten
+    como-funciona: sa-fungerar-det
+  date:
+    formats:
+      default: "%Y-%m-%d"
+      long: "%-d %B %Y"
+    month_names: [~, januari, februari, mars, april, maj, juni, juli, augusti, september, oktober, november, december]
+    day_names: [söndag, måndag, tisdag, onsdag, torsdag, fredag, lördag]
+    abbr_day_names: [sön, mån, tis, ons, tors, fre, lör]
+    abbr_month_names: [~, jan, feb, mar, apr, maj, jun, jul, aug, sep, okt, nov, dec]
+  time:
+    formats:
+      short: "%Y-%m-%d %H:%M"
+      long: "%-d %B %Y kl. %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Namn
+        email: E-post
+        phone: Telefon
+        address: Adress
+        city: Ort
+        postal_code: Postnummer
+        province: Län
+        country: Land
+      product:
+        name: Namn
+        price: Pris
+      quote:
+        client: Kund
+        number: Offert nr
+        delivery_terms: Leveranstid
+      user:
+        email_address: E-post
+        password: Lösenord
+        password_confirmation: Bekräfta lösenord
+    errors:
+      messages:
+        blank: får inte vara tomt
+        invalid: är ogiltigt
+        required: måste finnas
+        taken: används redan
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      confirmation: stämmer inte överens
+
+  nav:
+    home: Hem
+    how_it_works: "Så fungerar det"
+    products: Produkter
+    bulk: Stora beställningar
+    blog: Blogg
+    contact: Kontakt
+    cart: Varukorg
+    admin: Admin
+    privacy: Integritetspolicy
+  footer:
+    legal_notice: Rättsligt meddelande
+    cookies_policy: Cookiepolicy
+    tagline: PhoneRelax — mobilfria miljöer.
+    admin: Adminpanel
+  common:
+    add_to_cart: Lägg i varukorgen
+    sold_out: Slutsåld
+    back: Tillbaka
+    our_products: Våra produkter
+    view_products: Se produkter
+    keep_shopping: Fortsätt handla
+    checkout: Till kassan
+    product: Produkt
+    price: Pris
+    quantity: Antal
+    subtotal: Delsumma
+    total: Totalt
+    vat_included: "inkl. moms (%{rate} %)"
+    vat_rate: "Moms (%{rate} %)"
+    vat_included_short: inkl. moms
+    whatsapp_aria: Skriv till oss på WhatsApp
+    update: Uppdatera
+    remove: Ta bort
+    prev: Föregående
+    next: Nästa
+    slide: "Bild %{n}"
+    play_video: Spela upp video
+    image_n: "Bild %{n}"
+    main_nav: Huvudmeny
+    breadcrumb: Sökväg
+    language: Språk
+    country: Spanien
+    trusted_by: "Kunder som redan litar på PhoneRelax"
+    site_title: "PhoneRelax – Magnetisk mobilficka för klassrum och evenemang."
+    site_description: "PhoneRelax: magnetiska fickor och fodral som förvarar mobilen och blockerar signalen i klassrum, på evenemang och i miljöer utan distraktioner. Leverans i hela Europa."
+  home:
+    slide1: Bättre koncentration och samspel i klassrummet
+    slide2: "Förhindrar mobilanvändning <br>i oövervakade utrymmen"
+    slide3: "Användarna ansvarar själva <br>för sina egna mobiler"
+    slide4: "Njut av stunden <br>utan distraktioner"
+    how_title: "Så fungerar det"
+    step1_title: "1 · Lägg telefonen i fickan"
+    step1_body: "Lägg mobiltelefonen i PhoneRelax-fickan. Från och med då har den täckning eller inte, beroende på vilken typ av ficka du använder."
+    step2_title: "2 · Stäng PhoneRelax-fickan"
+    step2_body: "Tryck på låsknappen så förseglas telefonen inuti. Det är telefonens ägare som behåller den hela tiden."
+    step3_title: "3 · Öppna PhoneRelax-fickan"
+    step3_body: "För att ta ut telefonen håller du bara låset mot en av PhoneRelax specialmagneter för öppning och tar ut telefonen."
+    schools_title: PhoneRelax för skolor
+    products_title: Produkter
+    events_title: PhoneRelax för evenemang
+    blog_title: Vår blogg
+    bulk_cta_title: "En skola, ett företag eller ett evenemang?"
+    bulk_cta_body: "Mängdrabatt och tryck med er logotyp för stora beställningar."
+    bulk_cta_button: "Begär offert"
+    meta_description: "Magnetiska PhoneRelax-fickor och fodral som förvarar mobilen och blockerar signalen i klassrum, skolor, på evenemang och i miljöer utan distraktioner. Enkla att använda, med leverans i hela Europa."
+  steps:
+    title: "Bara tre steg:"
+    step1_title: "1 · Lägg telefonen i fickan"
+    step1_body: "Lägg mobiltelefonen i PhoneRelax-fickan. Från och med då har den täckning eller inte, beroende på vilken typ av PhoneRelax-ficka du använder."
+    step2_title: "2 · Stäng PhoneRelax-fickan"
+    step2_body: "Tryck på låsknappen på PhoneRelax-fickan så förseglas telefonen inuti. Det är telefonens ägare som behåller den hela tiden."
+    step3_title: "3 · Öppna PhoneRelax-fickan"
+    step3_body: "För att ta ut mobiltelefonen ur PhoneRelax-fickan håller du bara låset mot en av PhoneRelax specialmagneter för öppning och tar ut telefonen."
+    step1_alt: Lägg telefonen i fickan
+    step2_alt: Stäng PhoneRelax-fickan
+    step3_alt: Öppna PhoneRelax-fickan
+  product:
+    unavailable: Den här produkten är inte tillgänglig just nu.
+    pack_includes: Det här ingår i paketet
+    pack_normal: Styckpris
+    pack_in_pack: I paketet
+    pack_saving: Besparing
+    pack_max: "max %{n}"
+    pack_saving_total: "Du sparar %{amount} genom att köpa paketet i stället för produkterna var för sig."
+  cart:
+    title: Din varukorg
+    empty: Varukorgen är tom.
+  checkout:
+    title: Till kassan
+    base: Belopp exkl. moms
+    vat: Moms
+    total_vat: Totalt (inkl. moms)
+    total_exempt: Totalt (exkl. moms)
+    shipping_note: Fraktkostnaden beräknas när du har angett leveransadressen.
+    your_data: Dina uppgifter
+    customer_name: För- och efternamn
+    email: E-post
+    phone: Telefon
+    phone_prefix: Landsnummer
+    address: Leveransadress
+    city: Ort
+    postal_code: Postnummer
+    province: Län
+    country: Land
+    submit: Beräkna fraktkostnad
+    needs_invoice: Jag behöver faktura
+    invoice_note: Ange dina faktureringsuppgifter. Om du är ett företag i ett annat EU-land, ange ditt VAT-nummer så kontrollerar vi det i VIES.
+    tax_name: Namn eller företagsnamn
+    tax_id: Organisationsnummer / VAT-nummer
+    tax_same_as_shipping: Använd leveransadressen som fakturaadress
+    tax_address: Fakturaadress
+    tax_city: Ort
+    tax_postal_code: Postnummer
+    tax_province: Län
+    tax_country: Land
+    vies_checking: Kontrollerar i VIES…
+    vies_ok: "✓ Giltigt VAT-nummer i VIES"
+    vies_ko: "✗ Ogiltigt VAT-nummer i VIES"
+    vies_unavailable: Kontrollen kunde inte göras nu; vi verifierar det när beställningen behandlas.
+  order:
+    title: "Beställning %{number}"
+    thanks_title: "Tack för ditt köp, %{name}!"
+    thanks_text: "Din betalning har tagits emot. Vi har skickat en bekräftelse till %{email} och meddelar dig så snart din beställning är på väg."
+    payment: "Betalning:"
+    status: "Status:"
+    shipping: Frakt
+    save_note: Spara den här sidan för att följa din beställning.
+    statuses:
+      creado: Skapad
+      enviado: Skickad
+      recibido: Mottagen
+    payment_statuses:
+      pendiente: väntande
+      pagado: betald
+      reembolsado: återbetald
+  vat_exempt:
+    export: "Momsbefriad transaktion: leverans till Kanarieöarna (export). Eventuella importavgifter (IGIC/tull) betalas av mottagaren."
+    intra_eu: "Momsbefriad transaktion: gemenskapsintern leverans till företag med VAT-nummer validerat i VIES (art. 25 i den spanska momslagen)."
+  pay:
+    title: Granska och betala din beställning
+    order_shipping: "Beställning %{number} · leverans till %{destination}"
+    shipping: Frakt
+    total_to_pay: Att betala (inkl. moms)
+    total_exempt: Att betala (exkl. moms)
+    stripe_note: "När du klickar på «Betala» skickas du till Stripes säkra betalsida."
+    pay_button: Betala
+  contact:
+    title: Kontakt
+    about: "PhoneRelax har sitt säte i Alicante (Spanien) och grundades för att lösa problemen med mobilanvändning i skolor, gymnasier, på konserter och privata evenemang."
+    map_title: "Karta: C/ Carrasqueta, 14, Petrer"
+    intro_html: "Skriv till oss så svarar vi så snart som möjligt:"
+    form_title: Kontaktformulär
+    name: Namn
+    email: "E-post *"
+    phone: Telefonnummer
+    message: Meddelande
+    submit: Skicka
+    meta_description: "Har du frågor eller vill du ha en offert för din skola eller ditt evenemang? Kontakta PhoneRelax så hjälper vi dig att välja rätt lösning."
+  how_it_works:
+    title: "Så fungerar det"
+    p1: "Det är mycket enkelt: lägg mobilen i PhoneRelax-fickan och tryck på låsknappen så förseglas telefonen inuti."
+    p2: "Den största fördelen är att mobilens ägare själv ansvarar för sin telefon i PhoneRelax-fickan tills det är dags att använda den igen."
+    p3: "För att frigöra mobilen håller du bara PhoneRelax-fickans lås mot vår speciella PhoneRelax-magnet så öppnas fickan och du kan ta ut telefonen."
+    p4: "Vi har två olika typer av PhoneRelax-fickor: en version med ficka och förseglingslås, och en SignalBlocking-version som dessutom blockerar mobil- och wifi-signalen, så att telefonen blir utan täckning och inte stör med inkommande samtal eller notiser."
+    video_alt: PhoneRelax-video
+    faq_title: Vanliga frågor
+    meta_description: "Så fungerar PhoneRelax: lägg mobilen i den magnetiska fickan, stäng den och ta fram den när det är dags. Ett enkelt sätt att skapa miljöer utan distraktioner i klassrum och på evenemang."
+    faq:
+      q1: "Hur fungerar PhoneRelax-fickan?"
+      a1: "Du lägger mobilen i fickan och trycker på låsknappen så att den förseglas inuti. För att frigöra den håller du låset mot den speciella PhoneRelax-magneten så öppnas fickan."
+      q2: "Vem förvarar telefonen?"
+      a2: "Mobilens ägare själv, som behåller den i sin PhoneRelax-ficka tills det är dags att använda den igen."
+      q3: "Blockerar PhoneRelax täckning och wifi?"
+      a3: "SignalBlocking-versionen gör det: den blockerar mobil- och wifi-signalen, så att telefonen blir utan täckning och inte stör med samtal eller notiser. Basversionen förseglar bara fickan."
+      q4: "Kan fickan öppnas utan magneten?"
+      a4: "Nej. PhoneRelax-fickans lås öppnas bara när det hålls mot den speciella PhoneRelax-magneten."
+      q5: "Var används PhoneRelax?"
+      a5: "I klassrum och skolor, samt på evenemang och i miljöer där man vill undvika mobilanvändning och distraktioner."
+  blog:
+    title: Blogg
+    read_article: "Läs artikeln →"
+    meta_description: "PhoneRelax blogg: tips och idéer om ansvarsfull mobilanvändning i klassrum, skolor och på evenemang, och hur man minskar distraktionerna."
+  flash:
+    cart_empty: Varukorgen är tom.
+    added_to_cart: "%{name} har lagts i varukorgen."
+    out_of_stock: "Det finns inte tillräckligt i lager av: %{names}. Justera antalet."
+    zero_quantity: "Ange ett antal större än 0 för: %{names}."
+    dtf_min: "DTF-tryck kräver minst %{min} enheter i beställningen (du har %{count})."
+    dtf_mismatch: "Antalet DTF-tryck (%{dtf}) måste stämma överens med antalet fickor (%{fundas}). Justera antalet."
+    payment_cancelled: Betalningen avbröts. Du kan försöka igen när du vill.
+    verify_failed: Formuläret kunde inte verifieras. Försök igen.
+    message_sent: Meddelandet har skickats. Vi svarar så snart som möjligt.
+    quote_sent: Förfrågan har skickats. Vi skickar din offert så snart som möjligt.
+    payment_start_failed: "Betalningen kunde inte startas: %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Betalning mottagen för din beställning %{number}"
+      title: "Tack för ditt köp, %{name}!"
+      body_html: "Vi har tagit emot betalningen för din beställning <strong>%{number}</strong>. Vi förbereder den nu och meddelar dig när den skickas till din adress."
+      track: Följ min beställning
+    shipped:
+      subject: "PhoneRelax · Din beställning %{number} är på väg"
+      title: "Din beställning är på väg 📦"
+      body_html: "Hej %{name}! Din beställning <strong>%{number}</strong> har skickats till:"
+      track: Följ min beställning
+      tracking_label: Spårningsnummer
+    payment_reminder:
+      subject: "PhoneRelax · Din beställning %{number} väntar på betalning"
+      title: "Din beställning väntar på dig"
+      body_html: "Hej %{name}! Din beställning <strong>%{number}</strong> är förberedd men ännu inte betald. Du kan slutföra den när du vill:"
+      pay: Slutför betalningen
+      no_action: "Om du inte längre vill ha den behöver du inte göra något."
+    refunded:
+      subject: "PhoneRelax · Återbetalning för din beställning %{number}"
+      title: "Vi har gjort en återbetalning"
+      body_html: "Hej %{name}! Vi har återbetalat <strong>%{amount}</strong> för din beställning <strong>%{number}</strong>."
+      full_note: "Med den här återbetalningen är beställningen återbetald i sin helhet."
+      partial_note: "Resten av beställningen påverkas inte."
+      card_note: "Beloppet betalas tillbaka till kortet du betalade med; beroende på din bank kan det ta 5–10 arbetsdagar innan det syns."
+      track: "Se min beställning"
+    summary:
+      shipping: Frakt
+      total: Totalt (inkl. moms)
+  quote:
+    meta_title: "Offert för skolor, företag och evenemang"
+    meta_description: "Stora beställningar av PhoneRelax-fickor med mängdrabatt och tryck med er logotyp. Begär offert för din skola, ditt företag eller ditt evenemang."
+    title: "Stora beställningar för skolor, företag och evenemang"
+    subtitle: "Mängdrabatt, tryck med er logotyp och faktura. Berätta vad ni behöver så tar vi fram en skräddarsydd offert."
+    benefits_title: "Därför ska ni välja PhoneRelax"
+    b1_title: "Mängdrabatt"
+    b1_body: "Ju fler fickor, desto bättre pris. Perfekt för att utrusta hela klassrum, personalstyrkor eller kompletta evenemang."
+    b2_title: "Tryck med er logotyp"
+    b2_body: "Vi personaliserar fickorna med logotypen, färgerna eller designen för er skola, ert företag eller ert evenemang."
+    b3_title: "Direktköp, utan väntan"
+    b3_body: "Små beställningar köper ni direkt i butiken; för stora volymer får ni en offert inom 24–48 timmar."
+    b4_title: "Version som blockerar signalen"
+    b4_body: "SignalBlocking-versionen lämnar mobilen utan täckning och wifi: inga störande samtal eller notiser."
+    sectors_title: "Lösningar per sektor"
+    sector_colegio: "Grundskolor och gymnasier: klassrum utan distraktioner och prov utan fusk."
+    sector_empresa: "Företag: möten, fabriksbesök och konfidentiella områden."
+    sector_evento: "Evenemang och konserter: mobilfria upplevelser utan spoilers."
+    sector_academia: "Utbildningsföretag och universitet: tentor och antagningsprov."
+    customization_title: "Personalisering med ert varumärke"
+    customization_body: "Vi lägger till er logotyp och era färger på fickorna. Berätta om ert projekt i formuläret så visar vi exempel och alternativ."
+    customization_alt: "Personaliserad PhoneRelax-ficka för %{name}"
+    form_title: "Begär din offert"
+    form_intro: "Vi svarar inom 24–48 timmar (arbetsdagar)."
+    f_name: "För- och efternamn"
+    f_organization: "Skola / företag / organisation"
+    f_email: "E-post"
+    f_phone: "Telefon"
+    f_sector: "Typ av organisation"
+    f_units: "Ungefärligt antal"
+    f_message: "Berätta vad ni behöver"
+    submit: "Begär offert"
+    sectors:
+      colegio: "Grundskola / gymnasium"
+      empresa: "Företag"
+      evento: "Evenemang / konsert"
+      academia: "Utbildningsföretag / universitet"
+      otro: "Annat"
+  sectors:
+    cta_buy: "Se produkter"
+    cta_quote: "Begär offert"
+    cta_title: "Redo att börja?"
+    cta_body: "Köp direkt för små beställningar eller begär offert för er organisation."
+    colegios:
+      meta_title: "PhoneRelax för grundskolor och gymnasier"
+      meta_description: "Klassrum utan distraktioner och prov utan fusk: eleverna förvarar sin mobil i en magnetisk PhoneRelax-ficka. Mängdrabatt för skolor."
+      title: "PhoneRelax för grundskolor och gymnasier"
+      subtitle: "Klassrum utan distraktioner och prov utan fusk, med mobilerna förvarade av eleverna själva."
+      intro: "Sedan den 1 augusti 2026 ska svenska grundskolor vara mobilfria under hela skoldagen. Med PhoneRelax förvarar varje elev sin telefon i en magnetisk ficka som bara öppnas med skolans magnet: ingen insamling av mobiler och inget ansvar för lärarna att förvara dem."
+      b1_title: "Bättre koncentration"
+      b1_body: "Utan frestelsen att titta på mobilen är eleverna mer uppmärksamma och deltar mer på lektionerna."
+      b2_title: "Prov utan fusk"
+      b2_body: "SignalBlocking-versionen lämnar mobilen utan täckning och wifi, vilket förhindrar fusk och notiser under proven."
+      b3_title: "Inget ansvar för läraren"
+      b3_body: "Varje elev förvarar sin egen telefon i sin ficka; skolan ansvarar inte för eventuella skador."
+    eventos:
+      meta_title: "PhoneRelax för evenemang och konserter"
+      meta_description: "Mobilfria upplevelser på konserter och evenemang: inga inspelningar eller spoilers, med snabb utdelning och insamling. Begär offert för ditt evenemang."
+      title: "PhoneRelax för evenemang och konserter"
+      subtitle: "Mobilfria upplevelser: inga inspelningar, inga spoilers och en publik som är närvarande i stunden."
+      intro: "Mobilfria evenemang («phone-free events») blir allt vanligare. Med PhoneRelax förvarar besökarna mobilen i en förseglad ficka som de öppnar när de går: de njuter av föreställningen och respekterar artisten."
+      b1_title: "En mer uppslukande upplevelse"
+      b1_body: "Utan skärmar emellan lever publiken i stunden och får kontakt med artisten och de andra besökarna."
+      b2_title: "Inga läckor eller spoilers"
+      b2_body: "Perfekt för förhandsvisningar, shower och presentationer där inget får spelas in eller läcka ut."
+      b3_title: "Smidig utdelning och insamling"
+      b3_body: "Enkelt system för utdelning och öppning med magnet vid utgången, utan köer eller krångel."
+    empresas:
+      meta_title: "PhoneRelax för företag"
+      meta_description: "Möten, fabriksbesök och konfidentiella områden utan mobiler eller kameror. Magnetiska PhoneRelax-fickor med offert för företag."
+      title: "PhoneRelax för företag"
+      subtitle: "Möten, fabriksbesök och konfidentiella områden utan mobiler eller kameror."
+      intro: "Skydda sekretessen och koncentrationen i ert företag. Besökare och anställda förvarar mobilen i en förseglad ficka i de områden där den inte får användas."
+      b1_title: "Sekretess"
+      b1_body: "Förhindrar foton och inspelningar i känsliga områden, laboratorier, produktionslinjer eller strategiska möten."
+      b2_title: "Mer produktiva möten"
+      b2_body: "Utan avbrott och distraktioner blir mötena kortare och effektivare."
+      b3_title: "Enkelt att införa"
+      b3_body: "Inga skåp eller infrastruktur: återanvändbara fickor och en öppningsmagnet per område."
+    oposiciones:
+      meta_title: "PhoneRelax för tentor och antagningsprov"
+      meta_description: "Tentor och prov utan fusk: mobilerna förseglas utan täckning i en magnetisk PhoneRelax-ficka. Offert för utbildningsföretag och provanordnare."
+      title: "PhoneRelax för tentor och antagningsprov"
+      subtitle: "Prov utan fusk: mobilerna är förseglade och utan täckning under hela provet."
+      intro: "Vid tentor och antagningsprov är mobilen den vanligaste vägen till fusk. Med PhoneRelax SignalBlocking-version är telefonen förseglad och utan signal tills provet är slut."
+      b1_title: "Ingen täckning, inget fusk"
+      b1_body: "SignalBlocking-versionen blockerar mobil- och wifi-signalen: inga svar eller notiser kan tas emot."
+      b2_title: "Provdeltagaren förvarar den själv"
+      b2_body: "Varje person förvarar sin mobil i sin egen ficka: snabbt att dela ut och ingen hanterar andras enheter."
+      b3_title: "Enkel hantering för provanordnaren"
+      b3_body: "Utdelning vid ingången och öppning med magnet vid utgången; ett enhetligt och tydligt system för alla."

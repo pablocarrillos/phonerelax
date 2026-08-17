@@ -386,6 +386,10 @@ normativa.assign_attributes(
   slug_fr: 'reglementation-telephone-portable-ecole-france',
   title_fr: "Réglementation sur l'usage du téléphone portable à l'école en France",
   excerpt_fr: "La France interdit le téléphone portable à l'école et au collège depuis 2018, et la « pause numérique » se généralise depuis la rentrée 2025. Nous vous expliquons ce que dit la loi, les exceptions prévues et comment l'appliquer au quotidien.",
+  # La versión sueca habla de la ley sueca de escuelas sin móviles (no de la española).
+  slug_sv: 'mobilforbud-skolan-sverige',
+  title_sv: 'Mobilförbud i skolan: vad den nya lagen i Sverige innebär',
+  excerpt_sv: 'Sedan den 1 augusti 2026 är svenska grundskolor mobilfria enligt lag: elevernas mobiler samlas in vid skoldagens början och lämnas tillbaka vid dess slut. Vi förklarar vilka skolformer som omfattas, vilka undantag som finns och hur regeln kan tillämpas i vardagen utan att lärarna blir mobilvakter.',
   # La versión alemana habla de la normativa de Alemania (no de la española).
   slug_de: 'handyregeln-schulen-deutschland',
   title_de: 'Regeln zur Handynutzung an Schulen in Deutschland',
@@ -481,7 +485,7 @@ normativa.assign_attributes(
     <h2>Avant de décider</h2>
     <p>La réglementation évolue d'une rentrée à l'autre — la généralisation de la « pause numérique » en est la preuve — il convient donc de suivre les nouveautés et de les refléter dans le règlement intérieur de l'établissement. Si vous cherchez un moyen pratique de les appliquer, <a href="/fr/ecoles">PhoneRelax pour les établissements scolaires</a> vous aide à créer des classes sans distractions. Besoin d'équiper plusieurs classes ? <a href="/fr/devis">Demandez un devis</a>.</p>
   HTML_FR
-  body_de: <<~HTML_DE
+  body_de: <<~HTML_DE,
     <p>Die Handynutzung im Unterricht ist auch in Deutschland eines der großen Bildungsthemen. In den letzten Jahren sind viele Bundesländer von Empfehlungen zu <strong>verbindlichen Regeln</strong> übergegangen, und viele Schulen suchen nach dem besten Weg, sie im Alltag umzusetzen.</p>
     <h2>Wer regelt die Handynutzung an Schulen?</h2>
     <p>In Deutschland ist Bildung <strong>Ländersache</strong>. Es gibt also kein bundesweites Gesetz, das Handys an allen Schulen gleich regelt: Jedes Bundesland setzt seinen eigenen Rahmen, und innerhalb dieses Rahmens konkretisiert jede Schule die Regeln in ihrer Haus- bzw. Schulordnung.</p>
@@ -505,9 +509,36 @@ normativa.assign_attributes(
     <h2>Bevor Sie entscheiden</h2>
     <p>Die Regeln entwickeln sich von Schuljahr zu Schuljahr weiter — die neuen Ländergesetze sind der Beweis. Es lohnt sich, die Entwicklungen zu verfolgen und sie in der Schulordnung abzubilden. Wenn Sie einen praktischen Weg zur Umsetzung suchen: <a href="/de/schulen">PhoneRelax für Schulen</a> hilft Ihnen, ablenkungsfreie Klassenzimmer zu schaffen. Sie möchten mehrere Klassen ausstatten? <a href="/de/angebot">Fordern Sie ein Angebot an</a>.</p>
   HTML_DE
+  body_sv: <<~HTML_SV
+    <p>Mobilen i klassrummet har gått från att vara en fråga för varje skola till att bli <strong>lag</strong> i Sverige. Sedan den <strong>1 augusti 2026</strong> ska grundskolan vara mobilfri under hela skoldagen, efter ett beslut i riksdagen sommaren 2026. Vi går igenom vad regeln säger, vilka undantag som finns och hur den kan tillämpas i vardagen.</p>
+    <h2>Vad säger den nya lagen?</h2>
+    <p>Reglerna i skollagen innebär att elevernas mobiltelefoner <strong>ska samlas in vid skoldagens början och lämnas tillbaka vid skoldagens slut</strong>. Det handlar alltså inte längre om en rekommendation eller om varje skolas egna ordningsregler: mobilförbudet är <strong>nationellt och obligatoriskt</strong>, och det gäller hela skoldagen — lektioner såväl som raster.</p>
+    <p>Syftet är att skapa <strong>studiero</strong>, minska stöket i klassrummen, skydda barn mot nätmobbning och få eleverna att umgås mer med varandra i stället för med skärmen.</p>
+    <h2>Vilka skolformer omfattas?</h2>
+    <p>Förbudet gäller de obligatoriska skolformerna och fritidshemmet, det vill säga:</p>
+    <ul>
+      <li><strong>Förskoleklassen</strong> och <strong>grundskolan</strong> (F–9), samt anpassade grundskolan, specialskolan och sameskolan.</li>
+      <li><strong>Fritidshemmet</strong> och öppen fritidsverksamhet.</li>
+    </ul>
+    <p><strong>Gymnasieskolan omfattas inte</strong> av det obligatoriska förbudet. Där bestämmer skolan själv sina regler om mobiler — och många gymnasier väljer att införa mobilfria lektioner och prov på egen hand.</p>
+    <h2>Undantagen</h2>
+    <p>Lagen ger utrymme för undantag när det behövs. Rektorn kan besluta om undantag för enskilda elever med särskilda skäl, till exempel när mobilen behövs som <strong>stöd för en elev</strong> (medicinska skäl eller funktionsnedsättning), och en lärare kan låta eleverna använda mobilen <strong>i undervisningen</strong> när det ingår i lärarens planering. Vid utbildning utanför skolenheten, som utflykter, får rektorn eller läraren avstå från insamlingen om den skulle medföra betydande praktiska svårigheter.</p>
+    <h2>Utmaningen är inte regeln, utan att tillämpa den</h2>
+    <p>Att lagen finns är den enkla delen; utmaningen är att följa den varje dag utan att göra lärarna till mobilvakter. De vanligaste lösningarna — mobillådor, skåp eller «mobilhotell» i klassrummet — väcker frågor: vem ansvarar om en telefon skadas eller försvinner? Hur mycket tid går åt till att samla in och dela ut? Och hur undviker man att en elev tar tillbaka mobilen i smyg?</p>
+    <h2>Så löser PhoneRelax det</h2>
+    <p>Med de magnetiska <strong>PhoneRelax</strong>-fickorna förvarar varje elev sin egen telefon i en ficka som förseglas och bara kan öppnas mot skolans magnet. Det innebär att:</p>
+    <ul>
+      <li>Det är <strong>eleven själv som förvarar sin mobil</strong> — men utan att kunna använda den. Skolan behöver inte hantera eller ansvara för elevernas telefoner.</li>
+      <li>Insamling och återlämning tar <strong>några sekunder</strong>: fickan förseglas på morgonen och öppnas med magneten vid skoldagens slut.</li>
+      <li><strong>SignalBlocking</strong>-versionen lämnar telefonen utan täckning och wifi, så att inga notiser stör — särskilt användbart vid prov.</li>
+      <li>Det är ett <strong>enhetligt och enkelt system</strong> för hela skolan, lätt att tillämpa varje dag och att förklara för elever och vårdnadshavare.</li>
+    </ul>
+    <h2>Innan ni bestämmer er</h2>
+    <p>Reglerna är nya och kan komma att förtydligas av Skolverket och i skolornas egna skolregler, så det lönar sig att följa utvecklingen och beskriva rutinerna i skolans regler. Om ni söker ett praktiskt sätt att uppfylla lagen hjälper <a href="/sv/skolor">PhoneRelax för skolor</a> er att skapa mobilfria klassrum. Behöver ni utrusta flera klasser? <a href="/sv/offert">Begär en offert</a>.</p>
+  HTML_SV
 )
 normativa.save!
-puts "Artículo normativa: es/pt/en OK (posts: #{Post.count})"
+puts "Artículo normativa: es/pt/en/fr/de/sv OK (posts: #{Post.count})"
 
 # Tarifas de transporte por país (solo si aún no existen): base actual de la
 # tienda — Península 5,95 €, Canarias y resto de la UE 13,95 € — editable desde el admin.
@@ -695,3 +726,104 @@ post_translations_de = {
 }
 post_translations_de.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
 puts "Traducciones DE: #{Product.where.not(name_de: [ nil, '' ]).count} productos, #{Post.where.not(title_de: [ nil, '' ]).count} artículos"
+
+# --- Traducciones al sueco (sv). Idempotente: vacío = se muestra el español. ---
+product_translations_sv = {
+  'funda-phonerelax-version-sin-cobertura-movil' => {
+    name_sv: 'PhoneRelax SignalBlocking-ficka (blockerar mobilsignalen)',
+    description_sv: <<~HTML
+      <p>PhoneRelax är en magnetisk mobilficka som förhindrar att elever eller användare distraheras av telefonen i skolor, på gymnasier, konserter eller privata evenemang. Den är mycket enkel att använda: lägg mobilen i fickan och stäng låset så att den förseglas inuti. För att ta ut telefonen håller du PhoneRelax-fickans magnetlås mot en av våra speciella öppningsmagneter och tar ut telefonen.</p>
+      <p><strong>Den största fördelen med den här versionen som blockerar mobilsignalen är att användaren inte störs av notiser, ringsignaler eller vibrationer om hen glömt att ljudlöst- eller stänga av telefonen innan den lades i PhoneRelax-fickan — och slipper därmed också den stress och distraktion som de ständiga notiserna från olika appar skapar.</strong></p>
+      <p><strong>Tekniska specifikationer:</strong></p>
+      <p><strong>Produktmått:</strong> 12 cm bredd x 26 cm höjd x 4,5 cm djup<br><strong>Material:</strong> 30 % neopren, 40 % polyester, 20 % aluminium och 10 % plast.<br><strong>Kompatibla telefoner:</strong> alla smartphones med en skärm på upp till 6,8 tum.<br><strong>Färg:</strong> svart<br><strong>Vikt:</strong> 115 g</p>
+    HTML
+  },
+  'iman-phonerelax' => {
+    name_sv: 'PhoneRelax-magnet',
+    description_sv: <<~HTML
+      <p>Öppnar PhoneRelax-fickorna genom att man helt enkelt håller den rundade delen av fickans lås mot magnetens mitt.</p>
+      <p>Magneten har fyra hål för att kunna skruvas fast på valfri yta — så att den inte tappas bort eller flyttar sig när PhoneRelax-fickorna öppnas.</p>
+    HTML
+  },
+  'funda-phonerelax' => {
+    name_sv: 'PhoneRelax-ficka',
+    description_sv: <<~HTML
+      <p>PhoneRelax är en magnetisk mobilficka som förhindrar att elever eller användare distraheras av telefonen i skolor, på gymnasier, konserter eller privata evenemang. Den är mycket enkel att använda: lägg mobilen i fickan och stäng låset så att den förseglas inuti. För att ta ut telefonen håller du PhoneRelax-fickans magnetlås mot en av våra speciella öppningsmagneter och tar ut telefonen.</p>
+      <p><strong>Tekniska specifikationer:</strong></p>
+      <p><strong>Produktmått:</strong> 12 cm bredd x 24 cm höjd x 4,5 cm djup<br><strong>Material:</strong> 40 % neopren, 50 % polyester och 10 % plast.<br><strong>Kompatibla telefoner:</strong> alla smartphones med en skärm på upp till 6,8 tum.<br><strong>Färg:</strong> svart<br><strong>Vikt:</strong> 82 g</p>
+    HTML
+  }
+}
+product_translations_sv.each { |handle, attrs| Product.find_by(shopify_handle: handle)&.update!(attrs) }
+
+# Productos creados desde el admin (sin shopify_handle): se localizan por su nombre en español.
+product_translations_sv_by_name = {
+  'Lanyard PhoneRelax' => {
+    name_sv: 'PhoneRelax-lanyard',
+    description_sv: '<div>PhoneRelax-lanyard för att hänga fickan. Tillverkad i <strong>polyester</strong>, <strong>6 mm tjock</strong>.<br>Längden går att justera, så att den passar både den som vill bära fickan runt halsen och den som vill bära den snett över axeln som en väska.</div>'
+  },
+  'Personalización DTF funda' => {
+    name_sv: 'DTF-tryck på fickan',
+    description_sv: '<div>DTF-tryck på fickan med er logotyp eller ert varumärke. <strong>Minsta antal: 25 stycken.</strong> Lägg lika många tryck i varukorgen som antalet PhoneRelax-fickor i er beställning (SignalBlocking eller inte).</div>'
+  },
+  'Pack 25 bolsas SignalBlocking + personalización DTF + 2 imanes' => {
+    name_sv: 'Paket med 25 SignalBlocking-fickor + DTF-tryck + 2 magneter',
+    description_sv: '<div>Paket för skolor: 25 PhoneRelax SignalBlocking-fickor med ert DTF-tryck och 2 magneter. Pris inklusive mängdrabatten för varje produkt.</div>'
+  },
+  'Pack 100 bolsas SignalBlocking + personalización DTF + 5 imanes' => {
+    name_sv: 'Paket med 100 SignalBlocking-fickor + DTF-tryck + 5 magneter',
+    description_sv: '<div>Paket för skolor: 100 PhoneRelax SignalBlocking-fickor med ert DTF-tryck och 5 magneter. Pris inklusive mängdrabatten för varje produkt.</div>'
+  },
+  'Funda PhoneRelax SignalBlocking con Tarjetero (bloquea cobertura móvil)' => {
+    name_sv: 'PhoneRelax SignalBlocking-ficka med kortfack (blockerar mobilsignalen)',
+    description_sv: <<~HTML
+      <div>PhoneRelax är en magnetisk mobilficka som förhindrar att elever eller användare distraheras av telefonen i skolor, på gymnasier, konserter eller privata evenemang. Den är mycket enkel att använda: lägg mobilen i fickan och stäng låset så att den förseglas inuti. För att ta ut telefonen håller du PhoneRelax-fickans magnetlås mot en av våra speciella öppningsmagneter och tar ut telefonen.<br><br></div><div><strong>Den här versionen har ett kortfack med genomskinligt fönster på 10 cm bredd x 8 cm höjd.<br></strong><br></div><div><strong>Den största fördelen med den här versionen som blockerar mobilsignalen är att användaren inte störs av notiser, ringsignaler eller vibrationer om hen glömt att ljudlöst- eller stänga av telefonen innan den lades i PhoneRelax-fickan — och slipper därmed också den stress och distraktion som de ständiga notiserna från olika appar skapar.<br></strong><br></div><div><strong>Tekniska specifikationer:</strong></div><div><strong>Produktmått:</strong> 12,4 cm bredd x 28,5 cm höjd x 4,5 cm djup<br><strong>Material:</strong> 30 % neopren, 40 % polyester, 20 % aluminium och 10 % plast.<br><strong>Kompatibla telefoner:</strong> alla smartphones med en skärm på upp till 6,8 tum.<br><strong>Färg:</strong> svart<br><strong>Vikt:</strong> 115 g</div>
+    HTML
+  }
+}
+product_translations_sv_by_name.each { |name, attrs| Product.find_by(name: name)&.update!(attrs) }
+
+post_translations_sv = {
+  'cuales-son-las-principales-ventajas-de-prohibir-el-uso-de-telefonos-moviles-ninos-y-adolescentes-en-las-aulas' => {
+    title_sv: 'Fördelarna med att reglera mobilanvändningen i klassrummet',
+    excerpt_sv: 'Att reglera mobilanvändningen i skolan med PhoneRelax-fickorna har flera tydliga fördelar — framför allt bättre koncentration. Utan mobilen som distraktion är eleverna betydligt mer uppmärksamma på lektionerna',
+    body_sv: <<~HTML
+      <p>Att reglera barns och ungdomars mobilanvändning i skolan med PhoneRelax-fickorna har flera tydliga fördelar — framför allt <strong>bättre koncentration</strong>. Utan mobilen som distraktion är eleverna mer uppmärksamma på lektionerna, vilket kan förbättra deras resultat. Färre distraktioner ger mer fokus: utan den ständiga frestelsen att titta på mobilen kan eleverna koncentrera sig bättre på uppgifter och aktiviteter och förbättra sin uppmärksamhetsförmåga.</p>
+      <p>En annan fördel är <strong>bättre socialt samspel</strong>: när mobilanvändningen begränsas pratar eleverna mer med varandra ansikte mot ansikte — det stärker deras sociala färdigheter och förmågan att samarbeta.</p>
+      <p>Det är också visat att <strong>nätmobbningen minskar</strong>: begränsad användning av elektroniska enheter kan minska fallen av mobbning på nätet och tillgången till olämpligt innehåll, och därmed bidra till en tryggare skolmiljö.</p>
+      <p>På rasterna blir det <strong>mer tid för rörelse</strong>: utan ständig skärmanvändning har eleverna mer tid för fysisk aktivitet — bra för hälsan och välbefinnandet.</p>
+      <p>Ytterligare en fördel med begränsad mobilanvändning i skolan är <strong>utvecklingen av problemlösningsförmåga</strong>: den som förlitar sig mindre på tekniken lär sig att lösa problem mer kreativt och med fler olika verktyg.</p>
+      <p>Trots alla fördelar är det också viktigt hur mobilförbudet genomförs — i vissa fall kan enheterna, under lärarens ledning, vara användbara läromedel i särskilda ämnen eller uppgifter.</p>
+    HTML
+  },
+  'ventajas-de-evitar-el-uso-de-moviles-en-conciertos' => {
+    title_sv: 'Konserter utan mobiler, eller «phone-free events»',
+    excerpt_sv: 'Att använda PhoneRelax-fickor på konserter har flera stora fördelar — till exempel en mer uppslukande upplevelse: publiken kan njuta fullt ut av musiken, stämningen och kontakten med artisten och de andra besökarna.',
+    body_sv: <<~HTML
+      <p>Att använda PhoneRelax-fickor för att förhindra mobilanvändning på konserter har flera stora fördelar — till exempel en <strong>mer uppslukande upplevelse</strong>: publiken kan njuta fullt ut av musiken, stämningen och kontakten med artisten och de andra besökarna.</p>
+      <p>Sådana evenemang kallas redan «phone-free events» eller «mobilfria upplevelser».</p>
+      <p>En av de viktigaste fördelarna är <strong>respekten för artisten</strong>: mobilanvändningen kan distrahera både publiken och artisten. Att lägga undan mobilen visar respekt för musikerns arbete och låter alla njuta av showen utan avbrott.</p>
+      <p>Känt är fallet med sångerskan Adele, som bad en besökare på sin konsert att sluta filma och i stället njuta av showen på plats.</p>
+      <p>Den som inte stirrar på skärmen förbättrar dessutom <strong>kontakten med andra människor</strong>: man pratar oftare med dem runt omkring, knyter äkta kontakter och delar speciella ögonblick med andra fans.</p>
+      <p>En annan central punkt är <strong>bättre ljudkvalitet och sikt mot artisten</strong>: den som håller upp mobilen för att filma eller fotografera skymmer ofta sikten för andra och försämrar ljudkvaliteten — men framför allt den direkta upplevelsen av artisten eller evenemanget.</p>
+      <p>Och inte minst: <strong>äktare minnen</strong>. I stället för att fånga hela konserten på mobilskärmen är det bättre att njuta av stunden och bevara minnena i huvudet — så skapas mer levande och autentiska minnen som stannar kvar länge.</p>
+      <p>Även om det är förståeligt att vilja fånga några ögonblick av konserten kan en begränsad mobilanvändning berika upplevelsen avsevärt — för en själv och för alla andra besökare.</p>
+      <p><img alt="" src="/images/blog/phonerelax-para-eventos-cuerpo.jpg" style="display: block; margin-left: auto; margin-right: auto;"></p>
+    HTML
+  },
+  'y-que-podemos-hacer-para-evitar-que-los-alumnos-usen-los-telefonos-en-las-aulas' => {
+    title_sv: 'Så förhindrar man mobilanvändning på högstadiet och gymnasiet',
+    excerpt_sv: 'PhoneRelax-fickorna med magnetlås, där eleverna själva förvarar sina mobiler utan att kunna använda dem i de bestämda utrymmena, är ett effektivt sätt att reglera användningen av elektroniska enheter i skolmiljön. Fördelarna är tydliga',
+    body_sv: <<~HTML
+      <p>PhoneRelax-fickorna med magnetlås, där eleverna själva förvarar sina mobiler utan att kunna använda dem i de bestämda utrymmena, är ett effektivt sätt att reglera användningen av elektroniska enheter i skolmiljön. Fördelarna är tydliga:</p>
+      <p><strong>Säkerhet och kontroll:</strong> magnetlåset förhindrar åtkomst till mobilen så länge den är förvarad — mer säkerhet och kontroll över enheten under skoltid.</p>
+      <p><strong>Färre distraktioner:</strong> när mobilen inte är lätt att komma åt minskar frestelsen och risken för distraktioner på lektionerna — eleverna kan koncentrera sig bättre på lärandet. Det finns till och med en version av PhoneRelax-fickan som blockerar signalen: även om en elev glömmer att sätta mobilen på ljudlöst kommer varken samtal eller appnotiser fram.</p>
+      <p><strong>Enhetlighet och enkel hantering:</strong> när alla elever använder PhoneRelax-fickor blir hanteringen enklare för lärare och skolpersonal — ett enhetligt och tydligt system för alla.</p>
+      <p><strong>Eleverna förvarar själva sina mobiler i sina PhoneRelax-fickor:</strong> genom att ge eleverna ansvaret för sin egen mobil undviker man alla problem med eventuella skador på enheterna — och lärare och skolpersonal slipper det ansvaret.</p>
+      <p>Några saker bör ändå tänkas igenom:</p>
+      <p><strong>Särskilda behov:</strong> vissa elever behöver kunna komma åt sin mobil vid medicinska eller familjära nödsituationer. För sådana situationer bör det alltid finnas en viss flexibilitet.</p>
+    HTML
+  }
+}
+post_translations_sv.each { |slug, attrs| Post.find_by(slug: slug)&.update!(attrs) }
+puts "Traducciones SV: #{Product.where.not(name_sv: [ nil, '' ]).count} productos, #{Post.where.not(title_sv: [ nil, '' ]).count} artículos"

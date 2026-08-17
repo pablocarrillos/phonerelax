@@ -13,8 +13,8 @@ class AdminProductManagementTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "input[type=file][name='product[cover_image]']"
     assert_select "input[name='product[image_url]']", 0 # la ruta ya no se enseña
-    assert_select ".lang-tabs .tab-button", 5
-    assert_select ".lang-tabs .tab-panel", 5
+    assert_select ".lang-tabs .tab-button", 6
+    assert_select ".lang-tabs .tab-panel", 6
     assert_select "input[name='product[position]']", 0 # la posición ya no se edita a mano
     # Escalado: plantilla y botón para añadir tramos nuevos sin límite.
     assert_select "template[data-price-tiers-target='template']"

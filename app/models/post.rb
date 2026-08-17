@@ -4,7 +4,7 @@ class Post < ApplicationRecord
 
   validates :title, :slug, :body, presence: true
   validates :slug, uniqueness: true
-  validates :slug_pt, :slug_en, :slug_fr, :slug_de, uniqueness: true, allow_blank: true
+  validates :slug_pt, :slug_en, :slug_fr, :slug_de, :slug_sv, uniqueness: true, allow_blank: true
 
   # Si hay título traducido pero no slug propio, se genera automáticamente.
   before_validation :ensure_localized_slugs
@@ -13,7 +13,7 @@ class Post < ApplicationRecord
 
   # Localiza por el slug de cualquier idioma (para poder resolver /pt/blog/<slug_pt>,
   # /en/blog/<slug_en> o el español).
-  scope :by_any_slug, ->(value) { where(slug: value).or(where(slug_pt: value)).or(where(slug_en: value)).or(where(slug_fr: value)).or(where(slug_de: value)) }
+  scope :by_any_slug, ->(value) { where(slug: value).or(where(slug_pt: value)).or(where(slug_en: value)).or(where(slug_fr: value)).or(where(slug_de: value)).or(where(slug_sv: value)) }
 
   # Slug del idioma dado (cae al español si no hay traducción o es el idioma por defecto).
   def slug_for(locale)
@@ -35,5 +35,6 @@ class Post < ApplicationRecord
     self.slug_en = title_en.to_s.parameterize.presence if slug_en.blank? && title_en.present?
     self.slug_fr = title_fr.to_s.parameterize.presence if slug_fr.blank? && title_fr.present?
     self.slug_de = title_de.to_s.parameterize.presence if slug_de.blank? && title_de.present?
+    self.slug_sv = title_sv.to_s.parameterize.presence if slug_sv.blank? && title_sv.present?
   end
 end

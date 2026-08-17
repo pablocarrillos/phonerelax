@@ -41,6 +41,7 @@
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇬🇧 Inglés</button>
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇫🇷 Francés</button>
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇩🇪 Alemán</button>
+        <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇸🇪 Sueco</button>
       </div>
 
       <div class="tab-panel" data-tabs-target="panel">
@@ -89,6 +90,16 @@
           <%= f.label :description_de, 'Descripción (DE)' %>
           <%= f.hidden_field :description_de, id: 'product_description_de' %>
           <trix-editor input="product_description_de" class="trix-content"></trix-editor>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tabs-target="panel" hidden>
+        <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /sv se mostrará el contenido en español.</p>
+        <div><%= f.label :name_sv, 'Nombre (SV)' %><%= f.text_field :name_sv %></div>
+        <div>
+          <%= f.label :description_sv, 'Descripción (SV)' %>
+          <%= f.hidden_field :description_sv, id: 'product_description_sv' %>
+          <trix-editor input="product_description_sv" class="trix-content"></trix-editor>
         </div>
       </div>
     </div>

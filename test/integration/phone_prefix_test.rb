@@ -55,6 +55,18 @@ class PhonePrefixTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "la tienda funciona en sueco" do
+    get "/sv"
+    assert_response :success
+    assert_includes response.body, "Lägg i varukorgen"
+    get "/sv/varukorg"
+    assert_response :success
+    get "/sv/skolor"
+    assert_response :success
+    get "/sv/offert"
+    assert_response :success
+  end
+
   test "la tienda funciona en francés" do
     get "/fr"
     assert_response :success

@@ -13,9 +13,10 @@ class BlogController < ApplicationController
     return redirect_to(blog_post_path(@post), status: :moved_permanently) if params[:slug] != canonical_slug
 
     # URLs equivalentes en cada idioma (para hreflang y el selector de idioma).
+    # con with_locale el helper genera la variante de CADA idioma (pasar
+    # locale: nil para el español devolvía la ruta del idioma activo)
     @localized_paths = I18n.available_locales.index_with do |loc|
-      prefix = loc == I18n.default_locale ? nil : loc
-      blog_post_path(@post.slug_for(loc), locale: prefix)
+      I18n.with_locale(loc) { blog_post_path(@post.slug_for(loc)) }
     end
   end
 end
