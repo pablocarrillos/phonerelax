@@ -6,6 +6,7 @@ class SectorPagesTest < ActionDispatch::IntegrationTest
   test "cada landing de sector se renderiza en es/pt/en sin claves sin traducir" do
     PATHS.each do |helper|
       [ nil, :pt, :en ].each do |locale|
+        reset! if locale.nil? # la cookie del idioma anterior redirigiría la versión española
         get send(helper, locale: locale)
         assert_response :success, "#{helper} (#{locale || :es}) no responde 200"
         assert_select "h1"

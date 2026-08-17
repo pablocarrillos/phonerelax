@@ -69,7 +69,8 @@
                 <% if loc == I18n.locale %>
                   <li><span class="lang-option current"><span aria-hidden="true"><%= locale_flag(loc) %></span> <%= locale_name(loc) %></span></li>
                 <% elsif (u = locale_path(loc)) %>
-                  <li><%= link_to u, rel: 'alternate', hreflang: loc, class: 'lang-option' do %><span aria-hidden="true"><%= locale_flag(loc) %></span> <%= locale_name(loc) %><% end %></li>
+                  <%# ?hl=xx: elección explícita del idioma (queda en cookie y manda sobre el idioma del navegador) %>
+                  <li><%= link_to "#{u}#{u.include?('?') ? '&' : '?'}hl=#{loc}", rel: 'alternate nofollow', hreflang: loc, class: 'lang-option' do %><span aria-hidden="true"><%= locale_flag(loc) %></span> <%= locale_name(loc) %><% end %></li>
                 <% end %>
               <% end %>
             </ul>

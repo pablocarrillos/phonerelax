@@ -14,6 +14,7 @@ class LocalizedNavTest < ActionDispatch::IntegrationTest
     assert_select "nav a[href=?]", "/de/blogs/news"
     assert_select "nav a[href=?]", "/de/pages/wie-es-funktioniert"
 
+    reset! # tras visitar /de, la cookie de idioma llevaría "/" a /de: sesión nueva
     get "/"
     assert_select "nav a[href=?]", "/blogs/news"
     assert_select "nav a[href=?]", "/pages/como-funciona"
