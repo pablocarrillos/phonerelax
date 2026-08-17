@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   #    redirige a la misma página en ese idioma; idioma desconocido → inglés.
   #    Sin cabecera (curl, bots) se queda en español.
   def remember_or_detect_locale
-    return unless request.get? && request.format.html? && request.path_parameters.key?(:locale)
+    return unless request.get? && html_like_request? && request.path_parameters.key?(:locale)
 
     if (chosen = params[:hl].to_s.presence) && locale_available?(chosen)
       cookies.permanent[:locale] = chosen
@@ -49,6 +49,11 @@ class ApplicationController < ActionController::Base
 
     target = localized_current_path(preferred) or return
     redirect_to target
+  end
+
+  # Peticiones de página (Accept text/html o */*), no fetch/JSON.
+  def html_like_request?
+    !request.xhr? && (request.format.html? || request.format == Mime::ALL)
   end
 
   def bot?

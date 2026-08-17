@@ -16,8 +16,8 @@ class LocaleDetectionTest < ActionDispatch::IntegrationTest
     assert_redirected_to "/fr/pages/comment-ca-marche?x=1"
   end
 
-  test "un idioma que no tenemos lleva al inglés" do
-    get "/", headers: { "Accept-Language" => "ja-JP,ja;q=0.9" }
+  test "un idioma que no tenemos lleva al inglés (también con Accept: */*)" do
+    get "/", headers: { "Accept-Language" => "ja-JP,ja;q=0.9", "Accept" => "*/*" }
     assert_redirected_to "/en"
     assert_equal "en", cookies["locale"]
   end
