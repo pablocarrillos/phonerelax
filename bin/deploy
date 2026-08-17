@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Despliegue de phonerelax a producción (caja servipau, https://phonerelax.com).
+#
+# Sube el árbol de trabajo por rsync (no hay deploy key), instala gemas, migra,
+# siembra (traducciones idempotentes), COMPILA LOS ASSETS y reinicia Puma. Y al
+# final comprueba en vivo que la portada responde con su CSS: la vez que se
+# desplegó sin precompilar, rsync --delete se llevó public/assets y la web
+# quedó sin estilos («se ve mal en el móvil»).
+set -euo pipefail
+
+HOST="${DEPLOY_HOST:-root@207.154.224.190}"
+APP_DIR="/home/phonerelax/app"
+SITE="${SITE_URL:-https://phonerelax.com}"
+IP="${SITE_IP:-207.154.224.190}"
+cd "$(dirname "$0")/.."
+
+echo "== rsync → $HOST:$APP_DIR"
+rsync -az --delete \
+  --exclude .git --exclude tmp --exclude log --exclude storage --exclude node_modules \
+  --exclude vendor/bundle --exclude public/assets \
+  --exclude config/local_env.yml --exclude config/master.key --exclude "config/credentials*" \
+  ./ "$HOST:$APP_DIR/"
+
+echo "== bundle · migrate · seed · assets:precompile · restart"
+ssh "$HOST" "chown -R phonerelax:phonerelax $APP_DIR && su - phonerelax -c '
+  cd ~/app && export PATH=\$HOME/.rbenv/shims:\$HOME/.rbenv/bin:\$PATH RAILS_ENV=production &&
+  bundle install --quiet &&
+  bundle exec rails db:migrate &&
+  bundle exec rails db:seed | grep -E \"Traducciones|normativa\" &&
+  bundle exec rails assets:precompile | tail -1
+' && systemctl restart phonerelax && sleep 6 && systemctl is-active phonerelax" 2>&1 | grep -v "warning\|Ignoring"
+
+echo "== smoke"
+UA="Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
+R=(--resolve "${SITE#https://}:443:$IP")
+html=$(curl -sS "${R[@]}" -A "$UA" -H "Accept-Language: es-ES" "$SITE/")
+css=$(printf '%s' "$html" | grep -o '/assets/application-[a-z0-9]*\.css' | head -1)
+[ -n "$css" ] || { echo "KO: la portada no enlaza el CSS"; exit 1; }
+code=$(curl -s "${R[@]}" -o /dev/null -w '%{http_code}' "$SITE$css")
+[ "$code" = "200" ] || { echo "KO: $css → $code (¿assets sin compilar?)"; exit 1; }
+code=$(curl -s "${R[@]}" -A "$UA" -H "Accept-Language: sv" -o /dev/null -w '%{http_code}' "$SITE/sv")
+[ "$code" = "200" ] || { echo "KO: /sv → $code"; exit 1; }
+echo "OK: portada + $css + /sv responden (iPhone iOS 16)"

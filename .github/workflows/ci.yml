@@ -104,3 +104,19 @@ jobs:
           # REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare test
 
+      # Cómo se ve en un móvil de verdad (Chrome headless a 390 px): estilos,
+      # sin scroll horizontal, menú hamburguesa. Los runners de GitHub traen Chrome.
+      - name: Run system tests (mobile layout)
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432
+        run: bin/rails test:system
+
+      - name: Keep screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore
+

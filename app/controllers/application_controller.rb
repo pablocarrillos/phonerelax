@@ -1,7 +1,10 @@
 class ApplicationController < ActionController::Base
   include Authentication
   include Pagy::Method
-  allow_browser versions: :modern
+  # Sin allow_browser: es una tienda pública y bloqueaba con un 406 «Your
+  # browser is not supported» a iPhones sin actualizar (Safari < 17.2) y a los
+  # navegadores dentro de apps (Instagram, Facebook…). El sitio no usa nada
+  # que exija navegadores de última generación.
   stale_when_importmap_changes
 
   around_action :switch_locale
