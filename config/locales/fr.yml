@@ -141,6 +141,9 @@ fr:
     pack_normal: Prix à l'unité
     pack_in_pack: Dans le pack
     pack_saving: Économie
+    tier_hint: "Les remises sur quantité s'appliquent automatiquement en achetant plus d'unités"
+    tier_total: "Total : %{total} (%{units} u.)"
+    tier_discount: "-%{pct}% de remise appliquée"
     pack_max: "max. %{n}"
     pack_saving_total: "Vous économisez %{amount} en achetant le pack plutôt que les produits séparément."
   cart:

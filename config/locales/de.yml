@@ -141,6 +141,9 @@ de:
     pack_normal: Einzelpreis
     pack_in_pack: Im Set
     pack_saving: Ersparnis
+    tier_hint: "Mengenrabatte werden beim Kauf mehrerer Einheiten automatisch angewendet"
+    tier_total: "Gesamt: %{total} (%{units} Stk.)"
+    tier_discount: "-%{pct} % Rabatt angewendet"
     pack_max: "max. %{n}"
     pack_saving_total: "Sie sparen %{amount}, wenn Sie das Set statt der einzelnen Produkte kaufen."
   cart:

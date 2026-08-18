@@ -145,6 +145,9 @@ sv:
     pack_normal: Styckpris
     pack_in_pack: I paketet
     pack_saving: Besparing
+    tier_hint: "Mängdrabatter tillämpas automatiskt när du köper fler enheter"
+    tier_total: "Totalt: %{total} (%{units} st)"
+    tier_discount: "-%{pct} % rabatt tillämpad"
     pack_max: "max %{n}"
     pack_saving_total: "Du sparar %{amount} genom att köpa paketet i stället för produkterna var för sig."
   cart:

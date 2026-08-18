@@ -43,9 +43,19 @@
         </div>
       <% end %>
     </div>
-    <%= tag.div data: (@product.pack? ? { controller: 'pack-quantity', 'pack-quantity-url-value': pack_price_path(@product), 'pack-quantity-available-value': @product.available_stock } : {}) do %>
+    <% product_data = if @product.pack?
+     { controller: 'pack-quantity', 'pack-quantity-url-value': pack_price_path(@product), 'pack-quantity-available-value': @product.available_stock }
+   elsif @product.tiered?
+     { controller: 'tier-quantity', 'tier-quantity-tiers-value': @product.tiers_with_vat.to_json,
+       'tier-quantity-base-value': @product.display_price,
+       'tier-quantity-total-template-value': t('product.tier_total'),
+       'tier-quantity-discount-template-value': t('product.tier_discount') }
+   else
+     {}
+   end %>
+<%= tag.div data: product_data do %>
       <h1><%= @product.display_name %></h1>
-      <div class="price" data-pack-quantity-target="price"><%= number_to_currency(@product.display_price, unit: '€', format: "%n %u") %></div>
+      <div class="price" data-pack-quantity-target="price" data-tier-quantity-target="price"><%= number_to_currency(@product.display_price, unit: '€', format: "%n %u") %></div>
       <p class="vat-note"><%= t('common.vat_included', rate: @product.vat_percentage.to_s.sub(/\.0+\z/, '')) %></p>
 
       <% if @product.pack? %>
@@ -85,7 +95,12 @@
       <%= form_with url: cart_add_path(@product), method: :post, local: true do %>
         <label for="quantity"><%= t('common.quantity') %><% if @product.pack? %> <span class="action-note" style="display:inline;">(<%= t('product.pack_max', n: @product.available_stock) %>)</span><% end %></label>
         <input type="number" name="quantity" id="quantity" value="1" min="1" <%= tag.attributes(max: @product.available_stock) if @product.pack? %> class="qty-input"
-               <% if @product.pack? %>data-pack-quantity-target="quantity" data-action="input->pack-quantity#change"<% end %>>
+               <% if @product.pack? %>data-pack-quantity-target="quantity" data-action="input->pack-quantity#change"<% end %>
+               <% if @product.tiered? %>data-tier-quantity-target="quantity" data-action="input->tier-quantity#change"<% end %>>
+        <% if @product.tiered? %>
+          <p class="tier-hint"><%= t('product.tier_hint') %></p>
+          <p class="tier-live" data-tier-quantity-target="live" hidden></p>
+        <% end %>
         <div class="buy-actions">
           <button type="submit" class="btn btn-primary buy-btn"><%= t('common.add_to_cart') %></button>
           <%= link_to t('common.back'), root_path, class: 'btn btn-outline' %>

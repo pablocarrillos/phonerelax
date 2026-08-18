@@ -171,6 +171,19 @@ class Product < ApplicationRecord
   # Precio a mostrar en la tienda (grid y ficha): el precio de 1 unidad según su
   # escalado (para un pack, el de 1 pack), de modo que coincida con lo que se
   # cobra en el carrito por una unidad.
+  # ¿Tiene escalado real (algún tramo por encima de 1 unidad)? Los packs no:
+  # su descuento se enseña con el desglose propio.
+  def tiered?
+    !pack? && price_tiers.any? { |tier| tier.min_units > 1 }
+  end
+
+  # Tramos con el unitario IVA incluido, para el recálculo en vivo de la ficha.
+  def tiers_with_vat
+    price_tiers.map do |tier|
+      { min: tier.min_units, unit: (tier.unit_price * (1 + (vat_percentage.to_d / 100))).round(2).to_f }
+    end
+  end
+
   def display_price
     price_for_quantity(1)
   end

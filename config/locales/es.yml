@@ -127,6 +127,9 @@ es:
     pack_normal: Precio suelto
     pack_in_pack: En el pack
     pack_saving: Ahorro
+    tier_hint: "Obtén descuentos automáticamente al comprar más unidades"
+    tier_total: "Total: %{total} (%{units} uds.)"
+    tier_discount: "-%{pct}% de descuento aplicado"
     pack_max: "máx. %{n}"
     pack_saving_total: "Ahorras %{amount} comprando el pack en vez de los productos por separado."
   cart:

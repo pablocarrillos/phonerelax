@@ -1005,3 +1005,7 @@ a.lang-option:hover { background: var(--card-bg); text-decoration: none; }
   .gallery-thumb { width: 68px; height: 68px; }
 }
 .line-qty { color: var(--muted); margin-left: 4px; }
+
+/* Escalado de precios en la ficha de producto */
+.tier-hint { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+.tier-live { margin: 4px 0 0; font-size: 14px; font-weight: 700; color: var(--navy); }

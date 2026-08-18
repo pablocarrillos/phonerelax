@@ -134,6 +134,9 @@ pt:
     pack_normal: Comprado à parte
     pack_in_pack: No pack
     pack_saving: Poupança
+    tier_hint: "Os descontos por quantidade aplicam-se automaticamente ao comprar mais unidades"
+    tier_total: "Total: %{total} (%{units} un.)"
+    tier_discount: "-%{pct}% de desconto aplicado"
     pack_max: "máx. %{n}"
     pack_saving_total: "Poupa %{amount} ao comprar o pack em vez dos produtos separadamente."
   cart:

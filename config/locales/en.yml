@@ -139,6 +139,9 @@ en:
     pack_normal: Bought separately
     pack_in_pack: In the pack
     pack_saving: Saving
+    tier_hint: "Volume discounts are applied automatically as you buy more units"
+    tier_total: "Total: %{total} (%{units} pcs)"
+    tier_discount: "-%{pct}% discount applied"
     pack_max: "max %{n}"
     pack_saving_total: "You save %{amount} by buying the pack instead of the products separately."
   cart:
