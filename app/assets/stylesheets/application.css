@@ -192,7 +192,9 @@ input[type=number].qty-input { width: 80px; padding: 9px; border: 1px solid var(
 .table th, .table td { padding: 12px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
 .table th { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .table .num { text-align: right; }
-.total-row td { font-weight: 700; font-size: 17px; }
+.total-row td, .total-row th { font-weight: 700; font-size: 17px; }
+/* fila de totales en la cabecera: se distingue del encabezado de columnas */
+thead .total-row th { background: var(--soft, #f4f6fb); border-top: 2px solid var(--line, #dde3ee); text-transform: none; letter-spacing: 0; }
 /* Barra superior de la ficha de producto: migas a la izquierda y, para el
    admin, el botón «Editar producto» a la derecha. */
 .product-topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 24px 0 18px; }

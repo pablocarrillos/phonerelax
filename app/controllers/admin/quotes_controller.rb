@@ -11,9 +11,15 @@ module Admin
       @client_filter = Client.find_by(id: params[:client_id])
       @quotes = @quotes.where(client: @client_filter) if @client_filter
 
-      # Rango de fechas por fecha de creación (ambos extremos opcionales).
+      # Rango de fechas por fecha de creación (ambos extremos opcionales). Sin
+      # fechas se muestra el AÑO EN CURSO; ?all_dates=1 enseña todos los años.
+      @all_dates = params[:all_dates].present?
       @from = Date.parse(params[:from]) rescue nil
       @to = Date.parse(params[:to]) rescue nil
+      if !@all_dates && @from.nil? && @to.nil?
+        @from = Date.current.beginning_of_year
+        @current_year_default = true
+      end
       @quotes = @quotes.where(created_at: @from.beginning_of_day..) if @from
       @quotes = @quotes.where(created_at: ..@to.end_of_day) if @to
 

@@ -9,7 +9,8 @@
 <% end %>
 
 <% chip = 'padding:5px 14px; font-size:14px;' %>
-<% base = { client_id: @client_filter&.id, from: params[:from].presence, to: params[:to].presence } %>
+<% base = { client_id: @client_filter&.id, from: params[:from].presence, to: params[:to].presence,
+             all_dates: (@all_dates ? 1 : nil) } %>
 <div class="action-row" style="margin: 0 0 12px; display:flex; gap:8px; flex-wrap:wrap;">
   <%= link_to "Todos (#{@status_counts.values.sum})", admin_quotes_path(base),
               class: "btn #{@status_filter ? 'btn-outline' : 'btn-primary'}", style: chip %>
@@ -27,18 +28,37 @@
   <% if @client_filter %><%= hidden_field_tag :client_id, @client_filter.id %><% end %>
   <% if @status_filter %><%= hidden_field_tag :status, @status_filter %><% end %>
   <label for="from" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">Creados desde</label>
-  <%= date_field_tag :from, params[:from], id: 'from', class: 'input-compact', style: 'margin:0;' %>
+  <%= date_field_tag :from, (params[:from].presence || (@current_year_default ? @from : nil)), id: 'from', class: 'input-compact', style: 'margin:0;' %>
   <label for="to" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">hasta</label>
   <%= date_field_tag :to, params[:to], id: 'to', class: 'input-compact', style: 'margin:0;' %>
   <button type="submit" class="btn btn-outline" style="<%= chip %>">Filtrar fechas</button>
-  <% if @from || @to %><%= link_to 'Quitar fechas', admin_quotes_path(client_id: @client_filter&.id, status: @status_filter), class: 'btn btn-danger-link' %><% end %>
+  <%# por defecto solo el año en curso; desde aquí se ven todos los años %>
+  <% if @current_year_default %>
+    <span class="action-note" style="margin:0;">Mostrando el año en curso (<%= Date.current.year %>).</span>
+    <%= link_to 'Ver todos los años', admin_quotes_path(client_id: @client_filter&.id, status: @status_filter, all_dates: 1), class: 'btn btn-outline', style: chip %>
+  <% elsif @from || @to %>
+    <%= link_to 'Quitar fechas', admin_quotes_path(client_id: @client_filter&.id, status: @status_filter, all_dates: 1), class: 'btn btn-danger-link' %>
+  <% else %>
+    <span class="action-note" style="margin:0;">Mostrando todos los años.</span>
+    <%= link_to "Solo #{Date.current.year}", admin_quotes_path(client_id: @client_filter&.id, status: @status_filter), class: 'btn btn-outline', style: chip %>
+  <% end %>
 <% end %>
 
 <% show_delivery = %w[aprobado entregado vendidos].include?(@status_filter) %>
 <% show_dtf = @status_filter == "aprobado" %>
 <% if @quotes.any? %>
   <table class="table">
-    <thead><tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><% if show_delivery %><th>Plazo de entrega</th><% end %><% if show_dtf %><th>DTF</th><% end %><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr></thead>
+    <% label_cols = (show_delivery ? 6 : 5) + (show_dtf ? 1 : 0) %>
+    <thead>
+      <tr><th>Oferta Nº</th><th>Fecha</th><th>Cliente</th><th>Estado</th><th>Descripción (interna)</th><% if show_delivery %><th>Plazo de entrega</th><% end %><% if show_dtf %><th>DTF</th><% end %><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr>
+      <%# totales de lo que se está mostrando, siempre a la vista %>
+      <tr class="total-row">
+        <th colspan="<%= label_cols %>" style="text-align:right;">Totales<%= " «#{status_filter_label}»" if @status_filter %> · <%= @quotes.size %> <%= "presupuesto".pluralize(@quotes.size) %></th>
+        <th class="num"><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: '%n %u') %></th>
+        <th class="num"><%= number_to_currency(@quotes.sum(&:total), unit: '€', format: '%n %u') %></th>
+        <th></th>
+      </tr>
+    </thead>
     <tbody>
       <% @quotes.each do |quote| %>
         <tr>
@@ -69,16 +89,14 @@
         </tr>
       <% end %>
     </tbody>
-    <% if @status_filter %>
-      <tfoot>
-        <tr class="total-row">
-          <td colspan="<%= (show_delivery ? 6 : 5) + (show_dtf ? 1 : 0) %>"><strong>Total «<%= status_filter_label %>» (<%= @quotes.size %>)</strong></td>
-          <td class="num"><strong><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: "%n %u") %></strong></td>
-          <td class="num"><strong><%= number_to_currency(@quotes.sum(&:total), unit: '€', format: "%n %u") %></strong></td>
-          <td></td>
-        </tr>
-      </tfoot>
-    <% end %>
+    <tfoot>
+      <tr class="total-row">
+        <td colspan="<%= label_cols %>" style="text-align:right;"><strong>Totales<%= " «#{status_filter_label}»" if @status_filter %> (<%= @quotes.size %>)</strong></td>
+        <td class="num"><strong><%= number_to_currency(@quotes.sum(&:subtotal), unit: '€', format: '%n %u') %></strong></td>
+        <td class="num"><strong><%= number_to_currency(@quotes.sum(&:total), unit: '€', format: '%n %u') %></strong></td>
+        <td></td>
+      </tr>
+    </tfoot>
   </table>
 
   <% if @status_filter && @line_totals.any? %>

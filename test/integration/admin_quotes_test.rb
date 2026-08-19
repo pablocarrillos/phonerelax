@@ -350,7 +350,8 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     q2.update!(status: :aprobado)
 
     get admin_quotes_path(status: "aprobado")
-    assert_includes response.body, "Total «Aprobado» (2)"
+    assert_includes response.body, "Totales «Aprobado» (2)"      # pie
+    assert_includes response.body, "Totales «Aprobado» · 2 presupuestos" # cabecera
     assert_includes response.body, "20.00" # 2 × 10 € sin IVA
     assert_includes response.body, "24.20" # 2 × 12,10 € con IVA
 
@@ -515,4 +516,41 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     get admin_quotes_path
     assert_select "th", { text: "DTF", count: 0 }
   end
+
+  # El listado arranca en el año en curso (lo habitual al abrirlo) y se puede
+  # ampliar a todos los años; los totales de las columnas van arriba del todo.
+  test "por defecto solo se ven los presupuestos del año en curso" do
+    actual = a_quote
+    viejo = a_quote
+    viejo.update_columns(created_at: 2.years.ago, issued_on: 2.years.ago.to_date)
+
+    get admin_quotes_path
+    assert_response :success
+    assert_includes response.body, actual.number
+    assert_not_includes response.body, viejo.number
+    assert_includes response.body, "Mostrando el año en curso (#{Date.current.year})"
+
+    get admin_quotes_path(all_dates: 1)
+    assert_includes response.body, viejo.number
+    assert_includes response.body, "Mostrando todos los años"
+
+    # un rango explícito manda sobre el año en curso
+    get admin_quotes_path(from: 3.years.ago.to_date.to_s, to: 1.year.ago.to_date.to_s)
+    assert_includes response.body, viejo.number
+    assert_not_includes response.body, actual.number
+  end
+
+  test "la cabecera de la tabla lleva los totales de las columnas" do
+    a_quote
+    a_quote
+
+    get admin_quotes_path
+    assert_response :success
+    assert_select "thead tr.total-row" do
+      assert_select "th", text: /Totales · 2 presupuestos/
+      assert_select "th.num", text: /20[.,]00/
+      assert_select "th.num", text: /24[.,]20/
+    end
+  end
+
 end
