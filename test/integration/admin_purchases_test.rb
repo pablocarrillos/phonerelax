@@ -231,6 +231,41 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
     assert_select "form" # el formulario se pinta aunque el adjunto aún no esté guardado
   end
 
+  # El IVA habitual es el 21 %: las líneas nuevas salen ya marcadas y, al editar
+  # una compra, el desplegable conserva el tipo (el valor es decimal y no casaba
+  # con el entero de la opción: se quedaba en "Sin IVA" y se perdía al guardar).
+  test "las líneas nuevas traen el 21 % y el desplegable conserva el tipo al editar" do
+    assert_equal 21, PurchaseLine.new.vat_rate.to_i
+
+    get new_admin_purchase_path
+    assert_response :success
+    assert_select "select[name=?] option[selected][value=?]",
+                  "purchase[purchase_lines_attributes][0][vat_rate]", "21"
+
+    purchase = Purchase.create!(supplier: @supplier, ordered_on: Date.current, currency: "EUR")
+    purchase.purchase_lines.create!(description: "Importación", quantity: 1, unit_cost: 10, vat_rate: 0)
+    purchase.purchase_lines.create!(description: "Nacional", quantity: 1, unit_cost: 10, vat_rate: 21)
+
+    get edit_admin_purchase_path(purchase)
+    assert_response :success
+    assert_select "select[name=?] option[selected][value=?]",
+                  "purchase[purchase_lines_attributes][0][vat_rate]", "0"
+    assert_select "select[name=?] option[selected][value=?]",
+                  "purchase[purchase_lines_attributes][1][vat_rate]", "21"
+  end
+
+  test "la ficha de la compra muestra el IVA de cada línea sin escapar el HTML" do
+    purchase = Purchase.create!(supplier: @supplier, ordered_on: Date.current, currency: "EUR")
+    purchase.purchase_lines.create!(description: "DTF ayto.", quantity: 1, unit_cost: 48.29, vat_rate: 21)
+
+    get admin_purchase_path(purchase)
+    assert_response :success
+    assert_not_includes response.body, "&lt;span", "el importe del IVA salía escapado"
+    # el importe va en un <span> (con espacio duro antes del símbolo) seguido del tipo
+    body = response.body.dup.force_encoding("UTF-8").gsub(/\s+/, " ")
+    assert_match(%r{10[.,]14[^<]*</span> \(21 %\)}, body)
+  end
+
   private
 
   def purchase_with_line(quantity:, unit_cost: "2.00", shipping: "0")

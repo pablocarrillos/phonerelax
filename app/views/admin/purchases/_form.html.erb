@@ -43,47 +43,75 @@
   <h2 style="margin-top:24px;">Líneas de la compra</h2>
   <p class="action-note" style="margin-top:0;">Cada línea lleva su producto <strong>o un concepto libre</strong> (maquinaria, cajas… — sin producto de la tienda: no suma stock ni entra en el coste real), unidades, coste por unidad y los costes de transporte, aduanas y otros imputados a esa línea. Introduce todos los importes en la <strong>moneda seleccionada</strong>. Deja producto y concepto en blanco en las filas que no uses<% if purchase.purchase_lines.any?(&:persisted?) %>; marca «quitar» para eliminar una línea<% end %>.</p>
   <div style="overflow-x:auto;">
-    <%# columnas compactas: la tabla entera debe caber sin scroll en un portátil %>
-    <table class="table" style="min-width: 900px;">
+    <%# columnas en el orden del cálculo: qué se compra (producto/concepto, unidades, coste/ud.),
+        los costes imputados (transporte, aduanas, otros), el IVA, a qué presupuesto va y el
+        total de la línea. Cada celda de la fila se corresponde con su cabecera. %>
+    <% removable = purchase.purchase_lines.any?(&:persisted?) %>
+    <table class="table purchase-lines" style="min-width: 980px;">
       <thead>
         <tr>
-          <th>Producto</th><th>Unidades</th><th>Coste/ud.</th>
-          <th>Transporte</th><th>Aduanas</th><th>Otros costes</th>
-          <th title="IVA soportado de la línea: 0 % en importaciones, 21/10 % en proveedores nacionales">IVA</th>
-          <th title="Imputa el coste de esta línea a un presupuesto de cliente concreto; en blanco, compra para stock">Presupuesto</th>
-          <th class="num">Total línea</th>
-          <% if purchase.purchase_lines.any?(&:persisted?) %><th>Quitar</th><% end %>
+          <th style="min-width:200px;">Producto / concepto</th>
+          <th class="num" style="width:70px;">Uds.</th>
+          <th class="num" style="width:95px;">Coste/ud.</th>
+          <th class="num" style="width:90px;">Transporte</th>
+          <th class="num" style="width:90px;">Aduanas</th>
+          <th class="num" style="width:90px;" title="Otros costes imputados a esta línea (seguros, tasas, embalaje…)">Otros</th>
+          <th style="width:95px;" title="IVA soportado de la línea: 0 % en importaciones, 21/10 % en proveedores nacionales">IVA</th>
+          <th style="width:150px;" title="Imputa el coste de esta línea a un presupuesto de cliente concreto; en blanco, compra para stock">Presupuesto</th>
+          <th class="num" style="width:100px;">Total línea</th>
+          <% if removable %><th style="width:55px; text-align:center;">Quitar</th><% end %>
         </tr>
       </thead>
       <tbody>
         <%= f.fields_for :purchase_lines do |lf| %>
           <tr data-purchase-form-target="line">
             <td>
-              <%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select', style: 'max-width:185px;', data: { action: 'change->purchase-form#recalc' } } %>
+              <%= lf.collection_select :product_id, Product.ordered, :id, :name, { include_blank: true }, { class: 'form-select', style: 'width:100%; max-width:220px;', data: { action: 'change->purchase-form#recalc' } } %>
               <%# compra que no es un producto de la tienda: maquinaria, cajas… (no suma stock) %>
-              <%= lf.text_field :description, placeholder: 'o concepto libre (maquinaria, cajas…)', style: 'margin-top:4px; font-size:13px; max-width:185px;' %>
+              <%= lf.text_field :description, placeholder: 'o concepto libre (maquinaria, cajas…)', style: 'margin-top:4px; font-size:13px; width:100%; max-width:220px;' %>
             </td>
-            <td><%= lf.number_field :quantity, min: 1, style: 'width:65px;', data: { field: 'quantity', action: 'input->purchase-form#recalc' } %></td>
-            <td><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:85px;', data: { field: 'unit_cost', action: 'input->purchase-form#recalc' } %></td>
-            <td><%= lf.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:75px;', data: { field: 'shipping_cost', action: 'input->purchase-form#recalc' } %></td>
-            <td><%= lf.number_field :customs_cost, step: 0.01, min: 0, style: 'width:75px;', data: { field: 'customs_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td class="num"><%= lf.number_field :quantity, min: 1, style: 'width:65px; text-align:right;', data: { field: 'quantity', action: 'input->purchase-form#recalc' } %></td>
+            <td class="num"><%= lf.number_field :unit_cost, step: 0.0001, min: 0, style: 'width:90px; text-align:right;', data: { field: 'unit_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td class="num"><%= lf.number_field :shipping_cost, step: 0.01, min: 0, style: 'width:85px; text-align:right;', data: { field: 'shipping_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td class="num"><%= lf.number_field :customs_cost, step: 0.01, min: 0, style: 'width:85px; text-align:right;', data: { field: 'customs_cost', action: 'input->purchase-form#recalc' } %></td>
+            <td class="num"><%= lf.number_field :other_costs, step: 0.01, min: 0, style: 'width:85px; text-align:right;', data: { field: 'other_costs', action: 'input->purchase-form#recalc' } %></td>
             <td>
-              <%= lf.select :vat_rate, [['Sin IVA', 0], ['10 %', 10], ['21 %', 21]], {},
-                            { class: 'form-select', style: 'width:85px;', data: { field: 'vat_rate', action: 'change->purchase-form#recalc' } } %>
+              <%# selected explícito: el valor es decimal (21.0) y no casaría con el
+                  entero de la opción, dejando el desplegable en «Sin IVA» %>
+              <%= lf.select :vat_rate, PurchaseLine::VAT_OPTIONS, { selected: lf.object.vat_rate.to_i },
+                            { class: 'form-select', style: 'width:90px;', data: { field: 'vat_rate', action: 'change->purchase-form#recalc' } } %>
               <div class="action-note" style="margin-top:2px; text-align:right;" data-line-vat></div>
             </td>
             <td><%= lf.select :quote_id, @quotes_for_imputation.map { |q| ["#{q.number} · #{q.client.name.truncate(18)}", q.id] },
-                              { include_blank: '— stock —' }, { class: 'form-select', style: 'max-width:140px; font-size:13px;' } %></td>
+                              { include_blank: '— stock —' }, { class: 'form-select', style: 'width:100%; max-width:150px; font-size:13px;' } %></td>
             <td class="num"><strong data-line-total>—</strong></td>
-            <% if purchase.purchase_lines.any?(&:persisted?) %>
+            <% if removable %>
               <td style="text-align:center;"><%= lf.check_box :_destroy if lf.object.persisted? %></td>
             <% end %>
           </tr>
         <% end %>
       </tbody>
       <tfoot>
-        <tr><td colspan="3"></td><td class="num"><strong data-purchase-form-target="totalShipping">—</strong></td><td class="num"><strong data-purchase-form-target="totalCustoms">—</strong></td><td class="num"><strong data-purchase-form-target="totalOther">—</strong></td><td class="num"><strong data-purchase-form-target="totalVat">—</strong></td><td></td><td class="num"><strong data-purchase-form-target="totalInvoice">—</strong></td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
-        <tr><td colspan="3"></td><td class="field-label">Total transporte</td><td class="field-label">Total aduanas</td><td class="field-label">Total otros</td><td class="field-label">Total IVA</td><td></td><td class="field-label" style="text-align:right;">Total factura (IVA incl.)</td><% if purchase.purchase_lines.any?(&:persisted?) %><td></td><% end %></tr>
+        <tr>
+          <td colspan="3" class="field-label" style="text-align:right;">Totales</td>
+          <td class="num"><strong data-purchase-form-target="totalShipping">—</strong></td>
+          <td class="num"><strong data-purchase-form-target="totalCustoms">—</strong></td>
+          <td class="num"><strong data-purchase-form-target="totalOther">—</strong></td>
+          <td class="num"><strong data-purchase-form-target="totalVat">—</strong></td>
+          <td></td>
+          <td class="num"><strong data-purchase-form-target="totalInvoice">—</strong></td>
+          <% if removable %><td></td><% end %>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td class="field-label num">Transporte</td>
+          <td class="field-label num">Aduanas</td>
+          <td class="field-label num">Otros</td>
+          <td class="field-label num">IVA</td>
+          <td></td>
+          <td class="field-label num">Total factura (IVA incl.)</td>
+          <% if removable %><td></td><% end %>
+        </tr>
       </tfoot>
     </table>
   </div>

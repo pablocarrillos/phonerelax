@@ -28,7 +28,7 @@ ssh "$HOST" "chown -R phonerelax:phonerelax $APP_DIR && su - phonerelax -c '
   bundle exec rails db:migrate &&
   bundle exec rails db:seed | grep -E \"Traducciones|normativa\" &&
   bundle exec rails assets:precompile | tail -1
-' && systemctl restart phonerelax && sleep 6 && systemctl is-active phonerelax" 2>&1 | grep -v "warning\|Ignoring"
+' && systemctl restart phonerelax && sleep 12 && systemctl is-active phonerelax" 2>&1 | grep -v "warning\|Ignoring"
 
 echo "== smoke"
 UA="Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"

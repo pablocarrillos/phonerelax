@@ -13,11 +13,15 @@ class PurchaseLine < ApplicationRecord
   validates :unit_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :shipping_cost, :customs_cost, :other_costs,
             numericality: { greater_than_or_equal_to: 0 }
+  # IVA habitual de una compra nacional; las importaciones van a 0 % a mano
+  DEFAULT_VAT_RATE = 21
+  VAT_OPTIONS = [ [ "Sin IVA", 0 ], [ "10 %", 10 ], [ "21 %", 21 ] ].freeze
+
   validates :vat_rate, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validate :product_or_description
 
   # Un coste extra dejado en blanco en el formulario significa 0, no un error.
-  before_validation -> { self.shipping_cost ||= 0; self.customs_cost ||= 0; self.other_costs ||= 0; self.vat_rate ||= 0 }
+  before_validation -> { self.shipping_cost ||= 0; self.customs_cost ||= 0; self.other_costs ||= 0; self.vat_rate ||= DEFAULT_VAT_RATE }
 
   # Qué se compró: el producto de la tienda o el concepto libre.
   def display_name

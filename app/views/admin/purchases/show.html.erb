@@ -48,7 +48,13 @@
         <td class="num"><%= number_to_currency(line.shipping_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.customs_cost, unit: sym, format: '%n %u') %></td>
         <td class="num"><%= number_to_currency(line.other_costs, unit: sym, format: '%n %u') %></td>
-        <td class="num"><%= line.vat_rate.positive? ? "#{purchase_amount(@purchase, line.vat_amount)} (#{line.vat_rate.to_i} %)" : "—" %></td>
+        <%# purchase_amount devuelve HTML: se une con safe_join (interpolarlo en una
+            cadena pierde el html_safe y saldría el <span> escapado) %>
+        <td class="num">
+          <% if line.vat_rate.positive? %>
+            <%= safe_join([ purchase_amount(@purchase, line.vat_amount), " (#{line.vat_rate.to_i} %)" ]) %>
+          <% else %>—<% end %>
+        </td>
         <td>
           <%# a qué presupuesto de cliente se imputa el coste de la línea %>
           <% if line.quote %>
