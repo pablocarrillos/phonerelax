@@ -62,7 +62,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "stripe", "~> 19.4"
+gem "stripe", "~> 19.5"
 
 gem "invisible_captcha", "~> 2.3"
 gem "route_translator" # rutas públicas traducidas por idioma (/fr/panier, /en/cart…)
