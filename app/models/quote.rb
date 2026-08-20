@@ -149,6 +149,46 @@ class Quote < ApplicationRecord
     purchase_lines.includes(:purchase).sum(&:total_eur)
   end
 
+  # --- Margen estimado ---
+  # Base de venta sobre la que se calcula el margen: las líneas con su
+  # descuento, SIN el transporte (que no es margen: se repercute al cliente).
+  def lines_base
+    lines_total - discount_amount
+  end
+
+  # Coste de los productos vendidos, al coste real medio de compra (precio +
+  # transporte, aduanas y otros, prorrateados). Las unidades que ya cubre una
+  # compra imputada a este presupuesto NO se cuentan otra vez: su coste real ya
+  # está en imputed_cost_eur.
+  def product_cost_eur(landed_costs = Purchase.received.average_landed_costs)
+    imputed_units = purchase_lines.where.not(product_id: nil).group(:product_id).sum(:quantity)
+
+    active_lines.sum(BigDecimal("0")) do |line|
+      data = line.product && landed_costs[line.product]
+      next BigDecimal("0") unless data
+
+      pending = line.quantity.to_i - imputed_units[line.product_id].to_i
+      pending.positive? ? data[:avg_cost] * pending : BigDecimal("0")
+    end
+  end
+
+  # Coste estimado del pedido: lo comprado para él más el coste de los
+  # productos de catálogo que se sirven de stock.
+  def estimated_cost_eur(landed_costs = Purchase.received.average_landed_costs)
+    imputed_cost_eur + product_cost_eur(landed_costs)
+  end
+
+  # Beneficio estimado (sin IVA y sin transporte) y su porcentaje sobre la base.
+  def estimated_margin_eur(landed_costs = Purchase.received.average_landed_costs)
+    (lines_base - estimated_cost_eur(landed_costs)).round(2)
+  end
+
+  def estimated_margin_percent(landed_costs = Purchase.received.average_landed_costs)
+    return nil if lines_base.to_d.zero?
+
+    (estimated_margin_eur(landed_costs) / lines_base * 100).round(1)
+  end
+
   # Descuento global sobre las líneas (el transporte no se descuenta).
   def discount_amount
     (lines_total * (discount_percent.to_d / 100)).round(2)

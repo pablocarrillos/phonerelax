@@ -165,11 +165,38 @@
       <% end %>
     </tbody>
     <tfoot>
-      <% cost = @quote.imputed_cost_eur %>
-      <tr class="total-row"><td colspan="4" style="text-align:right;">Coste imputado total</td><td class="num"><strong><%= number_to_currency(cost, unit: '€', format: '%n %u') %></strong></td></tr>
-      <tr><td colspan="4" style="text-align:right;">Margen sobre la base (<%= number_to_currency(@quote.subtotal, unit: '€', format: '%n %u') %> sin IVA)</td>
-          <td class="num"><strong><%= number_to_currency(@quote.subtotal - cost, unit: '€', format: '%n %u') %></strong></td></tr>
+      <tr class="total-row"><td colspan="4" style="text-align:right;">Coste imputado total</td>
+          <td class="num"><strong><%= number_to_currency(@quote.imputed_cost_eur, unit: '€', format: '%n %u') %></strong></td></tr>
     </tfoot>
   </table>
   </div>
+<% end %>
+
+<%# Margen: base de venta SIN transporte menos lo que cuesta el pedido (compras
+    imputadas + coste real de los productos que salen de stock) %>
+<% eur = ->(v) { number_to_currency(v, unit: '€', format: '%n %u') } %>
+<% landed = Purchase.received.average_landed_costs %>
+<% product_cost = @quote.product_cost_eur(landed) %>
+<% if imputed.any? || product_cost.positive? %>
+  <h2 style="margin-top:28px;">Margen estimado</h2>
+  <table class="table" style="max-width: 560px;">
+    <tbody>
+      <tr><td>Base de venta (líneas<%= ", con el #{@quote.discount_percent.to_i} % de descuento" if @quote.discount_percent.to_d.positive? %>, sin IVA)</td>
+          <td class="num"><%= eur.call(@quote.lines_base) %></td></tr>
+      <tr><td>− Coste imputado (compras a proveedor)</td><td class="num">−<%= eur.call(@quote.imputed_cost_eur) %></td></tr>
+      <tr><td>− Coste de los productos servidos de stock</td><td class="num">−<%= eur.call(product_cost) %></td></tr>
+    </tbody>
+    <tfoot>
+      <tr class="total-row">
+        <td>Margen estimado</td>
+        <td class="num"><strong><%= eur.call(@quote.estimated_margin_eur(landed)) %><%
+          if (pct = @quote.estimated_margin_percent(landed)) %> (<%= number_with_precision(pct, precision: 1, separator: ',') %> %)<% end %></strong></td>
+      </tr>
+    </tfoot>
+  </table>
+  <p class="action-note" style="max-width:560px;">
+    El <strong>transporte</strong> (<%= eur.call(@quote.shipping_cost) %>) queda fuera: se repercute al cliente y no es margen.
+    El coste de los productos es el <strong>coste real medio</strong> de las compras recibidas (precio más transporte, aduanas y otros costes prorrateados);
+    las unidades ya cubiertas por una compra imputada a este presupuesto no se cuentan dos veces.
+  </p>
 <% end %>

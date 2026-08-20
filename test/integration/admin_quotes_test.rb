@@ -553,4 +553,64 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     end
   end
 
+
+  # Margen estimado: base de venta SIN transporte menos el coste real del
+  # pedido (compras imputadas + productos servidos de stock).
+  test "el margen descuenta el coste de los productos y deja fuera el transporte" do
+    producto = products(:funda)
+    proveedor = Supplier.create!(name: "Proveedor margen")
+    compra = Purchase.create!(supplier: proveedor, ordered_on: Date.current, currency: "EUR", received_on: Date.current)
+    # 100 uds a 2 € + 100 € de transporte → coste real 3 €/ud
+    compra.purchase_lines.create!(product: producto, quantity: 100, unit_cost: 2, shipping_cost: 100)
+
+    quote = Quote.create!(client: @client, issued_on: Date.current, shipping_cost: 50, vat_rate: 21, delivery_terms: "x",
+                          quote_lines_attributes: { "0" => { product_id: producto.id, description: "Fundas",
+                                                             quantity: 10, unit_price: 10, vat_rate: 21 } })
+
+    assert_equal 100, quote.lines_base.to_f, "10 × 10 € (el transporte no entra)"
+    assert_equal 150, quote.subtotal.to_f, "el subtotal del presupuesto sí lo incluye"
+    assert_equal 30, quote.product_cost_eur.to_f, "10 uds × 3 € de coste real"
+    assert_equal 70, quote.estimated_margin_eur.to_f, "100 − 30"
+    assert_equal 70.0, quote.estimated_margin_percent.to_f
+
+    get admin_quote_path(quote)
+    assert_response :success
+    body = response.body.dup.force_encoding("UTF-8")
+    assert_includes body, "Margen estimado"
+    assert_match(/70[.,]00\s*€/, body)
+    assert_match(/70[.,]0\s*%/, body)
+    assert_includes body, "El <strong>transporte</strong>"
+  end
+
+  test "una compra imputada no cuenta dos veces el mismo producto" do
+    producto = products(:funda)
+    proveedor = Supplier.create!(name: "Proveedor imputado")
+    recibida = Purchase.create!(supplier: proveedor, ordered_on: Date.current, currency: "EUR", received_on: Date.current)
+    recibida.purchase_lines.create!(product: producto, quantity: 100, unit_cost: 2, shipping_cost: 100) # 3 €/ud
+
+    quote = Quote.create!(client: @client, issued_on: Date.current, shipping_cost: 0, vat_rate: 21, delivery_terms: "x",
+                          quote_lines_attributes: { "0" => { product_id: producto.id, description: "Fundas",
+                                                             quantity: 10, unit_price: 10, vat_rate: 21 } })
+
+    # se compran 6 uds expresamente para este presupuesto, a 4 € reales
+    imputada = Purchase.create!(supplier: proveedor, ordered_on: Date.current, currency: "EUR", received_on: Date.current)
+    imputada.purchase_lines.create!(product: producto, quantity: 6, unit_cost: 4, quote: quote)
+
+    quote.reload
+    assert_equal 24.0, quote.imputed_cost_eur.to_f, "6 × 4 €"
+    # solo se valoran las 4 uds que NO cubre la compra imputada; el coste medio
+    # es el de todas las compras recibidas del producto (3 € y 4 €)
+    assert_in_delta 12.23, quote.product_cost_eur.to_f, 0.01
+    assert_in_delta 63.77, quote.estimated_margin_eur.to_f, 0.01, "100 − 24 − coste de las 4 restantes"
+  end
+
+  test "sin costes conocidos no se inventa margen" do
+    quote = Quote.create!(client: @client, issued_on: Date.current, shipping_cost: 0, vat_rate: 21, delivery_terms: "x",
+                          quote_lines_attributes: { "0" => { description: "Servicio a medida", quantity: 1,
+                                                             unit_price: 500, vat_rate: 21 } })
+    assert_equal 0, quote.product_cost_eur.to_f
+    get admin_quote_path(quote)
+    assert_not_includes response.body, "Margen estimado"
+  end
+
 end
