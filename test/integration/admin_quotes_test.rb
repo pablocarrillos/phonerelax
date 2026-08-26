@@ -317,6 +317,31 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
                   quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
   end
 
+  test "los comentarios del presupuesto guardan fecha/hora y usuario, y se borran" do
+    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                          quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
+
+    post admin_quote_comments_path(quote), params: { quote_comment: { body: "Llamado: firma esta semana." } }
+    assert_redirected_to admin_quote_path(quote, anchor: "comentarios")
+    comment = quote.comments.recent_first.first
+    assert_equal "Llamado: firma esta semana.", comment.body
+    assert_equal users(:one), comment.user
+    assert_in_delta Time.current.to_i, comment.created_at.to_i, 5
+
+    get admin_quote_path(quote)
+    assert_includes response.body, "Llamado: firma esta semana."
+    assert_includes response.body, comment.author_name
+
+    # vacío no crea nada
+    assert_no_difference -> { quote.comments.count } do
+      post admin_quote_comments_path(quote), params: { quote_comment: { body: "   " } }
+    end
+
+    assert_difference -> { quote.comments.count }, -1 do
+      delete admin_quote_comment_path(quote, comment)
+    end
+  end
+
   test "marcar el estado del presupuesto (aprobado / entregado / en pausa / perdido)" do
     quote = a_quote
     assert quote.abierto?, "por defecto abierto"
@@ -612,5 +637,4 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     get admin_quote_path(quote)
     assert_not_includes response.body, "Margen estimado"
   end
-
 end

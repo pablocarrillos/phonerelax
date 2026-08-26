@@ -119,6 +119,8 @@ Rails.application.routes.draw do
       patch :set_payment, on: :member # marcar el cobro (para confirmar / total)
       patch :upload_files, on: :member # subir logo, fichero DTF o presupuesto firmado
       delete :purge_file, on: :member # borrar uno de esos ficheros
+      # comentarios del seguimiento, con fecha/hora y usuario
+      resources :comments, controller: "quote_comments", only: [ :create, :destroy ], path: "comentarios"
     end
     resources :photos, only: [ :index, :create, :update, :destroy ] do
       patch :project_comment, on: :collection # comentario de una imagen estática

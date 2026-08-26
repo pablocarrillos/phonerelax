@@ -146,6 +146,29 @@
   <p><%= simple_format(@quote.notes) %></p>
 <% end %>
 
+<%# comentarios del seguimiento: con fecha/hora y usuario, el último primero %>
+<h2 id="comentarios" style="margin-top: 28px;">Comentarios</h2>
+<%= form_with url: admin_quote_comments_path(@quote), method: :post, local: true do %>
+  <div style="display: flex; gap: 8px; align-items: flex-start; max-width: 720px;">
+    <%= text_area_tag "quote_comment[body]", nil, rows: 2, style: "flex: 1;",
+                      placeholder: "p. ej. Llamado al cliente: confirma que firma esta semana.", required: true %>
+    <button type="submit" class="btn">Añadir comentario</button>
+  </div>
+<% end %>
+<% comments = @quote.comments.recent_first.includes(:user) %>
+<% if comments.any? %>
+  <ul style="list-style: none; padding: 0; margin: 12px 0 0; max-width: 720px;">
+    <% comments.each do |comment| %>
+      <li style="padding: 8px 0; border-bottom: 1px solid var(--line, #e3e3e3); display: flex; gap: 12px; align-items: baseline;">
+        <span style="white-space: nowrap; color: var(--muted);"><%= l comment.created_at, format: "%d/%m/%Y %H:%M" %></span>
+        <span style="flex: 1;"><%= comment.body %> <span style="color: var(--muted);">— <%= comment.author_name %></span></span>
+        <%= button_to "Borrar", admin_quote_comment_path(@quote, comment), method: :delete,
+              class: "btn btn-danger", form: { data: { turbo_confirm: "¿Borrar este comentario?" } } %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
 <%# costes de compras a proveedor imputados a este presupuesto (línea a línea) %>
 <% imputed = @quote.purchase_lines.includes(:product, purchase: :supplier).sort_by { |l| l.purchase.ordered_on } %>
 <% if imputed.any? %>

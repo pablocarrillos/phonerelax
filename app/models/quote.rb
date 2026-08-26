@@ -32,6 +32,8 @@ class Quote < ApplicationRecord
   has_many :samples, dependent: :nullify
   # líneas de compras a proveedor imputadas a este presupuesto (sus costes)
   has_many :purchase_lines, dependent: :nullify
+  # comentarios del seguimiento comercial, con su fecha y su usuario
+  has_many :comments, class_name: "QuoteComment", dependent: :destroy, inverse_of: :quote
 
   # Estado del seguimiento comercial del presupuesto.
   enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3, entregado: 4 }
