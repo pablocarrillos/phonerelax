@@ -36,9 +36,9 @@ class Quote < ApplicationRecord
   has_many :comments, class_name: "QuoteComment", dependent: :destroy, inverse_of: :quote
 
   # Estado del seguimiento comercial del presupuesto.
-  enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3, entregado: 4 }
+  enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3, entregado: 4, enviado: 5 }
 
-  STATUS_LABELS = { "abierto" => "Abierto", "aprobado" => "Aprobado", "en_pausa" => "En pausa",
+  STATUS_LABELS = { "abierto" => "Abierto", "enviado" => "Enviado", "aprobado" => "Aprobado", "en_pausa" => "En pausa",
                     "perdido" => "Perdido", "entregado" => "Entregado" }.freeze
 
   def status_label

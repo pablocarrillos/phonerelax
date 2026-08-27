@@ -22,11 +22,26 @@
   <% end %>
 </div>
 
+<%# Buscador global: textos del presupuesto y sus líneas, contacto, cliente y
+    nombres de ficheros adjuntos. Busca en todos los años. %>
+<%= form_with url: admin_quotes_path, method: :get, local: true,
+              html: { style: 'margin: 0 0 12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;' } do %>
+  <% if @client_filter %><%= hidden_field_tag :client_id, @client_filter.id %><% end %>
+  <% if @status_filter %><%= hidden_field_tag :status, @status_filter %><% end %>
+  <%= search_field_tag :q, @query, placeholder: 'Buscar en textos, contacto, cliente y ficheros…', class: 'input-compact', style: 'margin:0; width: 340px;' %>
+  <button type="submit" class="btn btn-outline" style="<%= chip %>">Buscar</button>
+  <% if @query.present? %>
+    <span class="action-note" style="margin:0;"><%= @quotes.size %> resultado(s) de «<%= @query %>» en todos los años.</span>
+    <%= link_to 'Quitar búsqueda', admin_quotes_path(client_id: @client_filter&.id, status: @status_filter), class: 'btn btn-danger-link' %>
+  <% end %>
+<% end %>
+
 <%# Filtro de fechas en una sola fila: etiquetas al lado de cada campo. %>
 <%= form_with url: admin_quotes_path, method: :get, local: true,
               html: { style: 'margin: 0 0 18px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;' } do %>
   <% if @client_filter %><%= hidden_field_tag :client_id, @client_filter.id %><% end %>
   <% if @status_filter %><%= hidden_field_tag :status, @status_filter %><% end %>
+  <% if @query.present? %><%= hidden_field_tag :q, @query %><% end %>
   <label for="from" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">Creados desde</label>
   <%= date_field_tag :from, (params[:from].presence || (@current_year_default ? @from : nil)), id: 'from', class: 'input-compact', style: 'margin:0;' %>
   <label for="to" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">hasta</label>

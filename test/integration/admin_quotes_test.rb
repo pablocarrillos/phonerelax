@@ -342,9 +342,44 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "el contacto se guarda y el buscador encuentra por textos, contacto, cliente y ficheros" do
+    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                          contact_name: "María López", contact_email: "maria@colegiosanluis.es",
+                          notes: "pendiente de vinilo dorado",
+                          quote_lines_attributes: { "0" => { description: "Funda persianilla bordada", quantity: 1, unit_price: 10, vat_rate: 21 } })
+    quote.update!(status: :aprobado)
+    patch upload_files_admin_quote_path(quote), params: { quote: { signed_quote: fixture_file_upload("factura.pdf", "application/pdf") } }
+    assert quote.reload.signed_quote.attached?
+
+    get admin_quote_path(quote)
+    assert_includes response.body, "María López"
+    assert_includes response.body, "maria@colegiosanluis.es"
+
+    # un presupuesto de otro año, para comprobar que la búsqueda abarca todos
+    old = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+                        quote_lines_attributes: { "0" => { description: "Cinta separadora", quantity: 1, unit_price: 5, vat_rate: 21 } })
+    old.update_columns(created_at: 2.years.ago)
+
+    { "maria@colegiosanluis" => quote, "vinilo dorado" => quote, "persianilla" => quote,
+      "factura.pdf" => quote, "cinta separadora" => old }.each do |term, expected|
+      get admin_quotes_path(q: term)
+      assert_response :success
+      assert_includes response.body, expected.number, "«#{term}» debe encontrar #{expected.number}"
+    end
+
+    get admin_quotes_path(q: "no-existe-esto")
+    assert_not_includes response.body, quote.number
+  end
+
   test "marcar el estado del presupuesto (aprobado / entregado / en pausa / perdido)" do
     quote = a_quote
     assert quote.abierto?, "por defecto abierto"
+    # Enviado al cliente: paso previo habitual a la aprobación.
+    patch set_status_admin_quote_path(quote), params: { status: "enviado" }
+    assert quote.reload.enviado?
+    get admin_quote_path(quote)
+    assert_includes response.body, "✅ Aprobado", "desde enviado se puede aprobar"
+
     patch set_status_admin_quote_path(quote), params: { status: "aprobado" }
     assert quote.reload.aprobado?
 

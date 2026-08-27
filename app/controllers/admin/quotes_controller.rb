@@ -11,9 +11,30 @@ module Admin
       @client_filter = Client.find_by(id: params[:client_id])
       @quotes = @quotes.where(client: @client_filter) if @client_filter
 
+      # Buscador: todos los textos del presupuesto y sus líneas, los datos de
+      # contacto, el cliente y los nombres de los ficheros adjuntos.
+      @query = params[:q].to_s.strip
+      if @query.present?
+        q = "%#{@query.downcase}%"
+        @quotes = @quotes.left_joins(:client, :quote_lines)
+                         .joins("LEFT JOIN active_storage_attachments search_att ON search_att.record_type = 'Quote' AND search_att.record_id = quotes.id
+                                 LEFT JOIN active_storage_blobs search_blob ON search_blob.id = search_att.blob_id")
+                         .where(<<~SQL.squish, q: q)
+                           LOWER(quotes.number) LIKE :q OR LOWER(COALESCE(quotes.internal_description, '')) LIKE :q
+                           OR LOWER(COALESCE(quotes.notes, '')) LIKE :q OR LOWER(COALESCE(quotes.remarks, '')) LIKE :q
+                           OR LOWER(COALESCE(quotes.payment_terms, '')) LIKE :q OR LOWER(COALESCE(quotes.delivery_terms, '')) LIKE :q
+                           OR LOWER(COALESCE(quotes.contact_name, '')) LIKE :q OR LOWER(COALESCE(quotes.contact_email, '')) LIKE :q
+                           OR LOWER(clients.name) LIKE :q OR LOWER(COALESCE(clients.tax_id, '')) LIKE :q
+                           OR LOWER(COALESCE(quote_lines.description, '')) LIKE :q
+                           OR LOWER(COALESCE(search_blob.filename, '')) LIKE :q
+                         SQL
+                         .distinct
+      end
+
       # Rango de fechas por fecha de creación (ambos extremos opcionales). Sin
       # fechas se muestra el AÑO EN CURSO; ?all_dates=1 enseña todos los años.
-      @all_dates = params[:all_dates].present?
+      # Al buscar, la búsqueda abarca todos los años salvo rango explícito.
+      @all_dates = params[:all_dates].present? || @query.present?
       @from = Date.parse(params[:from]) rescue nil
       @to = Date.parse(params[:to]) rescue nil
       if !@all_dates && @from.nil? && @to.nil?
@@ -196,6 +217,7 @@ module Admin
     def quote_params
       params.require(:quote).permit(:number, :client_id, :issued_on, :valid_until, :shipping_cost, :manual_shipping, :vat_rate,
                                     :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent, :shipping_country, :internal_description,
+                                    :contact_name, :contact_email,
                                     quote_lines_attributes: [ :id, :product_id, :description, :quantity,
                                                               :unit_price, :vat_rate, :discount_percent, :position, :_destroy ])
     end
