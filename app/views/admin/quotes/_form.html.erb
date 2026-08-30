@@ -28,6 +28,7 @@
     <div><%= f.label :number, 'Oferta Nº' %><%= f.text_field :number, placeholder: 'se genera solo si lo dejas vacío' %></div>
     <div><%= f.label :contact_name, 'Persona de contacto' %><%= f.text_field :contact_name, placeholder: 'p. ej. María López' %></div>
     <div><%= f.label :contact_email, 'Email de contacto' %><%= f.email_field :contact_email, placeholder: 'p. ej. maria@colegio.es' %></div>
+    <div><%= f.label :contact_phone, 'Teléfono de contacto' %><%= f.telephone_field :contact_phone, placeholder: 'p. ej. 612 345 678' %></div>
     <div><%= f.label :issued_on, 'Fecha *' %><%= f.date_field :issued_on, required: true %></div>
     <div><%= f.label :internal_description, 'Descripción (para uso interno)' %><%= f.text_field :internal_description, placeholder: 'p. ej. 180 uds. curso 26/27' %></div>
     <div><%= f.label :valid_until, 'Válido hasta' %><%= f.date_field :valid_until %></div>
@@ -39,6 +40,7 @@
                    {}, { class: 'form-select' } %>
     </div>
     <div class="full"><%= f.label :delivery_terms, 'Plazo de entrega *' %><%= f.text_field :delivery_terms, required: true, placeholder: '1 de septiembre de 2026' %></div>
+    <div class="full"><%= f.label :delivery_address, 'Dirección de entrega' %><%= f.text_area :delivery_address, rows: 2, placeholder: "p. ej. Colegio San José, C/ Mayor 1, 03001 Alicante" %></div>
     <div class="full"><%= f.label :remarks, 'Observaciones (SÍ salen en el presupuesto)' %><%= f.text_area :remarks, rows: 2 %></div>
     <div class="full"><%= f.label :notes, 'Notas internas (no salen en el PDF)' %><%= f.text_area :notes, rows: 2 %></div>
   </div>

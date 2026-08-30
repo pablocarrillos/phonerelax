@@ -24,6 +24,7 @@ module Admin
                            OR LOWER(COALESCE(quotes.notes, '')) LIKE :q OR LOWER(COALESCE(quotes.remarks, '')) LIKE :q
                            OR LOWER(COALESCE(quotes.payment_terms, '')) LIKE :q OR LOWER(COALESCE(quotes.delivery_terms, '')) LIKE :q
                            OR LOWER(COALESCE(quotes.contact_name, '')) LIKE :q OR LOWER(COALESCE(quotes.contact_email, '')) LIKE :q
+                           OR LOWER(COALESCE(quotes.contact_phone, '')) LIKE :q OR LOWER(COALESCE(quotes.delivery_address, '')) LIKE :q
                            OR LOWER(clients.name) LIKE :q OR LOWER(COALESCE(clients.tax_id, '')) LIKE :q
                            OR LOWER(COALESCE(quote_lines.description, '')) LIKE :q
                            OR LOWER(COALESCE(search_blob.filename, '')) LIKE :q
@@ -217,7 +218,7 @@ module Admin
     def quote_params
       params.require(:quote).permit(:number, :client_id, :issued_on, :valid_until, :shipping_cost, :manual_shipping, :vat_rate,
                                     :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent, :shipping_country, :internal_description,
-                                    :contact_name, :contact_email,
+                                    :contact_name, :contact_email, :contact_phone, :delivery_address,
                                     quote_lines_attributes: [ :id, :product_id, :description, :quantity,
                                                               :unit_price, :vat_rate, :discount_percent, :position, :_destroy ])
     end

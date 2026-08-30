@@ -6,11 +6,14 @@
     <strong>Estado:</strong> <span class="badge <%= @quote.status %>"><%= @quote.status_label %></span>
     <% unless @quote.sin_pagos? %><span class="badge <%= @quote.payment_status %>"><%= @quote.payment_status_label %></span><% end %>
     &nbsp;&nbsp;<strong>Cliente:</strong> <%= @quote.client.name %>
-    <% if @quote.contact_name.present? || @quote.contact_email.present? %>
-      &nbsp;&nbsp;<strong>Contacto:</strong> <%= @quote.contact_name %><% if @quote.contact_email.present? %> · <%= mail_to @quote.contact_email %><% end %>
+    <% if @quote.contact_name.present? || @quote.contact_email.present? || @quote.contact_phone.present? %>
+      &nbsp;&nbsp;<strong>Contacto:</strong> <%= @quote.contact_name %><% if @quote.contact_email.present? %> · <%= mail_to @quote.contact_email %><% end %><% if @quote.contact_phone.present? %> · <%= link_to @quote.contact_phone, "tel:#{@quote.contact_phone.gsub(/\s/, '')}" %><% end %>
     <% end %>
     &nbsp;&nbsp;<strong>Fecha:</strong> <%= l @quote.issued_on, format: '%d/%m/%Y' %>
     <% if @quote.valid_until %>&nbsp;&nbsp;<strong>Válido hasta:</strong> <%= l @quote.valid_until, format: '%d/%m/%Y' %><% end %>
+    <% if @quote.delivery_address.present? %>
+      <br><strong>Entrega en:</strong> <%= @quote.delivery_address %>
+    <% end %>
   </p>
   <div class="action-section">
     <span class="action-title">Estado del presupuesto</span>

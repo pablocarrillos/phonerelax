@@ -345,6 +345,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   test "el contacto se guarda y el buscador encuentra por textos, contacto, cliente y ficheros" do
     quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                           contact_name: "María López", contact_email: "maria@colegiosanluis.es",
+                          contact_phone: "612 345 678", delivery_address: "Colegio San Luis, C/ Mayor 1, 03001 Alicante",
                           notes: "pendiente de vinilo dorado",
                           quote_lines_attributes: { "0" => { description: "Funda persianilla bordada", quantity: 1, unit_price: 10, vat_rate: 21 } })
     quote.update!(status: :aprobado)
@@ -354,6 +355,8 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     get admin_quote_path(quote)
     assert_includes response.body, "María López"
     assert_includes response.body, "maria@colegiosanluis.es"
+    assert_includes response.body, "612 345 678"
+    assert_includes response.body, "Colegio San Luis, C/ Mayor 1, 03001 Alicante"
 
     # un presupuesto de otro año, para comprobar que la búsqueda abarca todos
     old = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
@@ -361,6 +364,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     old.update_columns(created_at: 2.years.ago)
 
     { "maria@colegiosanluis" => quote, "vinilo dorado" => quote, "persianilla" => quote,
+      "612 345 678" => quote, "colegio san luis, c/ mayor" => quote,
       "factura.pdf" => quote, "cinta separadora" => old }.each do |term, expected|
       get admin_quotes_path(q: term)
       assert_response :success
