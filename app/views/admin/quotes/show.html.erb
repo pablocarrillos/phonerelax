@@ -18,8 +18,6 @@
       <% buttons = { 'aprobado' => '✅ Aprobado', 'en_pausa' => '⏸ En pausa', 'perdido' => '✖ Perdido', 'abierto' => '↺ Reabrir' } %>
       <%# «Enviado» y «Entregado» solo tienen sentido tras aprobar el pedido. %>
       <% buttons = { 'enviado' => '📨 Enviado', 'entregado' => '📦 Entregado' }.merge(buttons) if @quote.confirmed? %>
-      <%# «Recibido» cierra el ciclo: la mercancía enviada llegó al cliente. %>
-      <% buttons = { 'recibido' => '📬 Recibido' }.merge(buttons) if @quote.enviado? %>
       <% buttons.each do |st, label| %>
         <% next if @quote.status == st %>
         <%= button_to label, set_status_admin_quote_path(@quote, status: st), method: :patch, class: 'btn btn-outline',

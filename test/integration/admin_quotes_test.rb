@@ -382,25 +382,18 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     patch set_status_admin_quote_path(quote), params: { status: "aprobado" }
     assert quote.reload.aprobado?
 
-    # Aprobado: aparecen «Enviado» y «Entregado», pero todavía no «Recibido».
+    # Aprobado: aparecen «Enviado» y «Entregado».
     get admin_quote_path(quote)
     assert_includes response.body, "📨 Enviado"
     assert_includes response.body, "📦 Entregado"
-    assert_not_includes response.body, "📬 Recibido"
 
     # Enviado (tras la aprobación): sigue siendo pedido en firme (cobro y
-    # ficheros disponibles) y se ofrece «Recibido», el último paso.
+    # ficheros disponibles).
     patch set_status_admin_quote_path(quote), params: { status: "enviado" }
     assert quote.reload.enviado?
     assert quote.confirmed?
     patch upload_files_admin_quote_path(quote), params: { quote: { signed_quote: fixture_file_upload("factura.pdf", "application/pdf") } }
     assert quote.reload.signed_quote.attached?, "enviado admite ficheros (p. ej. el presupuesto firmado)"
-    get admin_quote_path(quote)
-    assert_includes response.body, "📬 Recibido"
-
-    patch set_status_admin_quote_path(quote), params: { status: "recibido" }
-    assert quote.reload.recibido?
-    assert quote.confirmed?
 
     patch set_status_admin_quote_path(quote), params: { status: "en_pausa" }
     assert quote.reload.en_pausa?
