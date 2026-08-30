@@ -63,7 +63,8 @@ class Order < ApplicationRecord
   has_many :order_events, dependent: :destroy
 
   # Estado logístico del pedido, gestionado a mano desde el admin.
-  enum :status, { creado: 0, enviado: 1, recibido: 2 }
+  # "entregado" se llamó "recibido" hasta 2026-08: mismo valor 2 en la BD.
+  enum :status, { creado: 0, enviado: 1, entregado: 2 }
   # Estado del cobro, gestionado por Stripe (webhook / retorno del Checkout).
   # "reembolsado" = devuelto íntegramente al cliente (desde el admin).
   enum :payment_status, { pendiente: 0, pagado: 1, reembolsado: 2 }, prefix: :pago
@@ -168,7 +169,7 @@ class Order < ApplicationRecord
   def next_status
     return if pago_reembolsado? # un pedido reembolsado ya no avanza (no se envía)
 
-    { "creado" => "enviado", "enviado" => "recibido" }[status]
+    { "creado" => "enviado", "enviado" => "entregado" }[status]
   end
 
   # URL de seguimiento del transportista, si el nº y el transportista se reconocen.
@@ -181,7 +182,7 @@ class Order < ApplicationRecord
   end
 
   def previous_status
-    { "enviado" => "creado", "recibido" => "enviado" }[status]
+    { "enviado" => "creado", "entregado" => "enviado" }[status]
   end
 
   # Marca el pago y descuenta stock una sola vez (webhook y retorno del Checkout

@@ -106,7 +106,7 @@ module Admin
       end
     end
 
-    # Avanza el estado logístico: creado → enviado → recibido.
+    # Avanza el estado logístico: creado → enviado → entregado.
     # Al pasar a "enviado" acepta transportista y nº de seguimiento (opcionales).
     def advance
       order = Order.find(params[:id])
@@ -115,7 +115,7 @@ module Admin
                               tracking_carrier: params[:tracking_carrier])
         redirect_back fallback_location: admin_order_path(order), notice: "Pedido #{order.number} marcado como #{order.status}."
       else
-        message = order.pago_reembolsado? ? "Un pedido reembolsado no se puede marcar como enviado." : "El pedido ya está recibido."
+        message = order.pago_reembolsado? ? "Un pedido reembolsado no se puede marcar como enviado." : "El pedido ya está entregado."
         redirect_back fallback_location: admin_order_path(order), alert: message
       end
     end

@@ -196,7 +196,7 @@ sv:
     statuses:
       creado: Skapad
       enviado: Skickad
-      recibido: Mottagen
+      entregado: Levererad
     payment_statuses:
       pendiente: väntande
       pagado: betald

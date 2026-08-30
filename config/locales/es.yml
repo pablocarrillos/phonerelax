@@ -178,7 +178,7 @@ es:
     statuses:
       creado: Creado
       enviado: Enviado
-      recibido: Recibido
+      entregado: Entregado
     payment_statuses:
       pendiente: pendiente
       pagado: pagado

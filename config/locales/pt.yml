@@ -185,7 +185,7 @@ pt:
     statuses:
       creado: Criado
       enviado: Enviado
-      recibido: Recebido
+      entregado: Entregue
     payment_statuses:
       pendiente: pendente
       pagado: pago

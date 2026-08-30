@@ -192,7 +192,7 @@ de:
     statuses:
       creado: Erstellt
       enviado: Versandt
-      recibido: Zugestellt
+      entregado: Zugestellt
     payment_statuses:
       pendiente: ausstehend
       pagado: bezahlt

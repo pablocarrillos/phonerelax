@@ -192,7 +192,7 @@ fr:
     statuses:
       creado: Créée
       enviado: Expédiée
-      recibido: Reçue
+      entregado: Livrée
     payment_statuses:
       pendiente: en attente
       pagado: payée

@@ -87,7 +87,7 @@ Rails.application.routes.draw do
     end
     resource :company_setting, only: [ :show, :update ]
     resources :orders, only: [ :index, :show, :update, :destroy ] do
-      patch :advance, on: :member # creado → enviado → recibido
+      patch :advance, on: :member # creado → enviado → entregado
       patch :revert, on: :member  # deshace un avance de estado
       post :mark_paid, on: :member # cobro manual (fuera de Stripe)
       post :refund, on: :member # reembolso total o parcial

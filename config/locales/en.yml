@@ -190,7 +190,7 @@ en:
     statuses:
       creado: Created
       enviado: Shipped
-      recibido: Received
+      entregado: Delivered
     payment_statuses:
       pendiente: pending
       pagado: paid

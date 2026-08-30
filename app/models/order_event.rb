@@ -1,4 +1,4 @@
-# Histórico de un pedido: creado, pagado, enviado, recibido.
+# Histórico de un pedido: creado, pagado, enviado, entregado.
 class OrderEvent < ApplicationRecord
   belongs_to :order
 
