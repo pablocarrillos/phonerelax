@@ -11,13 +11,21 @@
 <% chip = 'padding:5px 14px; font-size:14px;' %>
 <% base = { client_id: @client_filter&.id, from: params[:from].presence, to: params[:to].presence,
              all_dates: (@all_dates ? 1 : nil) } %>
-<div class="action-row" style="margin: 0 0 12px; display:flex; gap:8px; flex-wrap:wrap;">
-  <%= link_to "Todos (#{@status_counts.values.sum})", admin_quotes_path(base),
-              class: "btn #{@status_filter ? 'btn-outline' : 'btn-primary'}", style: chip %>
+<%# Filtros en dos filas: arriba la vista general (Vendidos, Abierto, En pausa,
+    Perdido, Todos) y abajo los pasos del pedido en firme. %>
+<div class="action-row" style="margin: 0 0 8px; display:flex; gap:8px; flex-wrap:wrap;">
   <%= link_to "Vendidos (#{@sold_count})", admin_quotes_path(base.merge(status: 'vendidos')),
               class: "btn #{@status_filter == 'vendidos' ? 'btn-primary' : 'btn-outline'}", style: chip %>
-  <% Quote::STATUS_LABELS.each do |st, label| %>
-    <%= link_to "#{label} (#{@status_counts[st].to_i})", admin_quotes_path(base.merge(status: st)),
+  <% %w[abierto en_pausa perdido].each do |st| %>
+    <%= link_to "#{Quote::STATUS_LABELS[st]} (#{@status_counts[st].to_i})", admin_quotes_path(base.merge(status: st)),
+                class: "btn #{@status_filter == st ? 'btn-primary' : 'btn-outline'}", style: chip %>
+  <% end %>
+  <%= link_to "Todos (#{@status_counts.values.sum})", admin_quotes_path(base),
+              class: "btn #{@status_filter ? 'btn-outline' : 'btn-primary'}", style: chip %>
+</div>
+<div class="action-row" style="margin: 0 0 12px; display:flex; gap:8px; flex-wrap:wrap;">
+  <% %w[aprobado enviado entregado].each do |st| %>
+    <%= link_to "#{Quote::STATUS_LABELS[st]} (#{@status_counts[st].to_i})", admin_quotes_path(base.merge(status: st)),
                 class: "btn #{@status_filter == st ? 'btn-primary' : 'btn-outline'}", style: chip %>
   <% end %>
 </div>
