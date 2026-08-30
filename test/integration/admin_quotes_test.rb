@@ -374,24 +374,33 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   test "marcar el estado del presupuesto (aprobado / entregado / en pausa / perdido)" do
     quote = a_quote
     assert quote.abierto?, "por defecto abierto"
-    # Enviado al cliente: paso previo habitual a la aprobación.
-    patch set_status_admin_quote_path(quote), params: { status: "enviado" }
-    assert quote.reload.enviado?
+    # Sin aprobar no se ofrecen los pasos posteriores (enviado / entregado).
     get admin_quote_path(quote)
-    assert_includes response.body, "✅ Aprobado", "desde enviado se puede aprobar"
+    assert_not_includes response.body, "📨 Enviado"
+    assert_not_includes response.body, "📦 Entregado"
 
     patch set_status_admin_quote_path(quote), params: { status: "aprobado" }
     assert quote.reload.aprobado?
 
-    # Aprobado: aparece el botón «Entregado», y entregado sigue siendo pedido
-    # en firme (cobro y ficheros disponibles).
+    # Aprobado: aparecen «Enviado» y «Entregado», pero todavía no «Recibido».
     get admin_quote_path(quote)
+    assert_includes response.body, "📨 Enviado"
     assert_includes response.body, "📦 Entregado"
-    patch set_status_admin_quote_path(quote), params: { status: "entregado" }
-    assert quote.reload.entregado?
+    assert_not_includes response.body, "📬 Recibido"
+
+    # Enviado (tras la aprobación): sigue siendo pedido en firme (cobro y
+    # ficheros disponibles) y se ofrece «Recibido», el último paso.
+    patch set_status_admin_quote_path(quote), params: { status: "enviado" }
+    assert quote.reload.enviado?
     assert quote.confirmed?
     patch upload_files_admin_quote_path(quote), params: { quote: { signed_quote: fixture_file_upload("factura.pdf", "application/pdf") } }
-    assert quote.reload.signed_quote.attached?, "entregado admite ficheros (p. ej. el presupuesto firmado)"
+    assert quote.reload.signed_quote.attached?, "enviado admite ficheros (p. ej. el presupuesto firmado)"
+    get admin_quote_path(quote)
+    assert_includes response.body, "📬 Recibido"
+
+    patch set_status_admin_quote_path(quote), params: { status: "recibido" }
+    assert quote.reload.recibido?
+    assert quote.confirmed?
 
     patch set_status_admin_quote_path(quote), params: { status: "en_pausa" }
     assert quote.reload.en_pausa?

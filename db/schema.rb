@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_27_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_30_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -165,6 +165,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_090000) do
     t.boolean "needs_invoice", default: false, null: false
     t.string "number", null: false
     t.boolean "paid_manually", default: false, null: false
+    t.datetime "payment_reminder_sent_at"
     t.integer "payment_status", default: 0, null: false
     t.string "phone"
     t.string "postal_code"

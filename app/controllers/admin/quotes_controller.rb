@@ -3,8 +3,8 @@ module Admin
     before_action :set_quote, only: [ :show, :edit, :update, :destroy, :print, :duplicate,
                                       :set_status, :set_payment, :upload_files, :purge_file ]
 
-    # "Vendidos" = presupuestos aprobados o ya entregados.
-    SOLD_STATUSES = %w[aprobado entregado].freeze
+    # "Vendidos" = presupuestos aprobados o en cualquier paso posterior.
+    SOLD_STATUSES = %w[aprobado entregado enviado recibido].freeze
 
     def index
       @quotes = Quote.includes(:client, quote_lines: :product).recent_first

@@ -35,20 +35,22 @@ class Quote < ApplicationRecord
   # comentarios del seguimiento comercial, con su fecha y su usuario
   has_many :comments, class_name: "QuoteComment", dependent: :destroy, inverse_of: :quote
 
-  # Estado del seguimiento comercial del presupuesto.
-  enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3, entregado: 4, enviado: 5 }
+  # Estado del seguimiento comercial del presupuesto. El ciclo completo es
+  # abierto → aprobado → enviado (la mercancía sale) → recibido (último paso).
+  enum :status, { abierto: 0, aprobado: 1, en_pausa: 2, perdido: 3, entregado: 4, enviado: 5, recibido: 6 }
 
-  STATUS_LABELS = { "abierto" => "Abierto", "enviado" => "Enviado", "aprobado" => "Aprobado", "en_pausa" => "En pausa",
-                    "perdido" => "Perdido", "entregado" => "Entregado" }.freeze
+  STATUS_LABELS = { "abierto" => "Abierto", "aprobado" => "Aprobado", "enviado" => "Enviado",
+                    "recibido" => "Recibido", "entregado" => "Entregado", "en_pausa" => "En pausa",
+                    "perdido" => "Perdido" }.freeze
 
   def status_label
     STATUS_LABELS[status] || status
   end
 
-  # ¿El presupuesto se convirtió en pedido? (aprobado o ya entregado):
+  # ¿El presupuesto se convirtió en pedido? (aprobado o pasos posteriores):
   # habilita el cobro y los ficheros del pedido.
   def confirmed?
-    aprobado? || entregado?
+    aprobado? || entregado? || enviado? || recibido?
   end
 
   # Seguimiento del cobro (las condiciones habituales son 50 % para confirmar

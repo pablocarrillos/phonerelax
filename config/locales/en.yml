@@ -267,10 +267,10 @@ en:
       track: Track my order
       tracking_label: Tracking number
     payment_reminder:
-      subject: "PhoneRelax · Your order %{number} is pending payment"
-      title: "Your order is waiting for you"
-      body_html: "Hi %{name}: your order <strong>%{number}</strong> is ready but pending payment. You can complete it whenever you like:"
-      pay: Complete payment
+      subject: "PhoneRelax · You left your order %{number} in the cart"
+      title: "Did you leave something in your cart?"
+      body_html: "Hi %{name}: your order <strong>%{number}</strong> is still pending payment. You can pick it up where you left off and complete it whenever you like:"
+      pay: Resume order and pay
       no_action: "If you no longer want it, you don't need to do anything."
     refunded:
       subject: "PhoneRelax · Refund for your order %{number}"

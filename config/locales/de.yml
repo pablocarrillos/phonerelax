@@ -269,10 +269,10 @@ de:
       track: Meine Bestellung verfolgen
       tracking_label: Sendungsnummer
     payment_reminder:
-      subject: "PhoneRelax · Ihre Bestellung %{number} wartet auf die Zahlung"
-      title: "Ihre Bestellung wartet auf Sie"
-      body_html: "Hallo %{name}, Ihre Bestellung <strong>%{number}</strong> ist vorbereitet, aber noch nicht bezahlt. Sie können die Zahlung jederzeit abschließen:"
-      pay: Zahlung abschließen
+      subject: "PhoneRelax · Ihre Bestellung %{number} wartet noch im Warenkorb"
+      title: "Haben Sie etwas im Warenkorb vergessen?"
+      body_html: "Hallo %{name}, Ihre Bestellung <strong>%{number}</strong> ist noch nicht bezahlt. Sie können sie jederzeit fortsetzen und die Zahlung abschließen:"
+      pay: Bestellung fortsetzen und bezahlen
       no_action: "Wenn Sie die Bestellung nicht mehr wünschen, müssen Sie nichts weiter tun."
     refunded:
       subject: "PhoneRelax · Erstattung für Ihre Bestellung %{number}"

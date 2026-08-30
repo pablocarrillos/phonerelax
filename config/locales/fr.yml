@@ -269,10 +269,10 @@ fr:
       track: Suivre ma commande
       tracking_label: Nº de suivi
     payment_reminder:
-      subject: "PhoneRelax · Votre commande %{number} est en attente de paiement"
-      title: "Votre commande vous attend"
-      body_html: "Bonjour %{name}, votre commande <strong>%{number}</strong> est prête mais en attente de paiement. Vous pouvez la finaliser quand vous voulez :"
-      pay: Finaliser le paiement
+      subject: "PhoneRelax · Votre commande %{number} vous attend dans le panier"
+      title: "Vous avez laissé quelque chose dans votre panier ?"
+      body_html: "Bonjour %{name}, votre commande <strong>%{number}</strong> est restée en attente de paiement. Vous pouvez la reprendre et la finaliser quand vous voulez :"
+      pay: Reprendre la commande et payer
       no_action: "Si vous n'en voulez plus, vous n'avez rien à faire."
     refunded:
       subject: "PhoneRelax · Remboursement sur votre commande %{number}"

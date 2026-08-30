@@ -262,10 +262,10 @@ pt:
       track: Seguir a minha encomenda
       tracking_label: Nº de seguimento
     payment_reminder:
-      subject: "PhoneRelax · A sua encomenda %{number} está pendente de pagamento"
-      title: "A sua encomenda está à sua espera"
-      body_html: "Olá %{name}: tem a encomenda <strong>%{number}</strong> preparada mas pendente de pagamento. Pode concluí-la quando quiser:"
-      pay: Concluir o pagamento
+      subject: "PhoneRelax · Deixou a sua encomenda %{number} no carrinho"
+      title: "Deixou algo no carrinho?"
+      body_html: "Olá %{name}: a sua encomenda <strong>%{number}</strong> ficou pendente de pagamento. Pode retomá-la e concluí-la quando quiser:"
+      pay: Retomar a encomenda e pagar
       no_action: "Se já não a quiser, não precisa de fazer nada."
     refunded:
       subject: "PhoneRelax · Reembolso na tua encomenda %{number}"

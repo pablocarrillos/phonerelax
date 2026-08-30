@@ -25,10 +25,14 @@
         <%= button_to 'Marcar como pagado (cobro manual)', mark_paid_admin_order_path(@order), method: :post,
                       class: 'btn btn-primary',
                       form: { data: { turbo_confirm: "¿Marcar el pedido #{@order.number} como pagado? Se descontará stock y se enviará el email de confirmación al cliente." } } %>
-        <%= button_to 'Enviar recordatorio de pago', payment_reminder_admin_order_path(@order), method: :post,
+        <%= button_to @order.payment_reminder_sent_at ? 'Reenviar recordatorio de carrito' : 'Enviar recordatorio de carrito',
+                      payment_reminder_admin_order_path(@order), method: :post,
                       class: 'btn btn-outline',
-                      form: { data: { turbo_confirm: "¿Enviar el recordatorio de pago a #{@order.email}?" } } %>
+                      form: { data: { turbo_confirm: "¿Enviar el recordatorio de carrito a #{@order.email}?" } } %>
       </div>
+      <% if @order.payment_reminder_sent_at %>
+        <p style="margin:6px 0 0; color:#8a8fa8; font-size:13px;">Último recordatorio enviado el <%= l @order.payment_reminder_sent_at, format: '%d/%m/%Y a las %H:%M' %>.</p>
+      <% end %>
     </div>
   <% elsif @order.pago_pagado? %>
     <div class="action-section">

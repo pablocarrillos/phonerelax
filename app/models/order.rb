@@ -18,6 +18,10 @@ class Order < ApplicationRecord
 
   # Un pedido pendiente de pago se considera "antiguo" pasados estos días.
   STALE_UNPAID_DAYS = 3
+  # Recordatorio de carrito abandonado: cuánto esperar desde que se crea el
+  # pedido sin pagar, y desde cuándo aplica (los pedidos anteriores, jamás).
+  ABANDONED_REMINDER_DELAY = 3.hours
+  ABANDONED_REMINDER_SINCE = Time.utc(2026, 8, 30, 21, 30)
 
   # --- Exención de IVA (facturación) ---
   # Interruptores, activos desde 08-2026 (empresa dada de alta en el ROI).
@@ -87,6 +91,13 @@ class Order < ApplicationRecord
   scope :recent_first, -> { order(created_at: :desc) }
   # Pendientes de pago desde hace más de STALE_UNPAID_DAYS días.
   scope :stale_unpaid, -> { pago_pendiente.where(created_at: ..STALE_UNPAID_DAYS.days.ago) }
+  # Carritos abandonados: pendientes de pago con más de ABANDONED_REMINDER_DELAY
+  # y sin recordatorio enviado. Solo pedidos posteriores al estreno de la función
+  # (SINCE): los anteriores no reciben nada automático, se reenvían desde el admin.
+  scope :abandoned_pending_reminder, lambda {
+    pago_pendiente.where(payment_reminder_sent_at: nil)
+                  .where(created_at: ABANDONED_REMINDER_SINCE..ABANDONED_REMINDER_DELAY.ago)
+  }
   # Búsqueda del admin por número de pedido o datos del cliente.
   scope :search, lambda { |term|
     next if term.blank?
@@ -183,6 +194,24 @@ class Order < ApplicationRecord
 
   def previous_status
     { "enviado" => "creado", "entregado" => "enviado" }[status]
+  end
+
+  # Recorre los carritos abandonados y les envía el recordatorio con el enlace
+  # de pago. Lo lanza el cron del servidor cada 15 minutos (rails runner), por
+  # eso entrega en el momento: el proceso muere al terminar y no hay cola.
+  def self.send_abandoned_reminders!
+    abandoned_pending_reminder.find_each { |order| order.send_payment_reminder!(auto: true) }
+  end
+
+  # Envía el recordatorio de pago/carrito y deja constancia (fecha + histórico).
+  # `auto: false` es el botón del admin, que puede reenviarlo cuantas veces quiera.
+  def send_payment_reminder!(auto: false)
+    return unless pago_pendiente?
+
+    mailer = OrderMailer.payment_reminder(self)
+    auto ? mailer.deliver_now : mailer.deliver_later
+    update!(payment_reminder_sent_at: Time.current)
+    order_events.create!(event: auto ? "recordatorio de carrito (automático)" : "recordatorio de carrito (manual)")
   end
 
   # Marca el pago y descuenta stock una sola vez (webhook y retorno del Checkout

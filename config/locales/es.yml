@@ -255,10 +255,10 @@ es:
       track: Seguir mi pedido
       tracking_label: Nº de seguimiento
     payment_reminder:
-      subject: "PhoneRelax · Tu pedido %{number} está pendiente de pago"
-      title: "Tu pedido te está esperando"
-      body_html: "Hola %{name}: tienes el pedido <strong>%{number}</strong> preparado pero pendiente de pago. Puedes completarlo cuando quieras:"
-      pay: Completar el pago
+      subject: "PhoneRelax · Te dejaste tu pedido %{number} en el carrito"
+      title: "¿Te dejaste algo en el carrito?"
+      body_html: "Hola %{name}: tu pedido <strong>%{number}</strong> se quedó pendiente de pago. Puedes retomarlo y completarlo cuando quieras:"
+      pay: Retomar el pedido y pagar
       no_action: "Si ya no lo quieres, no tienes que hacer nada."
     refunded:
       subject: "PhoneRelax · Reembolso en tu pedido %{number}"

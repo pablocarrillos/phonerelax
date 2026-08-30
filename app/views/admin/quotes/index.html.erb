@@ -59,7 +59,7 @@
   <% end %>
 <% end %>
 
-<% show_delivery = %w[aprobado entregado vendidos].include?(@status_filter) %>
+<% show_delivery = %w[aprobado entregado enviado recibido vendidos].include?(@status_filter) %>
 <% show_dtf = @status_filter == "aprobado" %>
 <% if @quotes.any? %>
   <table class="table">

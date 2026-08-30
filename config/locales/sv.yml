@@ -273,10 +273,10 @@ sv:
       track: Följ min beställning
       tracking_label: Spårningsnummer
     payment_reminder:
-      subject: "PhoneRelax · Din beställning %{number} väntar på betalning"
-      title: "Din beställning väntar på dig"
-      body_html: "Hej %{name}! Din beställning <strong>%{number}</strong> är förberedd men ännu inte betald. Du kan slutföra den när du vill:"
-      pay: Slutför betalningen
+      subject: "PhoneRelax · Din beställning %{number} ligger kvar i varukorgen"
+      title: "Glömde du något i varukorgen?"
+      body_html: "Hej %{name}! Din beställning <strong>%{number}</strong> är ännu inte betald. Du kan återuppta den och slutföra betalningen när du vill:"
+      pay: Återuppta beställningen och betala
       no_action: "Om du inte längre vill ha den behöver du inte göra något."
     refunded:
       subject: "PhoneRelax · Återbetalning för din beställning %{number}"

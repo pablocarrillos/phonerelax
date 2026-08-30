@@ -95,11 +95,11 @@ module Admin
       redirect_to admin_orders_path, notice: "Pedido #{number} borrado."
     end
 
-    # Reenvía al cliente el aviso de pago pendiente (acción manual del admin).
+    # Reenvía al cliente el recordatorio de carrito/pago (acción manual del admin).
     def payment_reminder
       order = Order.find(params[:id])
       if order.pago_pendiente?
-        OrderMailer.payment_reminder(order).deliver_later
+        order.send_payment_reminder!
         redirect_to admin_order_path(order), notice: "Recordatorio de pago enviado a #{order.email}."
       else
         redirect_to admin_order_path(order), alert: "Este pedido ya está pagado."
