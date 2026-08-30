@@ -386,10 +386,15 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     patch set_status_admin_quote_path(quote), params: { status: "aprobado" }
     assert quote.reload.aprobado?
 
-    # Aprobado: aparecen «Enviado» y «Entregado».
+    # Aprobado: aparecen «Enviado» y «Entregado». El confirm de «Enviado»
+    # recuerda descontar los imanes de muestra que el cliente aún tiene.
+    sample = Sample.create!(organization: "Colegio San Luis", quote: quote)
+    sample.sample_lines.create!(product: products(:funda), quantity: 2)
     get admin_quote_path(quote)
     assert_includes response.body, "📨 Enviado"
     assert_includes response.body, "📦 Entregado"
+    assert_includes response.body, "Recuerda descontar del envío los imanes de muestra enviados"
+    assert_includes response.body, "2× #{products(:funda).display_name}"
 
     # Enviado (tras la aprobación): sigue siendo pedido en firme (cobro y
     # ficheros disponibles).

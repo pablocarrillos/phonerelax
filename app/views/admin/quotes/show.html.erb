@@ -23,8 +23,17 @@
       <% buttons = { 'enviado' => '📨 Enviado', 'entregado' => '📦 Entregado' }.merge(buttons) if @quote.confirmed? %>
       <% buttons.each do |st, label| %>
         <% next if @quote.status == st %>
+        <% confirm = "¿Pasar el presupuesto #{@quote.number} a «#{Quote::STATUS_LABELS[st]}»?" %>
+        <% if st == 'enviado' %>
+          <%# Al enviar la mercancía, los imanes de muestra que el cliente ya
+              tiene (muestras sin devolver) se descuentan del envío. %>
+          <% pending_lines = @quote.samples.pending.includes(sample_lines: :product).flat_map(&:sample_lines) %>
+          <% detail = pending_lines.group_by { |l| l.product.display_name }
+                                   .map { |name, ls| "#{ls.sum(&:quantity)}× #{name}" }.join(", ") %>
+          <% confirm += "\n\nRecuerda descontar del envío los imanes de muestra enviados#{detail.present? ? " (#{detail})" : ''}." %>
+        <% end %>
         <%= button_to label, set_status_admin_quote_path(@quote, status: st), method: :patch, class: 'btn btn-outline',
-                      form: { style: 'display:inline-block', data: { turbo_confirm: "¿Pasar el presupuesto #{@quote.number} a «#{Quote::STATUS_LABELS[st]}»?" } } %>
+                      form: { style: 'display:inline-block', data: { turbo_confirm: confirm } } %>
       <% end %>
     </div>
   </div>
