@@ -1,0 +1,19 @@
+<h2>Pedido <%= @order.number %> creado — pendiente de pago</h2>
+
+<p style="margin:0 0 16px;">El cliente ha completado sus datos de contacto pero todavía no ha pagado.</p>
+
+<%= render "order_summary" %>
+
+<h3 style="margin:20px 0 6px;">Datos de contacto</h3>
+<p style="margin:0; line-height:1.8;">
+  <strong><%= @order.customer_name %></strong><br>
+  <%= @order.address %><br>
+  <%= @order.postal_code %> <%= @order.city %> (<%= @order.province %>) · <%= @order.country %><br>
+  ✉️ <%= @order.email %> · 📞 <%= @order.phone %>
+</p>
+
+<p style="margin:24px 0 0; text-align:center;">
+  <%= link_to "Ver el pedido en el panel de gestión", admin_order_url(@order, locale: nil),
+              style: "display:inline-block; background:#D60BC6; color:#ffffff; font-weight:bold; " \
+                     "padding:12px 24px; border-radius:8px; text-decoration:none;" %>
+</p>

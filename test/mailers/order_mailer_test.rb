@@ -82,7 +82,7 @@ class OrderMailerTest < ActionMailer::TestCase
     order.update!(locale: "pt") # el aviso interno va SIEMPRE en español
     mail = OrderMailer.new_sale(order)
 
-    assert_equal [ "info@phonerelax.com" ], mail.to
+    assert_equal [ "info@phonerelax.com", "phonerelaxstore@gmail.com" ], mail.to
     assert_equal [ order.email ], mail.reply_to
     assert_match "Pedido pagado: #{order.number}", mail.subject
     body = mail.body.decoded
@@ -90,6 +90,21 @@ class OrderMailerTest < ActionMailer::TestCase
     assert_match order.customer_name, body
     assert_match order.address, body
     assert_match order.order_lines.first.product.display_name, body
+    assert_match "/admin/orders/#{order.id}", body
+  end
+
+  test "new_order: aviso interno de pedido creado pendiente de pago" do
+    order = orders(:uno)
+    order.update!(locale: "pt", payment_status: :pendiente) # el aviso interno va SIEMPRE en español
+    mail = OrderMailer.new_order(order)
+
+    assert_equal [ "info@phonerelax.com", "phonerelaxstore@gmail.com" ], mail.to
+    assert_equal [ order.email ], mail.reply_to
+    assert_match "Pedido creado (sin pagar): #{order.number}", mail.subject
+    body = mail.body.decoded
+    assert_match "pendiente de pago", body
+    assert_match order.customer_name, body
+    assert_match order.email, body
     assert_match "/admin/orders/#{order.id}", body
   end
 end

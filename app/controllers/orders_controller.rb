@@ -65,6 +65,8 @@ class OrdersController < ApplicationController
 
     @order.update!(shipping_cost: @order.compute_shipping,
                    total: @order.compute_total + @order.compute_shipping)
+    # Aviso interno: ya tenemos los datos de contacto aunque aún no haya pagado.
+    OrderMailer.new_order(@order).deliver_later
     redirect_to order_pay_path(@order.number)
   end
 

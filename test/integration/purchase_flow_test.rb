@@ -28,9 +28,14 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
   test "compra completa: carrito, pedido, Checkout y webhook que confirma el pago" do
     post cart_add_path(product_id: @funda), params: { quantity: 2 }
 
-    post orders_path, params: { order: customer_data }
+    assert_emails 1 do # aviso interno: pedido creado pendiente de pago
+      post orders_path, params: { order: customer_data }
+    end
     order = Order.find_by!(email: customer_data[:email])
     assert_redirected_to order_pay_path(order.number)
+    created_mail = ActionMailer::Base.deliveries.last
+    assert_equal [ "info@phonerelax.com", "phonerelaxstore@gmail.com" ], created_mail.to
+    assert_includes created_mail.subject, "Pedido creado (sin pagar): #{order.number}"
     assert_equal 2, order.order_lines.sum(:quantity)
     # 2 × 9,95 + transporte (5,95 + 2 × 1) = 27,85
     assert_equal BigDecimal("27.85"), order.total
@@ -56,8 +61,9 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     mail = ActionMailer::Base.deliveries.find { |m| m.to == [ order.email ] }
     assert mail, "el cliente recibe su confirmación"
     assert_includes mail.subject, order.number
-    shop_mail = ActionMailer::Base.deliveries.find { |m| m.to == [ "info@phonerelax.com" ] }
+    shop_mail = ActionMailer::Base.deliveries.find { |m| m.subject.include?("Pedido pagado") }
     assert shop_mail, "la tienda recibe el aviso de venta"
+    assert_equal [ "info@phonerelax.com", "phonerelaxstore@gmail.com" ], shop_mail.to
     assert_includes shop_mail.body.decoded, order.address
 
     # La página de estado agradece la compra y enlaza cada producto comprado.
