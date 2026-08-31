@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,6 +83,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_090000) do
     t.string "name"
     t.string "phone"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "coupons", force: :cascade do |t|
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.decimal "discount_amount", precision: 8, scale: 2
+    t.decimal "discount_percent", precision: 5, scale: 2
+    t.boolean "enabled", default: true, null: false
+    t.date "ends_on"
+    t.integer "max_uses"
+    t.string "notify_emails"
+    t.date "starts_on"
+    t.datetime "updated_at", null: false
+    t.integer "uses_count", default: 0, null: false
+    t.index "lower((code)::text)", name: "index_coupons_on_lower_code", unique: true
   end
 
   create_table "image_comments", force: :cascade do |t|
@@ -158,6 +173,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_090000) do
     t.text "admin_notes"
     t.string "city"
     t.string "country"
+    t.string "coupon_code"
+    t.decimal "coupon_discount", precision: 8, scale: 2, default: "0.0", null: false
+    t.bigint "coupon_id"
     t.datetime "created_at", null: false
     t.string "customer_name", null: false
     t.string "email", null: false
@@ -189,6 +207,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_090000) do
     t.boolean "vat_exempt", default: false, null: false
     t.string "vat_exempt_reason"
     t.boolean "vies_valid"
+    t.index ["coupon_id"], name: "index_orders_on_coupon_id"
     t.index ["number"], name: "index_orders_on_number", unique: true
   end
 
@@ -461,6 +480,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_090000) do
   add_foreign_key "order_events", "orders"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"
+  add_foreign_key "orders", "coupons"
   add_foreign_key "pack_items", "products", column: "component_id"
   add_foreign_key "pack_items", "products", column: "pack_id"
   add_foreign_key "price_tiers", "products"

@@ -11,6 +11,7 @@ class OrdersController < ApplicationController
 
   # Formulario de datos del cliente con el resumen del carrito.
   def new
+    load_session_coupon
     @lines = cart_lines
     return redirect_to cart_path, alert: t("flash.cart_empty") if @lines.empty?
     if (blocker = checkout_blocker(@lines))
@@ -53,7 +54,8 @@ class OrdersController < ApplicationController
       unit_price = @order.vat_exempt? ? product.net_price_for_quantity(quantity) : product.price_for_quantity(quantity)
       @order.order_lines.build(product: product, quantity: quantity, unit_price: unit_price)
     end
-    @order.total = @order.compute_total
+    apply_session_coupon(@order)
+    @order.total = @order.compute_total - @order.coupon_discount.to_d
 
     unless @order.save
       @lines = lines
@@ -64,7 +66,8 @@ class OrdersController < ApplicationController
     end
 
     @order.update!(shipping_cost: @order.compute_shipping,
-                   total: @order.compute_total + @order.compute_shipping)
+                   total: @order.compute_total - @order.coupon_discount.to_d + @order.compute_shipping)
+    session.delete(:coupon_code)
     # Aviso interno: ya tenemos los datos de contacto aunque aún no haya pagado.
     OrderMailer.new_order(@order).deliver_later
     redirect_to order_pay_path(@order.number)
@@ -131,6 +134,23 @@ class OrdersController < ApplicationController
 
     parsed = Phonelib.parse(raw, iso)
     order.phone = parsed.valid? ? parsed.e164 : "#{Order::PHONE_PREFIXES[iso]}#{raw.gsub(/\D/, '')}"
+  end
+
+  # Cupón dejado en la sesión por el botón «Usar» del checkout.
+  def load_session_coupon
+    @coupon = Coupon.lookup(session[:coupon_code])
+    @coupon = nil unless @coupon&.redeemable?
+  end
+
+  # Se revalida aquí (fechas, usos, habilitado): si dejó de ser válido entre
+  # el «Usar» y el pago, el pedido sale sin descuento.
+  def apply_session_coupon(order)
+    coupon = Coupon.lookup(session[:coupon_code])
+    return unless coupon&.redeemable?
+
+    order.coupon = coupon
+    order.coupon_code = coupon.code
+    order.coupon_discount = coupon.discount_for(order.compute_total)
   end
 
   def cart_lines

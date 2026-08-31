@@ -65,6 +65,9 @@ class Order < ApplicationRecord
   has_many :order_lines, dependent: :destroy
   has_many :products, through: :order_lines
   has_many :order_events, dependent: :destroy
+  # cupón aplicado (si lo hubo); el código y el importe quedan congelados en el
+  # pedido aunque el cupón cambie o se borre después
+  belongs_to :coupon, optional: true
 
   # Estado logístico del pedido, gestionado a mano desde el admin.
   # "entregado" se llamó "recibido" hasta 2026-08: mismo valor 2 en la BD.
@@ -155,6 +158,9 @@ class Order < ApplicationRecord
       subtotal = line.unit_price * line.quantity
       subtotal - subtotal / (1 + line.product.vat_percentage.to_d / 100)
     end
+    # el descuento del cupón rebaja base e IVA proporcionalmente
+    lines_gross = compute_total
+    vat *= 1 - coupon_discount.to_d / lines_gross if coupon_discount.to_d.positive? && lines_gross.positive?
     vat += shipping_cost.to_d - shipping_cost.to_d / SHIPPING_VAT_FACTOR if shipping_cost.present?
     rates = order_lines.map { |line| line.product.vat_percentage.to_d }.uniq
     { base: total.to_d - vat.round(2), vat: vat.round(2),
@@ -227,6 +233,7 @@ class Order < ApplicationRecord
     end
     OrderMailer.paid(self).deliver_later
     OrderMailer.new_sale(self).deliver_later
+    coupon&.register_use!(self)
   end
 
   # Importe cobrado al cliente: el total se congela con el transporte incluido

@@ -26,12 +26,13 @@
               <%= link_to 'Transporte', admin_shipping_path, class: ('active' if controller_name == 'shipping') %>
             </div></div>
           </div>
-          <% ventas_active = %w[orders stats].include?(controller_name) %>
+          <% ventas_active = %w[orders stats coupons].include?(controller_name) %>
           <div class="admin-dropdown">
             <button type="button" class="admin-drop-label <%= 'active' if ventas_active %>">Ventas<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %></button>
             <div class="admin-menu"><div class="admin-menu-box">
               <%= link_to admin_orders_path, class: ('active' if controller_name == 'orders') do %>Pedidos<% if pending_to_prepare_count.positive? %><span class="nav-badge"><%= pending_to_prepare_count %></span><% end %><% end %>
               <%= link_to 'Estadísticas', admin_stats_path, class: ('active' if controller_name == 'stats') %>
+              <%= link_to 'Cupones', admin_coupons_path, class: ('active' if controller_name == 'coupons') %>
             </div></div>
           </div>
           <% comercial_active = %w[quotes clients samples].include?(controller_name) %>
@@ -62,9 +63,10 @@
 
     <%# Sub-barra del grupo activo: navegación directa sin depender del hover. %>
     <% subnav =
-         if %w[orders stats].include?(controller_name)
+         if %w[orders stats coupons].include?(controller_name)
            [ [ "Pedidos", admin_orders_path, controller_name == "orders" ],
-             [ "Estadísticas", admin_stats_path, controller_name == "stats" ] ]
+             [ "Estadísticas", admin_stats_path, controller_name == "stats" ],
+             [ "Cupones", admin_coupons_path, controller_name == "coupons" ] ]
          elsif %w[products purchases suppliers shipping].include?(controller_name)
            [ [ "Productos", admin_products_path, controller_name == "products" ],
              [ "Compras", admin_purchases_path, %w[purchases suppliers].include?(controller_name) ],

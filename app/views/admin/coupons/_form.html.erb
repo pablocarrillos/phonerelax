@@ -1,0 +1,50 @@
+<%= form_with model: [ :admin, coupon ], local: true do |f| %>
+  <% if coupon.errors.any? %>
+    <div class="errors"><ul><% coupon.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+
+  <div class="form-grid" style="max-width: 720px;">
+    <div>
+      <%= f.label :code, 'Código *' %>
+      <%= f.text_field :code, required: true, placeholder: 'p. ej. VERANO26', style: 'text-transform:uppercase; font-family:monospace;' %>
+    </div>
+    <div style="display:flex; align-items:flex-end; padding-bottom:6px;">
+      <label style="display:flex; align-items:center; gap:8px; font-weight:600; margin:0;">
+        <%= f.check_box :enabled %> Habilitado
+      </label>
+    </div>
+    <div>
+      <%= f.label :discount_percent, 'Porcentaje de descuento (%)' %>
+      <%= f.number_field :discount_percent, step: 0.1, min: 0.1, max: 100, placeholder: 'p. ej. 10' %>
+      <p class="action-note" style="margin-top:4px;">Sobre la base (sin IVA). Rellena este O la cantidad, no los dos.</p>
+    </div>
+    <div>
+      <%= f.label :discount_amount, 'Cantidad exacta de descuento (€)' %>
+      <%= f.number_field :discount_amount, step: 0.01, min: 0.01, placeholder: 'p. ej. 5' %>
+      <p class="action-note" style="margin-top:4px;">Sobre el total con IVA de los productos (el transporte no se descuenta).</p>
+    </div>
+    <div>
+      <%= f.label :starts_on, 'Válido desde (opcional)' %>
+      <%= f.date_field :starts_on %>
+    </div>
+    <div>
+      <%= f.label :ends_on, 'Válido hasta (opcional)' %>
+      <%= f.date_field :ends_on %>
+    </div>
+    <div>
+      <%= f.label :max_uses, 'Número máximo de usos (opcional)' %>
+      <%= f.number_field :max_uses, min: 1, step: 1, placeholder: 'sin límite' %>
+      <% if coupon.persisted? %><p class="action-note" style="margin-top:4px;">Lleva <%= coupon.uses_count %> uso(s).</p><% end %>
+    </div>
+    <div class="full">
+      <%= f.label :notify_emails, 'Emails de aviso al promotor (opcional)' %>
+      <%= f.text_field :notify_emails, placeholder: 'p. ej. promotor@empresa.com, comercial@empresa.com' %>
+      <p class="action-note" style="margin-top:4px;">Separados por comas. En cada uso reciben el pedido y su importe.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:18px;">
+    <%= f.submit(coupon.persisted? ? 'Guardar cupón' : 'Crear cupón', class: 'btn btn-primary') %>
+    <%= link_to 'Cancelar', admin_coupons_path, class: 'btn btn-outline' %>
+  </p>
+<% end %>

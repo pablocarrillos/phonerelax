@@ -1,0 +1,45 @@
+<div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+  <h1 style="margin:0;">Cupones</h1>
+  <%= link_to '+ Nuevo cupón', new_admin_coupon_path, class: 'btn btn-primary' %>
+</div>
+<p class="action-note" style="margin-top:8px;">El cliente los aplica en el checkout («¿Tienes un cupón?»). El porcentaje descuenta sobre la base (sin IVA); la cantidad exacta, sobre el total con IVA de los productos. El transporte nunca se descuenta. Cada uso avisa por email al promotor.</p>
+
+<% if @coupons.empty? %>
+  <p>No hay cupones. Mientras no exista ninguno, el checkout no muestra el campo de cupón.</p>
+<% else %>
+  <table class="table">
+    <thead><tr><th>Código</th><th>Estado</th><th>Descuento</th><th>Vigencia</th><th class="num">Usos</th><th>Avisar a</th><th></th></tr></thead>
+    <tbody>
+      <% @coupons.each do |coupon| %>
+        <tr>
+          <td><strong style="font-family:monospace; font-size:15px;"><%= coupon.code %></strong></td>
+          <td>
+            <% if coupon.redeemable? %>
+              <span class="badge pagado">Activo</span>
+            <% else %>
+              <span class="badge pendiente" title="<%= coupon.rejection_reason %>">
+                <%= { disabled: "Deshabilitado", not_started: "Aún no en vigor", expired: "Caducado", exhausted: "Agotado" }[coupon.rejection_reason] %>
+              </span>
+            <% end %>
+          </td>
+          <td><%= coupon.discount_label %></td>
+          <td style="font-size:14px;">
+            <% if coupon.starts_on || coupon.ends_on %>
+              <%= coupon.starts_on ? l(coupon.starts_on, format: '%d/%m/%Y') : '…' %> → <%= coupon.ends_on ? l(coupon.ends_on, format: '%d/%m/%Y') : '…' %>
+            <% else %>
+              <span style="color:var(--muted);">Sin límite</span>
+            <% end %>
+          </td>
+          <td class="num"><%= coupon.uses_count %><%= " / #{coupon.max_uses}" if coupon.max_uses %></td>
+          <td style="font-size:13px; color:var(--muted); word-break:break-all;"><%= coupon.notify_email_list.join(", ").presence || '—' %></td>
+          <td style="text-align:right; white-space:nowrap;">
+            <%= link_to 'Editar', edit_admin_coupon_path(coupon), class: 'btn btn-outline', style: 'padding:5px 12px; font-size:13px;' %>
+            <%= button_to 'Borrar', admin_coupon_path(coupon), method: :delete, class: 'btn btn-danger',
+                          form: { style: 'display:inline;', data: { turbo_confirm: "¿Borrar el cupón #{coupon.code}? Dejará de poder usarse (los pedidos pasados conservan su descuento)." } },
+                          style: 'padding:5px 12px; font-size:13px;' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

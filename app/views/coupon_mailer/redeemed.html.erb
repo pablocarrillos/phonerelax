@@ -1,0 +1,12 @@
+<h1 style="font-size:20px; margin:0 0 12px;">Tu cupón <%= @coupon.code %> se ha usado</h1>
+<p>Acaba de completarse un pedido en phonerelax.com con el cupón <strong><%= @coupon.code %></strong>.</p>
+<table style="width:100%; border-collapse:collapse; margin:12px 0;">
+  <tr><td style="padding:6px 0; border-bottom:1px solid #eceef7;">Pedido</td>
+      <td style="padding:6px 0; border-bottom:1px solid #eceef7; text-align:right;"><strong><%= @order.number %></strong></td></tr>
+  <tr><td style="padding:6px 0; border-bottom:1px solid #eceef7;">Descuento aplicado</td>
+      <td style="padding:6px 0; border-bottom:1px solid #eceef7; text-align:right;">−<%= number_to_currency(@order.coupon_discount, unit: '€', format: '%n %u') %></td></tr>
+  <tr><td style="padding:6px 0; border-bottom:1px solid #eceef7;">Total del pedido (IVA incluido)</td>
+      <td style="padding:6px 0; border-bottom:1px solid #eceef7; text-align:right;"><strong><%= number_to_currency(@order.total, unit: '€', format: '%n %u') %></strong></td></tr>
+  <tr><td style="padding:6px 0;">Usos del cupón</td>
+      <td style="padding:6px 0; text-align:right;"><%= @coupon.uses_count %><%= " de #{@coupon.max_uses}" if @coupon.max_uses %></td></tr>
+</table>

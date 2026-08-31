@@ -41,6 +41,8 @@ Rails.application.routes.draw do
     patch "carrito/cantidad/:product_id", to: "carts#update_quantity", as: :cart_update
     delete "carrito/quitar/:product_id", to: "carts#remove", as: :cart_remove
 
+    post "cupon/validar", to: "coupons#validate", as: :coupon_validate
+    delete "cupon", to: "coupons#remove", as: :coupon_remove
     get "pedido/nuevo", to: "orders#new", as: :new_order
     post "pedido", to: "orders#create", as: :orders
     get "pedido/:number/pagar", to: "orders#pay_page", as: :order_pay
@@ -122,6 +124,7 @@ Rails.application.routes.draw do
       # comentarios del seguimiento, con fecha/hora y usuario
       resources :comments, controller: "quote_comments", only: [ :create, :destroy ], path: "comentarios"
     end
+    resources :coupons, path: "cupones", except: :show
     resources :photos, only: [ :index, :create, :update, :destroy ] do
       patch :project_comment, on: :collection # comentario de una imagen estática
     end

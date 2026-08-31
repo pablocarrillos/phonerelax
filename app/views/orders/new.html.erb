@@ -33,15 +33,66 @@
           <td class="num" data-invoice-target="amount"
               data-gross="<%= number_to_currency(vat_total, unit: '€', format: '%n %u') %>"
               data-net="<%= number_to_currency(0, unit: '€', format: '%n %u') %>"><%= number_to_currency(vat_total, unit: '€', format: '%n %u') %></td></tr>
+      <% if @coupon %>
+        <% coupon_gross = @coupon.discount_for(@total) %>
+        <% coupon_net = @coupon.discount_for(net_total) %>
+        <tr>
+          <td style="color:#0a7d43;"><%= t('checkout.coupon_row', default: 'Cupón') %> <strong style="font-family:monospace;"><%= @coupon.code %></strong>
+            · <%= link_to t('checkout.coupon_remove', default: 'Quitar'), coupon_remove_path, data: { turbo_method: :delete }, style: 'font-size:13px;' %></td>
+          <td class="num" style="color:#0a7d43;" data-invoice-target="amount"
+              data-gross="−<%= number_to_currency(coupon_gross, unit: '€', format: '%n %u') %>"
+              data-net="−<%= number_to_currency(coupon_net, unit: '€', format: '%n %u') %>">−<%= number_to_currency(coupon_gross, unit: '€', format: '%n %u') %></td>
+        </tr>
+      <% end %>
+      <% total_gross = @coupon ? @total - @coupon.discount_for(@total) : @total %>
+      <% total_net = @coupon ? net_total - @coupon.discount_for(net_total) : net_total %>
       <tr class="total-row">
         <td data-invoice-target="totalLabel"
             data-gross="<%= t('checkout.total_vat') %>" data-net="<%= t('checkout.total_exempt') %>"><%= t('checkout.total_vat') %></td>
         <td class="num" data-invoice-target="amount"
-            data-gross="<%= number_to_currency(@total, unit: '€', format: '%n %u') %>"
-            data-net="<%= number_to_currency(net_total, unit: '€', format: '%n %u') %>"><%= number_to_currency(@total, unit: '€', format: '%n %u') %></td>
+            data-gross="<%= number_to_currency(total_gross, unit: '€', format: '%n %u') %>"
+            data-net="<%= number_to_currency(total_net, unit: '€', format: '%n %u') %>"><%= number_to_currency(total_gross, unit: '€', format: '%n %u') %></td>
       </tr>
     </tbody>
   </table>
+
+  <% if !@coupon && Coupon.where(enabled: true).exists? %>
+    <%# solo se enseña si hay cupones definidos; el botón valida en el servidor %>
+    <details style="margin: 4px 0 14px;">
+      <summary style="cursor:pointer; color:var(--primary, #0E1B4D); font-weight:600;"><%= t('checkout.coupon_question', default: '¿Tienes un cupón?') %></summary>
+      <div style="display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap;">
+        <input type="text" id="coupon-code" class="input-compact" style="max-width:200px; text-transform:uppercase; font-family:monospace;"
+               placeholder="<%= t('checkout.coupon_placeholder', default: 'Código') %>">
+        <button type="button" class="btn btn-outline" id="coupon-apply" style="padding:6px 16px;"><%= t('checkout.coupon_use', default: 'Usar') %></button>
+        <span id="coupon-feedback" style="font-size:14px;"></span>
+      </div>
+    </details>
+    <script>
+      (function () {
+        var button = document.getElementById("coupon-apply");
+        var input = document.getElementById("coupon-code");
+        var feedback = document.getElementById("coupon-feedback");
+        if (!button) { return; }
+        function apply() {
+          var code = input.value.trim();
+          if (!code) { return; }
+          var token = document.querySelector("meta[name=csrf-token]").content;
+          fetch("<%= coupon_validate_path %>", {
+            method: "POST", credentials: "same-origin",
+            headers: { "Content-Type": "application/json", "X-CSRF-Token": token, "Accept": "application/json" },
+            body: JSON.stringify({ code: code })
+          }).then(function (r) { return r.json(); }).then(function (data) {
+            feedback.textContent = data.message;
+            feedback.style.color = data.valid ? "#0a7d43" : "#c0392b";
+            if (data.valid) { setTimeout(function () { window.location.reload(); }, 600); }
+          }).catch(function () { feedback.textContent = "No se pudo comprobar el cupón."; feedback.style.color = "#c0392b"; });
+        }
+        button.addEventListener("click", apply);
+        input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); apply(); } });
+      })();
+    </script>
+  <% end %>
+
   <p class="shipping-note" data-invoice-target="exemptNote" hidden
      data-export="<%= t('vat_exempt.export') %>" data-intra="<%= t('vat_exempt.intra_eu') %>"></p>
   <p class="shipping-note"><%= t('checkout.shipping_note') %></p>
