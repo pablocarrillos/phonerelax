@@ -5,8 +5,8 @@
 <h3 style="margin:20px 0 6px;">Datos de envío</h3>
 <p style="margin:0; line-height:1.8;">
   <strong><%= @order.customer_name %></strong><br>
-  <%= @order.address %><br>
-  <%= @order.postal_code %> <%= @order.city %> (<%= @order.province %>) · <%= @order.country %><br>
+  <%= no_autolink(@order.address) %><br>
+  <%= no_autolink("#{@order.postal_code} #{@order.city} (#{@order.province})") %> · <%= @order.country %><br>
   ✉️ <%= @order.email %> · 📞 <%= @order.phone %>
 </p>
 

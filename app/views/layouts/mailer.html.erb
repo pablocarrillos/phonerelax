@@ -12,7 +12,9 @@
         <%= yield %>
       </div>
       <p style="color:#8a8fa8; font-size:12px; text-align:center; margin-top:14px;">
-        PhoneRelax · C/ Carrasqueta, 14 · Pol. Ind. Salinetas · Petrer 03610 (Alicante) · <%= t('common.country') %> · info@phonerelax.com
+        <%# no_autolink: sin él, Gmail/Apple Mail convierten las señas en un
+            enlace azul a Maps %>
+        <%= no_autolink("PhoneRelax · C/ Carrasqueta, 14 · Pol. Ind. Salinetas · Petrer 03610 (Alicante) · #{t('common.country')}") %> · info@phonerelax.com
       </p>
     </div>
   </body>

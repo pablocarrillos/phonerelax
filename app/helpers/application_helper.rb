@@ -1,4 +1,11 @@
 module ApplicationHelper
+  # Rompe la detección de direcciones de Gmail/Apple Mail, que convierte las
+  # señas en un enlace azul a Maps: intercala espacios de ancho cero
+  # (invisibles) tras cada dígito y cada coma. Para los correos.
+  def no_autolink(text)
+    text.to_s.gsub(/([\d,])/) { |char| char + "\u200B" }
+  end
+
   # Descripción por defecto (fallback si falta la clave i18n common.site_description).
   DEFAULT_META_DESCRIPTION =
     "PhoneRelax: bolsas y fundas magnéticas para guardar y bloquear la señal del " \
