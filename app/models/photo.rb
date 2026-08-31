@@ -1,10 +1,15 @@
-# Foto subida por un administrador para compartir por su URL pública (p. ej.
-# incrustada o enlazada en correos). Solo los admins pueden subir/gestionar;
-# la imagen es accesible públicamente a través de su URL de Active Storage.
+# Fichero subido por un administrador para compartir por su URL pública (p. ej.
+# incrustado o enlazado en correos): fotos, PDF o cualquier documento. Solo los
+# admins pueden subir/gestionar; el fichero es accesible públicamente a través
+# de su URL de Active Storage.
 class Photo < ApplicationRecord
   has_one_attached :image
 
   validates :image, presence: true
+
+  def image?
+    image.attached? && image.content_type.to_s.start_with?("image/")
+  end
 
   scope :recent_first, -> { order(created_at: :desc) }
 

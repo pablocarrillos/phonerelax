@@ -43,7 +43,7 @@
               <%= link_to 'Muestras', admin_samples_path, class: ('active' if controller_name == 'samples') %>
             </div></div>
           </div>
-          <%= link_to 'Fotos', admin_photos_path, class: ('active' if controller_name == 'photos') %>
+          <%= link_to 'Ficheros', admin_photos_path, class: ('active' if controller_name == 'photos') %>
           <% gestion_active = %w[company_settings users].include?(controller_name) %>
           <div class="admin-dropdown">
             <button type="button" class="admin-drop-label <%= 'active' if gestion_active %>">Gestión</button>

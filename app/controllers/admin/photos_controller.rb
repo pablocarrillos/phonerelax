@@ -22,13 +22,13 @@ module Admin
       redirect_to admin_photos_path(q: params[:q].presence), notice: "Comentario guardado."
     end
 
-    # Admite varias imágenes a la vez; todas comparten el comentario indicado.
+    # Admite varios ficheros a la vez (fotos, PDF, lo que sea); todos comparten el comentario indicado.
     def create
       files = Array(params[:images]).reject(&:blank?)
-      return redirect_to admin_photos_path, alert: "Selecciona al menos una imagen." if files.empty?
+      return redirect_to admin_photos_path, alert: "Selecciona al menos un fichero." if files.empty?
 
       files.each { |file| Photo.create!(image: file, comment: params[:comment].to_s.strip) }
-      redirect_to admin_photos_path, notice: "#{files.size == 1 ? 'Foto subida' : "#{files.size} fotos subidas"}."
+      redirect_to admin_photos_path, notice: "#{files.size == 1 ? 'Fichero subido' : "#{files.size} ficheros subidos"}."
     end
 
     def update
@@ -39,7 +39,7 @@ module Admin
 
     def destroy
       Photo.find(params[:id]).destroy!
-      redirect_to admin_photos_path, notice: "Foto borrada."
+      redirect_to admin_photos_path, notice: "Fichero borrado."
     end
 
     private

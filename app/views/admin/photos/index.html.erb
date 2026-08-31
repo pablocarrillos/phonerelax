@@ -1,5 +1,5 @@
 <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
-  <h1 style="margin:0;">Fotos</h1>
+  <h1 style="margin:0;">Ficheros</h1>
   <%= form_with url: admin_photos_path, method: :get, local: true, class: 'orders-search', style: 'margin:0;' do %>
     <input type="search" name="q" value="<%= @query %>" placeholder="Buscar comentario o archivo…" class="input-compact" style="width: 240px;">
     <button type="submit" class="btn btn-outline" style="padding: 6px 14px; font-size: 14px;">Buscar</button>
@@ -8,23 +8,27 @@
     <% end %>
   <% end %>
 </div>
-<p class="action-note" style="margin-top:8px;">Sube imágenes y compártelas por su URL pública (por ejemplo, en los correos). Solo los administradores pueden subirlas; cualquiera con la URL puede verlas.</p>
+<p class="action-note" style="margin-top:8px;">Sube fotos, PDF o cualquier fichero y compártelos por su URL pública (por ejemplo, en los correos). Solo los administradores pueden subirlos; cualquiera con la URL puede verlos.</p>
 
 <%= form_with url: admin_photos_path, method: :post, local: true, multipart: true, class: 'orders-search', style: 'margin-bottom: 22px;' do %>
-  <input type="file" name="images[]" accept="image/*" multiple required>
+  <input type="file" name="images[]" multiple required>
   <input type="text" name="comment" placeholder="Comentario (opcional, para buscarla luego)" class="orders-search-input" style="max-width: 340px;">
   <button type="submit" class="btn btn-primary">Subir</button>
 <% end %>
 
 <% if @photos.empty? %>
-  <p>No hay fotos subidas<%= " que coincidan con «#{@query}»" if @query.present? %>.</p>
+  <p>No hay ficheros subidos<%= " que coincidan con «#{@query}»" if @query.present? %>.</p>
 <% else %>
   <div class="photos-grid">
     <% @photos.each do |photo| %>
       <% public_url = url_for(photo.image) %>
       <div class="photo-card">
         <a href="<%= public_url %>" target="_blank" rel="noopener">
-          <img src="<%= public_url %>" alt="<%= photo.comment %>" loading="lazy">
+          <% if photo.image? %>
+            <img src="<%= public_url %>" alt="<%= photo.comment %>" loading="lazy">
+          <% else %>
+            <span style="display:flex; align-items:center; justify-content:center; height:140px; background:var(--card-bg); font-size:15px; padding:0 10px; text-align:center; word-break:break-all;">📄 <%= photo.image.filename %></span>
+          <% end %>
         </a>
         <div class="photo-card-body">
           <%= form_with url: admin_photo_path(photo, q: @query.presence), method: :patch, local: true, class: 'photo-comment-form' do %>
@@ -39,7 +43,7 @@
                     data-controller="clipboard" data-clipboard-text-value="<%= absolute_url(public_url) %>"
                     data-action="clipboard#copy">Copiar URL</button>
             <%= button_to 'Borrar', admin_photo_path(photo), method: :delete, class: 'btn btn-danger',
-                          form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar esta foto? Su URL dejará de funcionar.' } },
+                          form: { style: 'display:inline;', data: { turbo_confirm: '¿Borrar este fichero? Su URL dejará de funcionar.' } },
                           style: 'padding: 5px 12px; font-size: 13px;' %>
           </div>
         </div>

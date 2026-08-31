@@ -1,7 +1,7 @@
 require "test_helper"
 
-# Herramienta de fotos del admin: subir imágenes con comentario, buscarlas y
-# compartirlas por su URL pública (accesible sin sesión).
+# Herramienta de ficheros del admin: subir fotos o documentos con comentario,
+# buscarlos y compartirlos por su URL pública (accesible sin sesión).
 class AdminPhotosTest < ActionDispatch::IntegrationTest
   setup { sign_in_as(users(:one)) }
 
@@ -19,6 +19,20 @@ class AdminPhotosTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "Funda personalizada Norfolk"
     assert_includes response.body, "Copiar URL"
+  end
+
+  test "también se suben ficheros que no son imágenes (PDF) y salen como documento" do
+    assert_difference "Photo.count", 1 do
+      post admin_photos_path, params: { images: [ fixture_file_upload("factura.pdf", "application/pdf") ],
+                                        comment: "Catálogo 2026" }
+    end
+    photo = Photo.last
+    assert_not photo.image?, "un PDF no es imagen"
+
+    get admin_photos_path
+    assert_response :success
+    assert_includes response.body, "factura.pdf"
+    assert_includes response.body, "📄"
   end
 
   test "el buscador filtra por comentario o nombre de archivo" do
