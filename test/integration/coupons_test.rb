@@ -117,4 +117,40 @@ class CouponsTest < ActionDispatch::IntegrationTest
     cents = checkout.send(:line_items).sum { |item| item[:price_data][:unit_amount] * item[:quantity] }
     assert_equal (order.total * 100).to_i, cents
   end
+  test "el admin filtra el uso de cupones por cupón y rango, con totales sin IVA, con IVA y descontado" do
+    sign_in_as(users(:one))
+    c1 = Coupon.create!(code: "UNO", discount_percent: 10)
+    c2 = Coupon.create!(code: "DOS", discount_amount: 2)
+
+    build_order = lambda do |coupon, discount, created_at|
+      order = Order.new(customer_name: "Cliente", email: "c@example.com", phone: "612345678",
+                        address: "Calle 1", city: "Madrid", postal_code: "28001", province: "Madrid",
+                        country: "España (Península)", coupon: coupon, coupon_code: coupon.code,
+                        coupon_discount: discount)
+      order.order_lines.build(product: @funda, quantity: 2, unit_price: 10)
+      order.total = 20 - discount
+      order.save!
+      order.update_columns(payment_status: Order.payment_statuses[:pagado], created_at: created_at)
+      order
+    end
+
+    build_order.call(c1, BigDecimal("2"), Time.zone.parse("2026-08-30 10:00"))
+    dos = build_order.call(c2, BigDecimal("2"), Time.zone.parse("2026-08-31 12:00"))
+    fuera = build_order.call(c1, BigDecimal("2"), Time.zone.parse("2026-08-01 10:00"))
+
+    # todos los cupones en el rango: 2 pedidos de 18 € (14,88 sin IVA), 4 € descontados
+    get admin_coupons_path(from: "2026-08-29T00:00", to: "2026-08-31T23:59")
+    assert_response :success
+    assert_includes response.body, "2 pedidos"
+    assert_includes response.body, "−4.00" # descuento total
+    assert_includes response.body, "36.00" # con IVA
+    assert_includes response.body, "29.76" # sin IVA (2 × 14,88)
+    assert_not_includes response.body, fuera.number
+
+    # solo el cupón UNO en el rango: 1 pedido
+    get admin_coupons_path(coupon_id: c1.id, from: "2026-08-29T00:00", to: "2026-08-31T23:59")
+    assert_includes response.body, "1 pedido"
+    assert_includes response.body, "−2.00"
+    assert_not_includes response.body, dos.number, "el pedido del otro cupón no sale"
+  end
 end

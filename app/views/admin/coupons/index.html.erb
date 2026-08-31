@@ -43,3 +43,53 @@
     </tbody>
   </table>
 <% end %>
+
+<h2 style="margin-top: 34px;">Uso de los cupones</h2>
+<p class="action-note" style="margin-top:0;">Pedidos cobrados con cupón (los reembolsados después también salen, marcados). El rango filtra por la fecha del pedido.</p>
+
+<%= form_with url: admin_coupons_path, method: :get, local: true,
+              html: { style: 'margin: 0 0 14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;' } do %>
+  <%= select_tag :coupon_id,
+        options_for_select([["Todos los cupones", ""]] + Coupon.order(:code).pluck(:code, :id), params[:coupon_id]),
+        class: 'form-select', style: 'width:auto;' %>
+  <label for="from" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">Desde</label>
+  <%= datetime_field_tag :from, params[:from], id: 'from', class: 'input-compact', style: 'margin:0;' %>
+  <label for="to" style="font-size:14px; font-weight:600; color:var(--muted); margin:0;">hasta</label>
+  <%= datetime_field_tag :to, params[:to], id: 'to', class: 'input-compact', style: 'margin:0;' %>
+  <button type="submit" class="btn btn-outline" style="padding:5px 14px; font-size:14px;">Filtrar</button>
+  <% if @uses_coupon || @uses_from || @uses_to %>
+    <%= link_to 'Quitar filtros', admin_coupons_path, class: 'btn btn-danger-link' %>
+  <% end %>
+<% end %>
+
+<% if @uses.empty? %>
+  <p>Ningún pedido con cupón<%= " #{@uses_coupon.code}" if @uses_coupon %><%= " en ese rango" if @uses_from || @uses_to %>.</p>
+<% else %>
+  <table class="table">
+    <thead>
+      <tr><th>Pedido</th><th>Fecha</th><th>Cupón</th><th>Cliente</th><th class="num">Descuento</th><th class="num">Total (sin IVA)</th><th class="num">Total (con IVA)</th><th></th></tr>
+      <%# totales de lo filtrado, siempre a la vista %>
+      <tr class="total-row">
+        <th colspan="4" style="text-align:right;">Totales · <%= @uses.size %> <%= "pedido".pluralize(@uses.size) %></th>
+        <th class="num">−<%= number_to_currency(@uses_total_discount, unit: '€', format: '%n %u') %></th>
+        <th class="num"><%= number_to_currency(@uses_total_net, unit: '€', format: '%n %u') %></th>
+        <th class="num"><%= number_to_currency(@uses_total_gross, unit: '€', format: '%n %u') %></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @uses.each do |order| %>
+        <tr>
+          <td><%= link_to order.number, admin_order_path(order) %></td>
+          <td><%= l order.created_at, format: :short %></td>
+          <td><strong style="font-family:monospace;"><%= order.coupon_code %></strong></td>
+          <td><%= order.customer_name %></td>
+          <td class="num">−<%= number_to_currency(order.coupon_discount, unit: '€', format: '%n %u') %></td>
+          <td class="num"><%= number_to_currency(order.total.to_d - order.vat_breakdown[:vat], unit: '€', format: '%n %u') %></td>
+          <td class="num"><strong><%= number_to_currency(order.total, unit: '€', format: '%n %u') %></strong></td>
+          <td><% if order.pago_reembolsado? %><span class="badge reembolsado">Reembolsado</span><% end %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
