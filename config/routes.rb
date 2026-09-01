@@ -118,6 +118,11 @@ Rails.application.routes.draw do
       patch :mark_returned, on: :member # recogida/devuelta hoy
       patch :toggle_sold, on: :member   # marca/desmarca que hubo venta
     end
+    # leads comerciales (copiado de gestion): seguimiento con gestiones y
+    # vínculos con muestras y presupuestos
+    resources :leads do
+      resources :managements, controller: "lead_managements", only: [ :create, :destroy ], path: "gestiones"
+    end
     resources :quotes do
       get :print, on: :member # versión imprimible (PDF con el diálogo del navegador)
       post :duplicate, on: :member # nuevo presupuesto partiendo de este

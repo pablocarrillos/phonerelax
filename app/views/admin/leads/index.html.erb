@@ -1,0 +1,54 @@
+<h1>Leads</h1>
+
+<p>
+  <%= link_to '+ Nuevo lead', new_admin_lead_path, class: 'btn btn-primary' %>
+</p>
+
+<%# secciones: activos / en espera / perdidos / confirmados, con sus contadores %>
+<p>
+  <% { 'main' => 'Activos', 'waiting' => 'En espera', 'lost' => 'Perdidos', 'won' => 'Confirmados' }.each do |section, label| %>
+    <%= link_to "#{label} (#{@counts[section]})", admin_leads_path(section: section, q: @query.presence),
+                class: "btn #{@section == section ? 'btn-primary' : 'btn-outline'}" %>
+  <% end %>
+</p>
+
+<%= form_with url: admin_leads_path, method: :get, local: true do %>
+  <%= hidden_field_tag :section, @section %>
+  <%= text_field_tag :q, @query, placeholder: 'Buscar por nombre, email, teléfono, ciudad o estado…', style: 'max-width: 380px; display: inline-block;' %>
+  <%= submit_tag 'Buscar', class: 'btn btn-outline' %>
+  <% if @query.present? %><%= link_to 'Limpiar', admin_leads_path(section: @section), class: 'btn btn-outline' %><% end %>
+<% end %>
+
+<% if @leads.empty? %>
+  <p class="action-note" style="margin-top:16px;">No hay leads en esta sección<%= " para «#{@query}»" if @query.present? %>.</p>
+<% else %>
+  <table class="table" style="margin-top: 14px;">
+    <thead>
+      <tr><th>Nombre</th><th>Emails</th><th>Teléfono</th><th>Ciudad</th><th>Origen</th><th>Estado</th><th>Última actividad</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% @leads.each do |lead| %>
+        <tr>
+          <td>
+            <%= link_to lead.name, admin_lead_path(lead) %>
+            <% if lead.to_answer? %><span class="badge" style="background:#b7791f; color:#fff;">A contestar</span><% end %>
+          </td>
+          <td><%= lead.lead_emails.map(&:email).join(", ") %></td>
+          <td><%= lead.phone %></td>
+          <td><%= lead.city %></td>
+          <td><%= lead.origin %></td>
+          <td>
+            <%= lead.status %>
+            <% if lead.budget_amount.present? %><br><small><%= number_to_currency(lead.budget_amount, unit: '€', format: '%n %u') %></small><% end %>
+          </td>
+          <td>
+            <%= l lead.latest_activity_at.to_date, format: :long %>
+            <% days = lead.days_without_contact %>
+            <% if days >= 7 %><br><small style="color:#b7791f;">hace <%= days %> días</small><% end %>
+          </td>
+          <td><%= link_to 'Ver', admin_lead_path(lead), class: 'btn btn-outline' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

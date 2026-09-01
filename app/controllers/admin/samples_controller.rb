@@ -31,13 +31,22 @@ module Admin
 
     def new
       @sample = Sample.new(sent_on: Date.current)
+      # muestra enviada desde un lead: se precargan sus datos y queda vinculada
+      if (lead = Lead.find_by(id: params[:lead_id]))
+        @sample.lead = lead
+        @sample.organization = lead.name
+        @sample.email = lead.primary_email
+      end
       build_blank_lines
     end
 
     def create
       @sample = Sample.new(sample_params)
       if @sample.save
-        redirect_to admin_samples_path, notice: "Muestra registrada."
+        # muestra vinculada a un lead: queda en su historial y actualiza su estado
+        @sample.lead&.register_sample!(@sample)
+        destination = @sample.lead ? admin_lead_path(@sample.lead) : admin_samples_path
+        redirect_to destination, notice: "Muestra registrada."
       else
         build_blank_lines
         render :new, status: :unprocessable_entity
@@ -86,7 +95,7 @@ module Admin
     end
 
     def sample_params
-      params.require(:sample).permit(:organization, :contact_name, :email, :sent_on, :returned_on, :notes, :quote_id, :sold,
+      params.require(:sample).permit(:organization, :contact_name, :email, :sent_on, :returned_on, :notes, :quote_id, :sold, :lead_id,
                                      sample_lines_attributes: [ :id, :product_id, :quantity, :_destroy ])
     end
   end

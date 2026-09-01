@@ -1,4 +1,8 @@
 <%= form_with model: [:admin, sample], local: true do |f| %>
+  <%= f.hidden_field :lead_id %>
+  <% if sample.lead %>
+    <p class="action-note">Muestra vinculada al lead <%= link_to sample.lead.name, admin_lead_path(sample.lead) %>: quedará apuntada en su historial.</p>
+  <% end %>
   <% if sample.errors.any? %>
     <div class="errors"><ul><% sample.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>

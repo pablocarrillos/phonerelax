@@ -27,6 +27,8 @@ class Quote < ApplicationRecord
   DEFAULT_VALIDITY_DAYS = 15
 
   belongs_to :client
+  # Lead desde el que se generó el presupuesto (opcional): queda en su historial.
+  belongs_to :lead, optional: true
   has_many :quote_lines, -> { order(:position, :id) }, dependent: :destroy, inverse_of: :quote
   # Muestras enviadas vinculadas a este presupuesto (al borrarlo se desvinculan).
   has_many :samples, dependent: :nullify

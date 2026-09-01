@@ -3,6 +3,8 @@
 class Sample < ApplicationRecord
   # Presupuesto al que va asociada la muestra (opcional).
   belongs_to :quote, optional: true
+  # Lead desde el que se envió la muestra (opcional): queda en su historial.
+  belongs_to :lead, optional: true
   has_many :sample_lines, dependent: :destroy, inverse_of: :sample
 
   accepts_nested_attributes_for :sample_lines, allow_destroy: true,

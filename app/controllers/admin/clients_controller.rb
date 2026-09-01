@@ -16,13 +16,28 @@ module Admin
 
     def new
       @client = Client.new
+      # datos fiscales de un lead: se precargan sus datos para crear el cliente
+      if (lead = Lead.find_by(id: params[:lead_id]))
+        @lead = lead
+        @client.name = lead.name
+        @client.email = lead.primary_email
+        @client.phone = lead.phone
+      end
     end
 
     def create
       @client = Client.new(client_params)
       if @client.save
+        # cliente creado desde un lead (datos fiscales): se enlaza y se sigue
+        # directamente con la generación del presupuesto
+        if (lead = Lead.find_by(id: params[:lead_id]))
+          lead.update!(client: @client)
+          return redirect_to new_admin_quote_path(client_id: @client.id, lead_id: lead.id),
+                             notice: "Cliente creado y vinculado al lead #{lead.name}: ya puedes generar el presupuesto."
+        end
         redirect_to params[:return_to].presence || admin_clients_path, notice: "Cliente creado."
       else
+        @lead = Lead.find_by(id: params[:lead_id])
         render :new, status: :unprocessable_entity
       end
     end

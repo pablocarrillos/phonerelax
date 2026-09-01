@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_01_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -176,6 +176,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["order_id"], name: "index_invoices_on_order_id", unique: true
     t.index ["quote_id"], name: "index_invoices_on_quote_id", unique: true
+  end
+
+  create_table "lead_emails", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.bigint "lead_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_id", "email"], name: "index_lead_emails_on_lead_id_and_email", unique: true
+    t.index ["lead_id"], name: "index_lead_emails_on_lead_id"
+  end
+
+  create_table "lead_managements", force: :cascade do |t|
+    t.text "action", null: false
+    t.decimal "budget_amount", precision: 12, scale: 2
+    t.string "channel", null: false
+    t.datetime "created_at", null: false
+    t.datetime "happened_at", null: false
+    t.bigint "lead_id", null: false
+    t.string "status", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_id"], name: "index_lead_managements_on_lead_id"
+  end
+
+  create_table "leads", force: :cascade do |t|
+    t.decimal "budget_amount", precision: 12, scale: 2
+    t.string "city"
+    t.bigint "client_id"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "origin"
+    t.string "phone"
+    t.string "status", default: "1er contacto", null: false
+    t.boolean "to_answer", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_leads_on_client_id"
+    t.index ["name"], name: "index_leads_on_name"
+    t.index ["status"], name: "index_leads_on_status"
   end
 
   create_table "order_events", force: :cascade do |t|
@@ -422,6 +459,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
     t.decimal "discount_percent", precision: 5, scale: 2, default: "0.0", null: false
     t.string "internal_description"
     t.date "issued_on", null: false
+    t.bigint "lead_id"
     t.boolean "manual_shipping", default: false, null: false
     t.text "notes"
     t.string "number", null: false
@@ -435,6 +473,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
     t.date "valid_until"
     t.decimal "vat_rate", precision: 5, scale: 2, default: "21.0", null: false
     t.index ["client_id"], name: "index_quotes_on_client_id"
+    t.index ["lead_id"], name: "index_quotes_on_lead_id"
     t.index ["number"], name: "index_quotes_on_number", unique: true
   end
 
@@ -452,6 +491,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
     t.string "contact_name"
     t.datetime "created_at", null: false
     t.string "email"
+    t.bigint "lead_id"
     t.text "notes"
     t.string "organization", null: false
     t.bigint "quote_id"
@@ -459,6 +499,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
     t.date "sent_on"
     t.boolean "sold", default: false, null: false
     t.datetime "updated_at", null: false
+    t.index ["lead_id"], name: "index_samples_on_lead_id"
     t.index ["quote_id"], name: "index_samples_on_quote_id"
   end
 
@@ -507,6 +548,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
   add_foreign_key "invoice_lines", "invoices"
   add_foreign_key "invoices", "orders"
   add_foreign_key "invoices", "quotes"
+  add_foreign_key "lead_emails", "leads"
+  add_foreign_key "lead_managements", "leads"
   add_foreign_key "order_events", "orders"
   add_foreign_key "order_lines", "orders"
   add_foreign_key "order_lines", "products"

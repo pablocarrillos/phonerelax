@@ -9,6 +9,10 @@
 <%= form_with model: [:admin, quote], local: true,
               data: { controller: 'quote-form', quote_form_products_value: product_data.to_json,
                       quote_form_rates_value: shipping_rates.to_json } do |f| %>
+  <%= f.hidden_field :lead_id %>
+  <% if quote.lead %>
+    <p class="action-note">Presupuesto vinculado al lead <%= link_to quote.lead.name, admin_lead_path(quote.lead) %>: quedará apuntado en su historial con su importe.</p>
+  <% end %>
   <% if quote.errors.any? %>
     <div class="errors"><ul><% quote.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
   <% end %>

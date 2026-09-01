@@ -2,6 +2,8 @@
 # fiscales tal y como deben aparecer en el PDF.
 class Client < ApplicationRecord
   has_many :quotes, dependent: :restrict_with_error
+  # leads que dieron lugar a este cliente (al añadir sus datos fiscales)
+  has_many :leads, dependent: :nullify
 
   validates :name, presence: true, uniqueness: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true

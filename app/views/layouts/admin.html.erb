@@ -35,13 +35,14 @@
               <%= link_to 'Cupones', admin_coupons_path, class: ('active' if controller_name == 'coupons') %>
             </div></div>
           </div>
-          <% comercial_active = %w[quotes clients samples].include?(controller_name) %>
+          <% comercial_active = %w[quotes clients samples leads lead_managements].include?(controller_name) %>
           <div class="admin-dropdown">
             <button type="button" class="admin-drop-label <%= 'active' if comercial_active %>">Comercial</button>
             <div class="admin-menu"><div class="admin-menu-box">
               <%= link_to 'Presupuestos', admin_quotes_path, class: ('active' if %w[quotes clients].include?(controller_name)) %>
               <%= link_to 'Contabilidad', admin_accounting_index_path, class: ('active' if controller_name == 'accounting') %>
               <%= link_to 'Muestras', admin_samples_path, class: ('active' if controller_name == 'samples') %>
+              <%= link_to 'Leads', admin_leads_path, class: ('active' if %w[leads lead_managements].include?(controller_name)) %>
             </div></div>
           </div>
           <%= link_to 'Ficheros', admin_photos_path, class: ('active' if controller_name == 'photos') %>
@@ -74,10 +75,11 @@
          elsif %w[company_settings users].include?(controller_name)
            [ [ "Datos de Empresa", admin_company_setting_path, controller_name == "company_settings" ],
              [ "Admins", admin_users_path, controller_name == "users" ] ]
-         elsif %w[quotes clients samples].include?(controller_name)
+         elsif %w[quotes clients samples leads lead_managements].include?(controller_name)
            [ [ "Presupuestos", admin_quotes_path, %w[quotes clients].include?(controller_name) ],
              [ "Contabilidad", admin_accounting_index_path, controller_name == "accounting" ],
-             [ "Muestras", admin_samples_path, controller_name == "samples" ] ]
+             [ "Muestras", admin_samples_path, controller_name == "samples" ],
+             [ "Leads", admin_leads_path, %w[leads lead_managements].include?(controller_name) ] ]
          end %>
     <% if subnav %>
       <nav class="admin-subnav">
