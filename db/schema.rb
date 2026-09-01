@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_01_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -58,6 +58,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_120000) do
     t.string "city"
     t.string "country"
     t.datetime "created_at", null: false
+    t.integer "delivery_note_next_number", default: 32, null: false
+    t.string "delivery_note_series", default: "ALBARAN-PHONERELAX", null: false
     t.string "email"
     t.string "legal_name", null: false
     t.string "phone"
@@ -98,6 +100,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_120000) do
     t.datetime "updated_at", null: false
     t.integer "uses_count", default: 0, null: false
     t.index "lower((code)::text)", name: "index_coupons_on_lower_code", unique: true
+  end
+
+  create_table "delivery_note_lines", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "delivery_note_id", null: false
+    t.string "description", null: false
+    t.integer "position", default: 0, null: false
+    t.decimal "quantity", precision: 8, scale: 2, default: "1.0", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delivery_note_id"], name: "index_delivery_note_lines_on_delivery_note_id"
+  end
+
+  create_table "delivery_notes", force: :cascade do |t|
+    t.text "client_address"
+    t.string "client_email"
+    t.string "client_name", null: false
+    t.string "client_tax_id"
+    t.text "comments"
+    t.datetime "created_at", null: false
+    t.date "issued_on", null: false
+    t.string "number", null: false
+    t.bigint "order_id"
+    t.bigint "quote_id"
+    t.datetime "updated_at", null: false
+    t.index ["number"], name: "index_delivery_notes_on_number", unique: true
+    t.index ["order_id"], name: "index_delivery_notes_on_order_id", unique: true
+    t.index ["quote_id"], name: "index_delivery_notes_on_quote_id", unique: true
   end
 
   create_table "image_comments", force: :cascade do |t|
@@ -474,6 +503,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_120000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "delivery_note_lines", "delivery_notes"
   add_foreign_key "invoice_lines", "invoices"
   add_foreign_key "invoices", "orders"
   add_foreign_key "invoices", "quotes"

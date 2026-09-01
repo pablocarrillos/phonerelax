@@ -65,6 +65,8 @@ class Order < ApplicationRecord
   has_many :order_lines, dependent: :destroy
   has_many :products, through: :order_lines
   has_many :order_events, dependent: :destroy
+  # albarán numerado emitido desde el pedido (se conserva aunque cambie el pedido)
+  has_one :delivery_note, dependent: :nullify
   # cupón aplicado (si lo hubo); el código y el importe quedan congelados en el
   # pedido aunque el cupón cambie o se borre después
   belongs_to :coupon, optional: true

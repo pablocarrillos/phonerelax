@@ -60,11 +60,11 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     assert_includes response.body, order.number
   end
 
-  test "albarán imprimible se renderiza" do
+  test "hoja de pedido imprimible se renderiza" do
     order = pending_order
     get packing_slip_admin_order_path(order)
     assert_response :success
-    assert_includes response.body, "Albarán"
+    assert_includes response.body, "Hoja de pedido"
     assert_includes response.body, order.number
   end
 

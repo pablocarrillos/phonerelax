@@ -1,0 +1,70 @@
+<% source_path = if @delivery_note.order
+     admin_order_path(@delivery_note.order)
+   elsif @delivery_note.quote
+     admin_quote_path(@delivery_note.quote)
+   else
+     admin_root_path
+   end %>
+<p><%= link_to "← Volver a #{@delivery_note.source_label}", source_path %></p>
+
+<h1>Albarán <%= @delivery_note.number %></h1>
+<p class="action-note">
+  El número es fijo (la serie ya avanzó al emitirse); el resto de datos se puede modificar
+  aunque el albarán ya se haya entregado o impreso. El albarán no lleva precios.
+</p>
+<p>
+  <%= link_to '🖨 PDF del albarán', pdf_admin_delivery_note_path(@delivery_note),
+              target: '_blank', rel: 'noopener', class: 'btn btn-primary' %>
+</p>
+
+<%= form_with model: [ :admin, @delivery_note ], local: true do |f| %>
+  <% if @delivery_note.errors.any? %>
+    <div class="errors"><ul><% @delivery_note.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+
+  <div class="form-grid" style="max-width: 860px;">
+    <div><%= f.label :issued_on, 'Fecha *' %><%= f.date_field :issued_on, required: true %></div>
+    <div><%= f.label :client_name, 'Cliente *' %><%= f.text_field :client_name, required: true %></div>
+    <div><%= f.label :client_tax_id, 'NIF' %><%= f.text_field :client_tax_id %></div>
+    <div><%= f.label :client_email, 'Email' %><%= f.email_field :client_email %></div>
+    <div class="full"><%= f.label :client_address, 'Dirección de entrega' %><%= f.text_area :client_address, rows: 2 %></div>
+    <div class="full"><%= f.label :comments, 'Comentarios (salen en el albarán)' %><%= f.text_area :comments, rows: 3 %></div>
+  </div>
+
+  <h2 style="margin-top:24px;">Líneas</h2>
+  <p class="action-note" style="margin-top:0;">Solo descripción y unidades. Las filas vacías se ignoran; para añadir más de tres líneas nuevas, guarda y repite.</p>
+  <table class="table" style="max-width: 720px;">
+    <thead><tr><th>Descripción</th><th>Uds.</th><th style="text-align:center;">Quitar</th></tr></thead>
+    <tbody>
+      <%= f.fields_for :lines do |lf| %>
+        <tr>
+          <td>
+            <%= lf.hidden_field :position %>
+            <%= lf.text_field :description, style: 'width:100%;' %>
+          </td>
+          <td><%= lf.number_field :quantity, step: :any, min: 0.01, style: 'width:90px;' %></td>
+          <td style="text-align:center;"><%= lf.check_box :_destroy %></td>
+        </tr>
+      <% end %>
+      <%# tres filas en blanco para añadir líneas nuevas (las vacías no se guardan).
+          El child_index debe ser numérico: permit descarta las claves no numéricas. %>
+      <% 3.times do |i| %>
+        <%= f.fields_for :lines, DeliveryNoteLine.new, child_index: @delivery_note.lines.size + i do |lf| %>
+          <tr>
+            <td>
+              <%= lf.hidden_field :position, value: @delivery_note.lines.size + i %>
+              <%= lf.text_field :description, placeholder: 'línea nueva…', style: 'width:100%;' %>
+            </td>
+            <td><%= lf.number_field :quantity, value: 1, step: :any, min: 0.01, style: 'width:90px;' %></td>
+            <td></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+
+  <p>
+    <%= f.submit 'Guardar albarán', class: 'btn btn-primary' %>
+    <%= link_to 'Cancelar', source_path, class: 'btn btn-outline' %>
+  </p>
+<% end %>

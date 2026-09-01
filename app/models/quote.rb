@@ -34,6 +34,8 @@ class Quote < ApplicationRecord
   has_many :purchase_lines, dependent: :nullify
   # comentarios del seguimiento comercial, con su fecha y su usuario
   has_many :comments, class_name: "QuoteComment", dependent: :destroy, inverse_of: :quote
+  # albarán numerado emitido desde el presupuesto (se conserva aunque este cambie)
+  has_one :delivery_note, dependent: :nullify
 
   # Estado del seguimiento comercial del presupuesto. El ciclo completo es
   # abierto → aprobado → enviado (la mercancía sale).

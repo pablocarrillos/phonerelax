@@ -1,4 +1,4 @@
-<p><%= link_to '← Volver a pedidos', admin_orders_path %> · <%= link_to '🖨 Imprimir albarán', packing_slip_admin_order_path(@order), target: '_blank', rel: 'noopener' %></p>
+<p><%= link_to '← Volver a pedidos', admin_orders_path %> · <%= link_to '🖨 Hoja de pedido', packing_slip_admin_order_path(@order), target: '_blank', rel: 'noopener' %></p>
 <h1>Pedido <%= @order.number %></h1>
 
 <p>
@@ -94,6 +94,21 @@
         if @order.tracking_url %> · <%= link_to @order.tracking_number, @order.tracking_url, target: '_blank', rel: 'noopener' %><%
         elsif @order.tracking_number.present? %> · <%= @order.tracking_number %><% end %></p>
     <% end %>
+  </div>
+
+  <%# Albarán numerado (serie ALBARAN-PHONERELAX): sin precios y editable tras emitirse %>
+  <div class="action-section">
+    <span class="action-title">Albarán numerado</span>
+    <div class="action-row">
+      <% if (note = @order.delivery_note) %>
+        <%= link_to "✏️ Albarán #{note.number}", edit_admin_delivery_note_path(note), class: 'btn btn-outline' %>
+        <%= link_to '🖨 PDF del albarán', pdf_admin_delivery_note_path(note), target: '_blank', rel: 'noopener', class: 'btn btn-outline' %>
+      <% else %>
+        <%= button_to '📄 Generar albarán', admin_delivery_notes_path(order_id: @order.id), method: :post,
+                      class: 'btn btn-primary',
+                      form: { data: { turbo_confirm: "Se emitirá el albarán del pedido #{@order.number} con el siguiente número de la serie (sin precios). ¿Continuar?" } } %>
+      <% end %>
+    </div>
   </div>
 
 </div>

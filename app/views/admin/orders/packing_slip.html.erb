@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Albarán <%= @order.number %> · PhoneRelax</title>
+  <title>Hoja de pedido <%= @order.number %> · PhoneRelax</title>
   <style>
     * { box-sizing: border-box; }
     body { font-family: Arial, Helvetica, sans-serif; color: #1a1a1a; margin: 0; padding: 32px; font-size: 14px; }
@@ -34,7 +34,7 @@
     <div class="head">
       <div class="brand">PHONERELAX<small>Drop Point Systems S.L.U. · B02631976<br>C/ Carrasqueta, 14 · Pol. Ind. Salinetas · Petrer 03610 (Alicante) · España</small></div>
       <div class="doc">
-        <h1>Albarán</h1>
+        <h1>Hoja de pedido</h1>
         <div class="num"><%= @order.number %></div>
         <div><%= l @order.created_at.to_date, format: :long %></div>
       </div>

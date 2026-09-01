@@ -88,13 +88,17 @@ Rails.application.routes.draw do
       end
     end
     resource :company_setting, only: [ :show, :update ]
+    # albaranes numerados (serie ALBARAN-PHONERELAX) desde pedidos o presupuestos
+    resources :delivery_notes, only: [ :create, :edit, :update ], path: "albaranes" do
+      get :pdf, on: :member
+    end
     resources :orders, only: [ :index, :show, :update, :destroy ] do
       patch :advance, on: :member # creado → enviado → entregado
       patch :revert, on: :member  # deshace un avance de estado
       post :mark_paid, on: :member # cobro manual (fuera de Stripe)
       post :refund, on: :member # reembolso total o parcial
       post :payment_reminder, on: :member
-      get :packing_slip, on: :member # albarán imprimible
+      get :packing_slip, on: :member # hoja de pedido imprimible (sin numerar)
     end
     resources :products, except: :show do
       patch :reorder, on: :collection # nuevo orden de ids tras arrastrar en la lista

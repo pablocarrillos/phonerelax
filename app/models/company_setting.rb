@@ -7,8 +7,8 @@ class CompanySetting < ApplicationRecord
   # cifrado en BD (ver initializer active_record_encryption)
   encrypts :verifactu_token
 
-  validates :legal_name, :tax_id, :web_series, :quote_series, presence: true
-  validates :web_next_number, :quote_next_number,
+  validates :legal_name, :tax_id, :web_series, :quote_series, :delivery_note_series, presence: true
+  validates :web_next_number, :quote_next_number, :delivery_note_next_number,
             numericality: { only_integer: true, greater_than: 0 }
 
   def self.current
@@ -29,6 +29,18 @@ class CompanySetting < ApplicationRecord
       update!(year_column => Date.current.year, number_column => 1) if self[year_column] != Date.current.year
       number = format_number(series_for(kind), self[number_column])
       update!(number_column => self[number_column] + 1)
+      number
+    end
+  end
+
+  # Consume un número de la serie de albaranes y lo devuelve (con lock). A
+  # diferencia de las facturas, la numeración es continua: sin año y sin
+  # reinicio anual, siguiendo la serie que se venía usando a mano
+  # (ALBARAN-PHONERELAX-000032 en adelante).
+  def take_delivery_note_number!
+    with_lock do
+      number = "#{delivery_note_series}-#{format('%06d', delivery_note_next_number)}"
+      update!(delivery_note_next_number: delivery_note_next_number + 1)
       number
     end
   end
