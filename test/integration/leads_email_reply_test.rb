@@ -47,6 +47,19 @@ class LeadsEmailReplyTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Enviada la plantilla «Info general» por email."
   end
 
+  test "el botón de copiar lleva el cuerpo montado y los emails abren la conversación" do
+    get admin_lead_path(@lead)
+    assert_response :success
+    buttons = css_select("[data-copy-template]")
+    assert_equal 1, buttons.size, "hay un botón de copiar por plantilla"
+    assert_includes buttons.first["data-copy-template"], "Hola María García:", "el cuerpo va con las variables sustituidas"
+
+    get admin_leads_path
+    assert css_select("[data-copy-template]").any?, "también se puede copiar desde la lista"
+    conversation_links = css_select("a").map { |a| a["href"] }.select { |h| h.to_s.include?("#search/") }
+    assert conversation_links.any? { |h| h.include?("maria%40example.com") }, "el email del lead abre su conversación en Gmail"
+  end
+
   test "la lista ofrece responder con plantilla y encuentra por apellidos" do
     get admin_leads_path
     assert_response :success

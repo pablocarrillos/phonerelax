@@ -34,15 +34,20 @@
       <% @templates.each do |template| %>
         <p style="margin: 4px 0;">
           <%= link_to "✉ #{template.name}", gmail_compose_url(@lead, template), target: '_blank', rel: 'noopener', class: 'btn btn-outline' %>
+          <button type="button" class="btn btn-outline" data-copy-template="<%= template.body_for(@lead) %>"
+                  title="Copiar el cuerpo para pegarlo respondiendo dentro del hilo original">📋 Copiar</button>
           <%= button_to '✓ Enviada', mark_template_sent_admin_lead_path(@lead, template_id: template.id), method: :post,
                         class: 'btn btn-outline', form: { style: 'display:inline;' },
                         title: 'Apuntar en el historial que se envió esta plantilla' %>
         </p>
       <% end %>
       <p class="action-note">
-        Se abre Gmail con la respuesta cargada
-        <%= @lead.email_subject.present? ? "con el asunto «#{@lead.email_subject}»" : "(sin asunto guardado: usa el de la plantilla)" %>.
-        Tras enviarla, pulsa «✓ Enviada» para dejarlo en el historial.
+        «✉» abre Gmail con la respuesta cargada
+        <%= @lead.email_subject.present? ? "con el asunto «#{@lead.email_subject}»" : "(sin asunto guardado: usa el de la plantilla)" %>,
+        pero saldrá como conversación nueva. Para responder en el <strong>mismo hilo</strong>:
+        <%= link_to 'abre la conversación', gmail_conversation_search_url(@lead.primary_email), target: '_blank', rel: 'noopener' %>,
+        dale a Responder y pega la plantilla con «📋 Copiar».
+        En ambos casos, «✓ Enviada» lo deja apuntado en el historial.
       </p>
     <% end %>
 
@@ -130,3 +135,19 @@
     </tbody>
   </table>
 <% end %>
+
+<%# «📋 Copiar»: copia el cuerpo montado al portapapeles para pegarlo
+    respondiendo dentro del hilo original de Gmail. %>
+<script>
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-copy-template]");
+    if (!button) return;
+
+    event.preventDefault();
+    navigator.clipboard.writeText(button.dataset.copyTemplate).then(function () {
+      var original = button.textContent;
+      button.textContent = "✓ Copiado";
+      setTimeout(function () { button.textContent = original; }, 1500);
+    });
+  });
+</script>

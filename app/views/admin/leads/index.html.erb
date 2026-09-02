@@ -35,7 +35,8 @@
             <% if lead.to_answer? %><span class="badge" style="background:#b7791f; color:#fff;">A contestar</span><% end %>
           </td>
           <td>
-            <%= lead.lead_emails.map(&:email).join(", ") %>
+            <%# cada email abre su conversación en Gmail (para responder dentro del hilo) %>
+            <% lead.lead_emails.each_with_index do |lead_email, index| %><%= ", " if index.positive? %><%= link_to lead_email.email, gmail_conversation_search_url(lead_email.email), target: '_blank', rel: 'noopener' %><% end %>
             <%# responder desde la lista: abre Gmail con la plantilla cargada; ✓ lo apunta en el historial %>
             <% if lead.primary_email.present? && @templates.present? %>
               <details>
@@ -43,6 +44,8 @@
                 <% @templates.each do |template| %>
                   <div style="display:flex; align-items:center; gap:8px;">
                     <%= link_to template.name, gmail_compose_url(lead, template), target: '_blank', rel: 'noopener' %>
+                    <button type="button" class="btn-link-inline" style="color:#0E1B4D; font-weight:400;" data-copy-template="<%= template.body_for(lead) %>"
+                            title="Copiar el cuerpo para pegarlo respondiendo dentro del hilo (pincha el email del lead para abrirlo)">📋</button>
                     <%= button_to '✓', mark_template_sent_admin_lead_path(lead, template_id: template.id), method: :post,
                                   class: 'btn-link-inline', form: { style: 'display:inline;' },
                                   title: 'Apuntar en el historial que se envió esta plantilla' %>
@@ -69,3 +72,19 @@
     </tbody>
   </table>
 <% end %>
+
+<%# «📋 Copiar»: copia el cuerpo montado al portapapeles para pegarlo
+    respondiendo dentro del hilo original de Gmail. %>
+<script>
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-copy-template]");
+    if (!button) return;
+
+    event.preventDefault();
+    navigator.clipboard.writeText(button.dataset.copyTemplate).then(function () {
+      var original = button.textContent;
+      button.textContent = "✓ Copiado";
+      setTimeout(function () { button.textContent = original; }, 1500);
+    });
+  });
+</script>

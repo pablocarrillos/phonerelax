@@ -216,6 +216,13 @@ module ApplicationHelper
     nil
   end
 
+  # Búsqueda de la conversación con un email en el Gmail del usuario conectado
+  # (para abrir el hilo original y responder dentro de él).
+  def gmail_conversation_search_url(email)
+    query = "from:#{email} OR to:#{email}"
+    "https://mail.google.com/mail/?authuser=#{ERB::Util.url_encode(Current.user&.email_address.to_s)}#search/#{ERB::Util.url_encode(query)}"
+  end
+
   # Redactar en Gmail la respuesta a un lead con una plantilla: destinatario,
   # asunto y cuerpo ya rellenos. Gmail no añade la firma en las redacciones
   # abiertas por URL: se inserta allí (icono de la pluma) o va en la plantilla.
