@@ -1,6 +1,6 @@
 module Admin
   class SamplesController < BaseController
-    before_action :set_sample, only: [ :edit, :update, :destroy, :mark_returned, :toggle_sold, :create_lead ]
+    before_action :set_sample, only: [ :edit, :update, :destroy, :mark_returned, :unmark_returned, :toggle_sold, :create_lead ]
 
     # Columnas por las que se puede ordenar la tabla (whitelist para evitar
     # inyección: el nombre de columna solo puede ser uno de estos).
@@ -91,6 +91,12 @@ module Admin
     def mark_returned
       @sample.update!(returned_on: Date.current)
       redirect_to admin_samples_path, notice: "Muestra de #{@sample.organization} marcada como devuelta."
+    end
+
+    # Deshace una recogida marcada por error: la muestra vuelve a estar fuera.
+    def unmark_returned
+      @sample.update!(returned_on: nil)
+      redirect_to admin_samples_path, notice: "Deshecho: la muestra de #{@sample.organization} vuelve a estar fuera."
     end
 
     # Alterna si la muestra acabó en venta (con independencia de la devolución).

@@ -67,7 +67,10 @@
           </td>
           <td class="num"><%= number_to_currency(sample.cost(@landed_costs), unit: '€', format: '%n %u') %></td>
           <td style="text-align:right; white-space:nowrap;">
-            <% unless sample.returned? %>
+            <% if sample.returned? %>
+              <%= button_to '↩ No recogida', unmark_returned_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
+                            form: { style: 'display:inline-block', data: { turbo_confirm: "¿Deshacer la recogida? La muestra de #{sample.organization} volverá a figurar como fuera." } } %>
+            <% else %>
               <%= button_to '✓ Devuelta', mark_returned_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
                             form: { style: 'display:inline-block', data: { turbo_confirm: "¿Marcar la muestra de #{sample.organization} como devuelta hoy?" } } %>
             <% end %>

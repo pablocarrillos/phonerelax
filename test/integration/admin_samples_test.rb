@@ -27,6 +27,16 @@ class AdminSamplesTest < ActionDispatch::IntegrationTest
     assert_equal Date.current, sample.reload.returned_on
   end
 
+  test "una recogida marcada por error se puede deshacer" do
+    sample = Sample.create!(organization: "Norfolk", sent_on: Date.current - 30, returned_on: Date.current)
+    patch unmark_returned_admin_sample_path(sample)
+    assert_redirected_to admin_samples_path
+    assert_nil sample.reload.returned_on, "la muestra vuelve a estar fuera"
+
+    get admin_samples_path
+    assert_includes response.body, "✓ Devuelta", "vuelve a ofrecerse marcarla como devuelta"
+  end
+
   test "el listado muestra los totales y el estado" do
     Sample.create!(organization: "Colegio Fuera", sent_on: Date.current - 10)
     devuelta = Sample.create!(organization: "Colegio Devuelto", sent_on: Date.current - 60, returned_on: Date.current - 5)
