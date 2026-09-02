@@ -1,7 +1,7 @@
 <%= form_with model: [:admin, client], local: true do |f| %>
   <%= hidden_field_tag :lead_id, @lead&.id %>
   <% if @lead %>
-    <p class="action-note">Datos fiscales del lead <%= link_to @lead.name, admin_lead_path(@lead) %>: al guardar, el cliente quedará vinculado y podrás generar su presupuesto.</p>
+    <p class="action-note">Datos fiscales del lead <%= link_to @lead.full_name, admin_lead_path(@lead) %>: al guardar, el cliente quedará vinculado y podrás generar su presupuesto.</p>
   <% end %>
   <% if client.errors.any? %>
     <div class="errors"><ul><% client.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>

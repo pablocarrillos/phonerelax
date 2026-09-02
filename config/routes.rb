@@ -121,8 +121,11 @@ Rails.application.routes.draw do
     # leads comerciales (copiado de gestion): seguimiento con gestiones y
     # vínculos con muestras y presupuestos
     resources :leads do
+      post :mark_template_sent, on: :member, path: "plantilla-enviada" # apunta el envío en el historial
       resources :managements, controller: "lead_managements", only: [ :create, :destroy ], path: "gestiones"
     end
+    # plantillas de respuesta estándar para contestar leads desde Gmail
+    resources :email_templates, path: "plantillas-email", except: [ :show ]
     resources :quotes do
       get :print, on: :member # versión imprimible (PDF con el diálogo del navegador)
       post :duplicate, on: :member # nuevo presupuesto partiendo de este

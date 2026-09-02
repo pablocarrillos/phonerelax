@@ -1,0 +1,24 @@
+<%= form_with model: [ :admin, template ], local: true do |f| %>
+  <% if template.errors.any? %>
+    <div class="errors"><ul><% template.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %></ul></div>
+  <% end %>
+
+  <div class="form-grid" style="max-width: 860px;">
+    <div><%= f.label :name, 'Nombre de la plantilla *' %><%= f.text_field :name, required: true, placeholder: 'p. ej. Info general + tarifas' %></div>
+    <div class="full"><%= f.label :subject, 'Asunto propio (opcional)' %><%= f.text_field :subject, placeholder: 'solo para correos nuevos; si el lead tiene asunto guardado se usa ese' %></div>
+    <div class="full">
+      <%= f.label :body, 'Cuerpo (texto plano) *' %>
+      <%= f.text_area :body, rows: 14, required: true %>
+      <div class="action-note">
+        Variables: <% EmailTemplate::PLACEHOLDERS.each do |ph| %><code><%= ph %></code> <% end %> — se sustituyen
+        con los datos del lead. La firma no la añade Gmail en correos abiertos por enlace: insértala en la ventana
+        de redactar (icono de la pluma) o escríbela al final de la plantilla.
+      </div>
+    </div>
+  </div>
+
+  <p>
+    <%= f.submit 'Guardar plantilla', class: 'btn btn-primary' %>
+    <%= link_to 'Cancelar', admin_email_templates_path, class: 'btn btn-outline' %>
+  </p>
+<% end %>

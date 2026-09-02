@@ -1,7 +1,7 @@
 <p><%= link_to '← Volver a leads', admin_leads_path %></p>
 
 <h1>
-  <%= @lead.name %>
+  <%= @lead.full_name %>
   <span class="badge"><%= @lead.status %></span>
   <% if @lead.to_answer? %><span class="badge" style="background:#b7791f; color:#fff;">A contestar</span><% end %>
 </h1>
@@ -9,7 +9,7 @@
 <p>
   <%= link_to 'Editar', edit_admin_lead_path(@lead), class: 'btn btn-outline' %>
   <%= button_to '🗑 Borrar', admin_lead_path(@lead), method: :delete, class: 'btn btn-danger',
-                form: { data: { turbo_confirm: "¿Borrar el lead #{@lead.name} y todo su historial?" } } %>
+                form: { data: { turbo_confirm: "¿Borrar el lead #{@lead.full_name} y todo su historial?" } } %>
 </p>
 
 <div class="form-grid" style="max-width: 980px;">
@@ -20,9 +20,31 @@
       <% if @lead.phone.present? %><strong>Teléfono:</strong> <%= @lead.phone %><br><% end %>
       <% if @lead.city.present? %><strong>Ciudad:</strong> <%= @lead.city %><br><% end %>
       <% if @lead.origin.present? %><strong>Origen:</strong> <%= @lead.origin %><br><% end %>
+      <% if @lead.email_subject.present? %><strong>Asunto email:</strong> <%= @lead.email_subject %><br><% end %>
       <% if @lead.budget_amount.present? %><strong>Presupuesto actual:</strong> <%= number_to_currency(@lead.budget_amount, unit: '€', format: '%n %u') %> <span class="action-note" style="display:inline;">(lo fijan las gestiones)</span><br><% end %>
       <strong>Última actividad:</strong> <%= l @lead.latest_activity_at, format: :short %> (hace <%= @lead.days_without_contact %> días)
     </p>
+
+    <h2>Responder con plantilla</h2>
+    <% if @lead.primary_email.blank? %>
+      <p class="action-note">El lead no tiene email.</p>
+    <% elsif @templates.blank? %>
+      <p class="action-note"><%= link_to 'Crea una plantilla', new_admin_email_template_path %> para responder desde aquí.</p>
+    <% else %>
+      <% @templates.each do |template| %>
+        <p style="margin: 4px 0;">
+          <%= link_to "✉ #{template.name}", gmail_compose_url(@lead, template), target: '_blank', rel: 'noopener', class: 'btn btn-outline' %>
+          <%= button_to '✓ Enviada', mark_template_sent_admin_lead_path(@lead, template_id: template.id), method: :post,
+                        class: 'btn btn-outline', form: { style: 'display:inline;' },
+                        title: 'Apuntar en el historial que se envió esta plantilla' %>
+        </p>
+      <% end %>
+      <p class="action-note">
+        Se abre Gmail con la respuesta cargada
+        <%= @lead.email_subject.present? ? "con el asunto «#{@lead.email_subject}»" : "(sin asunto guardado: usa el de la plantilla)" %>.
+        Tras enviarla, pulsa «✓ Enviada» para dejarlo en el historial.
+      </p>
+    <% end %>
 
     <h2>Muestras y presupuesto</h2>
     <p>

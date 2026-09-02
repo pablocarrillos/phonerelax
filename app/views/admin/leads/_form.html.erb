@@ -5,8 +5,10 @@
 
   <div class="form-grid" style="max-width: 760px;">
     <div><%= f.label :name, 'Nombre *' %><%= f.text_field :name, placeholder: 'p. ej. Colegio San José' %></div>
+    <div><%= f.label :last_name, 'Apellidos' %><%= f.text_field :last_name %></div>
     <div><%= f.label :origin, 'Origen' %><%= f.text_field :origin, placeholder: 'web, llamada, feria…' %></div>
     <div class="full"><%= f.label :email_list, 'Emails (separados por comas o espacios)' %><%= f.text_field :email_list, placeholder: 'email@dominio.com, otro@dominio.com' %></div>
+    <div class="full"><%= f.label :email_subject, 'Asunto del email del lead' %><%= f.text_field :email_subject, placeholder: 'cópialo de Gmail: la respuesta saldrá con este mismo asunto' %></div>
     <div><%= f.label :phone, 'Teléfono' %><%= f.telephone_field :phone %></div>
     <div><%= f.label :city, 'Ciudad' %><%= f.text_field :city %></div>
     <div><%= f.label :status, 'Estado' %><%= f.select :status, Lead::STATUSES, {}, { class: 'form-select' } %></div>

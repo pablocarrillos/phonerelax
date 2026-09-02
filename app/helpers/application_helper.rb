@@ -216,6 +216,18 @@ module ApplicationHelper
     nil
   end
 
+  # Redactar en Gmail la respuesta a un lead con una plantilla: destinatario,
+  # asunto y cuerpo ya rellenos. Gmail no añade la firma en las redacciones
+  # abiertas por URL: se inserta allí (icono de la pluma) o va en la plantilla.
+  def gmail_compose_url(lead, template)
+    query = {
+      view: "cm", fs: 1, to: lead.primary_email,
+      su: template.subject_for(lead), body: template.body_for(lead),
+      authuser: Current.user&.email_address
+    }
+    "https://mail.google.com/mail/?#{query.to_query}"
+  end
+
   # Importe de una compra en su moneda y, si es en dólares con tipo de cambio
   # fijado, también su equivalente en euros. Sin saltos de línea entre número
   # y símbolo (NBSP + nowrap).

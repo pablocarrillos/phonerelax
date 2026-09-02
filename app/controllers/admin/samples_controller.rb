@@ -34,7 +34,7 @@ module Admin
       # muestra enviada desde un lead: se precargan sus datos y queda vinculada
       if (lead = Lead.find_by(id: params[:lead_id]))
         @sample.lead = lead
-        @sample.organization = lead.name
+        @sample.organization = lead.full_name
         @sample.email = lead.primary_email
       end
       build_blank_lines

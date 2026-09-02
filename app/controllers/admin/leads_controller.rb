@@ -10,7 +10,7 @@ module Admin
       "won" => "Confirmado"
     }.freeze
 
-    before_action :set_lead, only: [ :show, :edit, :update, :destroy ]
+    before_action :set_lead, only: [ :show, :edit, :update, :destroy, :mark_template_sent ]
 
     def index
       @query = params[:q].to_s.strip
@@ -23,10 +23,12 @@ module Admin
       else
         matching.select { |lead| lead.status == SECTION_STATUSES[@section] }
       end
+      @templates = EmailTemplate.ordered
     end
 
     def show
       @lead_management = @lead.lead_managements.build(status: @lead.status, happened_at: Time.current)
+      @templates = EmailTemplate.ordered
     end
 
     def new
@@ -54,7 +56,17 @@ module Admin
 
     def destroy
       @lead.destroy!
-      redirect_to admin_leads_path, notice: "Lead «#{@lead.name}» borrado.", status: :see_other
+      redirect_to admin_leads_path, notice: "Lead «#{@lead.full_name}» borrado.", status: :see_other
+    end
+
+    # El envío real ocurre en Gmail: este botón deja constancia manual en el
+    # historial de que se envió la plantilla (y refresca la última actividad).
+    def mark_template_sent
+      template = EmailTemplate.find(params[:template_id])
+      @lead.lead_managements.create!(status: @lead.status, channel: "Correo", happened_at: Time.current,
+                                     action: "Enviada la plantilla «#{template.name}» por email.")
+      redirect_back fallback_location: admin_lead_path(@lead),
+                    notice: "Apuntado en el historial: plantilla «#{template.name}» enviada a #{@lead.full_name}."
     end
 
     private
@@ -64,7 +76,7 @@ module Admin
     end
 
     def lead_params
-      params.require(:lead).permit(:name, :phone, :city, :origin, :status, :to_answer, :email_list, :client_id)
+      params.require(:lead).permit(:name, :last_name, :email_subject, :phone, :city, :origin, :status, :to_answer, :email_list, :client_id)
     end
   end
 end

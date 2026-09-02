@@ -2,6 +2,7 @@
 
 <p>
   <%= link_to '+ Nuevo lead', new_admin_lead_path, class: 'btn btn-primary' %>
+  <%= link_to 'Plantillas de email', admin_email_templates_path, class: 'btn btn-outline' %>
 </p>
 
 <%# secciones: activos / en espera / perdidos / confirmados, con sus contadores %>
@@ -30,10 +31,26 @@
       <% @leads.each do |lead| %>
         <tr>
           <td>
-            <%= link_to lead.name, admin_lead_path(lead) %>
+            <%= link_to lead.full_name, admin_lead_path(lead) %>
             <% if lead.to_answer? %><span class="badge" style="background:#b7791f; color:#fff;">A contestar</span><% end %>
           </td>
-          <td><%= lead.lead_emails.map(&:email).join(", ") %></td>
+          <td>
+            <%= lead.lead_emails.map(&:email).join(", ") %>
+            <%# responder desde la lista: abre Gmail con la plantilla cargada; ✓ lo apunta en el historial %>
+            <% if lead.primary_email.present? && @templates.present? %>
+              <details>
+                <summary class="action-note" style="cursor:pointer; display:list-item;">✉ Responder con plantilla</summary>
+                <% @templates.each do |template| %>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <%= link_to template.name, gmail_compose_url(lead, template), target: '_blank', rel: 'noopener' %>
+                    <%= button_to '✓', mark_template_sent_admin_lead_path(lead, template_id: template.id), method: :post,
+                                  class: 'btn-link-inline', form: { style: 'display:inline;' },
+                                  title: 'Apuntar en el historial que se envió esta plantilla' %>
+                  </div>
+                <% end %>
+              </details>
+            <% end %>
+          </td>
           <td><%= lead.phone %></td>
           <td><%= lead.city %></td>
           <td><%= lead.origin %></td>

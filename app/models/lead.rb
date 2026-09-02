@@ -32,6 +32,11 @@ class Lead < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :budget_amount, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true
 
+  # nombre y apellidos juntos, para listados y cabeceras
+  def full_name
+    [ name, last_name ].compact_blank.join(" ")
+  end
+
   # Los emails se editan como un único texto (separados por comas o espacios).
   def email_list
     return @email_list unless @email_list.nil?
@@ -48,7 +53,7 @@ class Lead < ApplicationRecord
     pattern = "%#{sanitize_sql_like(query.downcase)}%"
     left_outer_joins(:lead_emails)
       .where(
-        "LOWER(leads.status) LIKE :pattern OR LOWER(leads.name) LIKE :pattern OR LOWER(leads.phone) LIKE :pattern OR LOWER(COALESCE(leads.city, '')) LIKE :pattern OR LOWER(lead_emails.email) LIKE :pattern",
+        "LOWER(leads.status) LIKE :pattern OR LOWER(leads.name) LIKE :pattern OR LOWER(COALESCE(leads.last_name, '')) LIKE :pattern OR LOWER(leads.phone) LIKE :pattern OR LOWER(COALESCE(leads.city, '')) LIKE :pattern OR LOWER(lead_emails.email) LIKE :pattern",
         pattern: pattern
       )
       .distinct

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_01_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_02_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -129,6 +129,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_180000) do
     t.index ["quote_id"], name: "index_delivery_notes_on_quote_id", unique: true
   end
 
+  create_table "email_templates", force: :cascade do |t|
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "subject"
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_email_templates_on_name", unique: true
+  end
+
   create_table "image_comments", force: :cascade do |t|
     t.string "comment"
     t.datetime "created_at", null: false
@@ -204,6 +213,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_180000) do
     t.string "city"
     t.bigint "client_id"
     t.datetime "created_at", null: false
+    t.string "email_subject"
+    t.string "last_name"
     t.string "name", null: false
     t.string "origin"
     t.string "phone"

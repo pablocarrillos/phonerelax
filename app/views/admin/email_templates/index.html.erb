@@ -1,0 +1,38 @@
+<p><%= link_to '← Volver a leads', admin_leads_path %></p>
+<h1>Plantillas de email</h1>
+
+<p class="action-note">
+  Respuestas estándar para contestar leads: el botón «Responder» del lead abre <strong>Gmail</strong> con el
+  destinatario, el asunto y este cuerpo ya cargados. Variables (se sustituyen con los datos del lead):
+  <% EmailTemplate::PLACEHOLDERS.each do |ph| %><code><%= ph %></code> <% end %>.
+  La firma no la añade Gmail en correos abiertos por enlace: insértala en la ventana de redactar (icono de la pluma)
+  o escríbela al final de la plantilla.
+</p>
+
+<p><%= link_to '+ Nueva plantilla', new_admin_email_template_path, class: 'btn btn-primary' %></p>
+
+<% if @templates.empty? %>
+  <p class="action-note">No hay plantillas todavía.</p>
+<% else %>
+  <table class="table" style="max-width: 1080px;">
+    <thead><tr><th>Nombre</th><th>Cuerpo</th><th></th></tr></thead>
+    <tbody>
+      <% @templates.each do |template| %>
+        <tr>
+          <td style="white-space:nowrap; font-weight:600;"><%= template.name %></td>
+          <%# cuerpo completo, con las variables resaltadas para verlas de un vistazo %>
+          <td style="white-space: pre-wrap; min-width: 320px;"><%=
+            ERB::Util.html_escape(template.body)
+                    .gsub(/\{(nombre|apellidos|ciudad)\}/) { |variable| %(<span class="badge" style="background:#0E1B4D; color:#fff;">#{variable}</span>) }
+                    .html_safe
+          %></td>
+          <td style="white-space:nowrap;">
+            <%= link_to 'Editar', edit_admin_email_template_path(template), class: 'btn btn-outline' %>
+            <%= button_to 'Borrar', admin_email_template_path(template), method: :delete, class: 'btn btn-danger',
+                          form: { data: { turbo_confirm: "¿Borrar la plantilla «#{template.name}»?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
