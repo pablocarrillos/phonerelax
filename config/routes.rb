@@ -117,6 +117,8 @@ Rails.application.routes.draw do
     resources :samples, except: :show do
       patch :mark_returned, on: :member # recogida/devuelta hoy
       patch :unmark_returned, on: :member # deshace una recogida marcada por error
+      patch :mark_lost, on: :member     # dada por perdida (no se espera devolución)
+      patch :unmark_lost, on: :member   # deshace una pérdida marcada por error
       patch :toggle_sold, on: :member   # marca/desmarca que hubo venta
       post :create_lead, on: :member, path: "crear-lead" # lead nuevo desde la muestra
     end

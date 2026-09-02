@@ -11,6 +11,10 @@
     <div style="color:var(--muted); font-size:13px;">Devueltas</div>
   </div>
   <div style="<%= card %>">
+    <div style="font-size:24px; font-weight:700; color:#8c1d18;"><%= @lost_count %></div>
+    <div style="color:var(--muted); font-size:13px;">Perdidas · <%= number_to_currency(@lost_cost, unit: '€', format: '%n %u') %></div>
+  </div>
+  <div style="<%= card %>">
     <div style="font-size:24px; font-weight:700; color:#b45309;">💰 <%= @sold_count %></div>
     <div style="color:var(--muted); font-size:13px;">Con venta</div>
   </div>
@@ -23,9 +27,10 @@
 <p><%= link_to '+ Nueva muestra', new_admin_sample_path, class: 'btn btn-primary' %></p>
 
 <div class="filter-tabs">
-  <%= link_to "Todas (#{@pending_count + @returned_count})", admin_samples_path(sort: @sort, dir: @dir), class: ('active' unless @filter) %>
+  <%= link_to "Todas (#{@pending_count + @returned_count + @lost_count})", admin_samples_path(sort: @sort, dir: @dir), class: ('active' unless @filter) %>
   <%= link_to "Fuera · sin devolver (#{@pending_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'pending'), class: ('active' if @filter == 'pending') %>
   <%= link_to "Devueltas (#{@returned_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'returned'), class: ('active' if @filter == 'returned') %>
+  <%= link_to "Perdidas (#{@lost_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'lost'), class: ('active' if @filter == 'lost') %>
   <%= link_to "Con venta (#{@sold_count})", admin_samples_path(sort: @sort, dir: @dir, filter: 'sold'), class: ('active' if @filter == 'sold') %>
 </div>
 
@@ -56,6 +61,8 @@
           <td>
             <% if sample.returned? %>
               <span class="badge recibido"><%= l(sample.returned_on, format: '%d/%m/%Y') %></span>
+            <% elsif sample.lost? %>
+              <span class="badge perdido">perdida <%= l(sample.lost_on, format: '%d/%m') %></span>
             <% else %>
               <span class="badge pendiente">fuera</span>
             <% end %>
@@ -70,9 +77,14 @@
             <% if sample.returned? %>
               <%= button_to '↩ No recogida', unmark_returned_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
                             form: { style: 'display:inline-block', data: { turbo_confirm: "¿Deshacer la recogida? La muestra de #{sample.organization} volverá a figurar como fuera." } } %>
+            <% elsif sample.lost? %>
+              <%= button_to '↩ No perdida', unmark_lost_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
+                            form: { style: 'display:inline-block', data: { turbo_confirm: "¿Deshacer la pérdida? La muestra de #{sample.organization} volverá a figurar como fuera." } } %>
             <% else %>
               <%= button_to '✓ Devuelta', mark_returned_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
                             form: { style: 'display:inline-block', data: { turbo_confirm: "¿Marcar la muestra de #{sample.organization} como devuelta hoy?" } } %>
+              <%= button_to '✖ Perdida', mark_lost_admin_sample_path(sample), method: :patch, class: 'btn btn-outline',
+                            form: { style: 'display:inline-block', data: { turbo_confirm: "¿Dar por perdida la muestra de #{sample.organization}? Dejará de contar como fuera." } } %>
             <% end %>
             <%= button_to (sample.sold? ? '💰 Quitar venta' : '💰 Venta'), toggle_sold_admin_sample_path(sample), method: :patch,
                           class: 'btn btn-outline', form: { style: 'display:inline-block' } %>

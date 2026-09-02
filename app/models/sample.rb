@@ -13,12 +13,18 @@ class Sample < ApplicationRecord
   validates :organization, presence: true
 
   scope :recent_first, -> { order(sent_on: :desc, id: :desc) }
-  scope :pending, -> { where(returned_on: nil) }
+  # "Fuera" = sin devolver y sin dar por perdida (las perdidas ya no se esperan).
+  scope :pending, -> { where(returned_on: nil, lost_on: nil) }
   scope :returned, -> { where.not(returned_on: nil) }
+  scope :lost, -> { where.not(lost_on: nil) }
   scope :sold, -> { where(sold: true) }
 
   def returned?
     returned_on.present?
+  end
+
+  def lost?
+    lost_on.present?
   end
 
   # Coste unitario de un producto para valorar muestras: su coste real medio de

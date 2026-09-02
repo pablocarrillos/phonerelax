@@ -20,6 +20,7 @@
     </div>
     <div><%= f.label :sent_on, 'Fecha de envío' %><%= f.date_field :sent_on %></div>
     <div><%= f.label :returned_on, 'Fecha de recogida (vacío = sigue fuera)' %><%= f.date_field :returned_on %></div>
+    <div><%= f.label :lost_on, 'Perdida el (vacío = no está perdida)' %><%= f.date_field :lost_on %></div>
     <div class="full"><label style="font-weight:400;"><%= f.check_box :sold %> 💰 Se ha producido venta (aunque no se haya devuelto)</label></div>
     <div class="full"><%= f.label :notes, 'Comentarios' %><%= f.text_area :notes, rows: 2 %></div>
   </div>

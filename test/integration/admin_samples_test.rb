@@ -37,6 +37,25 @@ class AdminSamplesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "✓ Devuelta", "vuelve a ofrecerse marcarla como devuelta"
   end
 
+  test "marcar una muestra como perdida y deshacerlo" do
+    sample = Sample.create!(organization: "Norfolk", sent_on: Date.current - 90)
+    patch mark_lost_admin_sample_path(sample)
+    assert_redirected_to admin_samples_path
+    assert_equal Date.current, sample.reload.lost_on
+    assert_not Sample.pending.exists?(sample.id), "una muestra perdida ya no cuenta como fuera"
+
+    get admin_samples_path(filter: "lost")
+    assert_includes response.body, "Norfolk"
+    assert_includes response.body, "↩ No perdida"
+
+    patch unmark_lost_admin_sample_path(sample)
+    assert_nil sample.reload.lost_on
+    assert Sample.pending.exists?(sample.id), "vuelve a estar fuera"
+
+    get admin_samples_path
+    assert_includes response.body, "✖ Perdida", "las muestras fuera ofrecen darlas por perdidas"
+  end
+
   test "el listado muestra los totales y el estado" do
     Sample.create!(organization: "Colegio Fuera", sent_on: Date.current - 10)
     devuelta = Sample.create!(organization: "Colegio Devuelto", sent_on: Date.current - 60, returned_on: Date.current - 5)

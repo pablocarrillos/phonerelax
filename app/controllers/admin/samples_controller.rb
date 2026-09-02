@@ -1,6 +1,7 @@
 module Admin
   class SamplesController < BaseController
-    before_action :set_sample, only: [ :edit, :update, :destroy, :mark_returned, :unmark_returned, :toggle_sold, :create_lead ]
+    before_action :set_sample, only: [ :edit, :update, :destroy, :mark_returned, :unmark_returned,
+                                       :mark_lost, :unmark_lost, :toggle_sold, :create_lead ]
 
     # Columnas por las que se puede ordenar la tabla (whitelist para evitar
     # inyección: el nombre de columna solo puede ser uno de estos).
@@ -9,21 +10,24 @@ module Admin
     def index
       @sort = SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : "sent_on"
       @dir = params[:dir] == "asc" ? "asc" : "desc"
-      @filter = %w[pending returned sold].include?(params[:filter]) ? params[:filter] : nil
+      @filter = %w[pending returned lost sold].include?(params[:filter]) ? params[:filter] : nil
       order = @sort == "organization" ? "LOWER(organization) #{@dir}" : "#{@sort} #{@dir} NULLS LAST"
 
       all = Sample.includes(:quote, sample_lines: :product).order(Arel.sql("#{order}, id desc"))
       @landed_costs = Purchase.average_landed_costs
       # Resumen sobre TODAS las muestras (no depende del filtro de la tabla).
-      @pending_count = all.count { |s| !s.returned? }
+      @pending_count = all.count { |s| !s.returned? && !s.lost? }
       @returned_count = all.count(&:returned?)
+      @lost_count = all.count(&:lost?)
       @sold_count = all.count(&:sold?)
-      @pending_cost = all.reject(&:returned?).sum { |s| s.cost(@landed_costs) }
+      @pending_cost = all.reject { |s| s.returned? || s.lost? }.sum { |s| s.cost(@landed_costs) }
+      @lost_cost = all.select(&:lost?).sum { |s| s.cost(@landed_costs) }
       @total_cost = all.sum { |s| s.cost(@landed_costs) }
 
       @samples = case @filter
-      when "pending" then all.reject(&:returned?)
+      when "pending" then all.reject { |s| s.returned? || s.lost? }
       when "returned" then all.select(&:returned?)
+      when "lost" then all.select(&:lost?)
       when "sold" then all.select(&:sold?)
       else all
       end
@@ -99,6 +103,18 @@ module Admin
       redirect_to admin_samples_path, notice: "Deshecho: la muestra de #{@sample.organization} vuelve a estar fuera."
     end
 
+    # Da la muestra por perdida (no se espera su devolución).
+    def mark_lost
+      @sample.update!(lost_on: Date.current, returned_on: nil)
+      redirect_to admin_samples_path, notice: "Muestra de #{@sample.organization} dada por perdida."
+    end
+
+    # Deshace una pérdida marcada por error: la muestra vuelve a estar fuera.
+    def unmark_lost
+      @sample.update!(lost_on: nil)
+      redirect_to admin_samples_path, notice: "Deshecho: la muestra de #{@sample.organization} vuelve a estar fuera."
+    end
+
     # Alterna si la muestra acabó en venta (con independencia de la devolución).
     def toggle_sold
       @sample.update!(sold: !@sample.sold?)
@@ -117,7 +133,7 @@ module Admin
     end
 
     def sample_params
-      params.require(:sample).permit(:organization, :contact_name, :email, :sent_on, :returned_on, :notes, :quote_id, :sold, :lead_id,
+      params.require(:sample).permit(:organization, :contact_name, :email, :sent_on, :returned_on, :lost_on, :notes, :quote_id, :sold, :lead_id,
                                      sample_lines_attributes: [ :id, :product_id, :quantity, :_destroy ])
     end
   end
