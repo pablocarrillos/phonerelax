@@ -1,6 +1,6 @@
 module Admin
   class SamplesController < BaseController
-    before_action :set_sample, only: [ :edit, :update, :destroy, :mark_returned, :toggle_sold ]
+    before_action :set_sample, only: [ :edit, :update, :destroy, :mark_returned, :toggle_sold, :create_lead ]
 
     # Columnas por las que se puede ordenar la tabla (whitelist para evitar
     # inyección: el nombre de columna solo puede ser uno de estos).
@@ -58,12 +58,28 @@ module Admin
     end
 
     def update
+      previous_lead_id = @sample.lead_id
       if @sample.update(sample_params)
+        # vinculada a un lead nuevo desde el formulario: queda en su historial
+        @sample.lead.register_sample!(@sample) if @sample.lead && @sample.lead_id != previous_lead_id
         redirect_to admin_samples_path, notice: "Muestra actualizada."
       else
         build_blank_lines
         render :edit, status: :unprocessable_entity
       end
+    end
+
+    # Crea un lead a partir de la muestra (organización y email), los vincula y
+    # deja el envío apuntado en el historial del lead nuevo.
+    def create_lead
+      if @sample.lead
+        return redirect_to edit_admin_sample_path(@sample), alert: "La muestra ya está vinculada al lead #{@sample.lead.full_name}."
+      end
+
+      lead = Lead.create!(name: @sample.organization, email_list: @sample.email.to_s, status: Lead::STATUSES.first)
+      @sample.update!(lead: lead)
+      lead.register_sample!(@sample)
+      redirect_to admin_lead_path(lead), notice: "Lead «#{lead.full_name}» creado y vinculado a la muestra."
     end
 
     def destroy

@@ -1,2 +1,11 @@
 <h1>Editar muestra</h1>
+
+<% unless @sample.lead %>
+  <p>
+    <%= button_to '➕ Crear lead desde esta muestra', create_lead_admin_sample_path(@sample), method: :post,
+                  class: 'btn btn-outline',
+                  form: { data: { turbo_confirm: "Se creará el lead «#{@sample.organization}» con el email de la muestra y quedarán vinculados. ¿Continuar?" } } %>
+  </p>
+<% end %>
+
 <%= render 'form', sample: @sample %>

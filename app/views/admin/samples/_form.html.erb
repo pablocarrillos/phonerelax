@@ -1,5 +1,4 @@
 <%= form_with model: [:admin, sample], local: true do |f| %>
-  <%= f.hidden_field :lead_id %>
   <% if sample.lead %>
     <p class="action-note">Muestra vinculada al lead <%= link_to sample.lead.full_name, admin_lead_path(sample.lead) %>: quedará apuntada en su historial.</p>
   <% end %>
@@ -13,6 +12,11 @@
     <div>
       <%= f.label :quote_id, 'Presupuesto vinculado (opcional)' %>
       <%= f.select :quote_id, Quote.includes(:client).recent_first.map { |q| ["#{q.number} · #{q.client.name}", q.id] }, { include_blank: 'Sin vincular' }, { class: 'form-select' } %>
+    </div>
+    <div>
+      <%= f.label :lead_id, 'Lead vinculado (opcional)' %>
+      <%= f.select :lead_id, Lead.order(:name, :last_name).map { |l| [l.full_name, l.id] }, { include_blank: 'Sin vincular' }, { class: 'form-select' } %>
+      <div class="form-text">Al vincularla, el envío queda apuntado en el historial del lead.</div>
     </div>
     <div><%= f.label :sent_on, 'Fecha de envío' %><%= f.date_field :sent_on %></div>
     <div><%= f.label :returned_on, 'Fecha de recogida (vacío = sigue fuera)' %><%= f.date_field :returned_on %></div>

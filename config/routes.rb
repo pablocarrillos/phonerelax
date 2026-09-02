@@ -117,6 +117,7 @@ Rails.application.routes.draw do
     resources :samples, except: :show do
       patch :mark_returned, on: :member # recogida/devuelta hoy
       patch :toggle_sold, on: :member   # marca/desmarca que hubo venta
+      post :create_lead, on: :member, path: "crear-lead" # lead nuevo desde la muestra
     end
     # leads comerciales (copiado de gestion): seguimiento con gestiones y
     # vínculos con muestras y presupuestos

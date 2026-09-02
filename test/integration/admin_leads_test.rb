@@ -11,6 +11,44 @@ class AdminLeadsTest < ActionDispatch::IntegrationTest
     @product = Product.create!(name: "Funda lead", price: 12.10, stock: 50, vat_percentage: 21, active: true)
   end
 
+  test "una muestra existente se vincula a un lead desde su formulario y queda en el historial" do
+    sample = Sample.create!(organization: "Colegio Suelto", email: "suelto@example.com", sent_on: Date.current)
+    sample.sample_lines.create!(product: @product, quantity: 2)
+
+    patch admin_sample_path(sample), params: { sample: { organization: sample.organization, lead_id: @lead.id } }
+    assert_redirected_to admin_samples_path
+
+    assert_equal @lead, sample.reload.lead
+    @lead.reload
+    assert_equal "Muestra enviada", @lead.status
+    assert_includes @lead.lead_managements.first.action, "Colegio Suelto"
+
+    # guardar de nuevo sin cambiar el lead no duplica la gestión
+    assert_no_difference -> { @lead.lead_managements.count } do
+      patch admin_sample_path(sample), params: { sample: { organization: sample.organization, lead_id: @lead.id } }
+    end
+  end
+
+  test "desde una muestra sin lead se crea un lead vinculado con sus datos" do
+    sample = Sample.create!(organization: "Academia Nueva", email: "info@academianueva.es", sent_on: Date.current)
+    sample.sample_lines.create!(product: @product, quantity: 3)
+
+    assert_difference -> { Lead.count }, 1 do
+      post create_lead_admin_sample_path(sample)
+    end
+    lead = Lead.order(:id).last
+    assert_redirected_to admin_lead_path(lead)
+    assert_equal "Academia Nueva", lead.name
+    assert_equal [ "info@academianueva.es" ], lead.lead_emails.map(&:email)
+    assert_equal lead, sample.reload.lead
+    assert_equal "Muestra enviada", lead.status, "el historial arranca con el envío de la muestra"
+
+    # con lead ya vinculado no se crea otro
+    assert_no_difference -> { Lead.count } do
+      post create_lead_admin_sample_path(sample)
+    end
+  end
+
   test "el lead se crea con varios emails y sale en el listado" do
     assert_equal %w[ampa@colegiolead.es direccion@colegiolead.es], @lead.lead_emails.map(&:email).sort
     assert_equal "1er contacto", @lead.status
