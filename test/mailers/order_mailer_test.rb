@@ -3,6 +3,36 @@ require "test_helper"
 class OrderMailerTest < ActionMailer::TestCase
   setup { ActionMailer::Base.default_url_options = { host: "phonerelax.com" } }
 
+  test "shipping_request: aviso al almacén con dirección, artículos y etiqueta A5 adjunta" do
+    order = orders(:uno)
+    mail = OrderMailer.shipping_request(order)
+
+    assert_equal %w[ana@servipau.com gines@servipau.com], mail.to
+    assert_equal %w[juanpedrominguez@drop-point.com], mail.cc
+    assert_equal "Envío Pedido PHONE RELAX #{order.number}", mail.subject
+
+    body = mail.html_part.body.decoded.delete("​") # sin los ZWSP de no_autolink
+    assert_match "Calle Mayor 1", body
+    assert_match "28001 Madrid", body
+    assert_match order.order_lines.first.product.name, body
+
+    attachment = mail.attachments["etiqueta-#{order.number}.pdf"]
+    assert attachment, "lleva la etiqueta adjunta"
+    assert attachment.body.decoded.start_with?("%PDF"), "el adjunto es un PDF"
+  end
+
+  test "la etiqueta A5 lleva el logotipo, el destinatario y el remitente" do
+    pdf = ShippingLabelPdf.render(orders(:uno)).b
+    assert pdf.start_with?("%PDF")
+    assert_match(/MediaBox \[0 0 419\.5\d* 595\.2\d*\]/, pdf) # A5 vertical
+    # prawn escribe el texto del stream en hexadecimal
+    hex = ->(s) { s.unpack1("H*") }
+    assert_includes pdf, hex.call("ENTREGAR A:")
+    assert_includes pdf, hex.call("Cliente Uno")
+    assert_includes pdf, hex.call("Remitente")
+    assert_match(%r{/Subtype /Image}, pdf) # el logotipo va incrustado
+  end
+
   test "refunded: correo en el idioma de la compra con importe y número de pedido" do
     order = orders(:uno)
     order.update!(locale: "fr", payment_status: :pagado, total: 25)

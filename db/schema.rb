@@ -268,6 +268,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_230000) do
     t.string "province"
     t.decimal "refunded_amount", precision: 8, scale: 2, default: "0.0", null: false
     t.decimal "shipping_cost", precision: 8, scale: 2, default: "0.0", null: false
+    t.datetime "shipping_email_sent_at"
     t.integer "status", default: 0, null: false
     t.string "stripe_payment_intent_id"
     t.string "stripe_session_id"

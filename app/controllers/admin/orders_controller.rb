@@ -47,6 +47,16 @@ module Admin
       redirect_to admin_order_path(order), notice: "Notas guardadas."
     end
 
+    # Envía al almacén el aviso de envío con la etiqueta A5 adjunta.
+    def shipping_email
+      order = Order.includes(order_lines: :product).find(params[:id])
+      OrderMailer.shipping_request(order).deliver_later
+      order.update_column(:shipping_email_sent_at, Time.current)
+      redirect_to admin_order_path(order),
+                  notice: "Aviso de envío del pedido #{order.number} enviado a #{OrderMailer::SHIPPING_RECIPIENTS.join(' y ')} " \
+                          "(copia a #{OrderMailer::SHIPPING_CC.join(' y ')})."
+    end
+
     # Registra un cobro recibido fuera de Stripe (transferencia, efectivo…).
     def mark_paid
       order = Order.find(params[:id])
@@ -116,9 +126,9 @@ module Admin
         redirect_back fallback_location: admin_order_path(order), notice: "Pedido #{order.number} marcado como #{order.status}."
       else
         message = if order.pago_reembolsado? then "Un pedido reembolsado no se puede marcar como enviado."
-                  elsif order.pago_pendiente? then "Un pedido sin pagar no se puede marcar como enviado."
-                  else "El pedido ya está entregado."
-                  end
+        elsif order.pago_pendiente? then "Un pedido sin pagar no se puede marcar como enviado."
+        else "El pedido ya está entregado."
+        end
         redirect_back fallback_location: admin_order_path(order), alert: message
       end
     end

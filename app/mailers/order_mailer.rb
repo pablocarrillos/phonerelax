@@ -5,6 +5,22 @@ class OrderMailer < ApplicationMailer
   SHOP_RECIPIENTS = ENV.fetch("CONTACT_EMAIL", "info@phonerelax.com,phonerelaxstore@gmail.com")
                        .split(",").map(&:strip)
 
+  # Aviso interno de envío al almacén: admite varias cuentas separadas por
+  # comas en SHIPPING_EMAIL.
+  SHIPPING_RECIPIENTS = ENV.fetch("SHIPPING_EMAIL", "ana@servipau.com,gines@servipau.com")
+                           .split(",").map(&:strip)
+  SHIPPING_CC = ENV.fetch("SHIPPING_EMAIL_CC", "juanpedrominguez@drop-point.com")
+                   .split(",").map(&:strip)
+
+  # Aviso interno al almacén (en español): dirección de envío, artículos a
+  # enviar y la etiqueta A5 adjunta. Se dispara con un botón desde el pedido.
+  def shipping_request(order)
+    @order = order
+    attachments["etiqueta-#{order.number}.pdf"] = ShippingLabelPdf.render(order)
+    mail(to: SHIPPING_RECIPIENTS, cc: SHIPPING_CC,
+         subject: "Envío Pedido PHONE RELAX #{order.number}")
+  end
+
   # Aviso interno a la tienda (en español): pedido creado con los datos de
   # contacto del cliente, todavía pendiente de pago.
   def new_order(order)

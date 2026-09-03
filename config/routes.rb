@@ -98,6 +98,7 @@ Rails.application.routes.draw do
       post :mark_paid, on: :member # cobro manual (fuera de Stripe)
       post :refund, on: :member # reembolso total o parcial
       post :payment_reminder, on: :member
+      post :shipping_email, on: :member # aviso de envío al almacén con etiqueta A5
       get :packing_slip, on: :member # hoja de pedido imprimible (sin numerar)
     end
     resources :products, except: :show do

@@ -111,6 +111,21 @@
     </div>
   </div>
 
+  <%# Aviso de envío al almacén: email con dirección, artículos y etiqueta A5 %>
+  <div class="action-section">
+    <span class="action-title">Aviso de envío al almacén</span>
+    <div class="action-row">
+      <%= button_to '📮 Enviar aviso de envío', shipping_email_admin_order_path(@order), method: :post,
+                    class: 'btn btn-primary',
+                    form: { data: { turbo_confirm: "Se enviará un email a #{OrderMailer::SHIPPING_RECIPIENTS.join(' y ')} " \
+                                                   "(con copia a #{OrderMailer::SHIPPING_CC.join(' y ')}) " \
+                                                   "con la dirección de envío, los artículos y la etiqueta A5 adjunta. ¿Continuar?" } } %>
+    </div>
+    <% if @order.shipping_email_sent_at %>
+      <p class="action-note">Último aviso enviado el <%= @order.shipping_email_sent_at.strftime('%d/%m/%Y a las %H:%M') %>.</p>
+    <% end %>
+  </div>
+
 </div>
 
 <h2>Cliente</h2>
