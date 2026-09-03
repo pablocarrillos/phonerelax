@@ -115,7 +115,10 @@ module Admin
                               tracking_carrier: params[:tracking_carrier])
         redirect_back fallback_location: admin_order_path(order), notice: "Pedido #{order.number} marcado como #{order.status}."
       else
-        message = order.pago_reembolsado? ? "Un pedido reembolsado no se puede marcar como enviado." : "El pedido ya está entregado."
+        message = if order.pago_reembolsado? then "Un pedido reembolsado no se puede marcar como enviado."
+                  elsif order.pago_pendiente? then "Un pedido sin pagar no se puede marcar como enviado."
+                  else "El pedido ya está entregado."
+                  end
         redirect_back fallback_location: admin_order_path(order), alert: message
       end
     end

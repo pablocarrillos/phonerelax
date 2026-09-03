@@ -185,8 +185,10 @@ class Order < ApplicationRecord
     prefix ? phone.delete_prefix(prefix) : phone
   end
 
+  # Solo un pedido cobrado se puede marcar como enviado: sin pago no hay envío,
+  # y un pedido reembolsado ya no avanza.
   def next_status
-    return if pago_reembolsado? # un pedido reembolsado ya no avanza (no se envía)
+    return unless pago_pagado?
 
     { "creado" => "enviado", "enviado" => "entregado" }[status]
   end

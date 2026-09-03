@@ -33,14 +33,14 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
   end
 
   test "marcar como enviado con seguimiento" do
-    order = pending_order
+    order = paid_order(manual: true)
     patch advance_admin_order_path(order), params: { tracking_carrier: "SEUR", tracking_number: "XYZ9" }
     assert_equal "enviado", order.reload.status
     assert_equal "XYZ9", order.tracking_number
   end
 
   test "deshacer un avance de estado" do
-    order = pending_order
+    order = paid_order(manual: true)
     order.advance_status!
     patch revert_admin_order_path(order)
     assert_equal "creado", order.reload.status
@@ -95,7 +95,7 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
   end
 
   test "avanzar a enviado notifica al cliente por email" do
-    order = pending_order
+    order = paid_order(manual: true)
     assert_emails 1 do
       patch advance_admin_order_path(order), params: { tracking_carrier: "SEUR", tracking_number: "XYZ9" }
     end
@@ -191,6 +191,19 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
       delete admin_order_path(order)
     end
     assert_equal stock_was + 1, products(:funda).reload.stock
+  end
+
+  test "un pedido sin pagar no tiene botón de marcar enviado ni se puede avanzar" do
+    order = pending_order
+    get admin_orders_path
+    assert_response :success
+    assert_select "form[action='#{advance_admin_order_path(order)}']", count: 0
+    get admin_order_path(order)
+    assert_no_match "Marcar como enviado", response.body
+
+    patch advance_admin_order_path(order)
+    assert_equal "creado", order.reload.status
+    assert_match "sin pagar", flash[:alert]
   end
 
   test "un pedido reembolsado no se puede marcar como enviado" do

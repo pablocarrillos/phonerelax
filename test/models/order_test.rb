@@ -29,8 +29,19 @@ class OrderTest < ActiveSupport::TestCase
     assert_includes order.order_events.pluck(:event), "pagado (manual)"
   end
 
-  test "advance_status! a enviado guarda transportista y nº de seguimiento" do
+  test "un pedido sin pagar no se puede marcar como enviado" do
     order = pending_order
+    assert_nil order.next_status
+
+    order.advance_status!(tracking_carrier: "SEUR")
+    assert_equal "creado", order.status
+
+    order.mark_paid!(manual: true)
+    assert_equal "enviado", order.next_status
+  end
+
+  test "advance_status! a enviado guarda transportista y nº de seguimiento" do
+    order = pending_order.tap { |o| o.mark_paid!(manual: true) }
     order.advance_status!(tracking_carrier: "SEUR", tracking_number: "ABC123")
 
     assert_equal "enviado", order.status
@@ -39,7 +50,7 @@ class OrderTest < ActiveSupport::TestCase
   end
 
   test "revert_status! retrocede un paso y lo registra" do
-    order = pending_order
+    order = pending_order.tap { |o| o.mark_paid!(manual: true) }
     order.advance_status!
     assert_equal "enviado", order.status
 
