@@ -25,6 +25,7 @@ module ApplicationHelper
     { file: "salvador-de-madariaga.jpg", name: "IES Salvador de Madariaga" },
     { file: "colegio-villalkor.jpg",    name: "Colegio Villalkor" },
     { file: "ayuntamiento-las-rozas.jpg", name: "Ayuntamiento de Las Rozas" },
+    { file: "ayuntamiento-peniscola.jpg", name: "Ayuntamiento de Peñíscola" },
     { file: "phonerelax-basica.jpg",    name: "PhoneRelax" }
   ].freeze
 
