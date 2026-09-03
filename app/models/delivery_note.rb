@@ -24,13 +24,14 @@ class DeliveryNote < ApplicationRecord
     return existing if existing
 
     transaction do
+      shipping_address = [ order.address, [ order.postal_code, order.city ].compact_blank.join(" "),
+                           [ order.province, order.country ].compact_blank.join(" · ") ].compact_blank.join("\n")
       note = create!(
         number: CompanySetting.current.take_delivery_note_number!,
         order: order, issued_on: Date.current,
         client_name: order.customer_name, client_tax_id: order.tax_id.presence,
         client_email: order.email,
-        client_address: [ order.address, [ order.postal_code, order.city ].compact_blank.join(" "),
-                          [ order.province, order.country ].compact_blank.join(" · ") ].compact_blank.join("\n")
+        client_address: shipping_address, delivery_address: shipping_address
       )
       order.order_lines.each_with_index do |line, index|
         note.lines.create!(description: line.product.name, quantity: line.quantity, position: index)
@@ -52,7 +53,8 @@ class DeliveryNote < ApplicationRecord
         quote: quote, issued_on: Date.current,
         client_name: client.name, client_tax_id: client.tax_id.presence,
         client_email: client.email.presence,
-        client_address: quote.delivery_address.presence || client.address
+        client_address: client.address,
+        delivery_address: quote.delivery_address.presence || client.address
       )
       quote.active_lines.each_with_index do |line, index|
         note.lines.create!(description: line.description, quantity: line.quantity, position: index)
@@ -66,6 +68,7 @@ class DeliveryNote < ApplicationRecord
     {
       number: number, issued_on: issued_on,
       client_name: client_name, client_tax_id: client_tax_id, client_address: client_address,
+      delivery_address: delivery_address,
       lines: lines.map { |l| { description: l.description, quantity: l.quantity } },
       comments: comments
     }

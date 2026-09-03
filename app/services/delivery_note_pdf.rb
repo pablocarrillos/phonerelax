@@ -42,6 +42,12 @@ class DeliveryNotePdf
     doc.text @data[:client_name].to_s, size: 10
     doc.text "NIF: #{@data[:client_tax_id]}", size: 9 if @data[:client_tax_id].present?
     doc.text @data[:client_address].to_s.tr("\n", " · "), size: 9 if @data[:client_address].present?
+    # la dirección de entrega se muestra aparte cuando difiere de la del cliente
+    if @data[:delivery_address].present? && @data[:delivery_address] != @data[:client_address]
+      doc.move_down 4
+      doc.text "Dirección de entrega", size: 9, style: :bold
+      doc.text @data[:delivery_address].to_s.tr("\n", " · "), size: 9
+    end
     doc.move_down 12
   end
 

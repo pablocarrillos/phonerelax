@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_02_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_03_230000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,7 +59,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_120000) do
     t.string "country"
     t.datetime "created_at", null: false
     t.integer "delivery_note_next_number", default: 32, null: false
-    t.string "delivery_note_series", default: "ALBARAN-PHONERELAX", null: false
+    t.string "delivery_note_series", default: "PHONERELAX", null: false
     t.string "email"
     t.string "legal_name", null: false
     t.string "phone"
@@ -119,6 +119,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_120000) do
     t.string "client_tax_id"
     t.text "comments"
     t.datetime "created_at", null: false
+    t.text "delivery_address"
     t.date "issued_on", null: false
     t.string "number", null: false
     t.bigint "order_id"

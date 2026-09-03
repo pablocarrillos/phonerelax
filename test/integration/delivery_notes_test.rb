@@ -1,6 +1,6 @@
 require "test_helper"
 
-# Albaranes numerados (serie ALBARAN-PHONERELAX): se generan desde un pedido o
+# Albaranes numerados (prefijo configurable en Datos de Empresa): desde un pedido o
 # un presupuesto, sin precios, consumen número correlativo y se pueden editar
 # después de emitirse manteniendo el número.
 class DeliveryNotesTest < ActionDispatch::IntegrationTest
@@ -19,9 +19,14 @@ class DeliveryNotesTest < ActionDispatch::IntegrationTest
   end
 
   test "la serie de albaranes arranca en el 000032 y avanza sin reiniciar por año" do
-    assert_equal "ALBARAN-PHONERELAX-000032", @setting.take_delivery_note_number!
-    assert_equal "ALBARAN-PHONERELAX-000033", @setting.take_delivery_note_number!
+    assert_equal "PHONERELAX-000032", @setting.take_delivery_note_number!
+    assert_equal "PHONERELAX-000033", @setting.take_delivery_note_number!
     assert_equal 34, @setting.reload.delivery_note_next_number
+  end
+
+  test "el prefijo de los albaranes se cambia desde Datos de Empresa" do
+    patch admin_company_setting_path, params: { company_setting: { delivery_note_series: "ALB", delivery_note_next_number: 50 } }
+    assert_equal "ALB-000050", @setting.reload.take_delivery_note_number!
   end
 
   test "generar el albarán de un pedido copia cliente y líneas sin precios y avanza la serie" do
@@ -31,7 +36,7 @@ class DeliveryNotesTest < ActionDispatch::IntegrationTest
     note = DeliveryNote.last
     assert_redirected_to edit_admin_delivery_note_path(note)
 
-    assert_equal "ALBARAN-PHONERELAX-000032", note.number
+    assert_equal "PHONERELAX-000032", note.number
     assert_equal 33, @setting.reload.delivery_note_next_number, "la serie avanza al generar"
     assert_equal "Ana Test", note.client_name
     line = note.lines.sole
@@ -53,8 +58,9 @@ class DeliveryNotesTest < ActionDispatch::IntegrationTest
       post admin_delivery_notes_path, params: { quote_id: @quote.id }
     end
     note = @quote.reload.delivery_note
-    assert_equal "ALBARAN-PHONERELAX-000033", note.number, "pedidos y presupuestos comparten la serie"
+    assert_equal "PHONERELAX-000033", note.number, "pedidos y presupuestos comparten la serie"
     assert_equal "Colegio Test", note.client_name
+    assert_equal "Calle 1", note.client_address, "los datos fiscales del cliente van en su bloque"
     assert_equal [ "Bolsas" ], note.lines.map(&:description)
   end
 
@@ -85,6 +91,18 @@ class DeliveryNotesTest < ActionDispatch::IntegrationTest
       lines_attributes: { "0" => { id: note.lines.last.id, _destroy: "1" } }
     } }
     assert_equal [ "Bolsas grandes" ], note.reload.lines.map(&:description)
+  end
+
+  test "el albarán del presupuesto lleva la dirección de entrega aparte" do
+    @quote.update!(delivery_address: "Colegio Test, C/ Entrega 9, 03600 Elda")
+    note = DeliveryNote.issue_for_quote!(@quote)
+
+    assert_equal "Calle 1", note.client_address
+    assert_equal "Colegio Test, C/ Entrega 9, 03600 Elda", note.delivery_address
+    assert_equal note.delivery_address, note.pdf_data[:delivery_address]
+
+    get pdf_admin_delivery_note_path(note)
+    assert_response :success, "el PDF se genera con ambas direcciones"
   end
 
   test "el PDF del albarán se genera y no incluye importes" do

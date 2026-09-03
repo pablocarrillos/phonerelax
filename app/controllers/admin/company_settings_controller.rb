@@ -22,6 +22,7 @@ module Admin
         :legal_name, :tax_id, :address, :city, :postal_code, :province, :country,
         :phone, :email,
         :web_series, :web_next_number, :quote_series, :quote_next_number,
+        :delivery_note_series, :delivery_note_next_number,
         :verifactu_enabled, :verifactu_environment, :verifactu_token
       )
     end

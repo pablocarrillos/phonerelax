@@ -35,8 +35,7 @@ class CompanySetting < ApplicationRecord
 
   # Consume un número de la serie de albaranes y lo devuelve (con lock). A
   # diferencia de las facturas, la numeración es continua: sin año y sin
-  # reinicio anual, siguiendo la serie que se venía usando a mano
-  # (ALBARAN-PHONERELAX-000032 en adelante).
+  # reinicio anual. El prefijo se cambia en Datos de Empresa.
   def take_delivery_note_number!
     with_lock do
       number = "#{delivery_note_series}-#{format('%06d', delivery_note_next_number)}"

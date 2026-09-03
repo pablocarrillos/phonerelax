@@ -27,7 +27,8 @@
     <div><%= f.label :client_name, 'Cliente *' %><%= f.text_field :client_name, required: true %></div>
     <div><%= f.label :client_tax_id, 'NIF' %><%= f.text_field :client_tax_id %></div>
     <div><%= f.label :client_email, 'Email' %><%= f.email_field :client_email %></div>
-    <div class="full"><%= f.label :client_address, 'Dirección de entrega' %><%= f.text_area :client_address, rows: 2 %></div>
+    <div class="full"><%= f.label :client_address, 'Dirección del cliente' %><%= f.text_area :client_address, rows: 2 %></div>
+    <div class="full"><%= f.label :delivery_address, 'Dirección de entrega' %><%= f.text_area :delivery_address, rows: 2 %></div>
     <div class="full"><%= f.label :comments, 'Comentarios (salen en el albarán)' %><%= f.text_area :comments, rows: 3 %></div>
   </div>
 

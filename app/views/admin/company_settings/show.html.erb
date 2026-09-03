@@ -36,10 +36,13 @@
       <label>Siguiente nº web<%= f.number_field :web_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
       <label>Serie presupuestos<%= f.text_field :quote_series, class: "input-compact", style: "width:100%;" %></label>
       <label>Siguiente nº presupuestos<%= f.number_field :quote_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
+      <label>Prefijo albaranes<%= f.text_field :delivery_note_series, class: "input-compact", style: "width:100%;" %></label>
+      <label>Siguiente nº albarán<%= f.number_field :delivery_note_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
     </div>
     <p class="action-note" style="margin-bottom:0;">
       Próximas: <strong><%= @setting.preview_number("web") %></strong> (web) ·
-      <strong><%= @setting.preview_number("quote") %></strong> (presupuestos)
+      <strong><%= @setting.preview_number("quote") %></strong> (presupuestos) ·
+      <strong><%= @setting.delivery_note_series %>-<%= format("%06d", @setting.delivery_note_next_number) %></strong> (albarán)
     </p>
   </div>
 

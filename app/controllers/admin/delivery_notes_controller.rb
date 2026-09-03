@@ -40,7 +40,7 @@ module Admin
 
     def delivery_note_params
       params.require(:delivery_note).permit(
-        :issued_on, :client_name, :client_tax_id, :client_email, :client_address, :comments,
+        :issued_on, :client_name, :client_tax_id, :client_email, :client_address, :delivery_address, :comments,
         lines_attributes: [ :id, :description, :quantity, :position, :_destroy ]
       )
     end
