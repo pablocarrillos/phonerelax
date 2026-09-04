@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Presupuesto <%= @quote.number %></title>
+  <%# El navegador usa este título como nombre del fichero al «Guardar como PDF» %>
+  <title>Presupuesto PHONERELAX - <%= I18n.transliterate(@quote.client.name).upcase %> - <%= @quote.number %></title>
   <style>
     * { box-sizing: border-box; }
     body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #111; margin: 0; padding: 32px 40px 90px; font-size: 14px; line-height: 1.45; }

@@ -93,6 +93,10 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Drop Point Systems S.L.U."
     assert_includes response.body, quote.number
     assert_includes response.body, "Colegio San Luis"
+    # el título es el nombre del PDF al guardarlo: cliente en mayúsculas y sin tildes
+    @client.update!(name: "Colegio San José")
+    get print_admin_quote_path(quote)
+    assert_select "title", "Presupuesto PHONERELAX - COLEGIO SAN JOSE - #{quote.number}"
     assert_includes response.body, "Total Oferta"
     assert_includes response.body, "BBVA ES65 0182 2961 3102 0170 2952"
     assert_includes response.body, "Incluye 2 imanes de repuesto"
