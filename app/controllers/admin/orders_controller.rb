@@ -52,6 +52,7 @@ module Admin
       order = Order.includes(order_lines: :product).find(params[:id])
       OrderMailer.shipping_request(order).deliver_later
       order.update_column(:shipping_email_sent_at, Time.current)
+      order.order_events.create!(event: "aviso de envío al almacén")
       redirect_to admin_order_path(order),
                   notice: "Aviso de envío del pedido #{order.number} enviado a #{OrderMailer::SHIPPING_RECIPIENTS.join(' y ')} " \
                           "(copia a #{OrderMailer::SHIPPING_CC.join(' y ')})."

@@ -20,9 +20,12 @@ class AdminShippingEmailTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to admin_order_path(order)
     assert_not_nil order.reload.shipping_email_sent_at
+    assert_equal 1, order.order_events.where(event: "aviso de envío al almacén").count,
+                 "queda en el histórico del pedido"
 
     follow_redirect!
     assert_match "ana@servipau.com", flash[:notice]
     assert_match "Último aviso enviado", response.body
+    assert_match "aviso de envío al almacén", response.body
   end
 end
