@@ -139,6 +139,8 @@ pt:
     tier_discount: "-%{pct}% de desconto aplicado"
     pack_max: "máx. %{n}"
     pack_saving_total: "Poupa %{amount} ao comprar o pack em vez dos produtos separadamente."
+    schools_only_title: "Apenas para estabelecimentos de ensino"
+    schools_only: "Este produto só é vendido e entregue a estabelecimentos de ensino (escolas, institutos, universidades e academias). Não se vende a particulares."
   cart:
     title: O seu carrinho
     empty: O carrinho está vazio.

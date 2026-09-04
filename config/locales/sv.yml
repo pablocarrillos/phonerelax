@@ -150,6 +150,8 @@ sv:
     tier_discount: "-%{pct} % rabatt tillämpad"
     pack_max: "max %{n}"
     pack_saving_total: "Du sparar %{amount} genom att köpa paketet i stället för produkterna var för sig."
+    schools_only_title: "Endast för utbildningsinstitutioner"
+    schools_only: "Den här produkten säljs och levereras endast till utbildningsinstitutioner (skolor, gymnasier, universitet och utbildningsföretag). Den säljs inte till privatpersoner."
   cart:
     title: Din varukorg
     empty: Varukorgen är tom.

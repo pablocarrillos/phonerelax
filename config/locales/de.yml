@@ -146,6 +146,8 @@ de:
     tier_discount: "-%{pct} % Rabatt angewendet"
     pack_max: "max. %{n}"
     pack_saving_total: "Sie sparen %{amount}, wenn Sie das Set statt der einzelnen Produkte kaufen."
+    schools_only_title: "Nur für Bildungseinrichtungen"
+    schools_only: "Dieses Produkt wird ausschließlich an Bildungseinrichtungen (Schulen, Hochschulen, Universitäten und Akademien) verkauft und geliefert. Kein Verkauf an Privatpersonen."
   cart:
     title: Ihr Warenkorb
     empty: Der Warenkorb ist leer.

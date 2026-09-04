@@ -618,6 +618,11 @@ select.form-select { width: 100%; padding: 10px 12px; border: 1px solid var(--bo
 trix-editor.trix-content { background: #fff; border: 1px solid var(--border); border-radius: 8px; min-height: 220px; }
 
 .vat-note { color: var(--muted); font-size: 14px; margin-top: -6px; }
+/* Productos solo para centros educativos (imán): aviso en la ficha y etiqueta en carrito y pedido */
+.schools-only-notice { margin: 14px 0 18px; padding: 12px 16px; border-left: 4px solid #b45309; background: #fff7ed; color: #7c2d12; border-radius: 6px; font-size: 14px; }
+.schools-only-notice strong { display: block; margin-bottom: 4px; }
+.schools-only-notice p { margin: 0; }
+.schools-only-tag { display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: #fff7ed; color: #7c2d12; border: 1px solid #fdba74; font-size: 12px; white-space: nowrap; }
 
 /* Campos con error: borde y etiqueta en rojo (Rails los envuelve en .field_with_errors) */
 .field_with_errors input, .field_with_errors select, .field_with_errors textarea {

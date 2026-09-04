@@ -15,6 +15,7 @@
             <div class="line-cell">
               <img src="<%= product.cover_url %>" alt="<%= product.display_name %>" class="line-thumb">
               <span><%= product.display_name %> × <%= quantity %></span>
+              <% if product.schools_only? %><span class="schools-only-tag" title="<%= t('product.schools_only') %>"><%= t('product.schools_only_title') %></span><% end %>
             </div>
           </td>
           <td class="num" data-invoice-target="amount"

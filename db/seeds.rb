@@ -32,6 +32,7 @@ products = [
     shopify_handle: 'iman-phonerelax',
     name: 'Imán PhoneRelax',
     price: '59.90',
+    schools_only: true, # solo centros educativos, nunca particulares
     image_url: '/images/products/iman-1.jpg',
     description: '<p>Permite la apertura de las bolsas PhoneRelax simplemente acercando la parte redondeada de la cerradura de la bolsa al centro del imán.</p>
 <p>El imán dispone de cuatro agujeros pensados para poder fijarlo en cualquier superficie y así evitar que pueda perderse o que se mueva durante el proceso de apertura de las bolsas PhoneRelax.</p>',

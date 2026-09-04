@@ -146,6 +146,8 @@ fr:
     tier_discount: "-%{pct}% de remise appliquée"
     pack_max: "max. %{n}"
     pack_saving_total: "Vous économisez %{amount} en achetant le pack plutôt que les produits séparément."
+    schools_only_title: "Réservé aux établissements d'enseignement"
+    schools_only: "Ce produit est vendu et livré uniquement aux établissements d'enseignement (écoles, collèges, lycées, universités et académies). Il n'est pas vendu aux particuliers."
   cart:
     title: Votre panier
     empty: Le panier est vide.

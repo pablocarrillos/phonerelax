@@ -19,6 +19,7 @@
     <div><%= f.label :vat_percentage, 'IVA (%)' %><%= f.number_field :vat_percentage, step: 0.1, min: 0 %></div>
     <div class="full"><label><%= f.check_box :active %> Activo (visible en la tienda)</label></div>
     <div class="full"><label><%= f.check_box :auto_carousel %> Mostrar la galería como carrusel automático (sin miniaturas, cambia sola cada 3&nbsp;s)</label></div>
+    <div class="full"><label><%= f.check_box :schools_only %> Solo para centros educativos (la ficha, el carrito y el pedido avisan en todos los idiomas de que no se vende a particulares)</label></div>
     <div class="full"><label><%= f.check_box :pack, data: { pack_form_target: 'pack', action: 'change->pack-form#refresh' } %> Es un pack (su precio y su stock se calculan a partir de los componentes de abajo; se ignoran el precio, el escalado y el stock propios de este producto)</label></div>
 
     <div class="full">

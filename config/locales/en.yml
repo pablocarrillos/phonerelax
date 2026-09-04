@@ -144,6 +144,8 @@ en:
     tier_discount: "-%{pct}% discount applied"
     pack_max: "max %{n}"
     pack_saving_total: "You save %{amount} by buying the pack instead of the products separately."
+    schools_only_title: "Educational institutions only"
+    schools_only: "This product is sold and delivered to educational institutions only (schools, colleges, universities and academies). It is not sold to private individuals."
   cart:
     title: Your cart
     empty: Your cart is empty.

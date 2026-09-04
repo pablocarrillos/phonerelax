@@ -17,6 +17,7 @@
               <div class="line-cell">
                 <%= link_to product_page_path(product) do %><img src="<%= product.cover_url %>" alt="<%= product.display_name %>" class="line-thumb"><% end %>
                 <%= link_to product.display_name, product_page_path(product) %>
+                <% if product.schools_only? %><span class="schools-only-tag" title="<%= t('product.schools_only') %>"><%= t('product.schools_only_title') %></span><% end %>
               </div>
             </td>
             <td class="num"><%= number_to_currency(product.price_for_quantity(quantity), unit: '€', format: '%n %u') %><% if product.price_for_quantity(quantity) < product.price %><br><span style="color:var(--muted); font-size:12px; text-decoration:line-through;"><%= number_to_currency(product.price, unit: '€', format: '%n %u') %></span><% end %></td>

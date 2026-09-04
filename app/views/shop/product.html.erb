@@ -87,6 +87,12 @@
       <% end %>
 
       <div class="product-description"><%= sanitize @product.display_description %></div>
+      <% if @product.schools_only? %>
+        <div class="schools-only-notice" role="note">
+          <strong><%= t('product.schools_only_title') %></strong>
+          <p><%= t('product.schools_only') %></p>
+        </div>
+      <% end %>
       <% if @product.out_of_stock? %>
         <p><span class="btn btn-soldout" style="padding: 11px 34px;"><%= t('common.sold_out') %></span></p>
         <p style="color: var(--muted);"><%= t('product.unavailable') %></p>
