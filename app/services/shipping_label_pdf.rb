@@ -14,7 +14,7 @@ class ShippingLabelPdf
   end
 
   def render
-    doc = Prawn::Document.new(page_size: "A5", margin: 36)
+    doc = Prawn::Document.new(page_size: "A5", page_layout: :landscape, margin: 32)
     logo(doc)
     addressee(doc)
     sender(doc)
@@ -24,8 +24,8 @@ class ShippingLabelPdf
   private
 
   def logo(doc)
-    doc.image LOGO.to_s, width: 140, position: :center if LOGO.exist?
-    doc.move_down 24
+    doc.image LOGO.to_s, width: 95, position: :center if LOGO.exist?
+    doc.move_down 14
   end
 
   def addressee(doc)
@@ -46,7 +46,7 @@ class ShippingLabelPdf
   end
 
   def sender(doc)
-    doc.bounding_box([ 0, 70 ], width: doc.bounds.width) do
+    doc.bounding_box([ 0, 62 ], width: doc.bounds.width) do
       doc.stroke_horizontal_rule
       doc.move_down 8
       doc.text "Remitente: #{@setting.legal_name} (PHONE RELAX)", size: 9

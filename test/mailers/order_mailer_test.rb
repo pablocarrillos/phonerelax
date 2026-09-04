@@ -24,7 +24,7 @@ class OrderMailerTest < ActionMailer::TestCase
   test "la etiqueta A5 lleva el logotipo, el destinatario y el remitente" do
     pdf = ShippingLabelPdf.render(orders(:uno)).b
     assert pdf.start_with?("%PDF")
-    assert_match(/MediaBox \[0 0 419\.5\d* 595\.2\d*\]/, pdf) # A5 vertical
+    assert_match(/MediaBox \[0 0 595\.2\d* 419\.5\d*\]/, pdf) # A5 apaisado
     # prawn escribe el texto del stream en hexadecimal
     hex = ->(s) { s.unpack1("H*") }
     assert_includes pdf, hex.call("ENTREGAR A:")
