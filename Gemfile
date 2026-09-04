@@ -33,7 +33,7 @@ gem "thruster", require: false
 # image_processing 2.x ya no declara el backend como dependencia: hay que añadir
 # ruby-vips explícitamente (el procesador de Active Storage es :vips por defecto).
 # Requiere libvips instalado (está en producción y en el CI).
-gem "image_processing", "~> 2.0"
+gem "image_processing", "~> 2.1"
 # En producción hay libvips >= 8.13; este puesto no, así que solo se carga allí.
 gem "ruby-vips", group: :production
 
