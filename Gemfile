@@ -70,7 +70,7 @@ gem "fastimage" # dimensiones de imagen leyendo solo la cabecera (herramienta Fo
 
 gem "pagy", "~> 43.6"
 
-gem "phonelib", "~> 0.10.23"
+gem "phonelib", "~> 0.10.27"
 
 gem "rollbar", "~> 3.8"
 
