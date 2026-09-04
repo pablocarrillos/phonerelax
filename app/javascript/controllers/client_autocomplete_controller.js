@@ -54,6 +54,9 @@ export default class extends Controller {
         li.textContent = c.name
         li.dataset.id = c.id
         li.dataset.name = c.name
+        li.dataset.email = c.email || ""
+        li.dataset.phone = c.phone || ""
+        li.dataset.address = c.address || ""
         li.addEventListener("mousedown", (e) => { e.preventDefault(); this.chooseEl(li) })
         this.listTarget.appendChild(li)
       })
@@ -64,7 +67,17 @@ export default class extends Controller {
   chooseEl(el) {
     this.idTarget.value = el.dataset.id
     this.inputTarget.value = el.dataset.name
+    // Precarga los datos de la ficha del cliente en el presupuesto, sin pisar
+    // nada que ya esté escrito (al editar, o si se cambia de cliente a medias).
+    this.fill("quote_contact_email", el.dataset.email)
+    this.fill("quote_contact_phone", el.dataset.phone)
+    this.fill("quote_delivery_address", el.dataset.address)
     this.hide()
+  }
+
+  fill(fieldId, value) {
+    const field = document.getElementById(fieldId)
+    if (field && !field.value.trim() && value) field.value = value
   }
 
   onKeydown(e) {

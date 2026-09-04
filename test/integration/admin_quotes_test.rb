@@ -17,6 +17,18 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     InvisibleCaptcha.spinner_enabled = false
   end
 
+  test "la búsqueda de clientes devuelve los datos de la ficha para precargar el presupuesto" do
+    @client.update!(email: "director@sanluis.es", phone: "912345678")
+    get search_admin_clients_path(q: "San Luis"), headers: { "Accept" => "application/json" }
+    assert_response :success
+
+    result = response.parsed_body.sole
+    assert_equal "Colegio San Luis", result["name"]
+    assert_equal "director@sanluis.es", result["email"]
+    assert_equal "912345678", result["phone"]
+    assert_includes result["address"], "Portugalete"
+  end
+
   teardown do
     InvisibleCaptcha.timestamp_enabled = @timestamp_was
     InvisibleCaptcha.spinner_enabled = @spinner_was

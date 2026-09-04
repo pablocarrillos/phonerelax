@@ -11,7 +11,11 @@ module Admin
     def search
       term = params[:q].to_s.strip
       results = term.length >= 3 ? Client.name_like(term).ordered.limit(10) : Client.none
-      render json: results.map { |c| { id: c.id, name: c.name } }
+      # email/phone/address: para precargar los datos de la ficha al elegir
+      # el cliente en el formulario de presupuestos
+      render json: results.map { |c|
+        { id: c.id, name: c.name, email: c.email.to_s, phone: c.phone.to_s, address: c.address.to_s }
+      }
     end
 
     def new
