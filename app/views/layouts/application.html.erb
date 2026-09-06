@@ -5,6 +5,9 @@
     <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="<%= meta_description %>">
+    <%# Píxel de ChatGPT Ads (OpenAI): configuración una sola vez por página, al principio del head.
+        La conversión (pedido pagado) se mide en la página del pedido: ver orders/show. %>
+    <script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"LVtz2LJVyyJrFP9Yh4bJZb",debug:<%= Rails.env.production? ? 'false' : 'true' %>});</script>
     <link rel="canonical" href="<%= canonical_url %>">
     <%# Alternativas por idioma (SEO multilingüe) %>
     <% I18n.available_locales.each do |loc| %>

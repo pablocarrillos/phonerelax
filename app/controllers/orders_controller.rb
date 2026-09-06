@@ -97,6 +97,8 @@ class OrdersController < ApplicationController
   def success
     @order = Order.find_by!(number: params[:number])
     @order.mark_paid! if !@order.pago_pagado? && StripeCheckout.paid?(@order)
+    # la conversión de ChatGPT Ads se mide una sola vez, en la página del pedido a la que se vuelve del pago
+    flash[:ads_conversion] = true if @order.pago_pagado?
     redirect_to order_status_path(@order.number)
   end
 

@@ -7,10 +7,10 @@ Rails.application.configure do
     policy.font_src    :self, :data
     policy.img_src     :self, :data, :https
     policy.object_src  :none
-    policy.script_src  :self, :unsafe_inline
+    policy.script_src  :self, :unsafe_inline, "https://bzrcdn.openai.com" # píxel de ChatGPT Ads
     policy.style_src   :self, :unsafe_inline
     policy.frame_src   :self, "https://www.youtube.com", "https://www.youtube-nocookie.com"
-    policy.connect_src :self
+    policy.connect_src :self, "https://bzr.openai.com" # eventos del píxel de ChatGPT Ads
   end
 
   config.content_security_policy_report_only = true

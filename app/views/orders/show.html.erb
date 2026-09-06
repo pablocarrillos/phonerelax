@@ -1,5 +1,14 @@
 <% content_for :title, "#{t('order.title', number: @order.number)} · PhoneRelax" %>
 <% content_for :robots, 'noindex, nofollow' %>
+<% if flash[:ads_conversion] && @order.pago_pagado? %>
+  <%# conversión de ChatGPT Ads: pedido pagado (solo al volver del pago, una vez) %>
+  <script>
+    oaiq("measure", "order_created", <%= raw({
+      type: "contents", amount: @order.total.to_f.round(2), currency: "EUR",
+      contents: @order.order_lines.map { |line| { id: line.product.shopify_handle.presence || line.product_id.to_s, name: line.product.name, quantity: line.quantity, price: line.unit_price.to_f.round(2) } }
+    }.to_json) %>);
+  </script>
+<% end %>
 <div class="container section" style="max-width: 760px;">
   <% if @order.pago_pagado? %>
     <div class="thanks-hero">

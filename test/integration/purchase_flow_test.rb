@@ -112,6 +112,20 @@ class PurchaseFlowTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to order_status_path(order.number)
     assert order.reload.pago_pagado?
+
+    # conversión de ChatGPT Ads: una sola vez, en la página del pedido al volver del pago
+    follow_redirect!
+    assert_includes response.body, 'oaiq("measure", "order_created"'
+    assert_includes response.body, '"type":"contents"'
+    assert_includes response.body, '"currency":"EUR"'
+    get order_status_path(order.number)
+    assert_not_includes response.body, 'oaiq("measure"', "una segunda visita no vuelve a medir la conversión"
+  end
+
+  test "el píxel de ChatGPT Ads se configura una vez en la cabecera de cada página" do
+    get root_path
+    assert_equal 1, response.body.scan('oaiq("init",{pixelId:"LVtz2LJVyyJrFP9Yh4bJZb"').size
+    assert_includes response.body, "https://bzrcdn.openai.com/sdk/oaiq.min.js"
   end
 
   test "si el stock baja antes de confirmar, el pedido no se crea" do
