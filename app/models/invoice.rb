@@ -90,6 +90,7 @@ class Invoice < ApplicationRecord
                               unit_price: quote.shipping_cost, total: quote.shipping_cost,
                               position: quote.active_lines.size)
       end
+      quote.quote_events.create!(event: "factura #{invoice.number} emitida")
       invoice
     end
   end

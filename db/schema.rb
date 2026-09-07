@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_07_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -434,6 +434,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_160000) do
     t.index ["user_id"], name: "index_quote_comments_on_user_id"
   end
 
+  create_table "quote_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "event", null: false
+    t.bigint "quote_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["quote_id"], name: "index_quote_events_on_quote_id"
+  end
+
   create_table "quote_lines", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description", null: false
@@ -579,6 +587,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_160000) do
   add_foreign_key "purchases", "suppliers"
   add_foreign_key "quote_comments", "quotes"
   add_foreign_key "quote_comments", "users"
+  add_foreign_key "quote_events", "quotes"
   add_foreign_key "quote_lines", "products"
   add_foreign_key "quote_lines", "quotes"
   add_foreign_key "quotes", "clients"

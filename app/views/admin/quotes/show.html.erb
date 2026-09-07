@@ -172,6 +172,23 @@
   <p><%= simple_format(@quote.notes) %></p>
 <% end %>
 
+<%# histórico de lo que se va marcando en el pedido, como el de los pedidos web %>
+<h2 style="margin-top: 28px;">Histórico</h2>
+<% if @quote.quote_events.any? %>
+  <table class="table" style="max-width: 520px;">
+    <tbody>
+      <% @quote.quote_events.chronological.each do |event| %>
+        <tr>
+          <td><span class="badge"><%= event.event %></span></td>
+          <td><%= l event.created_at, format: :short %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p style="color: var(--muted);">Sin eventos todavía (los presupuestos anteriores a esta función empiezan con el histórico vacío).</p>
+<% end %>
+
 <%# comentarios del seguimiento: con fecha/hora y usuario, el último primero %>
 <h2 id="comentarios" style="margin-top: 28px;">Comentarios</h2>
 <%= form_with url: admin_quote_comments_path(@quote), method: :post, local: true do %>

@@ -699,4 +699,26 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     get admin_quote_path(quote)
     assert_not_includes response.body, "Margen estimado"
   end
+  test "el histórico del presupuesto registra creación, estados, pagos y albarán" do
+    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x",
+                          shipping_cost: 0, payment_terms: "x",
+                          quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
+    assert_equal [ "creado" ], quote.quote_events.chronological.map(&:event)
+
+    patch set_status_admin_quote_path(quote), params: { status: "aprobado" }
+    patch set_payment_admin_quote_path(quote), params: { payment_status: "pagado_confirmar" }
+    DeliveryNote.issue_for_quote!(quote)
+
+    events = quote.quote_events.chronological.map(&:event)
+    assert_equal "estado: aprobado", events[1]
+    assert_equal "pago: pagado para confirmar", events[2]
+    assert_match(/\Aalbarán .+ emitido\z/, events[3])
+
+    # y la ficha lo enseña en su sección de Histórico
+    get admin_quote_path(quote)
+    assert_response :success
+    assert_includes response.body, "Histórico"
+    assert_includes response.body, "estado: aprobado"
+    assert_includes response.body, "pago: pagado para confirmar"
+  end
 end

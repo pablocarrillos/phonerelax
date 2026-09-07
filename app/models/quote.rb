@@ -36,6 +36,8 @@ class Quote < ApplicationRecord
   has_many :purchase_lines, dependent: :nullify
   # comentarios del seguimiento comercial, con su fecha y su usuario
   has_many :comments, class_name: "QuoteComment", dependent: :destroy, inverse_of: :quote
+  # histórico de lo que se va marcando en el pedido (estado, pago, albarán…)
+  has_many :quote_events, dependent: :destroy
   # albarán numerado emitido desde el presupuesto (se conserva aunque este cambie)
   has_one :delivery_note, dependent: :nullify
 
@@ -66,6 +68,16 @@ class Quote < ApplicationRecord
   def payment_status_label
     PAYMENT_LABELS[payment_status] || payment_status
   end
+
+  # Histórico: queda constancia de la creación y de cada cambio que se marca.
+  after_create { quote_events.create!(event: "creado") }
+  after_update :log_tracked_changes
+
+  def log_tracked_changes
+    quote_events.create!(event: "estado: #{status_label.downcase}") if saved_change_to_status?
+    quote_events.create!(event: "pago: #{payment_status_label.downcase}") if saved_change_to_payment_status?
+  end
+  private :log_tracked_changes
 
   # Ficheros del pedido una vez aprobado el presupuesto.
   ATTACHMENTS = {

@@ -59,6 +59,7 @@ class DeliveryNote < ApplicationRecord
       quote.active_lines.each_with_index do |line, index|
         note.lines.create!(description: line.description, quantity: line.quantity, position: index)
       end
+      quote.quote_events.create!(event: "albarán #{note.number} emitido")
       note
     end
   end
