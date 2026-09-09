@@ -64,13 +64,29 @@
       <% end %>
     <% end %>
   </p>
+  <%= form_with url: generate_invoices_admin_orders_path, method: :post, id: "generate-invoices-form",
+                data: { turbo_confirm: "Se generará la factura de los pedidos marcados (simplificada, o completa si llevan datos fiscales). ¿Continuar?" },
+                style: "display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0 0 10px;" do %>
+    <button type="submit" class="btn btn-primary" style="padding: 8px 16px;">🧾 Generar factura de las seleccionadas</button>
+    <label style="font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px;">
+      <input type="checkbox" id="check-all-orders"> Marcar todos
+    </label>
+    <span style="font-size:13px; color:var(--muted);">Solo pedidos <strong>pagados sin factura</strong>. Las ventas web salen como factura simplificada (completa si el cliente puso datos fiscales).</span>
+  <% end %>
+
   <table class="table">
     <thead>
-      <tr><th>Número</th><th>Fecha</th><th>Cliente</th><th>Idioma</th><th class="num">Total</th><th>Pago</th><th>Estado</th><th></th></tr>
+      <tr><th style="width:1%;"></th><th>Número</th><th>Fecha</th><th>Cliente</th><th>Idioma</th><th class="num">Total</th><th>Pago</th><th>Estado</th><th>Factura</th><th></th></tr>
     </thead>
     <tbody>
       <% @orders.each do |order| %>
+        <% invoice = @invoices_by_order[order.id] %>
         <tr>
+          <td>
+            <% if invoice.nil? && order.pago_pagado? %>
+              <%= check_box_tag "order_ids[]", order.id, false, form: "generate-invoices-form", class: "order-check" %>
+            <% end %>
+          </td>
           <td><%= link_to order.number, admin_order_path(order) %></td>
           <td><%= l order.created_at, format: :short %></td>
           <td><%= order.customer_name %></td>
@@ -78,6 +94,17 @@
           <td class="num"><%= number_to_currency(order.total, unit: '€', format: '%n %u') %></td>
           <td><span class="badge <%= order.payment_status %>"><%= order.payment_status %></span></td>
           <td><span class="badge <%= order.status %>"><%= order.status %></span></td>
+          <td>
+            <% if invoice %>
+              <%= link_to "🖨 #{invoice.number}", invoice_pdf_admin_accounting_path(invoice), target: "_blank", rel: "noopener",
+                          style: "font-size:13px; white-space:nowrap;" %>
+            <% elsif order.pago_pagado? %>
+              <%= link_to "👁 Previsualizar", preview_admin_accounting_index_path(order_id: order.id), target: "_blank", rel: "noopener",
+                          style: "font-size:13px; white-space:nowrap;", title: "Previsualizar la factura antes de emitir" %>
+            <% else %>
+              <span style="color:var(--muted);">—</span>
+            <% end %>
+          </td>
           <td>
             <% if order.next_status %>
               <%= button_to "Marcar #{order.next_status}", advance_admin_order_path(order), method: :patch,
@@ -89,6 +116,16 @@
       <% end %>
     </tbody>
   </table>
+
+  <script>
+    (function () {
+      var all = document.getElementById("check-all-orders");
+      if (!all) return;
+      all.addEventListener("change", function () {
+        document.querySelectorAll(".order-check").forEach(function (c) { c.checked = all.checked; });
+      });
+    })();
+  </script>
 <% end %>
 
 <% if @pagy.pages > 1 %>

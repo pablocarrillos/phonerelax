@@ -22,6 +22,7 @@ module Admin
           # Tamaño de página a elegir (25/50/100; 25 por defecto).
           @per = params[:per].to_i.then { |n| [ 25, 50, 100 ].include?(n) ? n : 25 }
           @pagy, @orders = pagy(orders, limit: @per)
+          @invoices_by_order = Invoice.where(order_id: @orders.map(&:id)).index_by(&:order_id)
         end
         format.csv do
           send_data orders_to_csv(orders), type: "text/csv; charset=utf-8",
@@ -77,6 +78,29 @@ module Admin
       redirect_to admin_order_path(order), notice: "Factura #{invoice.number} generada."
     rescue ArgumentError => e
       redirect_to admin_order_path(order), alert: e.message
+    end
+
+    # Emite en lote las facturas de los pedidos marcados (simplificada por
+    # defecto; completa si el pedido lleva datos fiscales). Idempotente: los ya
+    # facturados no se duplican y los no pagados se omiten.
+    def generate_invoices
+      ids = Array(params[:order_ids]).map(&:to_i).reject(&:zero?)
+      return redirect_back(fallback_location: admin_orders_path, alert: "Marca al menos un pedido.") if ids.empty?
+
+      generated = 0
+      existing = 0
+      skipped = 0
+      Order.where(id: ids).find_each do |order|
+        invoice = Invoice.issue_for_order!(order)
+        invoice.previously_new_record? ? generated += 1 : existing += 1
+      rescue ArgumentError
+        skipped += 1
+      end
+
+      parts = [ "#{generated} factura(s) generada(s)" ]
+      parts << "#{existing} ya estaban emitidas" if existing.positive?
+      parts << "#{skipped} sin pagar, omitidos" if skipped.positive?
+      redirect_back fallback_location: admin_orders_path, notice: "#{parts.join(' · ')}."
     end
 
     # Emite la rectificativa íntegra (en negativo) de la factura del pedido.

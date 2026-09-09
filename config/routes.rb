@@ -94,6 +94,7 @@ Rails.application.routes.draw do
       get :pdf, on: :member
     end
     resources :orders, only: [ :index, :show, :update, :destroy ] do
+      post :generate_invoices, on: :collection # facturar en lote los pedidos seleccionados
       patch :advance, on: :member # creado → enviado → entregado
       patch :revert, on: :member  # deshace un avance de estado
       post :mark_paid, on: :member # cobro manual (fuera de Stripe)

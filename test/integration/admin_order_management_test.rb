@@ -18,6 +18,41 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Pedidos"
   end
 
+  def paid_order
+    order = pending_order
+    order.update!(payment_status: :pagado, total: 10)
+    order
+  end
+
+  test "generar facturas en lote de los pedidos seleccionados" do
+    o1 = paid_order
+    o2 = paid_order
+
+    assert_difference -> { Invoice.count }, 2 do
+      post generate_invoices_admin_orders_path, params: { order_ids: [ o1.id, o2.id ] }
+    end
+    assert_response :redirect
+    assert Invoice.exists?(order: o1)
+    assert Invoice.exists?(order: o2)
+  end
+
+  test "generar facturas en lote omite los no pagados y no duplica lo ya facturado" do
+    ya = paid_order
+    Invoice.issue_for_order!(ya) # ya tiene factura
+    sin_pagar = pending_order
+
+    assert_no_difference -> { Invoice.count } do
+      post generate_invoices_admin_orders_path, params: { order_ids: [ ya.id, sin_pagar.id ] }
+    end
+    assert_nil Invoice.find_by(order: sin_pagar), "un pedido sin pagar no se factura"
+  end
+
+  test "sin pedidos marcados avisa" do
+    post generate_invoices_admin_orders_path, params: { order_ids: [] }
+    assert_response :redirect
+    assert_equal "Marca al menos un pedido.", flash[:alert]
+  end
+
   test "la ficha del pedido se renderiza (acciones y notas)" do
     get admin_order_path(pending_order)
     assert_response :success
