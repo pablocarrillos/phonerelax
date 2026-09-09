@@ -47,11 +47,23 @@ class InvoicePdf
     doc.text @setting.full_address.tr("\n", " · "), size: 9
     doc.text [ @setting.phone, @setting.email ].compact_blank.join(" · "), size: 9
     doc.move_down 6
-    title = @data[:provisional] ? "FACTURA (PREVISUALIZACIÓN)" : "FACTURA #{@data[:number]}"
+    title = @data[:provisional] ? "#{doc_label} (PREVISUALIZACIÓN)" : "#{doc_label} #{@data[:number]}"
     doc.text title, size: 13, style: :bold, align: :right
     doc.text "Fecha: #{@data[:issued_on].strftime('%d/%m/%Y')}", size: 9, align: :right
+    if @data[:rectification] && @data[:rectifies_number].present?
+      doc.text "Rectifica a la factura Nº #{@data[:rectifies_number]}" \
+               "#{" del #{@data[:rectifies_issued_on].strftime('%d/%m/%Y')}" if @data[:rectifies_issued_on]}",
+               size: 9, align: :right
+    end
     doc.stroke_horizontal_rule
     doc.move_down 10
+  end
+
+  # Encabezado del documento según su tipo.
+  def doc_label
+    return "FACTURA RECTIFICATIVA" if @data[:rectification]
+
+    @data[:simplified] ? "FACTURA SIMPLIFICADA" : "FACTURA"
   end
 
   def client_box(doc)

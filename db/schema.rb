@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,6 +68,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_150000) do
     t.integer "quote_next_number", default: 1, null: false
     t.string "quote_series", default: "PRES", null: false
     t.integer "quote_series_year"
+    t.integer "rectification_next_number", default: 1, null: false
+    t.string "rectification_series", default: "R", null: false
+    t.integer "simplified_next_number", default: 1, null: false
+    t.string "simplified_series", default: "4", null: false
     t.string "tax_id", null: false
     t.datetime "updated_at", null: false
     t.boolean "verifactu_enabled", default: false, null: false
@@ -171,6 +175,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_150000) do
     t.string "number", null: false
     t.bigint "order_id"
     t.bigint "quote_id"
+    t.bigint "rectifies_invoice_id"
+    t.boolean "simplified", default: false, null: false
     t.decimal "subtotal", precision: 10, scale: 2, default: "0.0", null: false
     t.decimal "total", precision: 10, scale: 2, default: "0.0", null: false
     t.datetime "updated_at", null: false
@@ -186,6 +192,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_150000) do
     t.index ["number"], name: "index_invoices_on_number", unique: true
     t.index ["order_id"], name: "index_invoices_on_order_id", unique: true
     t.index ["quote_id"], name: "index_invoices_on_quote_id", unique: true
+    t.index ["rectifies_invoice_id"], name: "index_invoices_on_rectifies_invoice_id"
   end
 
   create_table "lead_emails", force: :cascade do |t|
@@ -569,6 +576,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_150000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "delivery_note_lines", "delivery_notes"
   add_foreign_key "invoice_lines", "invoices"
+  add_foreign_key "invoices", "invoices", column: "rectifies_invoice_id"
   add_foreign_key "invoices", "orders"
   add_foreign_key "invoices", "quotes"
   add_foreign_key "lead_emails", "leads"

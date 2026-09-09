@@ -39,15 +39,51 @@ class AccountingTest < ActionDispatch::IntegrationTest
     assert_equal "WEB#{yy}-0002", @setting.take_number!("web")
   end
 
-  test "la factura de una venta web copia cliente e importes y desglosa el IVA" do
+  test "una venta web sin datos fiscales se factura como SIMPLIFICADA (serie 4)" do
     invoice = Invoice.issue_for_order!(@order)
 
-    assert_equal "WEB#{Date.current.strftime('%y')}-0001", invoice.number
+    assert invoice.simplified?, "sin datos fiscales debe ser simplificada"
+    assert_equal "4-000001", invoice.number
+    assert_nil invoice.client_tax_id
     assert_equal @order.customer_name, invoice.client_name
     assert_equal 24.90, invoice.total.to_f
     assert_equal [ 21.0 ], invoice.iva_breakdown.map { |b| b[:rate].to_f }
     assert_in_delta 20.58, invoice.iva_breakdown.sum { |b| b[:base].to_f }, 0.02
     assert_equal invoice, Invoice.issue_for_order!(@order), "idempotente"
+  end
+
+  test "una venta web con datos fiscales se factura como COMPLETA (serie WEB) y copia el NIF" do
+    full = Order.create!(customer_name: "Empresa Test SL", email: "e@example.com", phone: "600111222",
+                         address: "C 2", city: "Elda", postal_code: "03600", province: "Alicante", country: "España",
+                         payment_status: :pagado, total: 24.90, shipping_cost: 0.70,
+                         needs_invoice: true, tax_name: "Empresa Test SL", tax_id: "12345678Z",
+                         tax_address: "C 2", tax_city: "Elda", tax_postal_code: "03600",
+                         tax_province: "Alicante", tax_country: "España")
+    full.order_lines.create!(product: @product, quantity: 2, unit_price: 12.10)
+
+    invoice = Invoice.issue_for_order!(full)
+
+    assert_not invoice.simplified?, "con datos fiscales debe ser completa"
+    assert_equal "WEB#{Date.current.strftime('%y')}-0001", invoice.number
+    assert_equal "12345678Z", invoice.client_tax_id
+  end
+
+  test "la rectificativa íntegra anula la factura en negativo, con su serie y referencia" do
+    invoice = Invoice.issue_for_order!(@order)
+    rect = Invoice.issue_rectification!(invoice)
+
+    assert rect.rectification?
+    assert_equal invoice, rect.rectifies
+    assert_equal "R-000001", rect.number
+    assert_equal(-invoice.total, rect.total)
+    assert_equal(-invoice.subtotal, rect.subtotal)
+    assert_equal invoice.lines.sum(&:total) * -1, rect.lines.sum(&:total)
+    assert_equal rect, Invoice.issue_rectification!(invoice), "idempotente: una rectificativa por factura"
+
+    payload = Verifactu::InvoicePayload.build(rect)
+    assert payload[:rectificativa]
+    assert_equal "R1", payload[:clave_rectificativa]
+    assert_equal invoice.number.rpartition("-").first, payload[:rectificadas].first[:serie]
   end
 
   test "un pedido sin pagar no se factura" do

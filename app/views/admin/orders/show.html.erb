@@ -25,13 +25,17 @@
         <%= button_to 'Marcar como pagado (cobro manual)', mark_paid_admin_order_path(@order), method: :post,
                       class: 'btn btn-primary',
                       form: { data: { turbo_confirm: "¿Marcar el pedido #{@order.number} como pagado? Se descontará stock y se enviará el email de confirmación al cliente." } } %>
-        <%= button_to @order.payment_reminder_sent_at ? 'Reenviar recordatorio de carrito' : 'Enviar recordatorio de carrito',
-                      payment_reminder_admin_order_path(@order), method: :post,
-                      class: 'btn btn-outline',
-                      form: { data: { turbo_confirm: "¿Enviar el recordatorio de carrito a #{@order.email}?" } } %>
+        <% unless @order.payment_reminder_sent? %>
+          <%= button_to 'Enviar recordatorio de carrito',
+                        payment_reminder_admin_order_path(@order), method: :post,
+                        class: 'btn btn-outline',
+                        form: { data: { turbo_confirm: "¿Enviar el recordatorio de carrito a #{@order.email}? Solo se envía uno por pedido." } } %>
+        <% end %>
       </div>
-      <% if @order.payment_reminder_sent_at %>
-        <p style="margin:6px 0 0; color:#8a8fa8; font-size:13px;">Último recordatorio enviado el <%= l @order.payment_reminder_sent_at, format: '%d/%m/%Y a las %H:%M' %>.</p>
+      <% if @order.payment_reminder_sent? %>
+        <p style="margin:6px 0 0; color:#8a8fa8; font-size:13px;">Recordatorio de carrito enviado el <%= l @order.payment_reminder_sent_at, format: '%d/%m/%Y a las %H:%M' %> (ver historial). Solo se envía uno por pedido.</p>
+      <% else %>
+        <p style="margin:6px 0 0; color:#8a8fa8; font-size:13px;">Si no se envía a mano, el recordatorio sale solo a las 3 horas de crearse el pedido sin pagar.</p>
       <% end %>
     </div>
   <% elsif @order.pago_pagado? %>
@@ -110,6 +114,35 @@
       <% end %>
     </div>
   </div>
+
+  <% if @order.pago_pagado? %>
+    <div class="action-section">
+      <span class="action-title">Factura</span>
+      <% invoice = Invoice.find_by(order: @order) %>
+      <div class="action-row">
+        <% if invoice %>
+          <span class="action-note" style="align-self:center;">
+            <strong><%= invoice.number %></strong> · <%= invoice.simplified? ? "simplificada" : "completa" %>
+          </span>
+          <%= link_to "🖨 PDF", invoice_pdf_admin_accounting_path(invoice), target: "_blank", rel: "noopener", class: "btn btn-outline" %>
+          <% if invoice.rectification %>
+            <span class="action-note" style="align-self:center;">Rectificada por <strong><%= invoice.rectification.number %></strong></span>
+            <%= link_to "🖨 PDF rectificativa", invoice_pdf_admin_accounting_path(invoice.rectification), target: "_blank", rel: "noopener", class: "btn btn-outline" %>
+          <% else %>
+            <%= button_to "↩ Rectificar (íntegra)", rectify_invoice_admin_order_path(@order), method: :post,
+                          class: "btn btn-outline",
+                          form: { data: { turbo_confirm: "Se emitirá la rectificativa ÍNTEGRA (en negativo) de la factura #{invoice.number}, con su propia serie. ¿Continuar?" } } %>
+          <% end %>
+        <% else %>
+          <%= link_to "👁 Previsualizar", preview_admin_accounting_index_path(order_id: @order.id), target: "_blank", rel: "noopener", class: "btn btn-outline" %>
+          <%= button_to "🧾 Generar factura", generate_invoice_admin_order_path(@order), method: :post,
+                        class: "btn btn-primary",
+                        form: { data: { turbo_confirm: "Se emitirá la factura del pedido #{@order.number}#{" (simplificada)" unless Invoice.full_for_order?(@order)} con el siguiente número de su serie#{" y se registrará en VeriFactu" if CompanySetting.current.verifactu_enabled?}. ¿Continuar?" } } %>
+        <% end %>
+      </div>
+      <p class="action-note">Las ventas web salen como <strong>factura simplificada</strong> (serie <%= CompanySetting.current.simplified_series %>); si el cliente pidió factura con datos fiscales, sale <strong>completa</strong> (serie <%= CompanySetting.current.web_series %>).</p>
+    </div>
+  <% end %>
 
   <%# Aviso de envío al almacén: email con dirección, artículos y etiqueta A5 %>
   <div class="action-section">

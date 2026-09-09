@@ -8,6 +8,10 @@ class Invoice < ApplicationRecord
 
   belongs_to :order, optional: true
   belongs_to :quote, optional: true
+  # rectificativa → factura rectificada (y su inversa: la rectificativa de una factura)
+  belongs_to :rectifies, class_name: "Invoice", foreign_key: :rectifies_invoice_id, optional: true, inverse_of: :rectification
+  has_one :rectification, class_name: "Invoice", foreign_key: :rectifies_invoice_id,
+          dependent: :restrict_with_error, inverse_of: :rectifies
   has_many :lines, -> { order(:position) },
            class_name: "InvoiceLine", dependent: :destroy, inverse_of: :invoice
 
@@ -16,6 +20,9 @@ class Invoice < ApplicationRecord
   validates :client_name, :issued_on, presence: true
 
   scope :recent_first, -> { order(issued_on: :desc, id: :desc) }
+
+  # Es una rectificativa (anula/rectifica a otra factura).
+  def rectification? = rectifies_invoice_id.present?
 
   # VERI*FACTU: al emitirse se encola el alta (si está activado en ajustes).
   after_create_commit :enqueue_verifactu_submission
@@ -29,21 +36,30 @@ class Invoice < ApplicationRecord
     Verifactu::SubmitInvoiceJob.perform_later(self)
   end
 
+  # Un pedido con datos fiscales (pidió factura con NIF) va como factura COMPLETA
+  # (serie WEB); el resto de ventas web, como SIMPLIFICADA (serie 4).
+  def self.full_for_order?(order)
+    order.needs_invoice? && order.tax_id.present?
+  end
+
   # Emite (idempotente) la factura de una venta web pagada.
   def self.issue_for_order!(order)
     existing = find_by(order: order)
     return existing if existing
     raise ArgumentError, "El pedido #{order.number} no está pagado" unless order.pago_pagado?
 
+    full = full_for_order?(order)
     breakdown = order.vat_breakdown
+    setting = CompanySetting.current
     transaction do
       invoice = create!(
-        number: CompanySetting.current.take_number!(WEB), kind: WEB, order: order,
+        number: full ? setting.take_number!(WEB) : setting.take_simplified_number!,
+        kind: WEB, order: order, simplified: !full,
         issued_on: Date.current,
-        client_name: order.customer_name, client_tax_id: order.tax_id.presence,
+        client_name: order.customer_name,
+        client_tax_id: (order.tax_id.presence if full),
         client_email: order.email,
-        client_address: [ order.address, [ order.postal_code, order.city ].compact_blank.join(" "),
-                          [ order.province, order.country ].compact_blank.join(" · ") ].compact_blank.join("\n"),
+        client_address: (order_address(order) if full),
         subtotal: breakdown[:base], vat_amount: breakdown[:vat], total: order.total,
         vat_lines: order_vat_lines(order)
       )
@@ -95,10 +111,43 @@ class Invoice < ApplicationRecord
     end
   end
 
+  # Emite (idempotente) la rectificativa ÍNTEGRA de una factura: anula todos sus
+  # importes en negativo, con serie propia y referencia a la original. VeriFactu
+  # la envía como rectificativa por sustitución (R1).
+  def self.issue_rectification!(invoice)
+    return invoice.rectification if invoice.rectification
+    raise ArgumentError, "Una rectificativa no se puede rectificar" if invoice.rectification?
+
+    transaction do
+      rect = create!(
+        number: CompanySetting.current.take_rectification_number!,
+        kind: invoice.kind, simplified: invoice.simplified, rectifies: invoice,
+        issued_on: Date.current,
+        client_name: invoice.client_name, client_tax_id: invoice.client_tax_id,
+        client_email: invoice.client_email, client_address: invoice.client_address,
+        subtotal: -invoice.subtotal, vat_amount: -invoice.vat_amount, total: -invoice.total,
+        vat_lines: invoice.vat_lines.map { |l| { "rate" => l["rate"].to_f, "base" => -l["base"].to_f } }
+      )
+      invoice.lines.each do |line|
+        rect.lines.create!(description: line.description, quantity: line.quantity,
+                           unit_price: -line.unit_price, total: -line.total, position: line.position)
+      end
+      rect
+    end
+  end
+
+  # Dirección del cliente de un pedido, en una línea por dato (para el PDF).
+  def self.order_address(order)
+    [ order.address, [ order.postal_code, order.city ].compact_blank.join(" "),
+      [ order.province, order.country ].compact_blank.join(" · ") ].compact_blank.join("\n")
+  end
+
   # Datos para el PDF (misma forma para factura emitida y previsualización).
   def pdf_data
     {
       number: number, provisional: false, issued_on: issued_on,
+      simplified: simplified?, rectification: rectification?,
+      rectifies_number: rectifies&.number, rectifies_issued_on: rectifies&.issued_on,
       client_name: client_name, client_tax_id: client_tax_id, client_address: client_address,
       lines: lines.map { |l| { description: l.description, quantity: l.quantity, unit_price: l.unit_price, total: l.total } },
       vat_lines: vat_lines, subtotal: subtotal, vat_amount: vat_amount, total: total,
@@ -114,8 +163,12 @@ class Invoice < ApplicationRecord
         unit_price: line.unit_price, total: line.unit_price * line.quantity }
     end
     lines << { description: "Transporte", quantity: 1, unit_price: order.shipping_cost, total: order.shipping_cost } if order.shipping_cost.to_d.positive?
-    { number: CompanySetting.current.preview_number(WEB), provisional: true, issued_on: Date.current,
-      client_name: order.customer_name, client_tax_id: order.tax_id.presence, client_address: order.address,
+    full = full_for_order?(order)
+    setting = CompanySetting.current
+    { number: full ? setting.preview_number(WEB) : setting.preview_simplified_number,
+      provisional: true, simplified: !full, issued_on: Date.current,
+      client_name: order.customer_name,
+      client_tax_id: (order.tax_id.presence if full), client_address: (order_address(order) if full),
       lines: lines, vat_lines: order_vat_lines(order),
       subtotal: breakdown[:base], vat_amount: breakdown[:vat], total: order.total }
   end

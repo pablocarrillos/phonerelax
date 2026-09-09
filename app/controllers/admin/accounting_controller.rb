@@ -27,6 +27,14 @@ module Admin
                                        type: "application/pdf", disposition: "inline"
   end
 
+  # PDF de una factura ya emitida (por id), incluidas las rectificativas (que no
+  # cuelgan de un pedido).
+  def invoice_pdf
+    invoice = Invoice.find(params[:id])
+    send_data InvoicePdf.render(invoice.pdf_data), filename: "factura-#{invoice.number}.pdf",
+                                                   type: "application/pdf", disposition: "inline"
+  end
+
   # Genera la factura de un pedido o presupuesto concreto.
   def generate
     invoice = generate_one

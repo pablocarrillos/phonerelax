@@ -106,18 +106,47 @@ class OrderTest < ActiveSupport::TestCase
     end
   end
 
-  test "send_payment_reminder! manual reenvía aunque ya se hubiera avisado, pero nunca a pagados" do
+  test "send_payment_reminder! manual envía una sola vez y deja evento; nunca a pagados" do
     order = pending_order
-    order.update!(payment_reminder_sent_at: 1.day.ago)
 
     assert_enqueued_emails 1 do
-      order.send_payment_reminder!
+      assert order.send_payment_reminder!
     end
+    assert order.reload.payment_reminder_sent?
     assert_includes order.order_events.pluck(:event), "recordatorio de carrito (manual)"
 
-    order.update!(payment_status: :pagado)
+    assert_enqueued_emails 0 do # ya lo recibió: no se repite
+      assert_not order.send_payment_reminder!
+    end
+    assert_equal 1, order.order_events.where("event LIKE 'recordatorio de carrito%'").count
+
+    paid = pending_order
+    paid.update!(payment_status: :pagado)
     assert_enqueued_emails 0 do
-      order.send_payment_reminder!
+      assert_not paid.send_payment_reminder!
+    end
+  end
+
+  test "tras el recordatorio manual el cron no envía el automático, y viceversa" do
+    travel_to Order::ABANDONED_REMINDER_SINCE + 3.days do
+      manual = pending_order
+      manual.update!(created_at: 4.hours.ago)
+      manual.send_payment_reminder!
+      assert_not_includes Order.abandoned_pending_reminder.ids, manual.id
+      assert_emails 0 do
+        Order.send_abandoned_reminders!
+      end
+
+      auto = pending_order
+      auto.update!(created_at: 4.hours.ago)
+      assert_emails 1 do
+        Order.send_abandoned_reminders!
+      end
+      assert_enqueued_emails 0 do
+        assert_not auto.reload.send_payment_reminder!
+      end
+      assert_equal [ "recordatorio de carrito (automático)" ],
+                   auto.order_events.where("event LIKE 'recordatorio de carrito%'").pluck(:event)
     end
   end
 end

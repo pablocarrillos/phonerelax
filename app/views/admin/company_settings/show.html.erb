@@ -38,9 +38,15 @@
       <label>Siguiente nº presupuestos<%= f.number_field :quote_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
       <label>Prefijo albaranes<%= f.text_field :delivery_note_series, class: "input-compact", style: "width:100%;" %></label>
       <label>Siguiente nº albarán<%= f.number_field :delivery_note_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
+      <label>Serie simplificadas<%= f.text_field :simplified_series, class: "input-compact", style: "width:100%;" %></label>
+      <label>Siguiente nº simplificada<%= f.number_field :simplified_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
+      <label>Serie rectificativas<%= f.text_field :rectification_series, class: "input-compact", style: "width:100%;" %></label>
+      <label>Siguiente nº rectificativa<%= f.number_field :rectification_next_number, min: 1, class: "input-compact", style: "width:100%;" %></label>
     </div>
     <p class="action-note" style="margin-bottom:0;">
-      Próximas: <strong><%= @setting.preview_number("web") %></strong> (web) ·
+      Próximas: <strong><%= @setting.preview_number("web") %></strong> (web completa) ·
+      <strong><%= @setting.preview_simplified_number %></strong> (simplificada) ·
+      <strong><%= @setting.rectification_series %>-<%= format("%06d", @setting.rectification_next_number) %></strong> (rectificativa) ·
       <strong><%= @setting.preview_number("quote") %></strong> (presupuestos) ·
       <strong><%= @setting.delivery_note_series %>-<%= format("%06d", @setting.delivery_note_next_number) %></strong> (albarán)
     </p>

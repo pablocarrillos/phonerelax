@@ -75,13 +75,27 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "el recordatorio de pago envía el email al cliente" do
+  test "el recordatorio de pago envía el email al cliente, y solo una vez" do
     order = pending_order
+    get admin_order_path(order)
+    assert_includes response.body, "Enviar recordatorio de carrito"
+
     assert_emails 1 do
       post payment_reminder_admin_order_path(order)
     end
     assert_redirected_to admin_order_path(order)
     assert_equal [ order.email ], ActionMailer::Base.deliveries.last.to
+
+    # segundo intento: ni email ni botón; queda constancia de cuándo se envió
+    assert_emails 0 do
+      post payment_reminder_admin_order_path(order)
+    end
+    assert_redirected_to admin_order_path(order)
+    assert_match(/ya recibió su recordatorio de carrito/, flash[:alert])
+    get admin_order_path(order)
+    assert_not_includes response.body, "Enviar recordatorio de carrito"
+    assert_includes response.body, "Recordatorio de carrito enviado el"
+    assert_includes response.body, "recordatorio de carrito (manual)"
   end
 
   test "el recordatorio no se envía si el pedido ya está pagado" do

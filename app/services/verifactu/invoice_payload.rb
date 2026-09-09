@@ -30,6 +30,7 @@ module Verifactu
         lineas: lineas
       }
       payload.merge!(cliente) unless simplificada?
+      payload.merge!(rectificativa_fields) if @invoice.rectification?
       payload
     end
 
@@ -37,6 +38,17 @@ module Verifactu
 
     def simplificada?
       @invoice.client_tax_id.blank?
+    end
+
+    # Rectificativa por sustitución completa (misma forma que en gestion/agua:
+    # clave R1, tipo I, con la serie, número y fecha de la factura rectificada).
+    def rectificativa_fields
+      original = @invoice.rectifies
+      return {} if original.nil?
+
+      serie, numero = split_number(original.number)
+      { rectificativa: true, clave_rectificativa: "R1", tipo_rectificativa: "I",
+        rectificadas: [ { serie: serie, numero: numero, fecha: date(original.issued_on) } ] }
     end
 
     def lineas

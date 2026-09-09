@@ -8,7 +8,9 @@ class CompanySetting < ApplicationRecord
   encrypts :verifactu_token
 
   validates :legal_name, :tax_id, :web_series, :quote_series, :delivery_note_series, presence: true
+  validates :simplified_series, :rectification_series, presence: true
   validates :web_next_number, :quote_next_number, :delivery_note_next_number,
+            :simplified_next_number, :rectification_next_number,
             numericality: { only_integer: true, greater_than: 0 }
 
   def self.current
@@ -40,6 +42,28 @@ class CompanySetting < ApplicationRecord
     with_lock do
       number = "#{delivery_note_series}-#{format('%06d', delivery_note_next_number)}"
       update!(delivery_note_next_number: delivery_note_next_number + 1)
+      number
+    end
+  end
+
+  # Serie de facturas SIMPLIFICADAS: continua (6 dígitos, sin año), tipo 4-000001.
+  def preview_simplified_number
+    "#{simplified_series}-#{format('%06d', simplified_next_number)}"
+  end
+
+  def take_simplified_number!
+    with_lock do
+      number = preview_simplified_number
+      update!(simplified_next_number: simplified_next_number + 1)
+      number
+    end
+  end
+
+  # Serie de RECTIFICATIVAS: continua (6 dígitos, sin año), tipo R-000001.
+  def take_rectification_number!
+    with_lock do
+      number = "#{rectification_series}-#{format('%06d', rectification_next_number)}"
+      update!(rectification_next_number: rectification_next_number + 1)
       number
     end
   end

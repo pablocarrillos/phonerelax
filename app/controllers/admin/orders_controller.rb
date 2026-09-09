@@ -69,6 +69,29 @@ module Admin
       end
     end
 
+    # Emite la factura del pedido (simplificada por defecto; completa si el
+    # cliente pidió factura con datos fiscales). Idempotente.
+    def generate_invoice
+      order = Order.find(params[:id])
+      invoice = Invoice.issue_for_order!(order)
+      redirect_to admin_order_path(order), notice: "Factura #{invoice.number} generada."
+    rescue ArgumentError => e
+      redirect_to admin_order_path(order), alert: e.message
+    end
+
+    # Emite la rectificativa íntegra (en negativo) de la factura del pedido.
+    def rectify_invoice
+      order = Order.find(params[:id])
+      invoice = Invoice.find_by(order: order)
+      return redirect_to(admin_order_path(order), alert: "Este pedido no tiene factura que rectificar.") if invoice.nil?
+
+      rectification = Invoice.issue_rectification!(invoice)
+      redirect_to admin_order_path(order),
+                  notice: "Rectificativa #{rectification.number} emitida sobre la factura #{invoice.number}."
+    rescue ArgumentError => e
+      redirect_to admin_order_path(order), alert: e.message
+    end
+
     # Deshace el último avance de estado (p. ej. si se marcó enviado por error).
     def revert
       order = Order.find(params[:id])
@@ -106,14 +129,18 @@ module Admin
       redirect_to admin_orders_path, notice: "Pedido #{number} borrado."
     end
 
-    # Reenvía al cliente el recordatorio de carrito/pago (acción manual del admin).
+    # Envía al cliente el recordatorio de carrito/pago (acción manual del admin).
+    # Solo uno por pedido: si ya lo recibió (a mano o por el cron) no se repite.
     def payment_reminder
       order = Order.find(params[:id])
-      if order.pago_pendiente?
+      if !order.pago_pendiente?
+        redirect_to admin_order_path(order), alert: "Este pedido ya está pagado."
+      elsif order.payment_reminder_sent?
+        sent_on = I18n.l(order.payment_reminder_sent_at, format: "%d/%m/%Y a las %H:%M")
+        redirect_to admin_order_path(order), alert: "Este pedido ya recibió su recordatorio de carrito el #{sent_on}. Solo se envía uno."
+      else
         order.send_payment_reminder!
         redirect_to admin_order_path(order), notice: "Recordatorio de pago enviado a #{order.email}."
-      else
-        redirect_to admin_order_path(order), alert: "Este pedido ya está pagado."
       end
     end
 

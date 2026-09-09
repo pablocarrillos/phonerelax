@@ -86,6 +86,7 @@ Rails.application.routes.draw do
         post :generate_and_send_all
         post :resubmit_verifactu
       end
+      get :invoice_pdf, on: :member # PDF de una factura emitida (por id), incl. rectificativas
     end
     resource :company_setting, only: [ :show, :update ]
     # albaranes numerados (serie ALBARAN-PHONERELAX) desde pedidos o presupuestos
@@ -100,6 +101,8 @@ Rails.application.routes.draw do
       post :payment_reminder, on: :member
       post :shipping_email, on: :member # aviso de envío al almacén con etiqueta A5
       get :packing_slip, on: :member # hoja de pedido imprimible (sin numerar)
+      post :generate_invoice, on: :member # emite la factura (simplificada o completa) del pedido
+      post :rectify_invoice, on: :member # emite la rectificativa íntegra de la factura del pedido
     end
     resources :products, except: :show do
       patch :reorder, on: :collection # nuevo orden de ids tras arrastrar en la lista

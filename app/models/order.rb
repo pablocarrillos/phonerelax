@@ -213,15 +213,23 @@ class Order < ApplicationRecord
     abandoned_pending_reminder.find_each { |order| order.send_payment_reminder!(auto: true) }
   end
 
+  # ¿Ya recibió el recordatorio de carrito (del cron o del admin)?
+  def payment_reminder_sent?
+    payment_reminder_sent_at.present?
+  end
+
   # Envía el recordatorio de pago/carrito y deja constancia (fecha + histórico).
-  # `auto: false` es el botón del admin, que puede reenviarlo cuantas veces quiera.
+  # Solo UNO por pedido, venga del cron (`auto: true`) o del botón del admin:
+  # el segundo que llegue no hace nada. Nunca a pedidos pagados. Devuelve si
+  # se ha enviado.
   def send_payment_reminder!(auto: false)
-    return unless pago_pendiente?
+    return false if !pago_pendiente? || payment_reminder_sent?
 
     mailer = OrderMailer.payment_reminder(self)
     auto ? mailer.deliver_now : mailer.deliver_later
     update!(payment_reminder_sent_at: Time.current)
     order_events.create!(event: auto ? "recordatorio de carrito (automático)" : "recordatorio de carrito (manual)")
+    true
   end
 
   # Marca el pago y descuenta stock una sola vez (webhook y retorno del Checkout
