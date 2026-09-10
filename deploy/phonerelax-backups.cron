@@ -1,0 +1,7 @@
+# Copias de seguridad de phonerelax al Space servipau-backups.
+# OJO: la máquina va en UTC y España es UTC+2 en verano, así que las horas van
+# en UTC: 01:20 = 03:20 en España (la copia) y 06:30 = 08:30 (la comprobación,
+# que avisa por correo si alguna copia se ha quedado atrasada).
+PATH=/usr/local/bin:/usr/bin:/bin
+20 1 * * * phonerelax cd /home/phonerelax/app && RAILS_ENV=production /home/phonerelax/.rbenv/shims/bundle exec rails backups:run >> /home/phonerelax/app/log/backups.log 2>&1
+30 6 * * * phonerelax cd /home/phonerelax/app && RAILS_ENV=production /home/phonerelax/.rbenv/shims/bundle exec rails backups:check >> /home/phonerelax/app/log/backups.log 2>&1

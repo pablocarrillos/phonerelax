@@ -21,6 +21,12 @@ rsync -az --delete \
   --exclude config/local_env.yml --exclude config/master.key --exclude "config/credentials*" \
   ./ "$HOST:$APP_DIR/"
 
+echo "== cron de copias de seguridad"
+# El horario de las copias vive en el repo (deploy/phonerelax-backups.cron), no
+# editado a mano en el servidor: si hay que rehacer la máquina, se recupera con
+# el despliegue. cron relee /etc/cron.d solo, no hace falta reiniciarlo.
+ssh "$HOST" "install -m 644 -o root -g root $APP_DIR/deploy/phonerelax-backups.cron /etc/cron.d/phonerelax-backups && echo 'cron de copias instalado'"
+
 echo "== bundle · migrate · seed · assets:precompile · restart"
 ssh "$HOST" "chown -R phonerelax:phonerelax $APP_DIR && su - phonerelax -c '
   cd ~/app && export PATH=\$HOME/.rbenv/shims:\$HOME/.rbenv/bin:\$PATH RAILS_ENV=production &&
