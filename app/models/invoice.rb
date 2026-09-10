@@ -5,6 +5,10 @@ class Invoice < ApplicationRecord
   WEB = "web"
   QUOTE = "quote"
   KINDS = [ WEB, QUOTE ].freeze
+  # Estados de VeriFactu en los que el PDF ya no va a cambiar y se puede
+  # archivar. "pending" y "error" quedan fuera a propósito: sin el QR del envío
+  # el documento todavía no es el definitivo.
+  ARCHIVABLE_VERIFACTU_STATUSES = %w[disabled sent cancelled].freeze
 
   belongs_to :order, optional: true
   belongs_to :quote, optional: true
@@ -14,18 +18,30 @@ class Invoice < ApplicationRecord
           dependent: :restrict_with_error, inverse_of: :rectifies
   has_many :lines, -> { order(:position) },
            class_name: "InvoiceLine", dependent: :destroy, inverse_of: :invoice
+  # Copia en PDF de la factura TAL COMO SE EMITIÓ. Se archiva una sola vez, con
+  # el documento ya definitivo, y a partir de ahí es lo que se sirve y lo que se
+  # adjunta al cliente: una factura de hace años no cambia de aspecto porque
+  # cambien la plantilla o los datos de la empresa.
+  has_one_attached :pdf_archive
 
   validates :number, presence: true, uniqueness: true
   validates :kind, inclusion: { in: KINDS }
   validates :client_name, :issued_on, presence: true
 
   scope :recent_first, -> { order(issued_on: :desc, id: :desc) }
+  # Emitidas cuyo PDF ya es definitivo pero que aún no tienen copia archivada.
+  scope :pending_pdf_archive, -> {
+    where(verifactu_status: ARCHIVABLE_VERIFACTU_STATUSES).where.missing(:pdf_archive_attachment)
+  }
 
   # Es una rectificativa (anula/rectifica a otra factura).
   def rectification? = rectifies_invoice_id.present?
 
   # VERI*FACTU: al emitirse se encola el alta (si está activado en ajustes).
   after_create_commit :enqueue_verifactu_submission
+  # Copia en PDF: sin VeriFactu el PDF ya es definitivo y se archiva al momento;
+  # con VeriFactu se espera al envío, porque el documento bueno lleva el QR.
+  after_create_commit :archive_pdf_on_create
 
   def verifactu_sent? = verifactu_status == "sent"
   def verifactu_pending? = verifactu_status == "pending"
@@ -142,6 +158,32 @@ class Invoice < ApplicationRecord
       [ order.province, order.country ].compact_blank.join(" · ") ].compact_blank.join("\n")
   end
 
+  # --- Copia en PDF de la factura emitida ---------------------------------
+
+  # El documento tal cual, generado ahora mismo.
+  def to_pdf = InvoicePdf.render(pdf_data)
+
+  # Lo que se sirve a quien pide la factura (y lo que se adjunta al cliente): la
+  # copia archivada si existe, y mientras no exista el PDF generado al vuelo.
+  def pdf_bytes
+    pdf_archive.attached? ? pdf_archive.download : to_pdf
+  end
+
+  # ¿el PDF ya es definitivo y sigue sin archivar?
+  def archivable_pdf?
+    !pdf_archive.attached? && ARCHIVABLE_VERIFACTU_STATUSES.include?(verifactu_status)
+  end
+
+  # Genera y guarda la copia. Idempotente: si ya está archivada no la toca.
+  # Devuelve true solo si ha archivado en esta llamada.
+  def archive_pdf!
+    return false if pdf_archive.attached?
+
+    pdf_archive.attach(io: StringIO.new(to_pdf), filename: "factura-#{number.tr('/', '-')}.pdf",
+                       content_type: "application/pdf")
+    true
+  end
+
   # Datos para el PDF (misma forma para factura emitida y previsualización).
   def pdf_data
     {
@@ -220,6 +262,16 @@ class Invoice < ApplicationRecord
   end
 
   private
+
+  # Aquí no hay cola persistente (el adaptador es :async y un reinicio se lleva
+  # los jobs por delante), así que la copia se guarda en el acto. Si fallara, la
+  # factura ya está emitida: se registra y la recoge el repaso de
+  # `rails invoices:archive_pdfs`.
+  def archive_pdf_on_create
+    archive_pdf! if archivable_pdf?
+  rescue StandardError => e
+    Rails.logger.error("[facturas] no se pudo archivar el PDF de #{number}: #{e.class}: #{e.message}")
+  end
 
   def enqueue_verifactu_submission
     return unless CompanySetting.current.verifactu_enabled?

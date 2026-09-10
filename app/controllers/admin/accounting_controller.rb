@@ -16,23 +16,27 @@ module Admin
 
   # PDF de previsualización (sin guardar) o de la factura ya emitida.
   def preview
-    data = if params[:order_id]
-             order = Order.find(params[:order_id])
-             Invoice.find_by(order: order)&.pdf_data || Invoice.preview_for_order(order)
+    invoice, data = if params[:order_id]
+                      order = Order.find(params[:order_id])
+                      found = Invoice.find_by(order: order)
+                      [ found, found&.pdf_data || Invoice.preview_for_order(order) ]
     else
-             quote = Quote.find(params[:quote_id])
-             Invoice.find_by(quote: quote)&.pdf_data || Invoice.preview_for_quote(quote)
+                      quote = Quote.find(params[:quote_id])
+                      found = Invoice.find_by(quote: quote)
+                      [ found, found&.pdf_data || Invoice.preview_for_quote(quote) ]
     end
-    send_data InvoicePdf.render(data), filename: "factura-#{data[:number]}.pdf",
-                                       type: "application/pdf", disposition: "inline"
+    # si ya está emitida, se enseña la copia archivada (el documento que salió)
+    pdf = invoice ? invoice.pdf_bytes : InvoicePdf.render(data)
+    send_data pdf, filename: "factura-#{data[:number]}.pdf",
+                   type: "application/pdf", disposition: "inline"
   end
 
   # PDF de una factura ya emitida (por id), incluidas las rectificativas (que no
   # cuelgan de un pedido).
   def invoice_pdf
     invoice = Invoice.find(params[:id])
-    send_data InvoicePdf.render(invoice.pdf_data), filename: "factura-#{invoice.number}.pdf",
-                                                   type: "application/pdf", disposition: "inline"
+    send_data invoice.pdf_bytes, filename: "factura-#{invoice.number}.pdf",
+                                 type: "application/pdf", disposition: "inline"
   end
 
   # Genera la factura de un pedido o presupuesto concreto.

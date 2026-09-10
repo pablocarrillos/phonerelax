@@ -27,6 +27,8 @@ module Verifactu
           verifactu_error: nil,
           verifactu_sent_at: Time.current
         )
+        # el PDF ya es el definitivo (lleva QR y huella): archívalo
+        invoice.archive_pdf!
       else
         invoice.update!(verifactu_status: "error", verifactu_error: result.message)
       end
