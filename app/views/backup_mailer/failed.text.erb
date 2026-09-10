@@ -1,0 +1,12 @@
+<%= @context %>
+
+<% @problems.each do |problem| -%>
+- <%= problem %>
+<% end -%>
+
+Las copias las hace la propia aplicación cada noche (cron phonerelax-backups)
+y se suben al Space servipau-backups, en phonerelax/db/ y phonerelax/files/.
+
+Para revisarlo a mano, en el servidor y como usuario phonerelax:
+  cd /home/phonerelax/app && RAILS_ENV=production bundle exec rails backups:check
+  cd /home/phonerelax/app && RAILS_ENV=production bundle exec rails backups:run

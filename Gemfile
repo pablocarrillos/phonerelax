@@ -79,3 +79,6 @@ gem "csv"
 gem "prawn"
 gem "matrix" # prawn 2.4 la usa y no viene ya con Ruby 3
 gem "prawn-table"
+
+# Copias de seguridad al Space servipau-backups (ver lib/tasks/backups.rake)
+gem "aws-sdk-s3", "~> 1.191", require: false
