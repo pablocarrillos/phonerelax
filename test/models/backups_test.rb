@@ -64,6 +64,31 @@ class BackupsTest < ActiveSupport::TestCase
     assert_equal({ prefix: "phonerelax/db/", keep: 30 }, store.pruned.sole)
   end
 
+  # --- el almacén de verdad ---
+
+  # Con almacén de mentira en todo lo demás, nadie tocaba la clase real y un
+  # fallo de carga de la gema solo salía en producción (pasó: Aws se nombraba
+  # antes del require).
+  test "el almacén real sube de verdad un fichero (con la API simulada)" do
+    with_backup_env do
+      store = Backups::Store.new
+      store.client.stub_responses(:put_object, etag: "\"e1\"")
+
+      Dir.mktmpdir do |dir|
+        path = File.join(dir, "copia.tar.gz")
+        File.binwrite(path, "contenido de prueba")
+
+        assert_equal "phonerelax/files/x.tar.gz", store.upload("phonerelax/files/x.tar.gz", path)
+      end
+      assert_equal "servipau-backups", store.bucket
+    end
+  end
+
+  test "sin variables de entorno el almacén se niega a montarse" do
+    assert_not Backups::Store.configured?
+    assert_raises(Backups::Store::NotConfigured) { Backups::Store.new }
+  end
+
   # --- estado de las copias ---
 
   test "las dos copias recientes dan estado correcto" do
@@ -94,6 +119,23 @@ class BackupsTest < ActiveSupport::TestCase
     assert_not status.configured?
     assert_not status.ok?
     assert(status.problems.all? { |p| p.include?("BACKUP_S3_") })
+  end
+
+  # Variables del bucket solo durante el bloque (no hay credenciales en test).
+  def with_backup_env
+    previous = ENV.to_h.slice("BACKUP_S3_BUCKET", "BACKUP_S3_ACCESS_KEY_ID", "BACKUP_S3_SECRET_ACCESS_KEY",
+                              "BACKUP_S3_REGION", "BACKUP_S3_ENDPOINT")
+    ENV["BACKUP_S3_BUCKET"] = "servipau-backups"
+    ENV["BACKUP_S3_ACCESS_KEY_ID"] = "clave"
+    ENV["BACKUP_S3_SECRET_ACCESS_KEY"] = "secreto"
+    ENV["BACKUP_S3_REGION"] = "fra1"
+    ENV["BACKUP_S3_ENDPOINT"] = "https://fra1.digitaloceanspaces.com"
+    ENV["BACKUP_S3_STUB"] = "1"
+    yield
+  ensure
+    %w[BACKUP_S3_BUCKET BACKUP_S3_ACCESS_KEY_ID BACKUP_S3_SECRET_ACCESS_KEY
+       BACKUP_S3_REGION BACKUP_S3_ENDPOINT BACKUP_S3_STUB].each { |k| ENV.delete(k) }
+    previous.each { |k, v| ENV[k] = v }
   end
 
   test "el aviso por correo cuenta los problemas y a dónde mirar" do

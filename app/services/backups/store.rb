@@ -10,6 +10,9 @@ module Backups
   class Store
     class NotConfigured < StandardError; end
 
+    # A partir de aquí la subida se parte en trozos.
+    MULTIPART_THRESHOLD = 64 * 1024 * 1024
+
     def self.configured?
       ENV["BACKUP_S3_BUCKET"].present? && ENV["BACKUP_S3_ACCESS_KEY_ID"].present?
     end
@@ -17,6 +20,10 @@ module Backups
     def initialize
       raise NotConfigured, "faltan las variables BACKUP_S3_*" unless self.class.configured?
 
+      # La gema va con require: false para no cargarla en cada arranque de Puma
+      # (esta máquina tiene 2 GB): se carga aquí, y antes de que nadie nombre a
+      # Aws::* en el resto de la clase.
+      require "aws-sdk-s3"
       @bucket = ENV.fetch("BACKUP_S3_BUCKET")
     end
 
@@ -24,24 +31,27 @@ module Backups
 
     def client
       @client ||= begin
-        require "aws-sdk-s3"
         options = { region: ENV.fetch("BACKUP_S3_REGION", "fra1"),
                     access_key_id: ENV.fetch("BACKUP_S3_ACCESS_KEY_ID"),
                     secret_access_key: ENV.fetch("BACKUP_S3_SECRET_ACCESS_KEY") }
         endpoint = ENV["BACKUP_S3_ENDPOINT"].presence
         options[:endpoint] = endpoint if endpoint
+        # en los tests no se sale a la red: la API va simulada
+        options[:stub_responses] = true if ENV["BACKUP_S3_STUB"].present?
         Aws::S3::Client.new(**options)
       end
     end
 
-    # Sube el fichero por partes: el archivo de ficheros pasa de 300 MB y una
-    # subida en un solo trozo desde este droplet es frágil.
+    # Sube el fichero. Por encima del umbral va por partes: el archivo de
+    # ficheros pasa de 300 MB y una subida en un solo trozo desde este droplet
+    # es frágil.
     def upload(key, path)
-      File.open(path, "rb") do |file|
-        Aws::S3::Object.new(bucket_name: bucket, key: key, client: client)
-                       .upload_stream(part_size: 16 * 1024 * 1024) { |write| IO.copy_stream(file, write) }
-      end
+      transfers.upload_file(path, bucket: bucket, key: key, multipart_threshold: MULTIPART_THRESHOLD)
       key
+    end
+
+    def transfers
+      @transfers ||= Aws::S3::TransferManager.new(client: client)
     end
 
     # La copia más reciente bajo un prefijo, o nil si no hay ninguna.
