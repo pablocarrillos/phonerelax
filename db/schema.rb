@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -316,6 +316,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
 
   create_table "posts", force: :cascade do |t|
     t.text "body"
+    t.text "body_da"
     t.text "body_de"
     t.text "body_en"
     t.text "body_fr"
@@ -323,6 +324,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
     t.text "body_sv"
     t.datetime "created_at", null: false
     t.text "excerpt"
+    t.text "excerpt_da"
     t.text "excerpt_de"
     t.text "excerpt_en"
     t.text "excerpt_fr"
@@ -331,12 +333,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
     t.string "image_url"
     t.date "published_on"
     t.string "slug", null: false
+    t.string "slug_da"
     t.string "slug_de"
     t.string "slug_en"
     t.string "slug_fr"
     t.string "slug_pt"
     t.string "slug_sv"
     t.string "title", null: false
+    t.string "title_da"
     t.string "title_de"
     t.string "title_en"
     t.string "title_fr"
@@ -344,6 +348,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
     t.string "title_sv"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_posts_on_slug", unique: true
+    t.index ["slug_da"], name: "index_posts_on_slug_da", unique: true
     t.index ["slug_de"], name: "index_posts_on_slug_de", unique: true
     t.index ["slug_en"], name: "index_posts_on_slug_en", unique: true
     t.index ["slug_fr"], name: "index_posts_on_slug_fr", unique: true
@@ -375,6 +380,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
     t.boolean "auto_carousel", default: false, null: false
     t.datetime "created_at", null: false
     t.text "description"
+    t.text "description_da"
     t.text "description_de"
     t.text "description_en"
     t.text "description_fr"
@@ -382,6 +388,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_09_170000) do
     t.text "description_sv"
     t.string "image_url"
     t.string "name", null: false
+    t.string "name_da"
     t.string "name_de"
     t.string "name_en"
     t.string "name_fr"

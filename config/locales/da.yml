@@ -1,0 +1,378 @@
+da:
+  # Segmentos de URL traducidos (route_translator). Lo que no aparece, se deja igual.
+  routes:
+    politica-privacidad: privatlivspolitik
+    presupuesto: tilbud
+    colegios: skoler
+    eventos: arrangementer
+    empresas: virksomheder
+    oposiciones: eksamener
+    carrito: kurv
+    anadir: tilfoej
+    cantidad: antal
+    quitar: fjern
+    pedido: ordre
+    nuevo: ny
+    pagar: betal
+    pago-ok: betaling-ok
+    pago-cancelado: betaling-annulleret
+    como-funciona: saadan-virker-det
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%-d. %B %Y"
+    month_names: [~, januar, februar, marts, april, maj, juni, juli, august, september, oktober, november, december]
+    day_names: [søndag, mandag, tirsdag, onsdag, torsdag, fredag, lørdag]
+    abbr_day_names: [søn, man, tir, ons, tor, fre, lør]
+    abbr_month_names: [~, jan, feb, mar, apr, maj, jun, jul, aug, sep, okt, nov, dec]
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%-d. %B %Y kl. %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Navn
+        email: E-mail
+        phone: Telefon
+        address: Adresse
+        city: By
+        postal_code: Postnummer
+        province: Region
+        country: Land
+      product:
+        name: Navn
+        price: Pris
+      user:
+        email_address: E-mail
+        password: Adgangskode
+        password_confirmation: Bekræft adgangskode
+    errors:
+      messages:
+        blank: "må ikke være tom"
+        invalid: er ugyldig
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      confirmation: "stemmer ikke overens"
+
+  nav:
+    home: Hjem
+    how_it_works: Sådan virker det
+    products: Produkter
+    bulk: Storkøb
+    blog: Blog
+    contact: Kontakt
+    cart: Kurv
+    admin: Admin
+    privacy: Privatlivspolitik
+  footer:
+    legal_notice: Juridisk meddelelse
+    cookies_policy: Cookiepolitik
+    tagline: PhoneRelax — mobilfri rum.
+    admin: Administrationspanel
+  common:
+    add_to_cart: Læg i kurv
+    sold_out: Udsolgt
+    back: Tilbage
+    our_products: Vores produkter
+    view_products: Se produkter
+    keep_shopping: Fortsæt indkøb
+    checkout: Til kassen
+    product: Produkt
+    price: Pris
+    quantity: Antal
+    subtotal: Subtotal
+    total: Total
+    vat_included: "Moms (%{rate}%) inkluderet"
+    vat_rate: "Moms (%{rate}%)"
+    vat_included_short: Moms inkl.
+    whatsapp_aria: Skriv til os på WhatsApp
+    update: Opdater
+    remove: Fjern
+    prev: Forrige
+    next: Næste
+    slide: "Slide %{n}"
+    play_video: Afspil video
+    image_n: "Billede %{n}"
+    main_nav: Hovednavigation
+    breadcrumb: Brødkrumme
+    language: Sprog
+    country: Spanien
+    trusted_by: "Kunder der allerede stoler på PhoneRelax"
+    site_title: "PhoneRelax - Magnetisk pose til at opbevare mobiler i klasseværelser og til arrangementer."
+    site_description: "PhoneRelax: magnetiske poser og covers til at opbevare mobilen og blokere dens signal i klasseværelser, til arrangementer og i distraktionsfrie rum. Levering i hele Europa."
+  home:
+    slide1: Bedre koncentration og samvær i klasseværelset
+    slide2: Undgå mobilbrug i uovervågede områder
+    slide3: Brugerne har selv deres mobil i forvaring
+    slide4: Nyd øjeblikket
+    how_title: Sådan virker det
+    step1_title: "1 · Læg mobilen i posen"
+    step1_body: "Læg mobiltelefonen ind i PhoneRelax-posen. Fra det øjeblik beholder eller mister den signal afhængigt af hvilken type pose du bruger."
+    step2_title: "2 · Luk PhoneRelax-posen"
+    step2_body: "Tryk på låsen, og mobilen forsegles indeni. Mobilens ejer har den på sig hele tiden."
+    step3_title: "3 · Åbn PhoneRelax-posen"
+    step3_body: "For at tage mobilen ud skal du blot holde låsen tæt på en af de særlige PhoneRelax-åbningsmagneter og tage mobilen ud."
+    schools_title: PhoneRelax til skoler
+    products_title: Produkter
+    events_title: PhoneRelax til arrangementer
+    blog_title: Vores blog
+    bulk_cta_title: "En skole, virksomhed eller et arrangement?"
+    bulk_cta_body: "Mængderabatter og personligt tryk med dit logo ved storkøb."
+    bulk_cta_button: "Bed om et tilbud"
+    meta_description: "PhoneRelax magnetiske poser og covers til at opbevare mobilen og blokere dens signal i klasseværelser, skoler, til arrangementer og i distraktionsfrie rum. Nem at bruge, levering i hele Europa."
+  steps:
+    title: "Kun tre trin:"
+    step1_title: "1 · Læg mobilen i posen"
+    step1_body: "Læg mobiltelefonen ind i PhoneRelax-posen. Fra det øjeblik beholder eller mister den signal afhængigt af hvilken type PhoneRelax-pose du bruger."
+    step2_title: "2 · Luk PhoneRelax-posen"
+    step2_body: "Tryk på låsen på PhoneRelax-posen, og mobilen forsegles indeni. Mobilens ejer har den på sig hele tiden."
+    step3_title: "3 · Åbn PhoneRelax-posen"
+    step3_body: "For at tage mobilen ud af PhoneRelax-posen skal du blot holde låsen tæt på en af de særlige PhoneRelax-åbningsmagneter og tage mobilen ud."
+    step1_alt: Læg mobilen i posen
+    step2_alt: Luk PhoneRelax-posen
+    step3_alt: Åbn PhoneRelax-posen
+  product:
+    unavailable: Dette produkt er ikke tilgængeligt lige nu.
+    pack_includes: Hvad pakken indeholder
+    pack_normal: Købt hver for sig
+    pack_in_pack: I pakken
+    pack_saving: Besparelse
+    tier_hint: "Mængderabatter anvendes automatisk, jo flere enheder du køber"
+    tier_total: "Total: %{total} (%{units} stk.)"
+    tier_discount: "-%{pct}% rabat anvendt"
+    pack_max: "maks. %{n}"
+    pack_saving_total: "Du sparer %{amount} ved at købe pakken i stedet for produkterne hver for sig."
+    schools_only_title: "Kun uddannelsesinstitutioner"
+    schools_only: "Dette produkt sælges og leveres kun til uddannelsesinstitutioner (skoler, gymnasier, universiteter og kurser). Det sælges ikke til private."
+  cart:
+    title: Din kurv
+    empty: Din kurv er tom.
+  checkout:
+    title: Til kassen
+    base: Nettobeløb
+    vat: Moms
+    total_vat: Total (moms inkl.)
+    total_exempt: Total (moms ikke opkrævet)
+    shipping_note: Fragtomkostningerne beregnes, når du har indtastet leveringsadressen.
+    your_data: Dine oplysninger
+    customer_name: Fulde navn
+    email: E-mail
+    phone: Telefon
+    phone_prefix: Landekode
+    address: Leveringsadresse
+    city: By
+    postal_code: Postnummer
+    province: Region
+    country: Land
+    submit: Beregn fragtomkostninger
+    needs_invoice: Jeg har brug for en faktura
+    invoice_note: Indtast dine momsoplysninger. Hvis du er en virksomhed fra et andet EU-land, angiv dit EU-momsnummer, så vi kan kontrollere det i VIES.
+    tax_name: Navn eller virksomhedsnavn
+    tax_id: CVR-/momsnummer eller EU-momsnummer
+    tax_same_as_shipping: Brug leveringsadressen som faktureringsadresse
+    tax_address: Faktureringsadresse
+    tax_city: By
+    tax_postal_code: Postnummer
+    tax_province: Region
+    tax_country: Land
+    vies_checking: Kontrollerer i VIES…
+    vies_ok: "✓ Gyldigt EU-momsnummer"
+    vies_ko: "✗ Momsnummer ikke gyldigt i VIES"
+    vies_unavailable: Kunne ikke kontrolleres lige nu; vi verificerer det, når vi behandler din ordre.
+  order:
+    title: "Ordre %{number}"
+    thanks_title: "Tak for dit køb, %{name}!"
+    thanks_text: "Vi har modtaget din betaling. Vi har sendt en bekræftelse til %{email}, og vi giver dig besked, så snart din ordre er på vej."
+    payment: "Betaling:"
+    status: "Status:"
+    shipping: Fragt
+    save_note: Gem denne side for at følge status på din ordre.
+    statuses:
+      creado: Oprettet
+      enviado: Afsendt
+      entregado: Leveret
+    payment_statuses:
+      pendiente: afventer
+      pagado: betalt
+      reembolsado: refunderet
+  vat_exempt:
+    export: "Momsfrit salg: forsendelse til De Kanariske Øer (eksport). Eventuelle importafgifter (IGIC/told) betales af modtageren."
+    intra_eu: "Momsfrit salg: EU-intern leverance til en virksomhed med et VIES-valideret momsnummer (art. 25 i den spanske momslov)."
+  pay:
+    title: Gennemgå og betal din ordre
+    order_shipping: "Ordre %{number} · levering til %{destination}"
+    shipping: Fragt
+    total_to_pay: Samlet at betale (moms inkl.)
+    total_exempt: Samlet at betale (moms ikke opkrævet)
+    stripe_note: "Når du klikker på «Betal», sender vi dig til Stripes sikre betaling."
+    pay_button: Betal
+  contact:
+    title: Kontakt
+    about: "PhoneRelax har base i Alicante (Spanien) og blev skabt for at løse de problemer, som mobilbrug skaber i skoler, til koncerter og private arrangementer."
+    map_title: "Kort: C/ Carrasqueta, 14, Petrer"
+    intro_html: "Skriv til os, så vender vi tilbage hurtigst muligt:"
+    form_title: Kontaktformular
+    name: Navn
+    email: "E-mail *"
+    phone: Telefonnummer
+    message: Besked
+    submit: Send
+    meta_description: "Spørgsmål eller brug for et tilbud til din skole eller dit arrangement? Kontakt PhoneRelax, så hjælper vi dig med at vælge den rigtige løsning."
+  how_it_works:
+    title: Sådan virker det
+    p1: "Det er meget enkelt: læg blot mobilen i PhoneRelax-posen og tryk på låsen, så mobilen forsegles indeni."
+    p2: "Den største fordel er, at mobilens ejer selv er ansvarlig for at have mobilen i PhoneRelax-posen, indtil den skal bruges igen."
+    p3: "For at frigøre mobilen skal du blot holde PhoneRelax-posens lås tæt på vores særlige PhoneRelax-magnet for at åbne den og tage mobilen ud."
+    p4: "Vi tilbyder to forskellige typer PhoneRelax-poser: en version med posen og forseglingslåsen, og en SignalBlocking-version, der desuden kan blokere mobil- og wifi-signalet, så mobilen ingen dækning har og ikke forstyrrer dig med indgående opkald eller notifikationer."
+    video_alt: PhoneRelax-video
+    faq_title: Ofte stillede spørgsmål
+    meta_description: "Sådan virker PhoneRelax: opbevar mobilen i den magnetiske pose, luk den og få den igen, når du har brug for den. En enkel måde at skabe distraktionsfrie rum i klasseværelser og til arrangementer."
+    faq:
+      q1: "Hvordan virker PhoneRelax-posen?"
+      a1: "Du lægger mobilen i posen og trykker på låsen, så den forsegles indeni. For at frigøre den holder du låsen tæt på den særlige PhoneRelax-magnet, og posen åbnes."
+      q2: "Hvem har mobilen?"
+      a2: "Mobilens ejer, som beholder den i sin PhoneRelax-pose, indtil den skal bruges igen."
+      q3: "Blokerer PhoneRelax signal og wifi?"
+      a3: "Det gør SignalBlocking-versionen: den blokerer mobil- og wifi-signalet, så mobilen ingen dækning har og ikke forstyrrer dig med opkald eller notifikationer. Basisversionen forsegler kun posen."
+      q4: "Kan posen åbnes uden magneten?"
+      a4: "Nej. PhoneRelax-posens lås åbnes kun ved at holde den tæt på den særlige PhoneRelax-magnet."
+      q5: "Hvor bruges PhoneRelax?"
+      a5: "I klasseværelser og skoler samt til arrangementer og i rum, hvor mobilbrug og distraktioner bør undgås."
+  blog:
+    title: Blog
+    read_article: "Læs artikel →"
+    meta_description: "PhoneRelax-blog: tips og idéer om ansvarlig mobilbrug i klasseværelser, skoler og til arrangementer, og hvordan man reducerer distraktioner."
+  flash:
+    cart_empty: Din kurv er tom.
+    added_to_cart: "%{name} lagt i kurven."
+    out_of_stock: "Ikke nok på lager af: %{names}. Justér antallet."
+    zero_quantity: "Angiv et antal større end 0 for: %{names}."
+    dtf_min: "DTF-personalisering kræver mindst %{min} enheder i ordren (du har %{count})."
+    dtf_mismatch: "Antallet af DTF-personaliseringer (%{dtf}) skal svare til antallet af poser (%{fundas}). Justér antallet."
+    payment_cancelled: Betaling annulleret. Du kan prøve igen, når du vil.
+    verify_failed: Vi kunne ikke verificere indsendelsen. Prøv igen.
+    message_sent: Beskeden er sendt. Vi vender tilbage hurtigst muligt.
+    quote_sent: Anmodningen er sendt. Vi sender dit tilbud hurtigst muligt.
+    payment_start_failed: "Betalingen kunne ikke startes: %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Betaling modtaget for din ordre %{number}"
+      title: "Tak for dit køb, %{name}!"
+      body_html: "Vi har modtaget betalingen for din ordre <strong>%{number}</strong>. Vi gør den klar og giver dig besked, når den sendes til din adresse."
+      track: Følg min ordre
+    shipped:
+      subject: "PhoneRelax · Din ordre %{number} er på vej"
+      title: "Din ordre er på vej 📦"
+      body_html: "Hej %{name}: din ordre <strong>%{number}</strong> er sendt til:"
+      track: Følg min ordre
+      tracking_label: Sporingsnummer
+    payment_reminder:
+      subject: "PhoneRelax · Du efterlod din ordre %{number} i kurven"
+      title: "Glemte du noget i kurven?"
+      body_html: "Hej %{name}: din ordre <strong>%{number}</strong> afventer stadig betaling. Du kan fortsætte, hvor du slap, og gøre den færdig, når du vil:"
+      pay: Genoptag ordre og betal
+      no_action: "Hvis du ikke længere ønsker den, behøver du ikke gøre noget."
+    refunded:
+      subject: "PhoneRelax · Refundering af din ordre %{number}"
+      title: "Vi har foretaget en refundering"
+      body_html: "Hej %{name}: vi har refunderet <strong>%{amount}</strong> for din ordre <strong>%{number}</strong>."
+      full_note: "Med denne refundering er din ordre fuldt refunderet."
+      partial_note: "Resten af din ordre er ikke berørt."
+      card_note: "Beløbet føres tilbage til det kort, du betalte med; afhængigt af din bank kan det tage 5-10 hverdage, før det vises."
+      track: "Se min ordre"
+    summary:
+      shipping: Fragt
+      total: Total (moms inkl.)
+  quote:
+    meta_title: "Tilbud til skoler, virksomheder og arrangementer"
+    meta_description: "Storkøb af PhoneRelax-poser med mængderabatter og personligt tryk med dit logo. Bed om et tilbud til din skole, virksomhed eller dit arrangement."
+    title: "Storkøb til skoler, virksomheder og arrangementer"
+    subtitle: "Mængderabatter, personligt tryk med dit logo og fakturering. Fortæl os, hvad du har brug for, så laver vi et skræddersyet tilbud."
+    benefits_title: "Hvorfor vælge PhoneRelax"
+    b1_title: "Mængderabatter"
+    b1_body: "Jo flere poser, jo bedre pris. Ideelt til at udstyre hele klasseværelser, teams eller hele arrangementer."
+    b2_title: "Personligt tryk med dit logo"
+    b2_body: "Vi kan trykke poserne med logo, farver eller design fra din skole, virksomhed eller dit arrangement."
+    b3_title: "Køb direkte, ingen ventetid"
+    b3_body: "Til små ordrer kan du købe med det samme i butikken; til store mængder laver vi et tilbud inden for 24-48 t."
+    b4_title: "Signalblokerende version"
+    b4_body: "Vores SignalBlocking-version efterlader mobilen uden dækning eller wifi: nul forstyrrende opkald eller notifikationer."
+    sectors_title: "Løsninger efter branche"
+    sector_colegio: "Skoler: distraktionsfrie klasseværelser og eksamener uden snyd."
+    sector_empresa: "Virksomheder: møder, fabriksbesøg og fortrolige områder."
+    sector_evento: "Arrangementer og koncerter: mobilfri oplevelser uden spoilers."
+    sector_academia: "Kurser og universiteter: eksamener og officielle prøver."
+    customization_title: "Personligt tryk"
+    customization_body: "Vi tilføjer dit logo og dine farver på poserne. Fortæl os om dit projekt i formularen, så viser vi dig eksempler og muligheder."
+    customization_alt: "Personlig PhoneRelax-pose til %{name}"
+    form_title: "Bed om dit tilbud"
+    form_intro: "Vi svarer inden for 24-48 arbejdstimer."
+    f_name: "Fulde navn"
+    f_organization: "Skole / virksomhed / organisation"
+    f_email: "E-mail"
+    f_phone: "Telefon"
+    f_sector: "Type organisation"
+    f_units: "Omtrentligt antal enheder"
+    f_message: "Fortæl os, hvad du har brug for"
+    submit: "Bed om et tilbud"
+    sectors:
+      colegio: "Skole"
+      empresa: "Virksomhed"
+      evento: "Arrangement / koncert"
+      academia: "Kursus / universitet"
+      otro: "Andet"
+  sectors:
+    cta_buy: "Se produkter"
+    cta_quote: "Bed om et tilbud"
+    cta_title: "Klar til at komme i gang?"
+    cta_body: "Køb direkte til små ordrer, eller bed om et tilbud til din organisation."
+    colegios:
+      meta_title: "PhoneRelax til skoler"
+      meta_description: "Distraktionsfrie klasseværelser og eksamener uden snyd: eleverne opbevarer deres mobil i en magnetisk PhoneRelax-pose. Mængderabatter til skoler."
+      title: "PhoneRelax til skoler"
+      subtitle: "Distraktionsfrie klasseværelser og eksamener uden snyd, hvor eleverne selv har deres mobil i forvaring."
+      intro: "Flere og flere regioner begrænser mobilbrug i klasseværelserne. Med PhoneRelax opbevarer hver elev sin mobil i en magnetisk pose, der kun åbnes med skolens magnet: ingen indsamling af mobiler, og lærerne skal ikke opbevare dem."
+      b1_title: "Bedre fokus"
+      b1_body: "Uden fristelsen til at tjekke mobilen er eleverne mere opmærksomme og deltager mere i timen."
+      b2_title: "Eksamener uden snyd"
+      b2_body: "SignalBlocking-versionen efterlader mobilen uden dækning eller wifi og forhindrer snyd eller notifikationer under prøver."
+      b3_title: "Intet ansvar for lærerne"
+      b3_body: "Hver elev har selv sin mobil i sin pose; skolen er ikke ansvarlig for eventuelle skader."
+    eventos:
+      meta_title: "PhoneRelax til arrangementer og koncerter"
+      meta_description: "Mobilfri oplevelser til koncerter og arrangementer: ingen optagelser, ingen spoilers, med hurtig udlevering og indsamling. Bed om et tilbud til dit arrangement."
+      title: "PhoneRelax til arrangementer og koncerter"
+      subtitle: "Mobilfri oplevelser: ingen optagelser, ingen spoilers, med publikum forbundet til øjeblikket."
+      intro: "Mobilfri arrangementer er i vækst. Med PhoneRelax opbevarer deltagerne deres mobil i en forseglet pose, som de åbner på vej ud: de nyder showet og respekterer kunstneren."
+      b1_title: "En mere fordybende oplevelse"
+      b1_body: "Uden skærme i vejen lever publikum i øjeblikket og forbinder sig med kunstneren og de øvrige deltagere."
+      b2_title: "Ingen lækager eller spoilers"
+      b2_body: "Ideelt til previews, shows og præsentationer, hvor du ikke ønsker, at noget optages eller lækkes."
+      b3_title: "Hurtig udlevering og indsamling"
+      b3_body: "Et enkelt udleveringssystem med magnetåbning på vej ud, uden køer eller besvær."
+    empresas:
+      meta_title: "PhoneRelax til virksomheder"
+      meta_description: "Møder, fabriksbesøg og fortrolige områder uden mobiler eller kameraer. PhoneRelax magnetiske poser med tilbud til virksomheder."
+      title: "PhoneRelax til virksomheder"
+      subtitle: "Møder, fabriksbesøg og fortrolige områder uden mobiler eller kameraer."
+      intro: "Beskyt fortrolighed og fokus i din virksomhed. Besøgende og medarbejdere opbevarer deres mobil i en forseglet pose i de områder, hvor den ikke bør bruges."
+      b1_title: "Fortrolighed"
+      b1_body: "Forhindrer fotos og optagelser i følsomme områder, laboratorier, produktionslinjer eller strategiske møder."
+      b2_title: "Mere produktive møder"
+      b2_body: "Uden afbrydelser eller distraktioner bliver møderne kortere og mere effektive."
+      b3_title: "Nem at rulle ud"
+      b3_body: "Ingen pengeskabe eller infrastruktur: genanvendelige poser og én åbningsmagnet pr. område."
+    oposiciones:
+      meta_title: "PhoneRelax til eksamener og officielle prøver"
+      meta_description: "Eksamener og officielle prøver uden snyd: mobilerne forbliver forseglede og uden dækning i en magnetisk PhoneRelax-pose. Tilbud til kurser og prøvenævn."
+      title: "PhoneRelax til eksamener og officielle prøver"
+      subtitle: "Eksamener uden snyd: mobilerne forbliver forseglede og uden dækning under prøven."
+      intro: "Til eksamener og officielle prøver er mobilen den vigtigste vej til snyd. Med PhoneRelax SignalBlocking-versionen forbliver mobilen forseglet og uden signal, indtil prøven er slut."
+      b1_title: "Ingen dækning, intet snyd"
+      b1_body: "SignalBlocking-versionen blokerer mobil- og wifi-signalet: ingen modtagelse af svar eller notifikationer."
+      b2_title: "Hver deltager har sin egen"
+      b2_body: "Hver person opbevarer sin mobil i sin pose: hurtigt at udlevere og ingen håndtering af andres enheder."
+      b3_title: "Enkel styring for prøvenævnet"
+      b3_body: "Udlevering på vej ind og magnetåbning på vej ud; et ensartet og klart system for alle."
