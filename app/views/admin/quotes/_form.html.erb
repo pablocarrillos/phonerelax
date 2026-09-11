@@ -49,6 +49,21 @@
     <div class="full"><%= f.label :notes, 'Notas internas (no salen en el PDF)' %><%= f.text_area :notes, rows: 2 %></div>
   </div>
 
+  <% if quote.new_record? && @label_product %>
+    <% label_net = @label_product.price_tiers.find_by(min_units: 1)&.unit_price || 0.35 %>
+    <div style="max-width:860px; margin:20px 0; padding:12px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius);">
+      <label style="display:flex; align-items:center; gap:10px; font-weight:600; margin:0;">
+        <%= check_box_tag :include_name_label, '1', params[:include_name_label].present?, style: 'width:auto;' %>
+        ¿Incluir «<%= @label_product.name %>» en el presupuesto?
+      </label>
+      <p class="action-note" style="margin:6px 0 0;">
+        <%= number_to_currency(label_net, unit: '€', format: '%n %u') %>/ud sin IVA (+ IVA). Unidades:
+        <%= number_field_tag :name_label_quantity, params[:name_label_quantity].presence || 1, min: 1, style: 'width:80px; display:inline-block;' %>
+        — se añade como una línea más y puedes ajustarla abajo.
+      </p>
+    </div>
+  <% end %>
+
   <h2 style="margin-top:24px;">Líneas</h2>
   <p class="action-note" style="margin-top:0;">Al elegir producto y cambiar las unidades, el precio se rellena solo con el <strong>escalado</strong>; en el documento cada línea sale con el nombre del producto. Si tocas el precio a mano y no coincide con el escalado, verás un aviso — puedes dejarlo así a propósito. Los descuentos son opcionales: solo aparecen en el documento si los usas.</p>
   <table class="table" style="max-width: 1080px;">

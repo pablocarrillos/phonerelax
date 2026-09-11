@@ -90,11 +90,15 @@ module Admin
       # llega con el cliente preseleccionado y queda vinculado al lead
       @quote.client_id = params[:client_id] if params[:client_id].present?
       @quote.lead_id = params[:lead_id] if Lead.exists?(id: params[:lead_id])
+      @label_product = Product.name_label
       build_blank_lines
     end
 
     def create
       @quote = Quote.new(quote_params)
+      @label_product = Product.name_label
+      # «¿Incluir la etiqueta blanca?»: si se marcó, se añade como una línea más.
+      add_name_label_line
       # El botón «Previsualizar PDF» envía el mismo formulario con preview=1.
       return render_preview if params[:preview]
 
@@ -219,6 +223,17 @@ module Admin
 
     def build_blank_lines
       3.times { @quote.quote_lines.build }
+    end
+
+    # Añade la «Etiqueta blanca para poner el nombre» como línea del presupuesto
+    # si se marcó la casilla del formulario de creación. El precio y la
+    # descripción se rellenan solos desde el catálogo (fill_lines_from_catalog).
+    def add_name_label_line
+      return unless params[:include_name_label].present? && @label_product
+
+      qty = params[:name_label_quantity].to_i
+      qty = 1 if qty < 1
+      @quote.quote_lines.build(product: @label_product, quantity: qty, vat_rate: @label_product.vat_percentage)
     end
 
     def quote_params

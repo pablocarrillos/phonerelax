@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_065323) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -320,6 +320,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
     t.text "body_de"
     t.text "body_en"
     t.text "body_fr"
+    t.text "body_it"
     t.text "body_pt"
     t.text "body_sv"
     t.datetime "created_at", null: false
@@ -328,6 +329,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
     t.text "excerpt_de"
     t.text "excerpt_en"
     t.text "excerpt_fr"
+    t.text "excerpt_it"
     t.text "excerpt_pt"
     t.text "excerpt_sv"
     t.string "image_url"
@@ -337,6 +339,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
     t.string "slug_de"
     t.string "slug_en"
     t.string "slug_fr"
+    t.string "slug_it"
     t.string "slug_pt"
     t.string "slug_sv"
     t.string "title", null: false
@@ -344,6 +347,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
     t.string "title_de"
     t.string "title_en"
     t.string "title_fr"
+    t.string "title_it"
     t.string "title_pt"
     t.string "title_sv"
     t.datetime "updated_at", null: false
@@ -352,6 +356,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
     t.index ["slug_de"], name: "index_posts_on_slug_de", unique: true
     t.index ["slug_en"], name: "index_posts_on_slug_en", unique: true
     t.index ["slug_fr"], name: "index_posts_on_slug_fr", unique: true
+    t.index ["slug_it"], name: "index_posts_on_slug_it", unique: true
     t.index ["slug_pt"], name: "index_posts_on_slug_pt", unique: true
     t.index ["slug_sv"], name: "index_posts_on_slug_sv", unique: true
   end
@@ -384,6 +389,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
     t.text "description_de"
     t.text "description_en"
     t.text "description_fr"
+    t.text "description_it"
     t.text "description_pt"
     t.text "description_sv"
     t.string "image_url"
@@ -392,6 +398,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_063314) do
     t.string "name_de"
     t.string "name_en"
     t.string "name_fr"
+    t.string "name_it"
     t.string "name_pt"
     t.string "name_sv"
     t.boolean "pack", default: false, null: false

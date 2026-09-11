@@ -2,6 +2,15 @@ class Product < ApplicationRecord
   include Translatable
   translates :name, :description
 
+  # Producto interno «Etiqueta blanca para poner el nombre»: no se vende en la
+  # tienda (active: false), pero se ofrece explícitamente al crear un
+  # presupuesto. Se referencia por su handle, estable entre entornos.
+  NAME_LABEL_HANDLE = "etiqueta-blanca-nombre"
+
+  def self.name_label
+    find_by(shopify_handle: NAME_LABEL_HANDLE)
+  end
+
   has_many :order_lines, dependent: :restrict_with_error
   has_many :product_images, -> { ordered }, dependent: :destroy, inverse_of: :product
   has_one_attached :cover_image

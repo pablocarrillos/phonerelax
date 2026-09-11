@@ -68,7 +68,7 @@ module ApplicationHelper
   # "https://phonerelax.com"); si no, se usa el dominio que sirve la petición.
   # Código idioma-región para hreflang/inLanguage (es-ES, pt-PT).
   def locale_region
-    { es: "es-ES", pt: "pt-PT", en: "en", fr: "fr", de: "de", sv: "sv-SE", da: "da-DK" }[I18n.locale] || "es-ES"
+    { es: "es-ES", pt: "pt-PT", en: "en", fr: "fr", it: "it-IT", de: "de", sv: "sv-SE", da: "da-DK" }[I18n.locale] || "es-ES"
   end
 
   # Dominio canónico del sitio (sin www). Se puede sobreescribir con CANONICAL_HOST.
@@ -81,8 +81,8 @@ module ApplicationHelper
   end
 
   # Bandera y nombre nativo de cada idioma, para el selector con dropdown.
-  LOCALE_FLAGS = { "es" => "🇪🇸", "pt" => "🇵🇹", "en" => "🇬🇧", "fr" => "🇫🇷", "de" => "🇩🇪", "sv" => "🇸🇪", "da" => "🇩🇰" }.freeze
-  LOCALE_NAMES = { "es" => "Español", "pt" => "Português", "en" => "English", "fr" => "Français", "de" => "Deutsch", "sv" => "Svenska", "da" => "Dansk" }.freeze
+  LOCALE_FLAGS = { "es" => "🇪🇸", "pt" => "🇵🇹", "en" => "🇬🇧", "fr" => "🇫🇷", "it" => "🇮🇹", "de" => "🇩🇪", "sv" => "🇸🇪", "da" => "🇩🇰" }.freeze
+  LOCALE_NAMES = { "es" => "Español", "pt" => "Português", "en" => "English", "fr" => "Français", "it" => "Italiano", "de" => "Deutsch", "sv" => "Svenska", "da" => "Dansk" }.freeze
 
   def locale_flag(locale)
     LOCALE_FLAGS[locale.to_s] || "🏳️"

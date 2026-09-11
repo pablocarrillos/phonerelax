@@ -1,0 +1,378 @@
+it:
+  # Segmentos de URL traducidos (route_translator). Lo que no aparece, se deja igual.
+  routes:
+    politica-privacidad: privacy
+    presupuesto: preventivo
+    colegios: scuole
+    eventos: eventi
+    empresas: aziende
+    oposiciones: concorsi
+    carrito: carrello
+    anadir: aggiungi
+    cantidad: quantita
+    quitar: rimuovi
+    pedido: ordine
+    nuevo: nuovo
+    pagar: paga
+    pago-ok: pagamento-ok
+    pago-cancelado: pagamento-annullato
+    como-funciona: come-funziona
+  date:
+    formats:
+      default: "%d/%m/%Y"
+      long: "%-d %B %Y"
+    month_names: [~, gennaio, febbraio, marzo, aprile, maggio, giugno, luglio, agosto, settembre, ottobre, novembre, dicembre]
+    day_names: [domenica, lunedì, martedì, mercoledì, giovedì, venerdì, sabato]
+    abbr_day_names: [dom, lun, mar, mer, gio, ven, sab]
+    abbr_month_names: [~, gen, feb, mar, apr, mag, giu, lug, ago, set, ott, nov, dic]
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%-d %B %Y alle %H:%M"
+  activerecord:
+    attributes:
+      order:
+        customer_name: Nome
+        email: E-mail
+        phone: Telefono
+        address: Indirizzo
+        city: Città
+        postal_code: CAP
+        province: Provincia
+        country: Paese
+      product:
+        name: Nome
+        price: Prezzo
+      user:
+        email_address: E-mail
+        password: Password
+        password_confirmation: Conferma password
+    errors:
+      messages:
+        blank: "non può essere vuoto"
+        invalid: non è valido
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      confirmation: "non corrisponde"
+
+  nav:
+    home: Home
+    how_it_works: Come funziona
+    products: Prodotti
+    bulk: Ordini all'ingrosso
+    blog: Blog
+    contact: Contatti
+    cart: Carrello
+    admin: Admin
+    privacy: Informativa sulla privacy
+  footer:
+    legal_notice: Note legali
+    cookies_policy: Cookie policy
+    tagline: PhoneRelax — spazi senza telefono.
+    admin: Pannello di gestione
+  common:
+    add_to_cart: Aggiungi al carrello
+    sold_out: Esaurito
+    back: Indietro
+    our_products: I nostri prodotti
+    view_products: Vedi i prodotti
+    keep_shopping: Continua lo shopping
+    checkout: Vai alla cassa
+    product: Prodotto
+    price: Prezzo
+    quantity: Quantità
+    subtotal: Subtotale
+    total: Totale
+    vat_included: "IVA (%{rate}%) inclusa"
+    vat_rate: "IVA (%{rate}%)"
+    vat_included_short: IVA inclusa
+    whatsapp_aria: Scrivici su WhatsApp
+    update: Aggiorna
+    remove: Rimuovi
+    prev: Precedente
+    next: Successivo
+    slide: "Slide %{n}"
+    play_video: Riproduci video
+    image_n: "Immagine %{n}"
+    main_nav: Navigazione principale
+    breadcrumb: Breadcrumb
+    language: Lingua
+    country: Spagna
+    trusted_by: "Clienti che si fidano già di PhoneRelax"
+    site_title: "PhoneRelax - Custodia magnetica per riporre i telefoni in aula e agli eventi."
+    site_description: "PhoneRelax: custodie e buste magnetiche per riporre il telefono e bloccarne il segnale in aula, agli eventi e negli spazi senza distrazioni. Spedizioni in tutta Europa."
+  home:
+    slide1: Maggiore concentrazione e interazione in aula
+    slide2: Evita l'uso del telefono nelle aree non sorvegliate
+    slide3: Gli utenti custodiscono da soli il proprio telefono
+    slide4: Goditi il momento
+    how_title: Come funziona
+    step1_title: "1 · Metti il telefono nella custodia"
+    step1_body: "Metti il telefono nella custodia PhoneRelax. Da quel momento manterrà o perderà il segnale a seconda del tipo di custodia che usi."
+    step2_title: "2 · Chiudi la custodia PhoneRelax"
+    step2_body: "Premi la serratura e il telefono resterà sigillato all'interno. Il proprietario lo tiene sempre con sé."
+    step3_title: "3 · Apri la custodia PhoneRelax"
+    step3_body: "Per estrarre il telefono, avvicina la serratura a uno degli speciali magneti di apertura PhoneRelax ed estrai il telefono."
+    schools_title: PhoneRelax per le scuole
+    products_title: Prodotti
+    events_title: PhoneRelax per gli eventi
+    blog_title: Il nostro blog
+    bulk_cta_title: "Una scuola, un'azienda o un evento?"
+    bulk_cta_body: "Sconti sulle quantità e personalizzazione con il tuo logo per gli ordini all'ingrosso."
+    bulk_cta_button: "Richiedi un preventivo"
+    meta_description: "Custodie e buste magnetiche PhoneRelax per riporre il telefono e bloccarne il segnale in aula, nelle scuole, agli eventi e negli spazi senza distrazioni. Facili da usare, spedizioni in tutta Europa."
+  steps:
+    title: "Solo tre passaggi:"
+    step1_title: "1 · Metti il telefono nella custodia"
+    step1_body: "Metti il telefono nella custodia PhoneRelax. Da quel momento manterrà o perderà il segnale a seconda del tipo di custodia PhoneRelax che usi."
+    step2_title: "2 · Chiudi la custodia PhoneRelax"
+    step2_body: "Premi la serratura della custodia PhoneRelax e il telefono resterà sigillato all'interno. Il proprietario lo tiene sempre con sé."
+    step3_title: "3 · Apri la custodia PhoneRelax"
+    step3_body: "Per estrarre il telefono dalla custodia PhoneRelax, avvicina la serratura a uno degli speciali magneti di apertura PhoneRelax ed estrai il telefono."
+    step1_alt: Metti il telefono nella custodia
+    step2_alt: Chiudi la custodia PhoneRelax
+    step3_alt: Apri la custodia PhoneRelax
+  product:
+    unavailable: Questo prodotto non è disponibile al momento.
+    pack_includes: Cosa contiene questo pacchetto
+    pack_normal: Acquistati separatamente
+    pack_in_pack: Nel pacchetto
+    pack_saving: Risparmio
+    tier_hint: "Gli sconti sulle quantità vengono applicati automaticamente man mano che acquisti più unità"
+    tier_total: "Totale: %{total} (%{units} pz)"
+    tier_discount: "-%{pct}% di sconto applicato"
+    pack_max: "max %{n}"
+    pack_saving_total: "Risparmi %{amount} acquistando il pacchetto invece dei prodotti separatamente."
+    schools_only_title: "Solo istituti scolastici"
+    schools_only: "Questo prodotto è venduto e consegnato solo agli istituti scolastici (scuole, licei, università e accademie). Non è in vendita ai privati."
+  cart:
+    title: Il tuo carrello
+    empty: Il tuo carrello è vuoto.
+  checkout:
+    title: Cassa
+    base: Importo netto
+    vat: IVA
+    total_vat: Totale (IVA inclusa)
+    total_exempt: Totale (IVA non applicata)
+    shipping_note: Le spese di spedizione verranno calcolate una volta inserito l'indirizzo di consegna.
+    your_data: I tuoi dati
+    customer_name: Nome completo
+    email: E-mail
+    phone: Telefono
+    phone_prefix: Prefisso internazionale
+    address: Indirizzo di spedizione
+    city: Città
+    postal_code: CAP
+    province: Provincia
+    country: Paese
+    submit: Calcola le spese di spedizione
+    needs_invoice: Ho bisogno di una fattura
+    invoice_note: Inserisci i tuoi dati fiscali. Se sei un'azienda di un altro Paese dell'UE, fornisci la tua partita IVA europea così possiamo verificarla nel VIES.
+    tax_name: Nome o ragione sociale
+    tax_id: Codice fiscale o partita IVA UE
+    tax_same_as_shipping: Usa l'indirizzo di spedizione come indirizzo di fatturazione
+    tax_address: Indirizzo di fatturazione
+    tax_city: Città
+    tax_postal_code: CAP
+    tax_province: Provincia
+    tax_country: Paese
+    vies_checking: Verifica nel VIES…
+    vies_ok: "✓ Partita IVA UE valida"
+    vies_ko: "✗ Partita IVA non valida nel VIES"
+    vies_unavailable: Non è stato possibile verificarla ora; la controlleremo al momento dell'elaborazione dell'ordine.
+  order:
+    title: "Ordine %{number}"
+    thanks_title: "Grazie per il tuo acquisto, %{name}!"
+    thanks_text: "Abbiamo ricevuto il tuo pagamento. Ti abbiamo inviato una conferma a %{email} e ti avviseremo non appena il tuo ordine sarà in viaggio."
+    payment: "Pagamento:"
+    status: "Stato:"
+    shipping: Spedizione
+    save_note: Salva questa pagina per controllare lo stato del tuo ordine.
+    statuses:
+      creado: Creato
+      enviado: Spedito
+      entregado: Consegnato
+    payment_statuses:
+      pendiente: in attesa
+      pagado: pagato
+      reembolsado: rimborsato
+  vat_exempt:
+    export: "Vendita esente IVA: spedizione alle Isole Canarie (esportazione). Eventuali imposte all'importazione (IGIC/dogana), se dovute, sono a carico del destinatario."
+    intra_eu: "Vendita esente IVA: cessione intracomunitaria a un'impresa con partita IVA validata nel VIES (art. 25 della legge spagnola sull'IVA)."
+  pay:
+    title: Controlla e paga il tuo ordine
+    order_shipping: "Ordine %{number} · spedizione a %{destination}"
+    shipping: Spedizione
+    total_to_pay: Totale da pagare (IVA inclusa)
+    total_exempt: Totale da pagare (IVA non applicata)
+    stripe_note: "Quando clicchi su «Paga» ti portiamo al pagamento sicuro di Stripe."
+    pay_button: Paga
+  contact:
+    title: Contatti
+    about: "PhoneRelax ha sede ad Alicante (Spagna) ed è nata per risolvere i problemi causati dall'uso del telefono nelle scuole, ai concerti e agli eventi privati."
+    map_title: "Mappa: C/ Carrasqueta, 14, Petrer"
+    intro_html: "Scrivici e ti risponderemo il prima possibile:"
+    form_title: Modulo di contatto
+    name: Nome
+    email: "E-mail *"
+    phone: Numero di telefono
+    message: Messaggio
+    submit: Invia
+    meta_description: "Domande o hai bisogno di un preventivo per la tua scuola o il tuo evento? Contatta PhoneRelax e ti aiuteremo a scegliere la soluzione giusta."
+  how_it_works:
+    title: Come funziona
+    p1: "È molto semplice: metti il telefono nella custodia PhoneRelax e premi la serratura così il telefono resta sigillato all'interno."
+    p2: "Il vantaggio principale è che il proprietario del telefono è responsabile di custodirlo nella custodia PhoneRelax finché non sarà il momento di usarlo di nuovo."
+    p3: "Per liberare il telefono, avvicina la serratura della custodia PhoneRelax al nostro speciale magnete PhoneRelax per aprirla ed estrarre il telefono."
+    p4: "Offriamo due tipi diversi di custodie PhoneRelax: una versione con la custodia e la serratura di sigillo, e una versione SignalBlocking che può anche bloccare il segnale del cellulare e del wifi, così il telefono resta senza ricezione e non ti disturba con chiamate o notifiche in arrivo."
+    video_alt: Video PhoneRelax
+    faq_title: Domande frequenti
+    meta_description: "Come funziona PhoneRelax: riponi il telefono nella custodia magnetica, chiudila e riprendilo quando ne hai bisogno. Un modo semplice per creare spazi senza distrazioni in aula e agli eventi."
+    faq:
+      q1: "Come funziona la custodia PhoneRelax?"
+      a1: "Metti il telefono nella custodia e premi la serratura così resta sigillato all'interno. Per liberarlo, avvicina la serratura allo speciale magnete PhoneRelax e la custodia si apre."
+      q2: "Chi custodisce il telefono?"
+      a2: "Il proprietario del telefono, che lo tiene nella sua custodia PhoneRelax finché non sarà il momento di usarlo di nuovo."
+      q3: "PhoneRelax blocca il segnale e il wifi?"
+      a3: "Lo fa la versione SignalBlocking: blocca il segnale del cellulare e del wifi, così il telefono resta senza ricezione e non ti disturba con chiamate o notifiche. La versione base sigilla soltanto la custodia."
+      q4: "La custodia si può aprire senza il magnete?"
+      a4: "No. La serratura della custodia PhoneRelax si apre solo avvicinandola allo speciale magnete PhoneRelax."
+      q5: "Dove si usa PhoneRelax?"
+      a5: "In aula e nelle scuole, oltre che agli eventi e negli spazi dove è meglio evitare l'uso del telefono e le distrazioni."
+  blog:
+    title: Blog
+    read_article: "Leggi l'articolo →"
+    meta_description: "Blog PhoneRelax: consigli e idee sull'uso responsabile del telefono in aula, nelle scuole e agli eventi, e come ridurre le distrazioni."
+  flash:
+    cart_empty: Il tuo carrello è vuoto.
+    added_to_cart: "%{name} aggiunto al carrello."
+    out_of_stock: "Scorte insufficienti di: %{names}. Modifica le quantità."
+    zero_quantity: "Inserisci una quantità maggiore di 0 per: %{names}."
+    dtf_min: "La personalizzazione DTF richiede almeno %{min} unità nell'ordine (ne hai %{count})."
+    dtf_mismatch: "Il numero di personalizzazioni DTF (%{dtf}) deve corrispondere al numero di custodie (%{fundas}). Modifica le quantità."
+    payment_cancelled: Pagamento annullato. Puoi riprovare quando vuoi.
+    verify_failed: Non è stato possibile verificare l'invio. Riprova.
+    message_sent: Messaggio inviato. Ti risponderemo il prima possibile.
+    quote_sent: Richiesta inviata. Ti invieremo il preventivo il prima possibile.
+    payment_start_failed: "Impossibile avviare il pagamento: %{error}"
+  order_mailer:
+    paid:
+      subject: "PhoneRelax · Pagamento ricevuto per il tuo ordine %{number}"
+      title: "Grazie per il tuo acquisto, %{name}!"
+      body_html: "Abbiamo ricevuto il pagamento del tuo ordine <strong>%{number}</strong>. Lo stiamo preparando e ti avviseremo quando verrà spedito al tuo indirizzo."
+      track: Segui il mio ordine
+    shipped:
+      subject: "PhoneRelax · Il tuo ordine %{number} è in viaggio"
+      title: "Il tuo ordine è in viaggio 📦"
+      body_html: "Ciao %{name}: il tuo ordine <strong>%{number}</strong> è stato spedito a:"
+      track: Segui il mio ordine
+      tracking_label: Numero di tracciamento
+    payment_reminder:
+      subject: "PhoneRelax · Hai lasciato il tuo ordine %{number} nel carrello"
+      title: "Hai lasciato qualcosa nel carrello?"
+      body_html: "Ciao %{name}: il tuo ordine <strong>%{number}</strong> è ancora in attesa di pagamento. Puoi riprenderlo da dove l'hai lasciato e completarlo quando vuoi:"
+      pay: Riprendi l'ordine e paga
+      no_action: "Se non lo desideri più, non devi fare nulla."
+    refunded:
+      subject: "PhoneRelax · Rimborso per il tuo ordine %{number}"
+      title: "Abbiamo emesso un rimborso"
+      body_html: "Ciao %{name}: abbiamo rimborsato <strong>%{amount}</strong> per il tuo ordine <strong>%{number}</strong>."
+      full_note: "Con questo rimborso, il tuo ordine è stato completamente rimborsato."
+      partial_note: "Il resto del tuo ordine non è interessato."
+      card_note: "L'importo verrà restituito sulla carta con cui hai pagato; a seconda della tua banca possono servire 5-10 giorni lavorativi perché compaia."
+      track: "Vedi il mio ordine"
+    summary:
+      shipping: Spedizione
+      total: Totale (IVA inclusa)
+  quote:
+    meta_title: "Preventivo per scuole, aziende ed eventi"
+    meta_description: "Ordini all'ingrosso di custodie PhoneRelax con sconti sulle quantità e personalizzazione con il tuo logo. Richiedi un preventivo per la tua scuola, azienda o evento."
+    title: "Ordini all'ingrosso per scuole, aziende ed eventi"
+    subtitle: "Sconti sulle quantità, personalizzazione con il tuo logo e fatturazione. Dicci di cosa hai bisogno e prepareremo un preventivo su misura."
+    benefits_title: "Perché scegliere PhoneRelax"
+    b1_title: "Sconti sulle quantità"
+    b1_body: "Più custodie, miglior prezzo. Ideale per attrezzare intere aule, team o interi eventi."
+    b2_title: "Personalizzazione con il tuo logo"
+    b2_body: "Possiamo personalizzare le custodie con il logo, i colori o il design della tua scuola, azienda o evento."
+    b3_title: "Acquista subito, senza attese"
+    b3_body: "Per piccoli ordini puoi acquistare subito nello shop; per grandi quantità prepariamo un preventivo entro 24-48 h."
+    b4_title: "Versione che blocca il segnale"
+    b4_body: "La nostra versione SignalBlocking lascia il telefono senza ricezione né wifi: zero chiamate o notifiche di disturbo."
+    sectors_title: "Soluzioni per settore"
+    sector_colegio: "Scuole: aule senza distrazioni ed esami senza imbrogli."
+    sector_empresa: "Aziende: riunioni, visite in stabilimento e aree riservate."
+    sector_evento: "Eventi e concerti: esperienze senza telefono e senza spoiler."
+    sector_academia: "Accademie e università: esami e prove ufficiali."
+    customization_title: "Personalizzazione"
+    customization_body: "Aggiungiamo il tuo logo e i tuoi colori alle custodie. Raccontaci il tuo progetto nel modulo e ti mostreremo esempi e opzioni."
+    customization_alt: "Custodia PhoneRelax personalizzata per %{name}"
+    form_title: "Richiedi il tuo preventivo"
+    form_intro: "Rispondiamo entro 24-48 ore lavorative."
+    f_name: "Nome completo"
+    f_organization: "Scuola / azienda / organizzazione"
+    f_email: "E-mail"
+    f_phone: "Telefono"
+    f_sector: "Tipo di organizzazione"
+    f_units: "Unità approssimative"
+    f_message: "Dicci di cosa hai bisogno"
+    submit: "Richiedi un preventivo"
+    sectors:
+      colegio: "Scuola"
+      empresa: "Azienda"
+      evento: "Evento / concerto"
+      academia: "Accademia / università"
+      otro: "Altro"
+  sectors:
+    cta_buy: "Vedi i prodotti"
+    cta_quote: "Richiedi un preventivo"
+    cta_title: "Pronto per iniziare?"
+    cta_body: "Acquista subito per piccoli ordini o richiedi un preventivo per la tua organizzazione."
+    colegios:
+      meta_title: "PhoneRelax per le scuole"
+      meta_description: "Aule senza distrazioni ed esami senza imbrogli: gli studenti ripongono il telefono in una custodia magnetica PhoneRelax. Sconti sulle quantità per le scuole."
+      title: "PhoneRelax per le scuole"
+      subtitle: "Aule senza distrazioni ed esami senza imbrogli, con i telefoni custoditi dagli studenti stessi."
+      intro: "Sempre più regioni limitano l'uso del telefono in aula. Con PhoneRelax, ogni studente ripone il telefono in una custodia magnetica che si apre solo con il magnete della scuola: niente ritiro dei telefoni e nessun insegnante costretto a custodirli."
+      b1_title: "Maggiore concentrazione"
+      b1_body: "Senza la tentazione di controllare il telefono, gli studenti prestano più attenzione e partecipano di più in classe."
+      b2_title: "Esami senza imbrogli"
+      b2_body: "La versione SignalBlocking lascia il telefono senza ricezione né wifi, evitando imbrogli o notifiche durante le prove."
+      b3_title: "Nessuna responsabilità per gli insegnanti"
+      b3_body: "Ogni studente custodisce il proprio telefono nella sua custodia; la scuola non è responsabile di eventuali danni."
+    eventos:
+      meta_title: "PhoneRelax per eventi e concerti"
+      meta_description: "Esperienze senza telefono ai concerti e agli eventi: niente riprese, niente spoiler, con consegna e ritiro rapidi. Richiedi un preventivo per il tuo evento."
+      title: "PhoneRelax per eventi e concerti"
+      subtitle: "Esperienze senza telefono: niente riprese, niente spoiler, con il pubblico immerso nel momento."
+      intro: "Gli eventi senza telefono sono in crescita. Con PhoneRelax, i partecipanti ripongono il telefono in una custodia sigillata che aprono all'uscita: si godono lo spettacolo e rispettano l'artista."
+      b1_title: "Un'esperienza più immersiva"
+      b1_body: "Senza schermi di mezzo, il pubblico vive il momento e si connette con l'artista e gli altri partecipanti."
+      b2_title: "Niente fughe di notizie o spoiler"
+      b2_body: "Ideale per anteprime, spettacoli e presentazioni in cui non vuoi che nulla venga registrato o diffuso."
+      b3_title: "Consegna e ritiro rapidi"
+      b3_body: "Un semplice sistema di consegna con apertura a magnete all'uscita, senza code né complicazioni."
+    empresas:
+      meta_title: "PhoneRelax per le aziende"
+      meta_description: "Riunioni, visite in stabilimento e aree riservate senza telefoni né fotocamere. Custodie magnetiche PhoneRelax con preventivo per le aziende."
+      title: "PhoneRelax per le aziende"
+      subtitle: "Riunioni, visite in stabilimento e aree riservate senza telefoni né fotocamere."
+      intro: "Proteggi la riservatezza e la concentrazione nella tua azienda. Visitatori e dipendenti ripongono il telefono in una custodia sigillata nelle aree in cui non deve essere usato."
+      b1_title: "Riservatezza"
+      b1_body: "Evita foto e registrazioni in aree sensibili, laboratori, linee di produzione o riunioni strategiche."
+      b2_title: "Riunioni più produttive"
+      b2_body: "Senza interruzioni né distrazioni, le riunioni sono più brevi ed efficaci."
+      b3_title: "Facile da implementare"
+      b3_body: "Niente casseforti o infrastrutture: custodie riutilizzabili e un magnete di apertura per ogni area."
+    oposiciones:
+      meta_title: "PhoneRelax per esami e prove ufficiali"
+      meta_description: "Esami e prove ufficiali senza imbrogli: i telefoni restano sigillati e senza ricezione in una custodia magnetica PhoneRelax. Preventivo per accademie e commissioni."
+      title: "PhoneRelax per esami e prove ufficiali"
+      subtitle: "Esami senza imbrogli: i telefoni restano sigillati e senza ricezione durante la prova."
+      intro: "Negli esami e nelle prove ufficiali, il telefono è la principale via per imbrogliare. Con la versione PhoneRelax SignalBlocking, il telefono resta sigillato e senza segnale fino alla fine della prova."
+      b1_title: "Niente ricezione, niente imbrogli"
+      b1_body: "La versione SignalBlocking blocca il segnale del cellulare e del wifi: niente risposte o notifiche in arrivo."
+      b2_title: "Ognuno custodisce il proprio"
+      b2_body: "Ogni persona ripone il telefono nella sua custodia: consegna rapida e nessuna gestione dei dispositivi altrui."
+      b3_title: "Gestione semplice per la commissione"
+      b3_body: "Consegna all'ingresso e apertura a magnete all'uscita; un sistema uniforme e chiaro per tutti."

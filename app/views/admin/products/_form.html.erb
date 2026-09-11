@@ -41,6 +41,7 @@
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇵🇹 Portugués</button>
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇬🇧 Inglés</button>
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇫🇷 Francés</button>
+        <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇮🇹 Italiano</button>
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇩🇪 Alemán</button>
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇸🇪 Sueco</button>
         <button type="button" class="tab-button" data-tabs-target="tab" data-action="tabs#select">🇩🇰 Danés</button>
@@ -82,6 +83,16 @@
           <%= f.label :description_fr, 'Descripción (FR)' %>
           <%= f.hidden_field :description_fr, id: 'product_description_fr' %>
           <trix-editor input="product_description_fr" class="trix-content"></trix-editor>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tabs-target="panel" hidden>
+        <p class="help-block" style="color: var(--muted); font-size: 13px; margin-top: 0;">Si lo dejas vacío, en /it se mostrará el contenido en español.</p>
+        <div><%= f.label :name_it, 'Nombre (IT)' %><%= f.text_field :name_it %></div>
+        <div>
+          <%= f.label :description_it, 'Descripción (IT)' %>
+          <%= f.hidden_field :description_it, id: 'product_description_it' %>
+          <trix-editor input="product_description_it" class="trix-content"></trix-editor>
         </div>
       </div>
 

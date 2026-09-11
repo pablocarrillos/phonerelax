@@ -721,4 +721,47 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "estado: aprobado"
     assert_includes response.body, "pago: pagado para confirmar"
   end
+
+  test "el formulario de nuevo presupuesto ofrece incluir la etiqueta blanca" do
+    create_name_label
+    get new_admin_quote_path
+    assert_response :success
+    assert_select "input[type=checkbox][name=include_name_label]"
+    assert_includes response.body, "Etiqueta blanca para poner el nombre"
+  end
+
+  test "la etiqueta blanca se añade al presupuesto solo si se marca la casilla" do
+    label = create_name_label
+    base = { client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
+             quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 10, description: "", unit_price: "" } } }
+
+    post admin_quotes_path, params: { quote: base }
+    assert_not Quote.last.quote_lines.exists?(product_id: label.id), "sin marcar la casilla no se añade"
+
+    post admin_quotes_path, params: { include_name_label: "1", name_label_quantity: "50", quote: base }
+    line = Quote.last.quote_lines.find_by(product_id: label.id)
+    assert line, "marcada la casilla, la etiqueta se añade como línea"
+    assert_equal "Etiqueta blanca para poner el nombre", line.description # descripción autocompletada
+    assert_equal 50, line.quantity
+    assert_equal BigDecimal("0.35"), line.unit_price # precio del escalado (sin IVA)
+    assert_equal BigDecimal("21"), line.vat_rate
+  end
+
+  test "la etiqueta blanca no está disponible para la venta en la tienda" do
+    create_name_label
+    get root_path
+    assert_response :success
+    assert_not_includes response.body, "Etiqueta blanca para poner el nombre"
+    # la tienda solo sirve productos activos: su ficha y el carrito no la encuentran
+    assert_nil Product.active.find_by_param(Product::NAME_LABEL_HANDLE)
+  end
+
+  private
+
+  def create_name_label
+    label = Product.create!(name: "Etiqueta blanca para poner el nombre", shopify_handle: Product::NAME_LABEL_HANDLE,
+                            active: false, vat_percentage: 21, price: BigDecimal("0.42"))
+    label.price_tiers.create!(min_units: 1, unit_price: BigDecimal("0.35"))
+    label
+  end
 end
