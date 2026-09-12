@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 require_relative "test_helpers/session_test_helper"
+require_relative "test_helpers/quote_test_helper"
 
 module ActiveSupport
   class TestCase
@@ -15,6 +16,8 @@ module ActiveSupport
     # (memory_store): se vacía en cada test para que un límite por IP no salte
     # por el goteo acumulado de toda la suite.
     setup { Rails.cache.clear }
+
+    include QuoteTestHelper
 
     # Add more helper methods to be used by all tests here...
   end

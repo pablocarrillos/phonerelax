@@ -16,7 +16,7 @@ class AccountingTest < ActionDispatch::IntegrationTest
     Order.where.not(id: @order.id).update_all(created_at: 2.years.ago) # las fixtures, fuera del tramo
 
     @client = Client.create!(name: "Colegio Test", tax_id: "B00000000", address: "Calle 1", email: "cole@example.com")
-    @quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    @quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                            quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 10, unit_price: "10", vat_rate: 21 } })
     @quote.update!(status: :aprobado)
   end
@@ -99,7 +99,7 @@ class AccountingTest < ActionDispatch::IntegrationTest
     assert_equal @quote.total.to_f, invoice.total.to_f
     assert_equal invoice, Invoice.issue_for_quote!(@quote), "idempotente"
 
-    abierto = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    abierto = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                             quote_lines_attributes: { "0" => { description: "Otra", quantity: 1, unit_price: "5", vat_rate: 21 } })
     assert_raises(ArgumentError) { Invoice.issue_for_quote!(abierto) }
   end

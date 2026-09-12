@@ -92,6 +92,30 @@ class Quote < ApplicationRecord
   has_one_attached :approved_sample
   has_one_attached :signed_quote
 
+  # Imágenes del diseño de la funda: son OBLIGATORIAS para emitir el
+  # presupuesto, porque son lo que el cliente aprueba con su firma y sello. Van
+  # aparte de los ficheros del pedido (que son posteriores a la aprobación):
+  # estas se suben en el propio formulario, al crear.
+  CASE_IMAGES = { "case_front_image" => "Diseño: parte delantera",
+                  "case_back_image" => "Diseño: parte trasera" }.freeze
+
+  has_one_attached :case_front_image
+  has_one_attached :case_back_image
+
+  def case_image(name)
+    case name.to_s
+    when "case_front_image" then case_front_image
+    when "case_back_image" then case_back_image
+    else raise ArgumentError, "imagen desconocida: #{name}"
+    end
+  end
+
+  # ¿Están las dos imágenes del diseño? (los presupuestos anteriores a que
+  # fueran obligatorias pueden no tenerlas)
+  def case_images?
+    case_front_image.attached? && case_back_image.attached?
+  end
+
   # Adjunto por nombre, con despacho explícito (nunca send con datos del usuario).
   def order_file(name)
     case name.to_s
@@ -106,6 +130,30 @@ class Quote < ApplicationRecord
   # ¿Lleva personalización DTF entre sus líneas?
   def dtf_lines?
     quote_lines.any? { |line| line.product && line.product.dtf_units.positive? }
+  end
+
+  # ¿Lleva la etiqueta blanca para poner el nombre?
+  def name_label_lines?
+    active_lines.any? { |line| line.product&.name_label? }
+  end
+
+  # Productos que obligan a revisar el diseño con el cliente antes de fabricar:
+  # la etiqueta con el nombre y la personalización DTF llevan arte que hay que
+  # validar, no basta con el precio.
+  def design_review_products
+    [ ("«#{Product::NAME_LABEL_NAME}»" if name_label_lines?),
+      ("«personalización con DTF»" if dtf_lines?) ].compact
+  end
+
+  def needs_design_review?
+    design_review_products.any?
+  end
+
+  # El aviso, en una frase, para la ficha y para el comentario automático.
+  def design_review_warning
+    "Este presupuesto incluye #{design_review_products.to_sentence}: hay que REVISAR EL DISEÑO " \
+      "y validarlo con el cliente antes de fabricar. La fabricación no empieza hasta tener el " \
+      "presupuesto firmado o sellado aprobando el diseño."
   end
 
   # Adjuntos que aplican a este presupuesto: la imagen de muestra aprobada solo
@@ -131,6 +179,10 @@ class Quote < ApplicationRecord
   validates :shipping_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :discount_percent, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validate :must_have_lines
+  # Obligatorias al EMITIR el presupuesto. En edición no se exigen, para no
+  # dejar bloqueados los presupuestos anteriores a esta norma; la ficha avisa
+  # de los que les falten.
+  validate :must_have_case_images, on: :create
 
   # Cuenta donde se pide el pago (con respaldo a la histórica).
   def bank_account_display
@@ -232,6 +284,12 @@ class Quote < ApplicationRecord
   end
 
   private
+
+  def must_have_case_images
+    CASE_IMAGES.each do |name, label|
+      errors.add(:base, "Falta la imagen del diseño: #{label.sub('Diseño: ', '')}") unless case_image(name).attached?
+    end
+  end
 
   # Autocompleta las líneas con producto: descripción del catálogo y precio del
   # escalado según las unidades (solo lo que se dejó en blanco).

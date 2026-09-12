@@ -111,7 +111,7 @@ class AdminLeadsTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "vinculado al lead"
 
     # paso 3: crear el presupuesto lo vincula y actualiza el lead con su importe
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: client.id, lead_id: @lead.id, issued_on: Date.current.iso8601, delivery_terms: "2 semanas",
       shipping_cost: 0, vat_rate: 21,
       quote_lines_attributes: { "0" => { description: "Fundas personalizadas", quantity: 100, unit_price: "9", vat_rate: 21 } }

@@ -43,7 +43,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "el presupuesto aplica el escalado según unidades y calcula los totales" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "29.75", vat_rate: "21",
       quote_lines_attributes: {
         "0" => { product_id: products(:funda).id, quantity: 180, description: "", unit_price: "" },
@@ -65,7 +65,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "los campos autocompletados se pueden fijar a mano" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 180,
                                          description: "Bolsa SignalBlocking con tarjetero",
@@ -81,7 +81,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "la versión imprimible muestra el formato oficial con cuenta y observaciones" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "29.75",
       payment_terms: "Pago a 30 días.", delivery_terms: "1 de septiembre de 2026",
       bank_account: Quote::BANK_ACCOUNTS.last, remarks: "Incluye 2 imanes de repuesto sin coste.",
@@ -118,7 +118,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "la previsualización de un presupuesto existente usa su número real" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "septiembre", shipping_cost: "0",
       quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
     } }
@@ -136,7 +136,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "descuento por línea y descuento global se aplican a los totales" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0", vat_rate: "21", discount_percent: "5",
       quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 100, unit_price: "10", vat_rate: "21", discount_percent: "10" } }
     } }
@@ -149,7 +149,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "el documento solo muestra los descuentos cuando se usan" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { description: "Sin descuento", quantity: 1, unit_price: "10" } }
     } }
@@ -165,7 +165,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "las líneas marcadas con _destroy se eliminan al guardar" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { description: "Uno", quantity: 1, unit_price: "10" },
                                 "1" => { description: "Dos", quantity: 2, unit_price: "5" } }
@@ -192,7 +192,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     quote.shipping_country = "Francia"
     assert_equal BigDecimal("26.03"), quote.computed_shipping # (11,50 + 20) / 1,21
 
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "21.45", shipping_country: "Francia",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 10 } }
     } }
@@ -200,7 +200,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "las líneas se ordenan por su posición en todo el documento" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { description: "Primera", quantity: 1, unit_price: "10", position: 1 },
                                 "1" => { description: "Segunda", quantity: 1, unit_price: "5", position: 2 } }
@@ -220,12 +220,12 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "la descripción interna sale en el listado y se puede filtrar por cliente" do
     otro = Client.create!(name: "Otro Centro")
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "septiembre", shipping_cost: "0",
       internal_description: "180 uds. curso 26/27",
       quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
     } }
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: otro.id, issued_on: "2026-08-04", delivery_terms: "septiembre", shipping_cost: "0",
       quote_lines_attributes: { "0" => { description: "Imanes", quantity: 1, unit_price: "40" } }
     } }
@@ -241,14 +241,14 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "un presupuesto sin líneas no se puede crear" do
     assert_no_difference "Quote.count" do
-      post admin_quotes_path, params: { quote: { client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "29.75" } }
+      post admin_quotes_path, params: { quote: { **design_image_params, client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "29.75" } }
     end
     assert_response :unprocessable_entity
     assert_includes response.body, "al menos una línea"
   end
 
   test "duplicar un presupuesto crea uno nuevo con número y fechas nuevos" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-07-01", valid_until: "2026-07-08", shipping_cost: "29.75", delivery_terms: "julio 2026",
       remarks: "Observación heredada",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 180 } }
@@ -266,7 +266,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "sin cuenta elegida se imprime la histórica de CAJAMAR" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
       quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 1 } }
     } }
@@ -316,7 +316,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "el plazo de entrega es obligatorio y las condiciones por defecto son 50/50" do
     assert_no_difference "Quote.count" do
-      post admin_quotes_path, params: { quote: {
+      post admin_quotes_path, params: { quote: { **design_image_params,
         client_id: @client.id, issued_on: "2026-08-04", shipping_cost: "0",
         quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
       } }
@@ -329,12 +329,12 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   def a_quote
-    Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                   quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
   end
 
   test "los comentarios del presupuesto guardan fecha/hora y usuario, y se borran" do
-    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                           quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
 
     post admin_quote_comments_path(quote), params: { quote_comment: { body: "Llamado: firma esta semana." } }
@@ -359,7 +359,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "el contacto se guarda y el buscador encuentra por textos, contacto, cliente y ficheros" do
-    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                           contact_name: "María López", contact_email: "maria@colegiosanluis.es",
                           contact_phone: "612 345 678", delivery_address: "Colegio San Luis, C/ Mayor 1, 03001 Alicante",
                           notes: "pendiente de vinilo dorado",
@@ -375,7 +375,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Colegio San Luis, C/ Mayor 1, 03001 Alicante"
 
     # un presupuesto de otro año, para comprobar que la búsqueda abarca todos
-    old = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    old = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                         quote_lines_attributes: { "0" => { description: "Cinta separadora", quantity: 1, unit_price: 5, vat_rate: 21 } })
     old.update_columns(created_at: 2.years.ago)
 
@@ -461,7 +461,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "el transporte fijado a mano se conserva al editar y al duplicar" do
-    post admin_quotes_path, params: { quote: {
+    post admin_quotes_path, params: { quote: { **design_image_params,
       client_id: @client.id, issued_on: "2026-08-06", delivery_terms: "septiembre", vat_rate: "21",
       shipping_cost: "45.00", manual_shipping: "true",
       quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } }
@@ -513,7 +513,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   test "los ficheros del pedido solo se pueden subir con el presupuesto aprobado" do
     # Con línea de Personalización DTF, para que el fichero «Logo» esté disponible.
     dtf = Product.create!(name: "Personalización DTF test", price: 5, stock: 0, vat_percentage: 21)
-    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                           quote_lines_attributes: { "0" => { product_id: dtf.id, quantity: 1 } })
     patch upload_files_admin_quote_path(quote), params: { quote: { school_logo: fixture_file_upload("cover.png", "image/png") } }
     assert_not quote.reload.school_logo.attached?, "abierto: no se admite la subida"
@@ -548,7 +548,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_not plain.reload.approved_sample.attached?, "sin DTF no se admite la muestra"
 
     dtf = Product.create!(name: "Personalización DTF funda", price: 3)
-    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, status: :aprobado,
+    quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, status: :aprobado,
                           quote_lines_attributes: { "0" => { product_id: dtf.id, description: "DTF", quantity: 10, unit_price: 3 } })
     assert quote.dtf_lines?
     get admin_quote_path(quote)
@@ -570,22 +570,22 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "el fichero «Logo» solo está disponible si el presupuesto contrata Personalización DTF" do
     dtf = Product.create!(name: "Personalización DTF test", price: 5, stock: 0, vat_percentage: 21)
-    plain = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    plain = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                           quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: 10 } })
     assert_not_includes plain.available_files, "school_logo", "sin DTF no aparece el Logo"
     assert_includes plain.available_files, "signed_quote", "el presupuesto firmado siempre está disponible"
 
-    with_dtf = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    with_dtf = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                              quote_lines_attributes: { "0" => { product_id: dtf.id, quantity: 1 } })
     assert_includes with_dtf.available_files, "school_logo", "con DTF sí aparece el Logo"
   end
 
   test "el listado de aprobados señala la personalización DTF y su fichero" do
     dtf = Product.create!(name: "Personalización DTF test", price: 5, stock: 0, vat_percentage: 21)
-    con_dtf = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    con_dtf = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                             quote_lines_attributes: { "0" => { product_id: dtf.id, quantity: 25 } })
     con_dtf.update!(status: :aprobado)
-    sin_dtf = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    sin_dtf = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                             quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 1, unit_price: "10" } })
     sin_dtf.update!(status: :aprobado)
 
@@ -650,7 +650,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     # 100 uds a 2 € + 100 € de transporte → coste real 3 €/ud
     compra.purchase_lines.create!(product: producto, quantity: 100, unit_cost: 2, shipping_cost: 100)
 
-    quote = Quote.create!(client: @client, issued_on: Date.current, shipping_cost: 50, vat_rate: 21, delivery_terms: "x",
+    quote = create_quote(client: @client, issued_on: Date.current, shipping_cost: 50, vat_rate: 21, delivery_terms: "x",
                           quote_lines_attributes: { "0" => { product_id: producto.id, description: "Fundas",
                                                              quantity: 10, unit_price: 10, vat_rate: 21 } })
 
@@ -675,7 +675,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     recibida = Purchase.create!(supplier: proveedor, ordered_on: Date.current, currency: "EUR", received_on: Date.current)
     recibida.purchase_lines.create!(product: producto, quantity: 100, unit_cost: 2, shipping_cost: 100) # 3 €/ud
 
-    quote = Quote.create!(client: @client, issued_on: Date.current, shipping_cost: 0, vat_rate: 21, delivery_terms: "x",
+    quote = create_quote(client: @client, issued_on: Date.current, shipping_cost: 0, vat_rate: 21, delivery_terms: "x",
                           quote_lines_attributes: { "0" => { product_id: producto.id, description: "Fundas",
                                                              quantity: 10, unit_price: 10, vat_rate: 21 } })
 
@@ -692,7 +692,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
   end
 
   test "sin costes conocidos no se inventa margen" do
-    quote = Quote.create!(client: @client, issued_on: Date.current, shipping_cost: 0, vat_rate: 21, delivery_terms: "x",
+    quote = create_quote(client: @client, issued_on: Date.current, shipping_cost: 0, vat_rate: 21, delivery_terms: "x",
                           quote_lines_attributes: { "0" => { description: "Servicio a medida", quantity: 1,
                                                              unit_price: 500, vat_rate: 21 } })
     assert_equal 0, quote.product_cost_eur.to_f
@@ -700,7 +700,7 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "Margen estimado"
   end
   test "el histórico del presupuesto registra creación, estados, pagos y albarán" do
-    quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x",
+    quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x",
                           shipping_cost: 0, payment_terms: "x",
                           quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
     assert_equal [ "creado" ], quote.quote_events.chronological.map(&:event)
@@ -732,7 +732,8 @@ class AdminQuotesTest < ActionDispatch::IntegrationTest
 
   test "la etiqueta blanca se añade al presupuesto solo si se marca la casilla" do
     label = create_name_label
-    base = { client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
+    base = { **design_image_params,
+             client_id: @client.id, issued_on: "2026-08-04", delivery_terms: "1 de septiembre de 2026", shipping_cost: "0",
              quote_lines_attributes: { "0" => { product_id: products(:funda).id, quantity: 10, description: "", unit_price: "" } } }
 
     post admin_quotes_path, params: { quote: base }

@@ -26,6 +26,15 @@
     .conditions { width: 50%; }
     .accept { border: 1.5px solid #111; padding: 10px 14px; width: 45%; min-height: 110px; font-weight: bold; text-align: center; }
     .small-print { margin-top: 22px; }
+    .design { margin-top: 26px; page-break-inside: avoid; }
+    .design h2 { font-size: 15px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: .5px; }
+    .design-images { display: flex; gap: 18px; }
+    .design-images figure { margin: 0; width: 50%; border: 1.5px solid #111; padding: 10px; text-align: center; }
+    .design-images img { max-width: 100%; max-height: 240px; object-fit: contain; }
+    .design-images figcaption { font-weight: bold; margin-top: 6px; font-size: 13px; }
+    .design-note { border: 1.5px solid #111; padding: 10px 14px; margin-top: 12px; font-weight: bold; text-align: center; }
+    .review-note { border: 2px solid #111; padding: 10px 14px; margin-top: 12px; font-weight: bold;
+                   background: #ededed; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .page-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; font-size: 12px; padding: 8px 0 14px; border-top: 1px solid #111; background: #fff; }
     .print-bar { position: fixed; bottom: 70px; right: 16px; }
     @media print { .print-bar { display: none; } }
@@ -107,8 +116,34 @@
       <p>Cuenta Bancaria: <%= @quote.bank_account_display %></p>
       <% if @quote.delivery_terms.present? %><p>Plazo de entrega: <%= @quote.delivery_terms %>.</p><% end %>
     </div>
-    <div class="accept">Aceptación por escrito, sello de la empresa, fecha y firma.</div>
+    <div class="accept">Aceptación por escrito, sello de la empresa, fecha y firma.<br><br>
+      La firma y el sello aprueban también el DISEÑO de la funda que figura en este presupuesto.</div>
   </div>
+
+  <%# El diseño que el cliente aprueba al firmar o sellar este presupuesto. %>
+  <% if @quote.case_images? %>
+    <div class="design">
+      <h2>Diseño de la funda</h2>
+      <div class="design-images">
+        <% Quote::CASE_IMAGES.each do |name, label| %>
+          <figure>
+            <img src="<%= rails_blob_path(@quote.case_image(name)) %>" alt="<%= label %>">
+            <figcaption><%= label.sub('Diseño: ', '').capitalize %></figcaption>
+          </figure>
+        <% end %>
+      </div>
+      <div class="design-note">
+        Para poder iniciar la fabricación es necesario devolver este presupuesto FIRMADO Y SELLADO,
+        aprobando expresamente el diseño que aquí figura. Sin esa aprobación no se fabrica nada.
+      </div>
+      <% if @quote.needs_design_review? %>
+        <div class="review-note">
+          ATENCIÓN: este pedido lleva <%= @quote.design_review_products.to_sentence %>. Revise con detalle
+          el diseño (textos, nombres y colocación) antes de firmarlo: una vez aprobado se fabrica tal cual.
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 
   <% if @quote.remarks.present? %>
     <div style="margin-top:16px;"><strong>Observaciones:</strong> <span style="white-space:pre-line;"><%= @quote.remarks %></span></div>

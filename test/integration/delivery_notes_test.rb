@@ -14,7 +14,7 @@ class DeliveryNotesTest < ActionDispatch::IntegrationTest
     @order.order_lines.create!(product: @product, quantity: 2, unit_price: 12.10)
 
     @client = Client.create!(name: "Colegio Test", tax_id: "B00000000", address: "Calle 1", email: "cole@example.com")
-    @quote = Quote.create!(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
+    @quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0, payment_terms: "x",
                            quote_lines_attributes: { "0" => { description: "Bolsas", quantity: 10, unit_price: "10", vat_rate: 21 } })
   end
 

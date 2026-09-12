@@ -6,9 +6,16 @@ class Product < ApplicationRecord
   # tienda (active: false), pero se ofrece explícitamente al crear un
   # presupuesto. Se referencia por su handle, estable entre entornos.
   NAME_LABEL_HANDLE = "etiqueta-blanca-nombre"
+  NAME_LABEL_NAME = "etiqueta blanca para poner el nombre"
 
   def self.name_label
     find_by(shopify_handle: NAME_LABEL_HANDLE)
+  end
+
+  # ¿Es la etiqueta blanca del nombre? Por handle, que es estable entre
+  # entornos (el nombre se puede traducir o retocar).
+  def name_label?
+    shopify_handle == NAME_LABEL_HANDLE
   end
 
   has_many :order_lines, dependent: :restrict_with_error

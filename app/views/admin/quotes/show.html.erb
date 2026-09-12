@@ -1,6 +1,28 @@
 <p><%= link_to '← Volver a presupuestos', admin_quotes_path %></p>
 <h1>Presupuesto <%= @quote.number %></h1>
 
+<%# Aviso bien visible: productos con arte que hay que validar con el cliente. %>
+<% if @quote.needs_design_review? %>
+  <div class="errors" style="max-width:960px;">
+    <strong>⚠ Revisar el diseño con el cliente</strong>
+    <p style="margin:6px 0 0;"><%= @quote.design_review_warning %></p>
+  </div>
+<% end %>
+
+<%# Presupuestos anteriores a que las imágenes fueran obligatorias. %>
+<% unless @quote.case_images? %>
+  <div class="errors" style="max-width:960px;">
+    <strong>Faltan imágenes del diseño</strong>
+    <p style="margin:6px 0 0;">
+      Este presupuesto no tiene
+      <%= Quote::CASE_IMAGES.reject { |name, _| @quote.case_image(name).attached? }
+                            .values.map { |l| l.sub('Diseño: ', '') }.to_sentence %>.
+      El cliente firma el diseño, así que conviene subirlas desde
+      <%= link_to 'Editar', edit_admin_quote_path(@quote) %> antes de enviárselo.
+    </p>
+  </div>
+<% end %>
+
 <div class="order-actions">
   <p class="order-badges">
     <strong>Estado:</strong> <span class="badge <%= @quote.status %>"><%= @quote.status_label %></span>
@@ -173,6 +195,24 @@
 <% end %>
 
 <%# histórico de lo que se va marcando en el pedido, como el de los pedidos web %>
+<h2 style="margin-top: 28px;">Diseño de la funda</h2>
+<p class="action-note" style="margin-top:0;">Es lo que el cliente aprueba al firmar o sellar el presupuesto. Se cambia desde <%= link_to 'Editar', edit_admin_quote_path(@quote) %>.</p>
+<div style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:8px;">
+  <% Quote::CASE_IMAGES.each do |name, label| %>
+    <% image = @quote.case_image(name) %>
+    <figure style="margin:0; border:1px solid var(--border); border-radius:var(--radius); padding:10px; text-align:center; width:240px;">
+      <% if image.attached? %>
+        <a href="<%= rails_blob_path(image) %>" target="_blank" rel="noopener">
+          <img src="<%= rails_blob_path(image) %>" alt="<%= label %>" style="max-width:100%; max-height:180px;">
+        </a>
+      <% else %>
+        <span style="color:var(--muted);">sin imagen</span>
+      <% end %>
+      <figcaption style="font-weight:600; margin-top:6px;"><%= label.sub('Diseño: ', '').capitalize %></figcaption>
+    </figure>
+  <% end %>
+</div>
+
 <h2 style="margin-top: 28px;">Histórico</h2>
 <% if @quote.quote_events.any? %>
   <table class="table" style="max-width: 520px;">

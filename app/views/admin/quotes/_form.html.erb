@@ -6,7 +6,7 @@
    end %>
 <% shipping_rates = Order::EU_COUNTRIES.index_with { |country| ShippingRate.base_for(country).to_f } %>
 
-<%= form_with model: [:admin, quote], local: true,
+<%= form_with model: [:admin, quote], local: true, html: { multipart: true },
               data: { controller: 'quote-form', quote_form_products_value: product_data.to_json,
                       quote_form_rates_value: shipping_rates.to_json } do |f| %>
   <%= f.hidden_field :lead_id %>
@@ -47,6 +47,35 @@
     <div class="full"><%= f.label :delivery_address, 'Dirección de entrega' %><%= f.text_area :delivery_address, rows: 2, placeholder: "p. ej. Colegio San José, C/ Mayor 1, 03001 Alicante" %></div>
     <div class="full"><%= f.label :remarks, 'Observaciones (SÍ salen en el presupuesto)' %><%= f.text_area :remarks, rows: 2 %></div>
     <div class="full"><%= f.label :notes, 'Notas internas (no salen en el PDF)' %><%= f.text_area :notes, rows: 2 %></div>
+  </div>
+
+  <%# Imágenes del diseño: obligatorias para emitir el presupuesto, porque son
+      lo que el cliente aprueba al firmarlo o sellarlo. Salen en el documento. %>
+  <div style="max-width:860px; margin:20px 0; padding:12px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius);">
+    <strong>Diseño de la funda (obligatorio)</strong>
+    <p class="action-note" style="margin:6px 0 10px;">
+      Las dos imágenes salen en el presupuesto que firma el cliente. Sin ellas no se puede emitir:
+      son el diseño que aprueba con su firma o su sello, y sin esa aprobación no se fabrica.
+    </p>
+    <div class="form-grid">
+      <% Quote::CASE_IMAGES.each do |name, label| %>
+        <%# Solo hay miniatura si el presupuesto ya está guardado: en uno nuevo
+            la imagen está asignada pero todavía no tiene URL. %>
+        <% attached = quote.persisted? && quote.case_image(name).attached? %>
+        <div>
+          <%= f.label name, "#{label.sub('Diseño: ', '').capitalize} *" %>
+          <%= f.file_field name, accept: 'image/*', required: !attached %>
+          <% if attached %>
+            <p class="action-note" style="margin:4px 0 0;">
+              <a href="<%= rails_blob_path(quote.case_image(name)) %>" target="_blank" rel="noopener">
+                <img src="<%= rails_blob_path(quote.case_image(name)) %>" alt="<%= label %>" style="height:44px; border-radius:4px; vertical-align:middle;">
+              </a>
+              Ya subida. Elige otra solo si quieres sustituirla.
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <% if quote.new_record? && @label_product %>

@@ -105,7 +105,13 @@ module Admin
       if @quote.save
         # presupuesto vinculado a un lead: queda en su historial con su importe
         @quote.lead&.register_quote!(@quote)
-        redirect_to admin_quote_path(@quote), notice: "Presupuesto #{@quote.number} creado."
+        # productos con arte (etiqueta con nombre, DTF): queda escrito en los
+        # comentarios y se avisa en pantalla, para que no se fabrique sin que
+        # el cliente haya validado el diseño
+        note_design_review(@quote)
+        redirect_to admin_quote_path(@quote),
+                    notice: "Presupuesto #{@quote.number} creado.",
+                    alert: (@quote.design_review_warning if @quote.needs_design_review?)
       else
         build_blank_lines
         render :new, status: :unprocessable_entity
@@ -187,11 +193,20 @@ module Admin
     # Crea un presupuesto nuevo partiendo de este: mismas líneas y condiciones,
     # pero con número nuevo y fechas de hoy, listo para editar.
     def duplicate
+      unless @quote.case_images?
+        return redirect_to admin_quote_path(@quote),
+                           alert: "#{@quote.number} no tiene las dos imágenes del diseño, así que no se puede duplicar. " \
+                                  "Súbelas primero (Editar) y vuelve a intentarlo."
+      end
+
       copy = @quote.dup
       copy.assign_attributes(number: nil, issued_on: Date.current,
                              valid_until: Date.current + Quote::DEFAULT_VALIDITY_DAYS.days)
       @quote.quote_lines.each { |line| copy.quote_lines.build(line.attributes.except("id", "quote_id", "created_at", "updated_at")) }
+      # el diseño viaja con la copia: es obligatorio y suele ser el mismo
+      Quote::CASE_IMAGES.each_key { |name| copy.case_image(name).attach(@quote.case_image(name).blob) }
       copy.save!
+      note_design_review(copy)
       redirect_to edit_admin_quote_path(copy), notice: "Presupuesto #{copy.number} creado a partir de #{@quote.number}."
     end
 
@@ -221,6 +236,15 @@ module Admin
       @quote = Quote.includes(quote_lines: :product).find(params[:id])
     end
 
+    # Deja el aviso de revisar el diseño en los comentarios del presupuesto,
+    # firmado por quien lo ha creado. Así queda en el seguimiento y no depende
+    # de que alguien se acuerde de leer el mensaje de pantalla.
+    def note_design_review(quote)
+      return unless quote.needs_design_review?
+
+      quote.comments.create!(body: "⚠ #{quote.design_review_warning}", user: Current.user)
+    end
+
     def build_blank_lines
       3.times { @quote.quote_lines.build }
     end
@@ -240,6 +264,7 @@ module Admin
       params.require(:quote).permit(:number, :client_id, :lead_id, :issued_on, :valid_until, :shipping_cost, :manual_shipping, :vat_rate,
                                     :payment_terms, :delivery_terms, :notes, :remarks, :bank_account, :discount_percent, :shipping_country, :internal_description,
                                     :contact_name, :contact_email, :contact_phone, :delivery_address,
+                                    :case_front_image, :case_back_image,
                                     quote_lines_attributes: [ :id, :product_id, :description, :quantity,
                                                               :unit_price, :vat_rate, :discount_percent, :position, :_destroy ])
     end

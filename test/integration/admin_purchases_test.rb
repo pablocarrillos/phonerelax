@@ -124,7 +124,7 @@ class AdminPurchasesTest < ActionDispatch::IntegrationTest
 
   test "una línea de compra se imputa a un presupuesto y su coste aparece en él" do
     client = Client.create!(name: "Colegio Imputado")
-    quote = Quote.create!(client: client, issued_on: Date.current, delivery_terms: "x",
+    quote = create_quote(client: client, issued_on: Date.current, delivery_terms: "x",
                           quote_lines_attributes: { "0" => { description: "Fundas con logo", quantity: 100, unit_price: 5, vat_rate: 21 } })
 
     post admin_purchases_path, params: { purchase: {
