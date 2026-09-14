@@ -10,6 +10,13 @@
   </script>
 <% end %>
 <div class="container section" style="max-width: 760px;">
+  <%# Atajo solo para el personal (sesión iniciada): del seguimiento del envío a
+      la ficha de datos del pedido en el admin. No se muestra a los clientes. %>
+  <% if authenticated? %>
+    <p style="margin:0 0 16px; padding:8px 14px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); font-size:14px;">
+      👤 <%= link_to "Ver la ficha del pedido (admin)", admin_order_path(@order) %>
+    </p>
+  <% end %>
   <% if @order.pago_pagado? %>
     <div class="thanks-hero">
       <div class="thanks-icon">🎉</div>
