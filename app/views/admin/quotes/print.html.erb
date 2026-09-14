@@ -121,13 +121,13 @@
   </div>
 
   <%# El diseño que el cliente aprueba al firmar o sellar este presupuesto. %>
-  <% if @quote.case_images? %>
-    <div class="design">
-      <h2>Diseño de la funda</h2>
+  <%# El diseño sale siempre: la imagen propia subida o la predeterminada. %>
+  <div class="design">
+    <h2>Diseño de la funda</h2>
       <div class="design-images">
         <% Quote::CASE_IMAGES.each do |name, label| %>
           <figure>
-            <img src="<%= rails_blob_path(@quote.case_image(name)) %>" alt="<%= label %>">
+            <img src="<%= @quote.case_image_src(name) %>" alt="<%= label %>">
             <figcaption><%= label.sub('Diseño: ', '').capitalize %></figcaption>
           </figure>
         <% end %>
@@ -142,8 +142,7 @@
           el diseño (textos, nombres y colocación) antes de firmarlo: una vez aprobado se fabrica tal cual.
         </div>
       <% end %>
-    </div>
-  <% end %>
+  </div>
 
   <% if @quote.remarks.present? %>
     <div style="margin-top:16px;"><strong>Observaciones:</strong> <span style="white-space:pre-line;"><%= @quote.remarks %></span></div>

@@ -1,9 +1,9 @@
 require "test_helper"
 
-# Diseño de la funda en el presupuesto: las dos imágenes son obligatorias para
-# emitirlo, el documento pide firma y sello aprobando ese diseño, y los
-# productos con arte (etiqueta con nombre, DTF) obligan a revisarlo con el
-# cliente antes de fabricar.
+# Diseño de la funda en el presupuesto: hay una imagen predeterminada para cada
+# cara y se puede subir otra para sustituirla; el documento pide firma y sello
+# aprobando ese diseño, y los productos con arte (etiqueta con nombre, DTF)
+# obligan a revisarlo con el cliente antes de fabricar.
 class QuoteDesignTest < ActionDispatch::IntegrationTest
   setup do
     sign_in_as(users(:one))
@@ -17,28 +17,35 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
       .merge(extra)
   end
 
-  # --- las dos imágenes son obligatorias ---
+  # --- imágenes por defecto (se pueden sustituir subiendo otra) ---
 
-  test "sin las dos imágenes del diseño no se puede emitir el presupuesto" do
-    assert_no_difference -> { Quote.count } do
+  test "sin subir imágenes el presupuesto se emite y usa las predeterminadas" do
+    assert_difference -> { Quote.count }, 1 do
       post admin_quotes_path, params: { quote: quote_params }
     end
 
-    assert_response :unprocessable_entity
-    assert_includes response.body, "Falta la imagen del diseño: parte delantera"
-    assert_includes response.body, "Falta la imagen del diseño: parte trasera"
+    quote = Quote.last
+    assert_redirected_to admin_quote_path(quote)
+    assert_not quote.case_front_image.attached?
+    assert_not quote.case_back_image.attached?
+
+    # el documento muestra igualmente las dos caras: las predeterminadas
+    get print_admin_quote_path(quote)
+    assert_includes response.body, Quote::DEFAULT_CASE_IMAGES["case_front_image"]
+    assert_includes response.body, Quote::DEFAULT_CASE_IMAGES["case_back_image"]
   end
 
-  test "con una sola imagen tampoco: hacen falta las dos caras" do
+  test "subir solo una imagen: la otra cara usa la predeterminada" do
     solo_delantera = design_image_params.except(:case_back_image)
 
-    assert_no_difference -> { Quote.count } do
-      post admin_quotes_path, params: { quote: quote_params(**solo_delantera) }
-    end
+    post admin_quotes_path, params: { quote: quote_params(**solo_delantera) }
+    quote = Quote.last
+    assert_redirected_to admin_quote_path(quote)
+    assert quote.case_front_image.attached?    # la subida
+    assert_not quote.case_back_image.attached? # la trasera cae en la predeterminada
 
-    assert_response :unprocessable_entity
-    assert_includes response.body, "parte trasera"
-    assert_not_includes response.body, "Falta la imagen del diseño: parte delantera"
+    get print_admin_quote_path(quote)
+    assert_includes response.body, Quote::DEFAULT_CASE_IMAGES["case_back_image"]
   end
 
   test "con las dos imágenes se emite y quedan guardadas" do
@@ -53,7 +60,7 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
     assert quote.case_back_image.attached?
   end
 
-  test "un presupuesto anterior a la norma se sigue pudiendo editar, y su ficha lo avisa" do
+  test "sin imágenes propias la ficha muestra las predeterminadas, no un aviso" do
     quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0,
                          quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
     quote.case_front_image.purge
@@ -64,7 +71,9 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
     assert_equal "2 semanas", quote.reload.delivery_terms
 
     get admin_quote_path(quote)
-    assert_includes response.body, "Faltan imágenes del diseño"
+    assert_not_includes response.body, "Faltan imágenes del diseño"
+    assert_includes response.body, Quote::DEFAULT_CASE_IMAGES["case_front_image"]
+    assert_includes response.body, "(predeterminada)"
   end
 
   # --- firma y sello aprobando el diseño ---
@@ -147,16 +156,19 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
     assert_equal original.case_front_image.blob, copia.case_front_image.blob
   end
 
-  test "duplicar uno sin diseño avisa en vez de reventar" do
+  test "duplicar uno sin imágenes propias funciona (la copia usa las predeterminadas)" do
     quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0,
                          quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
     quote.case_front_image.purge
+    quote.case_back_image.purge
 
-    assert_no_difference -> { Quote.count } do
+    assert_difference -> { Quote.count }, 1 do
       post duplicate_admin_quote_path(quote)
     end
 
-    assert_redirected_to admin_quote_path(quote)
-    assert_match(/no tiene las dos imágenes del diseño/, flash[:alert])
+    copia = Quote.last
+    assert_not_equal quote, copia
+    assert_not copia.case_front_image.attached?
+    assert_not copia.case_back_image.attached?
   end
 end

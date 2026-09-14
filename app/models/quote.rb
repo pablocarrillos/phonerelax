@@ -99,6 +99,12 @@ class Quote < ApplicationRecord
   CASE_IMAGES = { "case_front_image" => "Diseño: parte delantera",
                   "case_back_image" => "Diseño: parte trasera" }.freeze
 
+  # Imágenes por defecto del diseño (ficheros estáticos en public/images/quotes).
+  # Se muestran cuando el presupuesto no lleva una imagen propia subida, así no
+  # hace falta subirlas en cada presupuesto pero se puede sustituir cualquiera.
+  DEFAULT_CASE_IMAGES = { "case_front_image" => "/images/quotes/funda-frontal.jpg",
+                          "case_back_image" => "/images/quotes/funda-trasera.jpg" }.freeze
+
   has_one_attached :case_front_image
   has_one_attached :case_back_image
 
@@ -110,8 +116,24 @@ class Quote < ApplicationRecord
     end
   end
 
-  # ¿Están las dos imágenes del diseño? (los presupuestos anteriores a que
-  # fueran obligatorias pueden no tenerlas)
+  # ¿Se ha subido una imagen propia para esta cara? (si no, se usa la de por defecto)
+  def case_image_uploaded?(name)
+    case_image(name).attached?
+  end
+
+  # Ruta de la imagen a mostrar (documento, ficha y formulario): la subida o,
+  # si no hay, la predeterminada estática.
+  def case_image_src(name)
+    image = case_image(name)
+    if image.attached? && image.blob&.persisted?
+      Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
+    else
+      DEFAULT_CASE_IMAGES.fetch(name.to_s)
+    end
+  end
+
+  # ¿Tiene las dos imágenes propias subidas? (con el default siempre hay algo
+  # que mostrar; esto distingue las que llevan diseño propio)
   def case_images?
     case_front_image.attached? && case_back_image.attached?
   end
@@ -180,10 +202,6 @@ class Quote < ApplicationRecord
   validates :discount_percent, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validate :must_have_lines
   # Obligatorias al EMITIR el presupuesto. En edición no se exigen, para no
-  # dejar bloqueados los presupuestos anteriores a esta norma; la ficha avisa
-  # de los que les falten.
-  validate :must_have_case_images, on: :create
-
   # Cuenta donde se pide el pago (con respaldo a la histórica).
   def bank_account_display
     bank_account.presence || BANK_ACCOUNTS.first
@@ -284,12 +302,6 @@ class Quote < ApplicationRecord
   end
 
   private
-
-  def must_have_case_images
-    CASE_IMAGES.each do |name, label|
-      errors.add(:base, "Falta la imagen del diseño: #{label.sub('Diseño: ', '')}") unless case_image(name).attached?
-    end
-  end
 
   # Autocompleta las líneas con producto: descripción del catálogo y precio del
   # escalado según las unidades (solo lo que se dejó en blanco).

@@ -49,30 +49,26 @@
     <div class="full"><%= f.label :notes, 'Notas internas (no salen en el PDF)' %><%= f.text_area :notes, rows: 2 %></div>
   </div>
 
-  <%# Imágenes del diseño: obligatorias para emitir el presupuesto, porque son
-      lo que el cliente aprueba al firmarlo o sellarlo. Salen en el documento. %>
+  <%# Imágenes del diseño: salen en el presupuesto que firma el cliente. Cada
+      cara tiene una imagen predeterminada; se puede subir otra para sustituirla. %>
   <div style="max-width:860px; margin:20px 0; padding:12px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius);">
-    <strong>Diseño de la funda (obligatorio)</strong>
+    <strong>Diseño de la funda</strong>
     <p class="action-note" style="margin:6px 0 10px;">
-      Las dos imágenes salen en el presupuesto que firma el cliente. Sin ellas no se puede emitir:
-      son el diseño que aprueba con su firma o su sello, y sin esa aprobación no se fabrica.
+      Las dos imágenes salen en el presupuesto que firma el cliente (es el diseño que aprueba).
+      Si no subes ninguna, se usa la imagen <strong>predeterminada</strong>; sube una para sustituirla.
     </p>
     <div class="form-grid">
       <% Quote::CASE_IMAGES.each do |name, label| %>
-        <%# Solo hay miniatura si el presupuesto ya está guardado: en uno nuevo
-            la imagen está asignada pero todavía no tiene URL. %>
-        <% attached = quote.persisted? && quote.case_image(name).attached? %>
+        <% uploaded = quote.persisted? && quote.case_image(name).attached? %>
         <div>
-          <%= f.label name, "#{label.sub('Diseño: ', '').capitalize} *" %>
-          <%= f.file_field name, accept: 'image/*', required: !attached %>
-          <% if attached %>
-            <p class="action-note" style="margin:4px 0 0;">
-              <a href="<%= rails_blob_path(quote.case_image(name)) %>" target="_blank" rel="noopener">
-                <img src="<%= rails_blob_path(quote.case_image(name)) %>" alt="<%= label %>" style="height:44px; border-radius:4px; vertical-align:middle;">
-              </a>
-              Ya subida. Elige otra solo si quieres sustituirla.
-            </p>
-          <% end %>
+          <%= f.label name, label.sub('Diseño: ', '').capitalize %>
+          <%= f.file_field name, accept: 'image/*' %>
+          <p class="action-note" style="margin:4px 0 0;">
+            <a href="<%= quote.case_image_src(name) %>" target="_blank" rel="noopener">
+              <img src="<%= quote.case_image_src(name) %>" alt="<%= label %>" style="height:44px; border-radius:4px; vertical-align:middle;">
+            </a>
+            <%= uploaded ? 'Imagen propia subida.' : 'Predeterminada.' %> Elige otra solo si quieres sustituirla.
+          </p>
         </div>
       <% end %>
     </div>

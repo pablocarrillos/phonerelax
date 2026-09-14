@@ -193,18 +193,15 @@ module Admin
     # Crea un presupuesto nuevo partiendo de este: mismas líneas y condiciones,
     # pero con número nuevo y fechas de hoy, listo para editar.
     def duplicate
-      unless @quote.case_images?
-        return redirect_to admin_quote_path(@quote),
-                           alert: "#{@quote.number} no tiene las dos imágenes del diseño, así que no se puede duplicar. " \
-                                  "Súbelas primero (Editar) y vuelve a intentarlo."
-      end
-
       copy = @quote.dup
       copy.assign_attributes(number: nil, issued_on: Date.current,
                              valid_until: Date.current + Quote::DEFAULT_VALIDITY_DAYS.days)
       @quote.quote_lines.each { |line| copy.quote_lines.build(line.attributes.except("id", "quote_id", "created_at", "updated_at")) }
-      # el diseño viaja con la copia: es obligatorio y suele ser el mismo
-      Quote::CASE_IMAGES.each_key { |name| copy.case_image(name).attach(@quote.case_image(name).blob) }
+      # el diseño propio (si lo hay) viaja con la copia; si no, la copia usa las
+      # imágenes por defecto igual que el original
+      Quote::CASE_IMAGES.each_key do |name|
+        copy.case_image(name).attach(@quote.case_image(name).blob) if @quote.case_image(name).attached?
+      end
       copy.save!
       note_design_review(copy)
       redirect_to edit_admin_quote_path(copy), notice: "Presupuesto #{copy.number} creado a partir de #{@quote.number}."
