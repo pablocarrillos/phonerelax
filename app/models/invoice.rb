@@ -71,7 +71,9 @@ class Invoice < ApplicationRecord
       invoice = create!(
         number: full ? setting.take_number!(WEB) : setting.take_simplified_number!,
         kind: WEB, order: order, simplified: !full,
-        issued_on: Date.current,
+        # la factura de una venta web se emite con la fecha de envío del pedido
+        # (si aún no se ha enviado —factura generada a mano antes—, la de hoy)
+        issued_on: order.shipped_on || Date.current,
         client_name: order.customer_name,
         client_tax_id: (order.tax_id.presence if full),
         client_email: order.email,

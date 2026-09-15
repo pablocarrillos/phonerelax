@@ -52,6 +52,21 @@ class AccountingTest < ActionDispatch::IntegrationTest
     assert_equal invoice, Invoice.issue_for_order!(@order), "idempotente"
   end
 
+  test "la factura de una venta web se emite con la fecha de envío del pedido" do
+    travel_to Time.zone.local(2026, 9, 10, 12, 0) do
+      @order.update!(status: :enviado)
+      @order.order_events.create!(event: "enviado")
+    end
+
+    invoice = Invoice.issue_for_order!(@order) # generada otro día (hoy)
+    assert_equal Date.new(2026, 9, 10), invoice.issued_on, "usa la fecha de envío, no la de generación"
+  end
+
+  test "sin envío la factura de venta web toma la fecha de hoy" do
+    invoice = Invoice.issue_for_order!(@order) # @order está pagado pero no enviado
+    assert_equal Date.current, invoice.issued_on
+  end
+
   test "una venta web con datos fiscales se factura como COMPLETA (serie WEB) y copia el NIF" do
     full = Order.create!(customer_name: "Empresa Test SL", email: "e@example.com", phone: "600111222",
                          address: "C 2", city: "Elda", postal_code: "03600", province: "Alicante", country: "España",

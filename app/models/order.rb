@@ -193,6 +193,12 @@ class Order < ApplicationRecord
     { "creado" => "enviado", "enviado" => "entregado" }[status]
   end
 
+  # Fecha en que el pedido se marcó como enviado (del histórico); nil si aún no
+  # se ha enviado. Es la fecha de emisión de su factura de venta web.
+  def shipped_on
+    order_events.where(event: "enviado").minimum(:created_at)&.to_date
+  end
+
   # URL de seguimiento del transportista, si el nº y el transportista se reconocen.
   def tracking_url
     return if tracking_number.blank? || tracking_carrier.blank?
