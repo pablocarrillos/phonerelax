@@ -6,9 +6,9 @@
     <div style="font-size:24px; font-weight:700; color:#c0392b;"><%= @summary[:pending_payment] %></div>
     <div style="color:var(--muted); font-size:13px;">Pendientes de pago</div>
   <% end %>
-  <%= link_to admin_orders_path(stale: 1), style: card do %>
-    <div style="font-size:24px; font-weight:700; color:#e67e22;"><%= @summary[:stale_unpaid] %></div>
-    <div style="color:var(--muted); font-size:13px;">Sin pagar +<%= Order::STALE_UNPAID_DAYS %> días</div>
+  <%= link_to admin_orders_path(status: 'enviado'), style: card do %>
+    <div style="font-size:24px; font-weight:700; color:#1565c0;"><%= @summary[:shipped] %></div>
+    <div style="color:var(--muted); font-size:13px;">Enviados</div>
   <% end %>
   <%= link_to admin_orders_path(payment: 'pagado', status: 'creado'), style: card do %>
     <div style="font-size:24px; font-weight:700; color:var(--magenta);"><%= @summary[:to_ship] %></div>

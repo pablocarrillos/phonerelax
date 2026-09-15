@@ -16,7 +16,7 @@ module Admin
           @summary = {
             pending_payment: Order.pago_pendiente.count,
             to_ship: Order.pago_pagado.creado.count,
-            stale_unpaid: Order.stale_unpaid.count,
+            shipped: Order.enviado.count,
             revenue: Order.pago_pagado.sum(:total)
           }
           # Tamaño de página a elegir (25/50/100; 25 por defecto).
