@@ -143,14 +143,23 @@ class AdminOrderManagementTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_order_path(order)
   end
 
-  test "avanzar a enviado notifica al cliente por email" do
+  test "avanzar a enviado notifica al cliente y manda la factura a facturación" do
     order = paid_order(manual: true)
-    assert_emails 1 do
+    assert_emails 2 do # aviso de envío al cliente + factura a facturación
       patch advance_admin_order_path(order), params: { tracking_carrier: "SEUR", tracking_number: "XYZ9" }
     end
-    mail = ActionMailer::Base.deliveries.last
-    assert_equal [ order.email ], mail.to
-    assert_includes mail.body.decoded, "XYZ9"
+
+    aviso = ActionMailer::Base.deliveries.find { |m| m.to == [ order.email ] }
+    assert aviso, "el cliente recibe el aviso de envío"
+    assert_includes aviso.body.decoded, "XYZ9"
+
+    factura = ActionMailer::Base.deliveries.find { |m| m.to == InvoiceMailer::BILLING_RECIPIENTS }
+    assert factura, "facturación recibe una copia de la factura"
+    assert factura.attachments.any? { |a| a.filename.end_with?(".pdf") }, "con el PDF adjunto"
+
+    invoice = Invoice.find_by(order: order)
+    assert invoice, "se emite la factura del pedido"
+    assert invoice.simplified?, "venta web sin NIF: factura simplificada"
   end
 
   test "el panel exige sesión iniciada" do

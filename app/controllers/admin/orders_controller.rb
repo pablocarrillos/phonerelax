@@ -175,7 +175,11 @@ module Admin
       if order.next_status
         order.advance_status!(tracking_number: params[:tracking_number],
                               tracking_carrier: params[:tracking_carrier])
-        redirect_back fallback_location: admin_order_path(order), notice: "Pedido #{order.number} marcado como #{order.status}."
+        notice = "Pedido #{order.number} marcado como #{order.status}."
+        if order.enviado? && (invoice = Invoice.find_by(order: order))
+          notice += " Factura #{invoice.number} emitida y enviada a facturación."
+        end
+        redirect_back fallback_location: admin_order_path(order), notice: notice
       else
         message = if order.pago_reembolsado? then "Un pedido reembolsado no se puede marcar como enviado."
         elsif order.pago_pendiente? then "Un pedido sin pagar no se puede marcar como enviado."

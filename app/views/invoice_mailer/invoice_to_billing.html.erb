@@ -1,0 +1,13 @@
+<p>Factura de venta web para el registro de facturación.</p>
+
+<ul>
+  <li>Factura: <strong><%= @invoice.number %></strong><%= " (simplificada)" if @invoice.simplified? %></li>
+  <% if @invoice.order %>
+    <li>Pedido: <%= @invoice.order.number %></li>
+  <% end %>
+  <li>Cliente: <%= @invoice.client_name %><%= " · #{@invoice.client_tax_id}" if @invoice.client_tax_id.present? %></li>
+  <li>Fecha: <%= l @invoice.issued_on %></li>
+  <li>Total: <%= number_to_currency(@invoice.total, unit: "€", format: "%n %u") %> (IVA incluido)</li>
+</ul>
+
+<p>Se adjunta el PDF de la factura.</p>

@@ -313,7 +313,23 @@ class Order < ApplicationRecord
       update!(attrs)
       order_events.create!(event: status)
     end
-    OrderMailer.shipped(self).deliver_later if enviado?
+    return unless enviado?
+
+    OrderMailer.shipped(self).deliver_later
+    issue_web_invoice!
+  end
+
+  # Al marcar el pedido como enviado se emite (idempotente) su factura de venta
+  # web —simplificada, o completa si el cliente pidió factura con NIF— y se manda
+  # una copia al buzón de facturación. Un fallo al facturar NO revierte el envío:
+  # la factura se puede generar luego a mano desde Contabilidad.
+  def issue_web_invoice!
+    invoice = Invoice.issue_for_order!(self)
+    InvoiceMailer.invoice_to_billing(invoice).deliver_later
+    invoice
+  rescue StandardError => e
+    Rails.logger.error("Pedido #{number}: no se pudo facturar al marcar enviado (#{e.class}: #{e.message})")
+    nil
   end
 
   # Revierte el estado logístico un paso (para deshacer un avance por error).
