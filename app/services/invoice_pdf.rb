@@ -47,7 +47,11 @@ class InvoicePdf
     doc.text @setting.full_address.tr("\n", " · "), size: 9
     doc.text [ @setting.phone, @setting.email ].compact_blank.join(" · "), size: 9
     doc.move_down 6
-    title = @data[:provisional] ? "#{doc_label} (PREVISUALIZACIÓN)" : "#{doc_label} #{@data[:number]}"
+    # En la previsualización se muestra el número que se generaría (el siguiente
+    # de la serie); la marca de agua «BORRADOR» y el «(PREVISUALIZACIÓN)» dejan
+    # claro que aún no está emitida.
+    title = "#{doc_label} #{@data[:number]}"
+    title += " (PREVISUALIZACIÓN)" if @data[:provisional]
     doc.text title, size: 13, style: :bold, align: :right
     doc.text "Fecha: #{@data[:issued_on].strftime('%d/%m/%Y')}", size: 9, align: :right
     if @data[:rectification] && @data[:rectifies_number].present?
