@@ -8,12 +8,15 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
   setup do
     sign_in_as(users(:one))
     @client = Client.create!(name: "Colegio del Diseño", tax_id: "B12345678", address: "C/ Mayor 1")
+    @funda = Product.create!(name: "Funda PhoneRelax", vat_percentage: 21, price: BigDecimal("12.10"), active: true)
   end
 
+  # Por defecto el presupuesto vende una funda: solo entonces se incluye el
+  # diseño de la funda en el documento.
   def quote_params(**extra)
     { client_id: @client.id, issued_on: Date.current.iso8601, delivery_terms: "1 de septiembre",
       shipping_cost: "0", vat_rate: 21,
-      quote_lines_attributes: { "0" => { description: "Fundas", quantity: 10, unit_price: "10", vat_rate: 21 } } }
+      quote_lines_attributes: { "0" => { product_id: @funda.id, quantity: 10, unit_price: "10", vat_rate: 21 } } }
       .merge(extra)
   end
 
@@ -62,7 +65,7 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
 
   test "sin imágenes propias la ficha muestra las predeterminadas, no un aviso" do
     quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0,
-                         quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
+                         quote_lines_attributes: { "0" => { product_id: @funda.id, quantity: 1, unit_price: 10, vat_rate: 21 } })
     quote.case_front_image.purge
     quote.case_back_image.purge
 
@@ -74,6 +77,23 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "Faltan imágenes del diseño"
     assert_includes response.body, Quote::DEFAULT_CASE_IMAGES["case_front_image"]
     assert_includes response.body, "(predeterminada)"
+  end
+
+  test "si no se vende ninguna funda, el documento y la ficha no incluyen el diseño" do
+    iman = Product.create!(name: "Imán PhoneRelax", vat_percentage: 21, price: BigDecimal("12.10"), active: true)
+    post admin_quotes_path, params: { quote: quote_params(**design_image_params,
+      quote_lines_attributes: { "0" => { product_id: iman.id, quantity: 5, unit_price: "12", vat_rate: 21 } }) }
+    quote = Quote.last
+    assert_not quote.sells_funda?
+
+    get print_admin_quote_path(quote)
+    assert_response :success
+    assert_not_includes response.body, "Diseño de la funda"
+    assert_not_includes response.body, "La firma y el sello aprueban también el DISEÑO"
+    assert_not_includes response.body, Quote::DEFAULT_CASE_IMAGES["case_front_image"]
+
+    get admin_quote_path(quote)
+    assert_not_includes response.body, "Diseño de la funda"
   end
 
   # --- firma y sello aprobando el diseño ---
@@ -158,7 +178,7 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
 
   test "duplicar uno sin imágenes propias funciona (la copia usa las predeterminadas)" do
     quote = create_quote(client: @client, issued_on: Date.current, delivery_terms: "x", shipping_cost: 0,
-                         quote_lines_attributes: { "0" => { description: "P", quantity: 1, unit_price: 10, vat_rate: 21 } })
+                         quote_lines_attributes: { "0" => { product_id: @funda.id, quantity: 1, unit_price: 10, vat_rate: 21 } })
     quote.case_front_image.purge
     quote.case_back_image.purge
 

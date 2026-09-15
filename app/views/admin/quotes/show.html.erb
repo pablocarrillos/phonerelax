@@ -182,6 +182,7 @@
 <% end %>
 
 <%# histórico de lo que se va marcando en el pedido, como el de los pedidos web %>
+<% if @quote.sells_funda? %>
 <h2 style="margin-top: 28px;">Diseño de la funda</h2>
 <p class="action-note" style="margin-top:0;">Es lo que el cliente aprueba al firmar o sellar el presupuesto. Si no se sube una imagen propia se usa la predeterminada. Se cambia desde <%= link_to 'Editar', edit_admin_quote_path(@quote) %>.</p>
 <div style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:8px;">
@@ -198,6 +199,7 @@
     </figure>
   <% end %>
 </div>
+<% end %>
 
 <h2 style="margin-top: 28px;">Histórico</h2>
 <% if @quote.quote_events.any? %>

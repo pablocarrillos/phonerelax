@@ -159,6 +159,12 @@ class Quote < ApplicationRecord
     active_lines.any? { |line| line.product&.name_label? }
   end
 
+  # ¿Vende alguna funda (suelta o dentro de un pack)? El diseño de la funda solo
+  # se incluye en el presupuesto cuando efectivamente se vende una funda.
+  def sells_funda?
+    active_lines.any? { |line| line.product && line.product.funda_units.positive? }
+  end
+
   # Productos que obligan a revisar el diseño con el cliente antes de fabricar:
   # la etiqueta con el nombre y la personalización DTF llevan arte que hay que
   # validar, no basta con el precio.

@@ -116,14 +116,15 @@
       <p>Cuenta Bancaria: <%= @quote.bank_account_display %></p>
       <% if @quote.delivery_terms.present? %><p>Plazo de entrega: <%= @quote.delivery_terms %>.</p><% end %>
     </div>
-    <div class="accept">Aceptación por escrito, sello de la empresa, fecha y firma.<br><br>
-      La firma y el sello aprueban también el DISEÑO de la funda que figura en este presupuesto.</div>
+    <div class="accept">Aceptación por escrito, sello de la empresa, fecha y firma.<% if @quote.sells_funda? %><br><br>
+      La firma y el sello aprueban también el DISEÑO de la funda que figura en este presupuesto.<% end %></div>
   </div>
 
   <%# El diseño que el cliente aprueba al firmar o sellar este presupuesto. %>
-  <%# El diseño sale siempre: la imagen propia subida o la predeterminada. %>
-  <div class="design">
-    <h2>Diseño de la funda</h2>
+  <%# Solo cuando el presupuesto vende una funda: la imagen propia subida o la predeterminada. %>
+  <% if @quote.sells_funda? %>
+    <div class="design">
+      <h2>Diseño de la funda</h2>
       <div class="design-images">
         <% Quote::CASE_IMAGES.each do |name, label| %>
           <figure>
@@ -136,13 +137,19 @@
         Para poder iniciar la fabricación es necesario devolver este presupuesto FIRMADO Y SELLADO,
         aprobando expresamente el diseño que aquí figura.
       </div>
-      <% if @quote.needs_design_review? %>
-        <div class="review-note">
-          ATENCIÓN: este pedido lleva <%= @quote.design_review_products.to_sentence %>. Revise con detalle
-          el diseño (textos, nombres y colocación) antes de firmarlo: una vez aprobado se fabrica tal cual.
-        </div>
-      <% end %>
-  </div>
+    </div>
+  <% end %>
+
+  <%# El aviso de revisar el diseño (etiqueta con nombre, DTF) es independiente de
+      que se venda funda: sale siempre que el pedido lleve productos con arte. %>
+  <% if @quote.needs_design_review? %>
+    <div class="design">
+      <div class="review-note">
+        ATENCIÓN: este pedido lleva <%= @quote.design_review_products.to_sentence %>. Revise con detalle
+        el diseño (textos, nombres y colocación) antes de firmarlo: una vez aprobado se fabrica tal cual.
+      </div>
+    </div>
+  <% end %>
 
   <% if @quote.remarks.present? %>
     <div style="margin-top:16px;"><strong>Observaciones:</strong> <span style="white-space:pre-line;"><%= @quote.remarks %></span></div>

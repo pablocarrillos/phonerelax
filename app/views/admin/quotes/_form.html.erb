@@ -50,7 +50,9 @@
   </div>
 
   <%# Imágenes del diseño: salen en el presupuesto que firma el cliente. Cada
-      cara tiene una imagen predeterminada; se puede subir otra para sustituirla. %>
+      cara tiene una imagen predeterminada; se puede subir otra para sustituirla.
+      Solo cuando el presupuesto vende una funda (en uno nuevo aún no hay líneas). %>
+  <% if quote.new_record? || quote.sells_funda? %>
   <div style="max-width:860px; margin:20px 0; padding:12px 16px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius);">
     <strong>Diseño de la funda</strong>
     <p class="action-note" style="margin:6px 0 10px;">
@@ -73,6 +75,7 @@
       <% end %>
     </div>
   </div>
+  <% end %>
 
   <% if quote.new_record? && @label_product %>
     <% label_net = @label_product.price_tiers.find_by(min_units: 1)&.unit_price || 0.35 %>
