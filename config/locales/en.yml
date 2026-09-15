@@ -135,6 +135,8 @@ en:
     step3_alt: Open the PhoneRelax pouch
   product:
     unavailable: This product is not available right now.
+    accessories: Accessories
+    magnet_not_included: "The magnet shown in the photos is not included: it is sold separately."
     pack_includes: What's in this pack
     pack_normal: Bought separately
     pack_in_pack: In the pack

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_065323) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_15_083621) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -371,6 +371,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_065323) do
     t.index ["product_id"], name: "index_price_tiers_on_product_id"
   end
 
+  create_table "product_accessories", force: :cascade do |t|
+    t.bigint "accessory_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "position"
+    t.bigint "product_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["accessory_id"], name: "index_product_accessories_on_accessory_id"
+    t.index ["product_id", "accessory_id"], name: "index_product_accessories_on_product_id_and_accessory_id", unique: true
+    t.index ["product_id"], name: "index_product_accessories_on_product_id"
+  end
+
   create_table "product_images", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "position"
@@ -602,6 +613,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_065323) do
   add_foreign_key "pack_items", "products", column: "component_id"
   add_foreign_key "pack_items", "products", column: "pack_id"
   add_foreign_key "price_tiers", "products"
+  add_foreign_key "product_accessories", "products"
+  add_foreign_key "product_accessories", "products", column: "accessory_id"
   add_foreign_key "product_images", "products"
   add_foreign_key "purchase_lines", "products"
   add_foreign_key "purchase_lines", "purchases"

@@ -137,6 +137,8 @@ de:
     step3_alt: PhoneRelax-Tasche öffnen
   product:
     unavailable: Dieses Produkt ist derzeit nicht verfügbar.
+    accessories: Zubehör
+    magnet_not_included: "Der auf den Fotos gezeigte Magnet ist nicht enthalten: er wird separat verkauft."
     pack_includes: Das enthält dieses Set
     pack_normal: Einzelpreis
     pack_in_pack: Im Set

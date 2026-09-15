@@ -130,6 +130,8 @@ pt:
     step3_alt: Abra a bolsa PhoneRelax
   product:
     unavailable: Este produto não está disponível de momento.
+    accessories: Acessórios
+    magnet_not_included: "O íman que aparece nas fotos não está incluído: vende-se separadamente."
     pack_includes: O que inclui este pack
     pack_normal: Comprado à parte
     pack_in_pack: No pack

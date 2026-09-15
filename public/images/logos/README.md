@@ -10,6 +10,7 @@ Nombres esperados (svg, png, webp o jpg, por este orden de preferencia):
 - `colegio-norfolk.svg`
 - `colegio-san-fernando.svg`
 - `escola-montcau-la-mola.svg`
+- `salesianos-elche.png`
 
 Idealmente con fondo transparente y recortados sin márgenes; se pintan a 44px
 de alto.

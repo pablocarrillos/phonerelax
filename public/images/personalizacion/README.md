@@ -11,6 +11,7 @@ y solo muestra la foto si el archivo existe con ESTE nombre exacto:
 - colegio-san-fernando.jpg → Colegio San Fernando
 - montcau-la-mola.jpg      → Escola Montcau-La Mola
 - ayuntamiento-peniscola.jpg → Ayuntamiento de Peñíscola
+- salesianos-elche.jpg     → Salesianos Elche
 - phonerelax-basica.jpg    → PhoneRelax (modelo estándar)
 
 Recomendado: JPG, orientación vertical, ~1000 px de ancho, < 300 KB.

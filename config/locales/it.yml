@@ -135,6 +135,8 @@ it:
     step3_alt: Apri la custodia PhoneRelax
   product:
     unavailable: Questo prodotto non è disponibile al momento.
+    accessories: Accessori
+    magnet_not_included: "Il magnete mostrato nelle foto non è incluso: si vende separatamente."
     pack_includes: Cosa contiene questo pacchetto
     pack_normal: Acquistati separatamente
     pack_in_pack: Nel pacchetto

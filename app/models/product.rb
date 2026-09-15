@@ -28,6 +28,12 @@ class Product < ApplicationRecord
   # Componentes cuando el producto es un pack (N unidades de otros productos).
   has_many :pack_items, -> { ordered }, foreign_key: :pack_id, dependent: :destroy, inverse_of: :pack
   has_many :components, through: :pack_items
+
+  # Accesorios sugeridos en la ficha (p. ej. la funda sugiere lanyard y DTF).
+  has_many :product_accessories, -> { ordered }, dependent: :destroy, inverse_of: :product
+  has_many :accessories, through: :product_accessories, source: :accessory
+  # filas donde este producto es el accesorio de otro (para borrarlo sin huérfanas)
+  has_many :accessory_links, class_name: "ProductAccessory", foreign_key: :accessory_id, dependent: :destroy
   accepts_nested_attributes_for :pack_items, allow_destroy: true,
                                              reject_if: ->(attrs) { attrs["component_id"].blank? }
 

@@ -137,6 +137,8 @@ fr:
     step3_alt: Ouvrez la pochette PhoneRelax
   product:
     unavailable: Ce produit n'est pas disponible pour le moment.
+    accessories: Accessoires
+    magnet_not_included: "L'aimant qui apparaît sur les photos n'est pas inclus : il est vendu séparément."
     pack_includes: Ce que contient ce pack
     pack_normal: Prix à l'unité
     pack_in_pack: Dans le pack

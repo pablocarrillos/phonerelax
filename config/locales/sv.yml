@@ -141,6 +141,8 @@ sv:
     step3_alt: Öppna PhoneRelax-fickan
   product:
     unavailable: Den här produkten är inte tillgänglig just nu.
+    accessories: Tillbehör
+    magnet_not_included: "Magneten som visas på bilderna ingår inte: den säljs separat."
     pack_includes: Det här ingår i paketet
     pack_normal: Styckpris
     pack_in_pack: I paketet

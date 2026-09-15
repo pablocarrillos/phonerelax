@@ -26,6 +26,7 @@ module ApplicationHelper
     { file: "colegio-villalkor.jpg",    name: "Colegio Villalkor" },
     { file: "ayuntamiento-las-rozas.jpg", name: "Ayuntamiento de Las Rozas" },
     { file: "ayuntamiento-peniscola.jpg", name: "Ayuntamiento de Peñíscola" },
+    { file: "salesianos-elche.jpg",     name: "Salesianos Elche" },
     { file: "phonerelax-basica.jpg",    name: "PhoneRelax" }
   ].freeze
 
@@ -39,7 +40,8 @@ module ApplicationHelper
   # muestran como texto, así que no dependen de que exista la foto.
   TRUSTED_CLIENTS = [
     "Kensington School", "Colegio Norfolk", "Colegio San Fernando", "Escola Montcau-La Mola",
-    "Colegio Villalkor", "IES Salvador de Madariaga", "Ayuntamiento de Las Rozas", "Ayuntamiento de Peñíscola"
+    "Colegio Villalkor", "IES Salvador de Madariaga", "Ayuntamiento de Las Rozas", "Ayuntamiento de Peñíscola",
+    "Salesianos Elche"
   ].freeze
 
   def trusted_clients
@@ -56,6 +58,18 @@ module ApplicationHelper
       return "/#{relative}" if Rails.public_path.join(relative).exist?
     end
     nil
+  end
+
+  # Leyenda que se muestra bajo la galería de ciertos productos (traducida vía
+  # i18n). P. ej. la caja del imán aclara, en cada idioma, que el imán de las
+  # fotos no está incluido. Devuelve nil si el producto no tiene leyenda.
+  GALLERY_NOTES = {
+    "caja-metalica-para-iman-phonerelax" => "product.magnet_not_included"
+  }.freeze
+
+  def gallery_note_for(product)
+    key = GALLERY_NOTES[product.shopify_handle]
+    t(key) if key
   end
 
   # --- Meta / canonical / Open Graph -------------------------------------

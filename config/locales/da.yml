@@ -135,6 +135,8 @@ da:
     step3_alt: Åbn PhoneRelax-posen
   product:
     unavailable: Dette produkt er ikke tilgængeligt lige nu.
+    accessories: Tilbehør
+    magnet_not_included: "Magneten, der vises på billederne, er ikke inkluderet: den sælges separat."
     pack_includes: Hvad pakken indeholder
     pack_normal: Købt hver for sig
     pack_in_pack: I pakken

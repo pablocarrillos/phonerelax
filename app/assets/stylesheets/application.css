@@ -599,6 +599,16 @@ select.form-select { width: 100%; padding: 10px 12px; border: 1px solid var(--bo
 }
 .gallery-thumb img { width: 100%; height: 100%; object-fit: contain; }
 .gallery-thumb.active { border-color: var(--magenta); }
+/* Leyenda bajo la galería (p. ej. «el imán de las fotos no está incluido») */
+.gallery-note {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  background: var(--card-bg);
+  border-left: 3px solid var(--magenta);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
 .product-description { margin: 10px 0 18px; }
 .product-description img { max-width: 100%; border-radius: 10px; }
 .product-description ul { padding-left: 20px; }

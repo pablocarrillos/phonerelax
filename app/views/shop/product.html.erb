@@ -42,6 +42,9 @@
           <% end %>
         </div>
       <% end %>
+      <% if (gallery_note = gallery_note_for(@product)) %>
+        <p class="gallery-note" role="note"><%= gallery_note %></p>
+      <% end %>
     </div>
     <% product_data = if @product.pack?
      { controller: 'pack-quantity', 'pack-quantity-url-value': pack_price_path(@product), 'pack-quantity-available-value': @product.available_stock }
@@ -116,3 +119,22 @@
     <% end %>
   </div>
 </div>
+
+<%# Accesorios sugeridos: se muestran debajo de la ficha si el producto tiene. %>
+<% accessories = @product.product_accessories.map(&:accessory).select(&:active?) %>
+<% if accessories.any? %>
+  <section class="container section product-accessories">
+    <h2><%= t('product.accessories') %></h2>
+    <div class="grid products-grid">
+      <% accessories.each do |acc| %>
+        <div class="card product-card">
+          <%= link_to product_page_path(acc) do %>
+            <img src="<%= acc.gallery_urls.first %>" alt="<%= acc.display_name %>" loading="lazy">
+          <% end %>
+          <h3><%= link_to acc.display_name, product_page_path(acc), style: 'text-decoration:none;' %></h3>
+          <div class="price"><%= number_to_currency(acc.display_price, unit: '€', format: '%n %u') %> <span class="price-vat"><%= t('common.vat_included_short') %></span></div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>
