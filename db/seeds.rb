@@ -64,10 +64,14 @@ products = [
 products.each do |attrs|
   images = attrs.delete(:images)
   product = Product.find_or_initialize_by(shopify_handle: attrs[:shopify_handle])
+  # Siembra INICIAL del catálogo: una vez el producto existe, lo gestiona el
+  # admin (fotos, nombre, precio, descripción). Volver a sembrarlo en cada deploy
+  # recreaba las fotos del catálogo que se habían sustituido a mano.
+  next unless product.new_record?
+
   product.update!(attrs)
   images.each_with_index do |url, index|
-    image = product.product_images.find_or_initialize_by(url: url)
-    image.update!(position: index + 1)
+    product.product_images.create!(url: url, position: index + 1)
   end
 end
 puts "Productos: #{Product.count} (#{ProductImage.count} imágenes)"
