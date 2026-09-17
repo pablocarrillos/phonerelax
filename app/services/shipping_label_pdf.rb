@@ -36,10 +36,15 @@ class ShippingLabelPdf
     doc.move_down 10
     doc.text "Tel. #{@order.phone}", size: 14 if @order.phone.present?
     doc.move_down 16
-    doc.text "Pedido #{@order.number}", size: 11
+    reference = @order.respond_to?(:shipping_label_reference) ? @order.shipping_label_reference : "Pedido #{@order.number}"
+    doc.text reference, size: 11
   end
 
   def address_lines
+    # Los presupuestos llevan la dirección como texto libre (delivery_address);
+    # los pedidos la tienen desglosada en campos. Cada objeto da sus líneas.
+    return Array(@order.shipping_label_lines).compact_blank if @order.respond_to?(:shipping_label_lines)
+
     [ @order.address,
       [ @order.postal_code, @order.city ].compact_blank.join(" "),
       [ @order.province, @order.country ].compact_blank.join(" · ") ].compact_blank

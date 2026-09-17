@@ -78,6 +78,33 @@
       <% end %>
     </div>
   </div>
+
+  <% if @quote.confirmed? %>
+    <%# Aviso de envío al almacén: email con la dirección, los artículos y la
+        etiqueta A5 (misma mecánica que en pedidos). Requiere nombre, dirección
+        y teléfono del cliente; si falta alguno, avisa y no envía. %>
+    <div class="action-section">
+      <span class="action-title">Aviso de envío al almacén</span>
+      <div class="action-row">
+        <% if @quote.ready_for_shipping? %>
+          <%= button_to '📮 Enviar aviso de envío', shipping_email_admin_quote_path(@quote), method: :post,
+                        class: 'btn btn-primary',
+                        form: { data: { turbo_confirm: "Se enviará un email a #{OrderMailer::SHIPPING_RECIPIENTS.join(' y ')} " \
+                                                       "(copia a #{OrderMailer::SHIPPING_CC.join(' y ')}) con la dirección de envío, " \
+                                                       "los artículos y la etiqueta A5 adjunta. ¿Continuar?" } } %>
+        <% else %>
+          <%= button_to '📮 Enviar aviso de envío', shipping_email_admin_quote_path(@quote), method: :post,
+                        class: 'btn btn-primary',
+                        form: { data: { turbo_confirm: "Faltan datos del cliente para la etiqueta: #{@quote.missing_shipping_fields.to_sentence}. " \
+                                                       "Complétalos en el presupuesto; no se enviará el aviso." } } %>
+          <p class="action-note">⚠ Faltan datos para la etiqueta: <strong><%= @quote.missing_shipping_fields.to_sentence %></strong>. Edita el presupuesto para completarlos.</p>
+        <% end %>
+      </div>
+      <% if (sent_at = @quote.last_shipping_notice_at) %>
+        <p class="action-note">Último aviso enviado el <%= sent_at.strftime('%d/%m/%Y a las %H:%M') %>.</p>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 
 <% any_files = Quote::ATTACHMENTS.keys.any? { |name| @quote.order_file(name).attached? } %>

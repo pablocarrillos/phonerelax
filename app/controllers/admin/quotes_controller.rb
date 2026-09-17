@@ -1,7 +1,8 @@
 module Admin
   class QuotesController < BaseController
     before_action :set_quote, only: [ :show, :edit, :update, :destroy, :print, :duplicate,
-                                      :set_status, :set_payment, :upload_files, :purge_file ]
+                                      :set_status, :set_payment, :upload_files, :purge_file,
+                                      :shipping_email ]
 
     # "Vendidos" = presupuestos aprobados o en cualquier paso posterior.
     SOLD_STATUSES = %w[aprobado entregado enviado].freeze
@@ -161,6 +162,22 @@ module Admin
       else
         redirect_back fallback_location: admin_quote_path(@quote), alert: "Estado de pago no válido."
       end
+    end
+
+    # Aviso de envío al almacén: email con la dirección, los artículos y la
+    # etiqueta A5 adjunta (misma mecánica que en pedidos). Requiere nombre,
+    # dirección y teléfono del cliente: si falta alguno, avisa y no envía.
+    def shipping_email
+      missing = @quote.missing_shipping_fields
+      if missing.any?
+        return redirect_back fallback_location: admin_quote_path(@quote),
+                             alert: "No se puede avisar al almacén: falta #{missing.to_sentence}. Edita el presupuesto para completarlo."
+      end
+
+      QuoteMailer.shipping_request(@quote).deliver_later
+      @quote.quote_events.create!(event: Quote::SHIPPING_NOTICE_EVENT)
+      redirect_back fallback_location: admin_quote_path(@quote),
+                    notice: "Aviso de envío del presupuesto #{@quote.number} enviado a #{OrderMailer::SHIPPING_RECIPIENTS.join(' y ')} "                             "(copia a #{OrderMailer::SHIPPING_CC.join(' y ')})."
     end
 
     # Sube los ficheros del pedido (logo del colegio, fichero DTF y presupuesto

@@ -1,0 +1,29 @@
+<h2>Envío del presupuesto <%= @quote.number %></h2>
+
+<h3 style="margin:20px 0 6px;">Dirección de envío</h3>
+<p style="margin:0; line-height:1.8;">
+  <strong><%= @quote.customer_name %></strong><br>
+  <% @quote.shipping_label_lines.each do |line| %>
+    <%= no_autolink(line) %><br>
+  <% end %>
+  📞 <%= @quote.phone.presence || "sin teléfono" %>
+</p>
+
+<h3 style="margin:20px 0 6px;">Artículos a enviar</h3>
+<table style="border-collapse:collapse; width:100%; max-width:480px;">
+  <tr>
+    <th style="text-align:left; border-bottom:1px solid #ccc; padding:4px 8px 4px 0;">Artículo</th>
+    <th style="text-align:right; border-bottom:1px solid #ccc; padding:4px 0;">Uds.</th>
+  </tr>
+  <% @quote.active_lines.each do |line| %>
+    <tr>
+      <td style="border-bottom:1px solid #eee; padding:4px 8px 4px 0;"><%= line.description.presence || line.product&.name %></td>
+      <td style="text-align:right; border-bottom:1px solid #eee; padding:4px 0;"><%= line.quantity %></td>
+    </tr>
+  <% end %>
+</table>
+
+<p style="margin:20px 0 0;">
+  📎 Se adjunta la etiqueta de envío en A5 con el logotipo y la dirección de entrega,
+  lista para imprimir y pegar en el paquete.
+</p>

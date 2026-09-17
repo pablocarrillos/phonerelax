@@ -9,4 +9,14 @@ class QuoteMailer < ApplicationMailer
     mail(to: RECIPIENT, reply_to: @quote[:email],
          subject: "Presupuesto web: #{@quote[:organization]} (#{@quote[:name]})")
   end
+
+  # Aviso interno al almacén (en español) de un presupuesto aprobado: dirección
+  # de envío, artículos y la etiqueta A5 adjunta. Se dispara con un botón desde
+  # la ficha del presupuesto. Reutiliza los destinatarios del aviso de pedidos.
+  def shipping_request(quote)
+    @quote = quote
+    attachments["etiqueta-#{quote.number}.pdf"] = ShippingLabelPdf.render(quote)
+    mail(to: OrderMailer::SHIPPING_RECIPIENTS, cc: OrderMailer::SHIPPING_CC,
+         subject: "Envío Presupuesto PHONE RELAX #{quote.number}")
+  end
 end

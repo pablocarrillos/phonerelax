@@ -59,6 +59,49 @@ class Quote < ApplicationRecord
     aprobado? || entregado? || enviado?
   end
 
+  # --- Aviso de envío al almacén y etiqueta A5 ---
+  SHIPPING_NOTICE_EVENT = "aviso de envío al almacén".freeze
+
+  # Nombre del destinatario para la etiqueta: el contacto del presupuesto y,
+  # si no, el nombre del cliente.
+  def customer_name
+    contact_name.presence || client&.name
+  end
+
+  # Teléfono para la etiqueta: el del presupuesto o, si no, el del cliente.
+  def phone
+    contact_phone.presence || client&.phone
+  end
+
+  # Líneas de la dirección de envío para la etiqueta A5.
+  def shipping_label_lines
+    delivery_address.to_s.split(/\r?\n/).map(&:strip).reject(&:blank?) + [ shipping_country ].compact_blank
+  end
+
+  # Referencia que se imprime al pie del destinatario en la etiqueta.
+  def shipping_label_reference
+    "Presupuesto #{number}"
+  end
+
+  # Datos imprescindibles para avisar al almacén (nombre, dirección y teléfono).
+  # Devuelve los que faltan, en texto, para el aviso al pulsar el botón.
+  def missing_shipping_fields
+    missing = []
+    missing << "el nombre del cliente" if customer_name.blank?
+    missing << "la dirección de envío" if delivery_address.blank?
+    missing << "el teléfono" if phone.blank?
+    missing
+  end
+
+  def ready_for_shipping?
+    missing_shipping_fields.empty?
+  end
+
+  # Fecha del último aviso de envío al almacén (por su evento en el histórico).
+  def last_shipping_notice_at
+    quote_events.where(event: SHIPPING_NOTICE_EVENT).maximum(:created_at)
+  end
+
   # Seguimiento del cobro (las condiciones habituales son 50 % para confirmar
   # y 50 % a la entrega).
   enum :payment_status, { sin_pagos: 0, pagado_confirmar: 1, pagado_total: 2 }
