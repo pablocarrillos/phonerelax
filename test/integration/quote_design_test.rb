@@ -131,8 +131,9 @@ class QuoteDesignTest < ActionDispatch::IntegrationTest
     assert_match(/etiqueta blanca para poner el nombre/, comment.body)
     assert_equal users(:one), comment.user
 
+    # el aviso ya NO se imprime en el PDF (queda solo como alerta y comentario internos)
     get print_admin_quote_path(quote)
-    assert_includes response.body, "ATENCIÓN"
+    assert_not_includes response.body, "ATENCIÓN"
   end
 
   test "con personalización DTF avisa igual, también cuando va dentro de un pack" do
