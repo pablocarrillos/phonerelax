@@ -65,6 +65,7 @@ class Order < ApplicationRecord
   has_many :order_lines, dependent: :destroy
   has_many :products, through: :order_lines
   has_many :order_events, dependent: :destroy
+  has_many :ontime_shipments, as: :shippable, dependent: :destroy
   # albarán numerado emitido desde el pedido (se conserva aunque cambie el pedido)
   has_one :delivery_note, dependent: :nullify
   # cupón aplicado (si lo hubo); el código y el importe quedan congelados en el
@@ -110,6 +111,23 @@ class Order < ApplicationRecord
     like = "%#{sanitize_sql_like(term.strip)}%"
     where("number ILIKE :q OR customer_name ILIKE :q OR email ILIKE :q OR phone ILIKE :q OR city ILIKE :q OR country ILIKE :q", q: like)
   }
+
+  # --- Envíos Ontime -------------------------------------------------------
+  # Apunta un movimiento del envío en el historial del pedido.
+  def record_ontime_event(text)
+    order_events.create!(event: text)
+  end
+
+  # Datos del destinatario para prerrellenar el alta de un envío Ontime.
+  def ontime_recipient
+    { name: customer_name, address: address, city: city,
+      postal_code: postal_code, country_iso: country_iso, phone: phone, email: email }
+  end
+
+  # Código ISO del país de destino (ES, FR…) para Ontime.
+  def country_iso
+    EU_COUNTRY_CODES.merge(LEGACY_COUNTRY_CODES)[country] || "ES"
+  end
 
   # Total en euros calculado a partir de las líneas; se congela en el pedido al confirmarse.
   def compute_total

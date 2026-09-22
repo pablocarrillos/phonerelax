@@ -1,0 +1,65 @@
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap;">
+  <h1 style="margin:0;">Envíos Ontime</h1>
+  <% if @shipments.any? %>
+    <%= button_to "🔄 Actualizar estados", poll_all_admin_ontime_shipments_path, method: :post,
+                  class: "btn btn-outline", style: "padding:6px 12px;" %>
+  <% end %>
+</div>
+<p class="action-note" style="margin-top:0;">
+  Todos los envíos dados de alta en Ontime, su pedido o presupuesto y su estado actual.
+  El estado se refresca solo cada 30 min; el botón lo fuerza al instante.
+</p>
+
+<% if @shipments.empty? %>
+  <p>No hay envíos de Ontime todavía. Se crean desde la ficha de un pedido o de un presupuesto aprobado.</p>
+<% else %>
+  <table class="table" style="width:100%;">
+    <thead>
+      <tr>
+        <th>Nº seguimiento</th>
+        <th>Asociado a</th>
+        <th>Destinatario</th>
+        <th>Servicio</th>
+        <th>Estado</th>
+        <th>Creado</th>
+        <th style="text-align:right;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @shipments.each do |shipment| %>
+        <% shippable = shipment.shippable %>
+        <tr>
+          <td><%= shipment.tracking_number.presence || "—" %></td>
+          <td>
+            <% if shippable.is_a?(Order) %>
+              <%= link_to "Pedido #{shippable.number}", admin_order_path(shippable) %>
+            <% elsif shippable.is_a?(Quote) %>
+              <%= link_to "Presupuesto #{shippable.number}", admin_quote_path(shippable) %>
+            <% else %>
+              —
+            <% end %>
+          </td>
+          <td><%= shipment.recipient_name.presence || "—" %><br>
+            <span class="action-note" style="font-size:12px;">CP <%= shipment.postal_code %></span></td>
+          <td><%= shipment.service_label %></td>
+          <td>
+            <%= shipment.display_status %>
+            <% if shipment.delivered %><span class="badge">entregado</span><% end %>
+            <% if shipment.last_polled_at %>
+              <br><span class="action-note" style="font-size:12px;">consultado <%= shipment.last_polled_at.strftime("%d/%m %H:%M") %></span>
+            <% end %>
+          </td>
+          <td><%= shipment.created_at.strftime("%d/%m/%Y") %></td>
+          <td style="text-align:right; white-space:nowrap;">
+            <% if shipment.tracking_number.present? %>
+              <%= link_to "Etiqueta", admin_ontime_label_pdf_path(tracking: shipment.tracking_number, cp: shipment.postal_code),
+                          class: "btn btn-outline", style: "padding:4px 10px; font-size:13px;", target: "_blank", rel: "noopener" %>
+              <%= button_to "Actualizar", poll_admin_ontime_shipment_path(shipment), method: :post,
+                            class: "btn btn-outline", style: "padding:4px 10px; font-size:13px;", form: { style: "display:inline;" } %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -1,0 +1,51 @@
+<%# Envíos Ontime de un pedido o presupuesto: alta (pantalla de revisión) y
+    estado actual de cada envío. Local: `shippable` (Order o Quote). %>
+<div class="action-section">
+  <span class="action-title">Envíos Ontime</span>
+  <div class="action-row">
+    <%= link_to "📦 Crear envío ONTIME",
+                new_admin_ontime_shipment_path(shippable_type: shippable.class.name, shippable_id: shippable.id),
+                class: "btn btn-primary" %>
+  </div>
+
+  <% shipments = shippable.ontime_shipments.recent_first %>
+  <% if shipments.any? %>
+    <table class="table" style="max-width: 780px; margin-top: 10px;">
+      <thead>
+        <tr>
+          <th>Nº seguimiento</th>
+          <th>Servicio</th>
+          <th>Estado</th>
+          <th>Creado</th>
+          <th style="text-align:right;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% shipments.each do |shipment| %>
+          <tr>
+            <td><%= shipment.tracking_number.presence || "—" %></td>
+            <td><%= shipment.service_label %></td>
+            <td>
+              <%= shipment.display_status %>
+              <% if shipment.delivered %><span class="badge">entregado</span><% end %>
+              <% if shipment.last_polled_at %>
+                <br><span class="action-note" style="font-size:12px;">consultado <%= shipment.last_polled_at.strftime("%d/%m %H:%M") %></span>
+              <% end %>
+            </td>
+            <td><%= shipment.created_at.strftime("%d/%m/%Y") %></td>
+            <td style="text-align:right; white-space:nowrap;">
+              <% if shipment.tracking_number.present? %>
+                <%= link_to "Etiqueta", admin_ontime_label_pdf_path(tracking: shipment.tracking_number, cp: shipment.postal_code),
+                            class: "btn btn-outline", style: "padding:4px 10px; font-size:13px;",
+                            target: "_blank", rel: "noopener" %>
+                <%= button_to "Actualizar estado", poll_admin_ontime_shipment_path(shipment), method: :post,
+                              class: "btn btn-outline", style: "padding:4px 10px; font-size:13px;",
+                              form: { style: "display:inline;" } %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

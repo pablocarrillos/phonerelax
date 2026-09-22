@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_15_083621) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -232,6 +232,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_083621) do
     t.index ["client_id"], name: "index_leads_on_client_id"
     t.index ["name"], name: "index_leads_on_name"
     t.index ["status"], name: "index_leads_on_status"
+  end
+
+  create_table "ontime_shipments", force: :cascade do |t|
+    t.string "admission_code", null: false
+    t.datetime "created_at", null: false
+    t.boolean "delivered", default: false, null: false
+    t.integer "event_count", default: 0, null: false
+    t.datetime "last_polled_at"
+    t.jsonb "last_response", default: {}, null: false
+    t.integer "parcel_count", default: 1, null: false
+    t.string "postal_code", null: false
+    t.string "recipient_name"
+    t.string "service_code", default: "24", null: false
+    t.bigint "shippable_id", null: false
+    t.string "shippable_type", null: false
+    t.string "status"
+    t.string "status_code"
+    t.string "tracking_number"
+    t.datetime "updated_at", null: false
+    t.decimal "weight", precision: 8, scale: 2, default: "1.0", null: false
+    t.index ["admission_code"], name: "index_ontime_shipments_on_admission_code", unique: true
+    t.index ["delivered"], name: "index_ontime_shipments_on_delivered"
+    t.index ["shippable_type", "shippable_id"], name: "index_ontime_shipments_on_shippable"
+    t.index ["tracking_number"], name: "index_ontime_shipments_on_tracking_number"
   end
 
   create_table "order_events", force: :cascade do |t|

@@ -38,6 +38,8 @@ class Quote < ApplicationRecord
   has_many :comments, class_name: "QuoteComment", dependent: :destroy, inverse_of: :quote
   # histórico de lo que se va marcando en el pedido (estado, pago, albarán…)
   has_many :quote_events, dependent: :destroy
+  # envíos dados de alta en Ontime desde este presupuesto
+  has_many :ontime_shipments, as: :shippable, dependent: :destroy
   # albarán numerado emitido desde el presupuesto (se conserva aunque este cambie)
   has_one :delivery_note, dependent: :nullify
 
@@ -95,6 +97,27 @@ class Quote < ApplicationRecord
 
   def ready_for_shipping?
     missing_shipping_fields.empty?
+  end
+
+  # --- Envíos Ontime -------------------------------------------------------
+  # Apunta un movimiento del envío en el historial del presupuesto.
+  def record_ontime_event(text)
+    quote_events.create!(event: text)
+  end
+
+  # Datos del destinatario para prerrellenar el alta de un envío Ontime. La
+  # dirección de los presupuestos es texto libre (sin CP/población separados), así
+  # que se vuelca la primera línea y el resto se completa en la pantalla de revisión.
+  def ontime_recipient
+    { name: customer_name,
+      address: shipping_label_lines.first,
+      city: nil, postal_code: nil,
+      country_iso: country_iso, phone: phone, email: client&.email }
+  end
+
+  # Código ISO del país de destino (ES, FR…) para Ontime.
+  def country_iso
+    Order::EU_COUNTRY_CODES.merge(Order::LEGACY_COUNTRY_CODES)[shipping_country] || "ES"
   end
 
   # Fecha del último aviso de envío al almacén (por su evento en el histórico).

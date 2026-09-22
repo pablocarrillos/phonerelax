@@ -1,0 +1,5 @@
+# Seguimiento de envíos de Ontime: cada 30 min consulta el estado de los envíos
+# activos y apunta los cambios en el historial del pedido/presupuesto.
+# La máquina va en UTC (no importa para un intervalo de 30 min).
+PATH=/usr/local/bin:/usr/bin:/bin
+*/30 * * * * phonerelax cd /home/phonerelax/app && RAILS_ENV=production /home/phonerelax/.rbenv/shims/bundle exec rails ontime:poll_statuses >> /home/phonerelax/app/log/ontime.log 2>&1

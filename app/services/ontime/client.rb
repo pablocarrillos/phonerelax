@@ -11,6 +11,24 @@ module Ontime
 
     DEFAULT_BASE_URL = "https://clientespre.ontime.es/ords/core".freeze
 
+    # Da de alta un envío (POST /v1/shipments/). `shipment` es el hash con los
+    # datos ya montados (ver Ontime::ShipmentBuilder). Devuelve el resultado de
+    # Ontime (incluye trackingNumber y admissionCode) o revienta con el motivo.
+    def create_shipment(shipment)
+      body = post("/v1/shipments/", { "shipments" => [ shipment ] })
+      result = shipment_result(body)
+      raise Error, create_error_message(body, result) if result.nil? || result["trackingNumber"].blank?
+
+      result
+    end
+
+    # Seguimiento de un envío (GET /v1/shipments/{tracking}/{cp}/tracking).
+    # Devuelve el sobre completo (success, currentStatus, events…) para que lo
+    # interprete quien llama; no revienta si el envío no existe todavía.
+    def tracking(tracking:, postal_code:)
+      get("/v1/shipments/#{tracking}/#{postal_code}/tracking")
+    end
+
     # ZPL de la etiqueta de un envío. Requiere el nº de seguimiento y el código
     # postal de destino (la API los exige a ambos en la ruta).
     def label_zpl(tracking:, postal_code:)
@@ -23,19 +41,31 @@ module Ontime
     private
 
     def get(path)
+      request(Net::HTTP::Get.new(uri_for(path)))
+    end
+
+    def post(path, payload)
+      req = Net::HTTP::Post.new(uri_for(path))
+      req["Content-Type"] = "application/json"
+      req.body = payload.to_json
+      request(req)
+    end
+
+    def uri_for(path) = URI.parse("#{base_url}#{path}")
+
+    def request(req)
       require_credentials!
-      uri = URI.parse("#{base_url}#{path}")
+      req.basic_auth(api_user, api_password)
+      req["X-Api-Key"] = api_token
+      req["Accept"] = "application/json"
+
+      uri = req.uri
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = uri.scheme == "https"
       http.open_timeout = 10
       http.read_timeout = 30
 
-      request = Net::HTTP::Get.new(uri)
-      request.basic_auth(api_user, api_password)
-      request["X-Api-Key"] = api_token
-      request["Accept"] = "application/json"
-
-      response = http.request(request)
+      response = http.request(req)
       code = response.code.to_i
       raise Error, "Ontime rechazó las credenciales (HTTP #{code})" if [ 401, 403 ].include?(code)
 
@@ -50,6 +80,22 @@ module Ontime
       JSON.parse(raw)
     rescue JSON::ParserError
       raise Error, "Ontime respondió HTTP #{code}"
+    end
+
+    # El alta puede devolver el resultado plano (trackingNumber al primer nivel) o
+    # dentro de un array `shipments`; se admiten ambas formas.
+    def shipment_result(body)
+      return nil unless body.is_a?(Hash)
+      return body if body["trackingNumber"].present?
+
+      Array(body["shipments"]).first
+    end
+
+    def create_error_message(body, result)
+      detail = (result && (result["message"] || result["errorMessage"])).presence
+      detail ||= body["message"].to_s == "OK" ? nil : body["message"].presence
+      detail ||= body["errorCode"].presence
+      detail ? "Ontime no aceptó el envío: #{detail}" : "Ontime no aceptó el envío (no devolvió nº de seguimiento)."
     end
 
     # Mensaje claro para el usuario a partir del sobre de error de Ontime.

@@ -81,6 +81,11 @@ Rails.application.routes.draw do
     # Etiquetas Ontime: ver en PDF la etiqueta de un envío (por seguimiento + CP de destino)
     get "ontime/etiquetas", to: "ontime_labels#index", as: :ontime_labels
     get "ontime/etiquetas/pdf", to: "ontime_labels#pdf", as: :ontime_label_pdf
+    # Envíos Ontime: alta desde un pedido/presupuesto y seguimiento de su estado
+    resources :ontime_shipments, only: %i[index new create], path: "ontime/envios" do
+      post :poll, on: :member
+      post :poll_all, on: :collection
+    end
     resources :accounting, only: [ :index ] do
       collection do
         get :preview

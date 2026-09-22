@@ -104,6 +104,8 @@
         <p class="action-note">Último aviso enviado el <%= sent_at.strftime('%d/%m/%Y a las %H:%M') %>.</p>
       <% end %>
     </div>
+
+    <%= render "admin/ontime_shipments/panel", shippable: @quote %>
   <% end %>
 </div>
 

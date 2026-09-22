@@ -1,0 +1,88 @@
+<% origin = @shippable.is_a?(Order) ? "pedido #{@shippable.number}" : "presupuesto #{@shippable.number}" %>
+<% form = (@recipient || {}).merge(
+     service_code: params.dig(:ontime_shipment, :service_code).presence || OntimeShipment::SERVICES.keys.first,
+     parcel_count: params.dig(:ontime_shipment, :parcel_count).presence || 1,
+     weight: params.dig(:ontime_shipment, :weight).presence || 1,
+     remarks: params.dig(:ontime_shipment, :remarks)) %>
+
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+  <h1 style="margin:0;">Crear envío Ontime</h1>
+</div>
+<p class="action-note" style="margin-top:0;">
+  Envío del <strong><%= origin %></strong>. Revisa y completa los datos del destinatario;
+  al confirmar se dará de alta un <strong>envío real en Ontime</strong>.
+</p>
+
+<div class="card" style="padding:18px; max-width:640px;">
+  <%= form_with url: admin_ontime_shipments_path, scope: :ontime_shipment, method: :post do |f| %>
+    <%= f.hidden_field :shippable_type, value: @shippable.class.name %>
+    <%= f.hidden_field :shippable_id, value: @shippable.id %>
+
+    <label style="display:block; margin-bottom:12px;">
+      Nombre del destinatario
+      <%= f.text_field :name, value: form[:name], class: "input-compact", style: "width:100%;", required: true %>
+    </label>
+
+    <label style="display:block; margin-bottom:12px;">
+      Dirección
+      <%= f.text_field :address, value: form[:address], class: "input-compact", style: "width:100%;", required: true %>
+    </label>
+
+    <div style="display:flex; gap:12px; margin-bottom:12px;">
+      <label style="flex:1;">
+        Código postal
+        <%= f.text_field :postal_code, value: form[:postal_code], class: "input-compact", style: "width:100%;", required: true %>
+      </label>
+      <label style="flex:2;">
+        Población
+        <%= f.text_field :city, value: form[:city], class: "input-compact", style: "width:100%;", required: true %>
+      </label>
+      <label style="width:90px;">
+        País (ISO)
+        <%= f.text_field :country_iso, value: (form[:country_iso].presence || "ES"), class: "input-compact",
+                         style: "width:100%; text-transform:uppercase;", maxlength: 2, required: true %>
+      </label>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-bottom:12px;">
+      <label style="flex:1;">
+        Teléfono
+        <%= f.text_field :phone, value: form[:phone], class: "input-compact", style: "width:100%;", required: true %>
+      </label>
+      <label style="flex:2;">
+        Email (opcional)
+        <%= f.text_field :email, value: form[:email], class: "input-compact", style: "width:100%;" %>
+      </label>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-bottom:16px;">
+      <label style="flex:1;">
+        Servicio
+        <%= f.select :service_code,
+              OntimeShipment::SERVICES.map { |code, name| [ "#{name} (#{code})", code ] },
+              { selected: form[:service_code] }, class: "input-compact", style: "width:100%;" %>
+      </label>
+      <label style="width:90px;">
+        Bultos
+        <%= f.number_field :parcel_count, value: form[:parcel_count], min: 1, max: 99, class: "input-compact", style: "width:100%;" %>
+      </label>
+      <label style="width:110px;">
+        Peso (kg)
+        <%= f.number_field :weight, value: form[:weight], min: 0.1, step: 0.1, class: "input-compact", style: "width:100%;" %>
+      </label>
+    </div>
+
+    <label style="display:block; margin-bottom:16px;">
+      Observaciones (opcional)
+      <%= f.text_field :remarks, value: form[:remarks], class: "input-compact", style: "width:100%;",
+                       placeholder: "p. ej. Llamar antes de entregar" %>
+    </label>
+
+    <div style="display:flex; gap:10px; align-items:center;">
+      <%= f.submit "Crear envío en Ontime", class: "btn btn-primary",
+            data: { turbo_confirm: "Se dará de alta un envío REAL en Ontime para el #{origin}. ¿Continuar?" } %>
+      <%= link_to "Cancelar", (@shippable.is_a?(Order) ? admin_order_path(@shippable) : admin_quote_path(@shippable)),
+                  class: "btn btn-outline" %>
+    </div>
+  <% end %>
+</div>
