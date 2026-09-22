@@ -1,0 +1,24 @@
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+  <h1 style="margin:0;">Etiquetas Ontime</h1>
+</div>
+<p class="action-note" style="margin-top:0;">
+  Ver en PDF la etiqueta de un envío de Ontime. Indica su <strong>nº de seguimiento</strong>
+  y el <strong>código postal de destino</strong> (Ontime exige los dos).
+</p>
+
+<div class="card" style="padding:18px; max-width:560px;">
+  <%= form_with url: admin_ontime_label_pdf_path, method: :get, local: true,
+                html: { target: "_blank", rel: "noopener" } do %>
+    <label style="display:block; margin-bottom:12px;">
+      Nº de seguimiento
+      <%= text_field_tag :tracking, params[:tracking], class: "input-compact", style: "width:100%;",
+                         placeholder: "p. ej. 0003220179503760", autocomplete: "off", required: true %>
+    </label>
+    <label style="display:block; margin-bottom:16px;">
+      Código postal de destino
+      <%= text_field_tag :cp, params[:cp], class: "input-compact", style: "width:100%;",
+                         placeholder: "p. ej. 03600", autocomplete: "off", required: true %>
+    </label>
+    <%= submit_tag "Ver etiqueta (PDF)", class: "btn btn-primary" %>
+  <% end %>
+</div>
