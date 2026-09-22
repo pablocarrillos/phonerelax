@@ -15,7 +15,7 @@ module Ontime
     # postal de destino (la API los exige a ambos en la ruta).
     def label_zpl(tracking:, postal_code:)
       body = get("/v1/shipments/#{tracking}/#{postal_code}/label")
-      raise Error, body["message"].presence || "Ontime no devolvió etiqueta" unless body["success"]
+      raise Error, error_message(body) unless body["success"]
 
       body.dig("label", "content").to_s
     end
@@ -36,13 +36,27 @@ module Ontime
       request["Accept"] = "application/json"
 
       response = http.request(request)
-      raise Error, "Ontime respondió HTTP #{response.code}" unless response.code.to_i == 200
+      code = response.code.to_i
+      raise Error, "Ontime rechazó las credenciales (HTTP #{code})" if [ 401, 403 ].include?(code)
 
-      JSON.parse(response.body)
-    rescue JSON::ParserError => e
-      raise Error, "respuesta no válida de Ontime: #{e.message}"
+      # Ontime usa 404 con un sobre {success:false, errorCode, message} para
+      # «envío no encontrado»; se parsea igual y lo interpreta quien llama.
+      parse_body(response.body, code)
     rescue SocketError, Net::OpenTimeout, Net::ReadTimeout, IOError => e
       raise Error, "no se pudo conectar con Ontime: #{e.message}"
+    end
+
+    def parse_body(raw, code)
+      JSON.parse(raw)
+    rescue JSON::ParserError
+      raise Error, "Ontime respondió HTTP #{code}"
+    end
+
+    # Mensaje claro para el usuario a partir del sobre de error de Ontime.
+    def error_message(body)
+      return "No existe ningún envío con ese nº de seguimiento y código postal." if body["errorCode"] == "SHIPMENT_NOT_FOUND"
+
+      body["message"].presence || "Ontime no devolvió la etiqueta"
     end
 
     def require_credentials!

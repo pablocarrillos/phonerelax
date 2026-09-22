@@ -18,6 +18,12 @@ module Ontime
       assert_match(/SHIPMENT_NOT_FOUND/, err.message)
     end
 
+    test "SHIPMENT_NOT_FOUND se traduce a un mensaje claro" do
+      client = client_returning("success" => false, "errorCode" => "SHIPMENT_NOT_FOUND", "message" => "No shipment found")
+      err = assert_raises(Ontime::Client::Error) { client.label_zpl(tracking: "X", postal_code: "03600") }
+      assert_match(/No existe ning\u00fan env\u00edo/i, err.message)
+    end
+
     test "sin credenciales avisa claramente" do
       keys = %w[ONTIME_API_USER ONTIME_API_PASSWORD ONTIME_API_TOKEN]
       saved = keys.index_with { |k| ENV[k] }
