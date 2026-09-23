@@ -99,4 +99,20 @@ class OntimeShipmentTest < ActiveSupport::TestCase
     assert OntimeShipment.delivered_status?("Delivered")
     assert_not OntimeShipment.delivered_status?("En tránsito")
   end
+
+  test "interpreta el esquema real de Ontime (statusName/statusCode)" do
+    ontime_status = { "date" => "2026-09-22T16:05:35", "statusCode" => 0, "statusName" => "Documentado" }
+    assert_equal "Documentado", OntimeShipment.status_text(ontime_status)
+    assert_equal "22/09/2026 16:05 · Documentado", OntimeShipment.event_text(ontime_status)
+    assert_equal 0, OntimeShipment.status_code_from(ontime_status)
+  end
+
+  test "poll! muestra el nombre del estado y registra el evento con fecha legible" do
+    shipment = build_shipment
+    body = { "success" => true, "eventCount" => 1,
+             "events" => [ { "date" => "2026-09-22T16:05:35", "statusCode" => 0, "statusName" => "Documentado" } ] }
+    shipment.poll!(client: fake_client(body))
+    assert_equal "Documentado", shipment.reload.status
+    assert_match(/Documentado/, order.order_events.chronological.last.event)
+  end
 end

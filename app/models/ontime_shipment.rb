@@ -49,11 +49,14 @@ class OntimeShipment < ApplicationRecord
   # --- Extracción defensiva del estado (el esquema exacto de cada evento no está
   # documentado; se prueba con varios nombres de campo y se guarda el crudo). ---
 
+  # Nombre legible del estado. Ontime lo da como `statusName` (con `statusCode`
+  # numérico); se prueban también otros nombres por si el esquema variara.
   def self.status_text(raw)
     case raw
     when String then raw.strip.presence
     when Hash
-      raw.values_at("description", "statusDescription", "status", "name", "text", "situation").compact.first ||
+      raw.values_at("statusName", "tmsStatusName", "description", "statusDescription",
+                    "status", "name", "text", "situation").compact.first ||
         raw.values_at("statusCode", "code").compact.first
     end
   end
@@ -62,11 +65,22 @@ class OntimeShipment < ApplicationRecord
     return event.to_s if event.is_a?(String)
     return nil unless event.is_a?(Hash)
 
-    desc = event.values_at("description", "statusDescription", "status", "name", "text", "event").compact.first
+    desc = event.values_at("statusName", "tmsStatusName", "description", "statusDescription",
+                           "status", "name", "text", "event").compact.first
     code = event.values_at("statusCode", "code").compact.first
-    date = event.values_at("date", "statusDate", "eventDate", "dateTime", "datetime", "timestamp").compact.first
+    raw_date = event.values_at("date", "statusDate", "eventDate", "dateTime", "datetime", "timestamp").compact.first
     label = [ desc.presence, code.presence ].compact.first
-    [ date.presence, label ].compact.join(" · ").presence || event.to_json
+    [ format_event_date(raw_date), label ].compact.join(" · ").presence || event.to_json
+  end
+
+  # Fecha del evento en formato legible (dd/mm/aaaa hh:mm); si no se puede
+  # interpretar, se deja tal cual la mande Ontime.
+  def self.format_event_date(raw)
+    return nil if raw.blank?
+
+    Time.zone.parse(raw.to_s).strftime("%d/%m/%Y %H:%M")
+  rescue ArgumentError, TypeError
+    raw.to_s
   end
 
   def self.delivered_status?(text)
@@ -84,13 +98,16 @@ class OntimeShipment < ApplicationRecord
 
   def apply_tracking!(body)
     events = Array(body["events"])
-    new_status = self.class.status_text(body["currentStatus"]) ||
-                 (events.any? ? self.class.event_text(events.last) : nil)
+    # El endpoint de tracking no trae `currentStatus`; en ese caso el estado
+    # actual es el del último evento. El nombre (statusName) se muestra limpio,
+    # sin la fecha (esa va en el historial).
+    current = body["currentStatus"] || events.last
+    new_status = self.class.status_text(current)
     previous_count = event_count
 
     update!(
       status: new_status.presence || status,
-      status_code: self.class.status_code_from(body["currentStatus"]),
+      status_code: self.class.status_code_from(current),
       event_count: (body["eventCount"] || events.size).to_i,
       delivered: delivered || self.class.delivered_status?(new_status),
       last_response: body,
